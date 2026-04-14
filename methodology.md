@@ -1,8 +1,8 @@
 # Methodologie — EBSE Guide
 
-**Version** : 1.0
+**Version** : 2.0
 **Date** : 2026-04-14
-**Methode** : Adaptation de l'Evidence-Based Medicine (EBM) au genie logiciel, via Evidence-Based Software Engineering (EBSE, Kitchenham et al. 2004).
+**Methode** : Adaptation de l'Evidence-Based Medicine (EBM) au genie logiciel, via Evidence-Based Software Engineering (EBSE, Kitchenham et al. 2004), structuree selon Kitchenham & Charters 2007.
 
 Ce document est le **protocole pre-enregistre** de l'outil EBSE. Chaque etape est mecanique et reproductible. Deux personnes suivant ce protocole doivent arriver aux memes conclusions.
 
@@ -12,36 +12,42 @@ Ce document est le **protocole pre-enregistre** de l'outil EBSE. Chaque etape es
 
 ## Table des matieres
 
-1. [Vue d'ensemble](#1-vue-densemble)
-2. [Etape 0 — Scope (quels sujets couvrir)](#2-etape-0--scope)
-3. [Etape 1 — Question (PICO)](#3-etape-1--question-pico)
-4. [Etape 2 — Decouverte des alternatives](#4-etape-2--decouverte-des-alternatives)
-5. [Etape 3 — Collecte des preuves](#5-etape-3--collecte-des-preuves)
-6. [Etape 4 — Evaluation (GRADE)](#6-etape-4--evaluation-grade)
-7. [Etape 5 — Recommandation](#7-etape-5--recommandation)
-8. [Etape 6 — Profils de stack](#8-etape-6--profils-de-stack)
-9. [Etape 7 — Verification (double extraction)](#9-etape-7--verification)
-10. [Etape 8 — Recommandations conditionnelles et multi-stack](#10-etape-8--recommandations-conditionnelles)
-11. [Etape 9 — Arbre de decision](#11-etape-9--arbre-de-decision)
-12. [Etape 10 — Maintenance](#12-etape-10--maintenance)
-13. [Limites documentees](#13-limites-documentees)
-14. [References](#14-references)
+### Phase 1 — Planning
+1. [Etape 1.1 — Scope (quels sujets couvrir)](#phase-1--planning)
+2. [Etape 1.2 — Questions (PICO)](#etape-12--questions-pico)
+3. [Etape 1.3 — Decouverte des alternatives](#etape-13--decouverte-des-alternatives)
+4. [Etape 1.4 — Criteres d'inclusion/exclusion des sources](#etape-14--criteres-dinclusion-exclusion-des-sources)
+5. [Etape 1.5 — Strategie de recherche](#etape-15--strategie-de-recherche)
+6. [Etape 1.6 — Protocole : revue par les pairs et pilotage](#etape-16--protocole--revue-par-les-pairs-et-pilotage)
+
+### Phase 2 — Conducting
+7. [Etape 2.1 — Recherche et flux PRISMA](#etape-21--recherche-et-flux-prisma)
+8. [Etape 2.2 — Selection des sources](#etape-22--selection-des-sources)
+9. [Etape 2.3 — Evaluation de la qualite (risque de biais)](#etape-23--evaluation-de-la-qualite-risque-de-biais)
+10. [Etape 2.4 — Extraction des donnees](#etape-24--extraction-des-donnees)
+11. [Etape 2.5 — Verification des sources](#etape-25--verification-des-sources)
+12. [Etape 2.6 — Snowballing](#etape-26--snowballing)
+13. [Etape 2.7 — Synthese, GRADE et analyse de sensibilite](#etape-27--synthese-grade-et-analyse-de-sensibilite)
+14. [Etape 2.8 — Double extraction (verification inter-reviewers)](#etape-28--double-extraction-verification-inter-reviewers)
+
+### Phase 3 — Reporting
+15. [Etape 3.1 — Format de recommandation](#etape-31--format-de-recommandation)
+16. [Etape 3.2 — Arbre de decision](#etape-32--arbre-de-decision)
+17. [Etape 3.3 — Profils de stack et multi-stack](#etape-33--profils-de-stack-et-multi-stack)
+18. [Etape 3.4 — Journal de decisions et deviations](#etape-34--journal-de-decisions-et-deviations)
+19. [Etape 3.5 — Maintenance](#etape-35--maintenance)
+
+### Annexes
+20. [Limites documentees](#limites-documentees)
+21. [References](#references)
 
 ---
 
-## 1. Vue d'ensemble
-
-```
-SCOPE (ISO 25010 + 25019 x SWEBOK) → QUESTION (PICO) → DECOUVERTE (bases exhaustives)
-→ COLLECTE (pyramide des preuves) → EVALUATION (GRADE) → RECOMMANDATION (4 niveaux)
-→ PROFILS DE STACK (interdependances) → VERIFICATION (double extraction) → MAINTENANCE (annuelle)
-```
-
-**Principe fondamental** : aucune etape ne repose sur un jugement humain. Le seul acte humain est la lecture des sources, controlee par double extraction et formulaire standardise.
+# Phase 1 — Planning
 
 ---
 
-## 2. Etape 0 — Scope
+## Etape 1.1 — Scope
 
 ### Objectif
 Identifier de maniere exhaustive tous les sujets que le guide doit couvrir.
@@ -77,7 +83,7 @@ Pourquoi 25010 + 25019 : ISO 25010 dit "le produit est fiable". ISO 25019 dit "l
 | **Nielsen 10 Heuristics** | Interaction Capability → 10 principes UX pratiques |
 | **Material Design 3 + Apple HIG** | User engagement → tendances visuelles actuelles (date) |
 
-Ces standards de niveau 3 sont decouverts par recherche systematique (etape 3), pas fixes d'avance. La liste ci-dessus est le resultat de la recherche initiale et peut s'etendre.
+Ces standards de niveau 3 sont decouverts par recherche systematique (etape 2.1), pas fixes d'avance. La liste ci-dessus est le resultat de la recherche initiale et peut s'etendre.
 
 ### Methode de croisement
 Croiser les sous-caracteristiques ISO/IEC 25010:2023 + 25019:2023 avec les knowledge areas SWEBOK v4.
@@ -179,7 +185,7 @@ Pour chaque case `[sous-caracteristique ISO] x [knowledge area SWEBOK]` :
 
 ---
 
-## 3. Etape 1 — Question (PICO)
+## Etape 1.2 — Questions (PICO)
 
 ### Objectif
 Formuler chaque decision technique comme une question structuree, sans ambiguite.
@@ -205,13 +211,13 @@ O = Fiabilite, satisfaction developpeur, ecosysteme, scalabilite
 Question formulee : "Pour une web app avec API REST (equipe 1-10 devs), PostgreSQL offre-t-il une meilleure fiabilite et satisfaction developpeur que MySQL, MongoDB ou SQLite ?"
 
 ### Regles
-- Chaque case active de la matrice (etape 0) genere au moins une question PICO
+- Chaque case active de la matrice (etape 1.1) genere au moins une question PICO
 - Si le P (type de projet) varie, formuler plusieurs questions PICO avec des P differents
-- Le C (comparaison) doit inclure TOUTES les alternatives trouvees a l'etape 2
+- Le C (comparaison) doit inclure TOUTES les alternatives trouvees a l'etape 1.3
 
 ---
 
-## 4. Etape 2 — Decouverte des alternatives
+## Etape 1.3 — Decouverte des alternatives
 
 ### Objectif
 Trouver TOUS les outils/pratiques qui existent pour repondre a la question PICO, sans en oublier.
@@ -239,10 +245,260 @@ Recherche systematique dans des bases exhaustives, comme en medecine (PubMed, ME
 
 ---
 
-## 5. Etape 3 — Collecte des preuves
+## Etape 1.4 — Criteres d'inclusion/exclusion des sources
 
 ### Objectif
-Pour chaque alternative trouvee, collecter les donnees factuelles depuis des sources classees par niveau de fiabilite.
+Definir formellement, AVANT la recherche, quelles sources seront retenues et lesquelles seront exclues. Ceci empeche le cherry-picking post-hoc.
+
+### Criteres d'inclusion
+
+Une source est INCLUSE si elle remplit TOUS les criteres suivants :
+
+| # | Critere | Justification |
+|---|---------|---------------|
+| I1 | La source traite directement de l'intervention (I) ou de la comparaison (C) du PICO | Pertinence |
+| I2 | La source fournit des donnees factuelles (chiffres, specifications, recommandations normatives) | Objectivite |
+| I3 | La source est de niveau 1 a 5 dans la pyramide des preuves (voir etape 2.4) | Fiabilite minimale |
+| I4 | La source est datee de moins de 5 ans OU est un standard toujours en vigueur | Actualite |
+| I5 | La source est accessible (URL valide, document telecharger, texte lisible) | Verifiabilite |
+
+### Criteres d'exclusion
+
+Une source est EXCLUE si elle remplit AU MOINS UN des criteres suivants :
+
+| # | Critere | Justification |
+|---|---------|---------------|
+| E1 | Source de niveau 6 (blog individuel, tutoriel, video YouTube sans donnees) | Fiabilite insuffisante |
+| E2 | Source datee de plus de 5 ans ET n'est pas un standard toujours en vigueur | Obsolescence |
+| E3 | Source dans une langue non verifiable par les reviewers | Impossibilite de verification |
+| E4 | Source exclusivement marketing (white paper vendeur sans donnees independantes) | Conflit d'interet majeur |
+| E5 | Source sans auteur identifiable ni organisation reconnue | Tracabilite impossible |
+| E6 | Source traitant d'un contexte (P) radicalement different de celui du PICO | Indirectness trop forte |
+
+### Documentation des exclusions
+Chaque source exclue est documentee avec :
+- L'identifiant de la source (titre, URL)
+- Le critere d'exclusion applique (E1 a E6)
+- Une phrase de justification
+
+---
+
+## Etape 1.5 — Strategie de recherche
+
+### Objectif
+Definir la strategie de recherche AVANT l'execution, pour garantir la reproductibilite.
+
+### Elements de la strategie
+
+Pour chaque question PICO, documenter :
+
+1. **Bases a interroger** : lesquelles parmi la liste fixe (etape 1.3) + bases additionnelles justifiees
+2. **Mots-cles** : derives systematiquement du PICO (synonymes, variantes)
+3. **Criteres d'inclusion/exclusion** : reference a l'etape 1.4
+4. **Ordre de recherche** : par niveau de la pyramide (niveau 1 d'abord, puis 2, etc.)
+5. **Date de la recherche** : a documenter pour chaque base
+6. **Procedure de snowballing** : verifier les references citees dans les sources trouvees (voir etape 2.6)
+
+### Regles
+- La strategie est fixee AVANT l'execution de la recherche
+- Toute modification en cours de route est une deviation de protocole (voir etape 3.4)
+- La strategie inclut une procedure pour les sources inaccessibles (voir etape 2.5)
+
+---
+
+## Etape 1.6 — Protocole : revue par les pairs et pilotage
+
+### Objectif
+Valider le protocole (etapes 1.1 a 1.5) avant de l'appliquer a grande echelle.
+
+### Revue par les pairs du protocole
+
+Avant d'executer la recherche, le protocole complet (scope, PICO, criteres, strategie) est soumis a revue :
+
+1. **Reviewer independant** (humain ou agent IA dans un contexte separe) lit le protocole
+2. Le reviewer verifie :
+   - Les PICO sont complets et sans ambiguite
+   - Les criteres d'inclusion/exclusion sont clairs et applicables
+   - La strategie de recherche couvre les bases pertinentes
+   - Le scope n'a pas d'oublis evidents
+3. Les retours sont documentes et integres
+4. Le protocole revise est marque comme **approuve** avec date et identifiant du reviewer
+
+### Pilotage (test sur un echantillon)
+
+Avant l'execution complete, le protocole est teste sur un petit echantillon :
+
+1. Selectionner **3 a 5 questions PICO** representatives (couvrant differents domaines)
+2. Executer le protocole complet sur cet echantillon (recherche, selection, extraction, GRADE)
+3. Evaluer :
+   - Le temps par question PICO (pour estimer l'effort total)
+   - Le kappa inter-reviewers sur l'echantillon
+   - Les ambiguites dans les criteres ou le formulaire d'extraction
+4. Ajuster le protocole si necessaire (documenter les ajustements comme deviations, etape 3.4)
+5. Le pilotage est documente avec les resultats et les ajustements
+
+### Regles
+- Le protocole ne peut PAS etre modifie apres approbation sans documentation de la deviation
+- Les donnees du pilotage PEUVENT etre integrees dans les resultats finaux si le protocole n'a pas change entre le pilotage et l'execution
+
+---
+
+# Phase 2 — Conducting
+
+---
+
+## Etape 2.1 — Recherche et flux PRISMA
+
+### Objectif
+Executer la strategie de recherche et documenter le flux de selection selon PRISMA (Preferred Reporting Items for Systematic reviews and Meta-Analyses).
+
+### Flux PRISMA
+
+A chaque execution de recherche, documenter le flux suivant :
+
+```
+IDENTIFICATION
+  Sources identifiees par base :
+    - npm registry : N resultats
+    - Maven Central : N resultats
+    - GitHub : N resultats
+    - SO Survey : N categories consultees
+    - State of JS : N categories consultees
+    - CNCF Landscape : N categories consultees
+    - Snowballing : N sources additionnelles
+    - Autres bases : N resultats
+  Total identifie : N
+  Doublons retires : N
+  Total apres deduplication : N
+
+SCREENING (titre + resume)
+  Sources screenees : N
+  Sources exclues au screening : N
+    - E1 (niveau 6) : N
+    - E2 (obsolete) : N
+    - E3 (langue) : N
+    - E4 (marketing) : N
+    - E5 (sans auteur) : N
+    - E6 (hors contexte) : N
+
+ELIGIBILITE (lecture complete)
+  Sources evaluees en detail : N
+  Sources exclues apres lecture complete : N (avec raison pour chaque)
+
+INCLUSION
+  Sources incluses dans la synthese : N
+    - Niveau 1 : N
+    - Niveau 2 : N
+    - Niveau 3 : N
+    - Niveau 4 : N
+    - Niveau 5 : N
+```
+
+### Documentation PRISMA
+
+Le flux PRISMA est enregistre pour chaque question PICO (ou batch de questions PICO) dans `verification/prisma/`.
+
+**Format du fichier :**
+
+```markdown
+# PRISMA Flow — [Question PICO ou Batch]
+
+**Date de recherche** : YYYY-MM-DD
+**Bases interrogees** : [liste]
+**Mots-cles** : [liste]
+
+## Flux
+
+[Tableau PRISMA ci-dessus rempli]
+
+## Sources exclues avec raisons
+
+| # | Source | Critere d'exclusion | Raison |
+|---|--------|---------------------|--------|
+| 1 | Titre / URL | E1-E6 | Justification |
+```
+
+### Regles
+- Le flux PRISMA est OBLIGATOIRE pour chaque batch de recherche
+- Chaque source exclue apres lecture complete a une raison individuelle documentee
+- Le total inclus doit correspondre au nombre de sources dans les formulaires d'extraction
+
+---
+
+## Etape 2.2 — Selection des sources
+
+### Objectif
+Appliquer les criteres d'inclusion/exclusion (etape 1.4) de maniere systematique.
+
+### Procedure
+
+1. **Screening (titre + resume)** : appliquer les criteres d'exclusion E1 a E6 sur le titre et le resume/description de la source
+2. **Lecture complete** : pour les sources restantes, lire le texte complet et verifier les criteres d'inclusion I1 a I5
+3. **Decision** : chaque source recoit un statut INCLUSE ou EXCLUE (avec raison)
+4. **Double screening** : la selection est faite independamment par 2 reviewers ; les divergences sont resolues par discussion
+
+### Regles
+- Le screening est base sur les criteres definis a l'etape 1.4, pas sur le jugement subjectif
+- En cas de doute, la source est INCLUSE (pour etre evaluee en detail)
+- Les sources inaccessibles sont traitees a l'etape 2.5
+
+---
+
+## Etape 2.3 — Evaluation de la qualite (risque de biais)
+
+### Objectif
+Evaluer formellement le risque de biais de chaque source incluse, au-dela du simple conflit d'interet.
+
+### Grille de risque de biais
+
+Pour CHAQUE source incluse, evaluer les dimensions suivantes :
+
+| Dimension | Question | Risque |
+|-----------|----------|--------|
+| **Conflit d'interet** | La source evalue-t-elle son propre produit ? | HAUT / BAS |
+| **Self-published benchmark** | La source publie-t-elle ses propres benchmarks sans methodologie transparente ? | HAUT / BAS |
+| **Vendor marketing** | La source est-elle un white paper vendeur ou un article sponsorise ? | HAUT / BAS |
+| **Echantillon** | L'echantillon est-il < 1000 repondants pour une enquete ? | HAUT / BAS |
+| **Obsolescence** | La source a-t-elle plus de 3 ans (pour les donnees d'adoption/satisfaction) ? | HAUT / BAS |
+| **Selection bias** | L'echantillon est-il biaise (ex: enquete sur un site specifique = que les utilisateurs de ce site) ? | HAUT / BAS |
+| **Methodologie** | La methodologie de collecte des donnees est-elle decrite et reproductible ? | HAUT / BAS |
+
+### Risque global
+
+| Nombre de dimensions a HAUT risque | Risque global |
+|-------------------------------------|---------------|
+| 0 | Faible |
+| 1-2 | Modere |
+| 3+ | Eleve |
+
+### Impact sur GRADE
+
+- Risque **faible** : pas d'ajustement GRADE
+- Risque **modere** : -1 au score GRADE (cumule avec les autres facteurs negatifs)
+- Risque **eleve** : la source est retrogradee d'un niveau dans la pyramide OU exclue si le risque est majeur (documenter la decision)
+
+### Formulaire de risque de biais
+
+```
+SOURCE : ___
+RISQUE DE BIAIS :
+  Conflit d'interet :    [ ] HAUT  [ ] BAS  — Detail : ___
+  Self-published bench : [ ] HAUT  [ ] BAS  — Detail : ___
+  Vendor marketing :     [ ] HAUT  [ ] BAS  — Detail : ___
+  Echantillon :          [ ] HAUT  [ ] BAS  — Detail : ___
+  Obsolescence :         [ ] HAUT  [ ] BAS  — Detail : ___
+  Selection bias :       [ ] HAUT  [ ] BAS  — Detail : ___
+  Methodologie :         [ ] HAUT  [ ] BAS  — Detail : ___
+  RISQUE GLOBAL :        [ ] Faible  [ ] Modere  [ ] Eleve
+  IMPACT GRADE :         ___
+```
+
+---
+
+## Etape 2.4 — Extraction des donnees
+
+### Objectif
+Pour chaque source incluse, extraire les donnees factuelles de maniere standardisee.
 
 ### Pyramide des preuves (adaptee au logiciel)
 
@@ -316,6 +572,9 @@ SOURCE :
   Niveau pyramide : ___
   Date de publication : ___
 
+RISQUE DE BIAIS : (reference au formulaire etape 2.3)
+  Risque global : Faible / Modere / Eleve
+
 EXTRACTION :
   Citation exacte (copier-coller) : ___
   Donnee chiffree (si applicable) : ___
@@ -331,10 +590,82 @@ EXTRACTION :
 
 ---
 
-## 6. Etape 4 — Evaluation (GRADE adapte)
+## Etape 2.5 — Verification des sources
 
 ### Objectif
-Calculer mecaniquement le niveau de confiance pour chaque recommandation.
+S'assurer que chaque source citee est accessible, que les donnees citees correspondent au contenu reel, et gerer les sources inaccessibles.
+
+### Verification d'acces
+
+Pour CHAQUE source incluse :
+
+1. **Acces URL** : l'agent verificateur (Agent C) accede a l'URL citee et confirme :
+   - L'URL est valide et accessible
+   - Le contenu correspond a ce qui est cite dans le formulaire d'extraction
+   - La citation exacte est presente dans la source
+   - La date de publication est correcte
+2. **Resultat** : chaque source recoit un statut :
+   - **VERIFIE** : URL accessible, contenu confirme
+   - **PARTIEL** : URL accessible mais contenu a change (documenter les differences)
+   - **INACCESSIBLE** : URL non accessible (declencher la procedure ci-dessous)
+
+### Procedure pour sources inaccessibles
+
+Quand une source est inaccessible, appliquer dans l'ordre :
+
+1. **WebSearch** : rechercher le titre exact + auteur
+2. **Archive.org (Wayback Machine)** : chercher une version archivee de l'URL
+3. **GitHub raw data** : si la source est un repo/doc GitHub, chercher le raw content ou un fork
+4. **Citations tierces** : chercher des sources tierces qui citent et reprennent les donnees
+5. **Contact auteur** : si possible, contacter l'auteur/organisation pour obtenir le document
+
+**Si la source reste inaccessible apres les 5 tentatives** :
+- La source est marquee **INACCESSIBLE** dans le formulaire d'extraction
+- Elle ne peut PAS etre utilisee pour le calcul GRADE
+- Une note est ajoutee dans le rapport final
+
+### Regles
+- La verification est faite par un agent DIFFERENT de celui qui a fait l'extraction (separation des roles)
+- Les resultats de verification sont documentes dans `verification/access/`
+- Une source non verifiee ne peut pas recevoir un niveau de confiance GRADE superieur a [BONNE PRATIQUE]
+
+---
+
+## Etape 2.6 — Snowballing
+
+### Objectif
+Trouver des sources additionnelles en examinant les references citees dans les sources deja trouvees (backward snowballing) et les sources qui citent les sources trouvees (forward snowballing).
+
+### Procedure
+
+#### Backward snowballing (references citees)
+Pour chaque source incluse de niveau 1 a 3 :
+1. Examiner la bibliographie / les liens references dans la source
+2. Identifier les references qui pourraient etre pertinentes pour le PICO
+3. Appliquer les criteres d'inclusion/exclusion (etape 1.4)
+4. Si incluse, ajouter au flux PRISMA dans la categorie "Snowballing"
+
+#### Forward snowballing (qui cite cette source)
+Pour chaque source cle (niveau 1-2 ou source fondatrice) :
+1. Rechercher les documents/articles qui citent cette source (via Google Scholar, GitHub, etc.)
+2. Appliquer les criteres d'inclusion/exclusion
+3. Si incluse, ajouter au flux PRISMA dans la categorie "Snowballing"
+
+### Critere d'arret
+Le snowballing s'arrete quand :
+- Aucune nouvelle source pertinente n'est trouvee sur 2 iterations consecutives
+- OU le nombre de sources trouvees par snowballing represente < 5% du total des sources identifiees
+
+### Regles
+- Le snowballing est documente dans le flux PRISMA (nombre de sources trouvees par cette methode)
+- Les sources trouvees par snowballing sont soumises aux memes criteres et evaluations que les sources trouvees par recherche directe
+
+---
+
+## Etape 2.7 — Synthese, GRADE et analyse de sensibilite
+
+### Objectif
+Calculer mecaniquement le niveau de confiance pour chaque recommandation, puis verifier la robustesse par analyse de sensibilite et evaluation du biais de publication.
 
 ### Score de depart
 
@@ -367,6 +698,7 @@ Le score de depart depend du niveau le plus haut de source disponible :
 | Indirectness | La source parle d'un contexte different du P | Le contexte de la source correspond-il au P du PICO ? |
 | Imprecision | Petit echantillon ou intervalle de confiance large | N < 1000, ou resultats serres |
 | Biais de publication | Seuls les succes sont publies | Y a-t-il des retours negatifs disponibles ? |
+| Risque de biais eleve | La source a un risque global eleve (etape 2.3) | Resultat de l'evaluation de biais |
 
 ### Calcul
 
@@ -384,71 +716,82 @@ Minimum = 0, Maximum = 7
 | 2 | MOYENNE | [BONNE PRATIQUE] |
 | 0-1 | BASSE | [CHOIX D'EQUIPE] |
 
+### Evaluation formelle du biais de publication
+
+Pour chaque recommandation, verifier explicitement :
+
+| Verification | Comment |
+|-------------|---------|
+| Retours negatifs existent-ils ? | Rechercher activement des critiques, post-mortems, issues GitHub, articles "pourquoi on a quitte X" |
+| Les sources negatives ont-elles ete exclues ? | Verifier si des sources critiques ont ete exclues par les criteres |
+| Les enquetes mesurent-elles l'insatisfaction ? | Verifier si les enquetes donnent aussi les % de "would NOT use again" |
+| Asymetrie | Les sources sont-elles majoritairement positives ? Si oui, le biais de publication est suspect |
+
+**Resultat** :
+- **Biais de publication non detecte** : aucun ajustement
+- **Biais de publication suspecte** : -1 au score GRADE (deja dans les facteurs negatifs)
+- **Biais de publication confirme** : -2 au score GRADE + note dans le rapport
+
+### Analyse de sensibilite
+
+Apres le calcul GRADE, verifier la robustesse de la recommandation :
+
+1. **Retrait un-par-un** : retirer chaque source (une a la fois) et recalculer le score GRADE
+   - Si la recommandation change de niveau (ex: [STANDARD] → [RECOMMANDE]), la recommandation est **fragile**
+   - Si la recommandation reste stable, elle est **robuste**
+
+2. **Documentation** :
+```
+ANALYSE DE SENSIBILITE — [Question PICO]
+  Recommandation : ___
+  Score GRADE de base : ___ / 7
+  Niveau : ___
+
+  | Source retiree | Score sans cette source | Niveau sans cette source | Changement ? |
+  |---------------|------------------------|--------------------------|:------------:|
+  | Source 1 | X/7 | [NIVEAU] | OUI / NON |
+  | Source 2 | X/7 | [NIVEAU] | OUI / NON |
+  | ... | ... | ... | ... |
+
+  Conclusion : ROBUSTE / FRAGILE
+  Si fragile : quelles sources sont critiques ? ___
+```
+
+3. **Impact sur le rapport** :
+   - Recommandation **robuste** : presentee normalement
+   - Recommandation **fragile** : un avertissement est ajoute, identifiant les sources critiques dont depend la recommandation
+
+### Balance benefices vs risques (GRADE EtD)
+
+Pour chaque recommandation, documenter explicitement :
+
+| Dimension | Evaluation |
+|-----------|-----------|
+| **Benefices** | Quels sont les avantages concrets de l'intervention (I) vs la comparaison (C) ? Quantifier si possible. |
+| **Risques / inconvenients** | Quels sont les risques, couts, complexites, vendor lock-in, courbe d'apprentissage ? |
+| **Balance** | Les benefices l'emportent-ils clairement sur les risques ? |
+| **Faisabilite** | L'intervention est-elle realisable dans le contexte P ? (ressources, competences, infrastructure requises) |
+
+**Format :**
+```
+BALANCE BENEFICES/RISQUES — [Intervention]
+  Benefices :
+    - ___
+    - ___
+  Risques :
+    - ___
+    - ___
+  Balance : Benefices > Risques / Equilibre / Risques > Benefices
+  Faisabilite : Haute / Moyenne / Basse — Detail : ___
+```
+
+**Impact** :
+- Si la balance est "Risques > Benefices" → la recommandation est degradee d'un niveau, meme si le GRADE est haut
+- Si la faisabilite est "Basse" → la recommandation mentionne les prerequis necessaires
+
 ---
 
-## 7. Etape 5 — Recommandation
-
-### Format de sortie
-
-Chaque recommandation du guide suit ce format :
-
-```
-[NIVEAU] Recommandation en une phrase
-
-  Contexte (P) : ___
-  Score GRADE : ___ / 7
-  Sources :
-    - [niveau X] Source 1 : "citation exacte"
-    - [niveau X] Source 2 : "citation exacte"
-  Facteurs GRADE appliques :
-    + convergence / grande echelle / effet important
-    - conflit d'interet / incoherence / ...
-  Alternatives evaluees : ___
-  Date : ___
-```
-
-### Regles
-- Le lecteur doit pouvoir verifier chaque recommandation en ouvrant les sources citees
-- Si le score est <= 1, le guide ne recommande PAS — il dit "[CHOIX D'EQUIPE]" et liste les options
-- Chaque recommandation porte une date et sera revalidee a la prochaine revision
-
----
-
-## 8. Etape 6 — Profils de stack
-
-### Objectif
-Regrouper les recommandations interdependantes en combinaisons coherentes et validees.
-
-### Methode
-1. Identifier les dependances : le choix de l'outil A influence-t-il le choix de l'outil B ?
-   - Source : doc officielle de A (recommande-t-elle un outil B specifique ?)
-   - Source : doc officielle de B (est-elle compatible avec A ?)
-2. Regrouper les outils interdependants en "profils"
-3. Chaque profil est une combinaison complete et coherente
-
-### Exemple de profil
-
-```
-PROFIL : Web App — Java/React
-  Backend     : Spring Boot     [RECOMMANDE] (SO Survey #1 satisfaction Java web)
-  Frontend    : React           [RECOMMANDE] (SO Survey + State of JS)
-  BDD         : PostgreSQL      [RECOMMANDE] (SO Survey #1 satisfaction SGBD)
-  Tests back  : JUnit 5         [STANDARD] (doc Spring recommande JUnit)
-  Tests front : Vitest          [RECOMMANDE] (doc Vite recommande Vitest)
-  Test UI     : Testing Library [RECOMMANDE] (doc React recommande Testing Library)
-  CI/CD       : GitHub Actions  [RECOMMANDE] (#1 adoption CI pour projets GitHub)
-  Linter JS   : ESLint          [STANDARD] (doc React recommande ESLint)
-  Formatter   : Prettier        [RECOMMANDE] (State of JS #1 formatter)
-  
-  Interdependances validees :
-    - Spring docs → JUnit (niveau 3)
-    - Vite docs → Vitest (niveau 3)
-    - React docs → Testing Library + ESLint (niveau 3)
-```
-
----
-
-## 9. Etape 7 — Verification
+## Etape 2.8 — Double extraction (verification inter-reviewers)
 
 ### Objectif
 Controler que la lecture des sources n'a pas introduit d'erreurs.
@@ -506,38 +849,47 @@ Ce fichier prouve que la double extraction a ete faite et documente les resultat
 
 ---
 
-## 10. Etape 8 — Recommandations conditionnelles et multi-stack
-
-### Principe
-
-Une recommandation peut dependre d'un choix precedent. Par exemple :
-- "Quel framework de test ?" depend de "Quel framework backend ?"
-- Si backend = Spring Boot → JUnit 5. Si backend = NestJS → Jest/Vitest. Si backend = Django → pytest.
-
-### Format JSON conditionnel
-
-Chaque recommandation est stockee en JSON avec :
-- `universal` : principes valables pour TOUTE stack (ex: "pyramide 70/20/10")
-- `variants` : outils specifiques par stack (ex: { "java-spring-boot": "JUnit 5", "typescript-nestjs": "Vitest" })
-- `depends_on` : liste des choix prealables qui affectent cette recommandation
-
-### Classification des pages
-
-Chaque page est classee comme :
-- **UNIVERSEL** : la recommandation est valable quelle que soit la stack
-- **MIXTE** : principes universels + outils stack-specific (la majorite des pages)
-- **STACK-SPECIFIC** : uniquement pour une stack donnee
-
-### Obligation multi-stack
-
-Pour chaque page MIXTE ou STACK-SPECIFIC :
-- Les variantes pour **au moins 3 stacks backend** (Java/Spring Boot, TypeScript/NestJS, Python/Django) doivent exister
-- Chaque variante est sourcee via EBSE (PICO, GRADE, double extraction)
-- Les agents recherchant les variantes NE DOIVENT PAS voir le contenu des autres stacks pour eviter le biais
+# Phase 3 — Reporting
 
 ---
 
-## 11. Etape 9 — Arbre de decision
+## Etape 3.1 — Format de recommandation
+
+### Format de sortie
+
+Chaque recommandation du guide suit ce format :
+
+```
+[NIVEAU] Recommandation en une phrase
+
+  Contexte (P) : ___
+  Score GRADE : ___ / 7
+  Robustesse : ROBUSTE / FRAGILE (sources critiques : ___)
+  Sources :
+    - [niveau X] Source 1 : "citation exacte" [risque de biais : Faible/Modere/Eleve]
+    - [niveau X] Source 2 : "citation exacte" [risque de biais : Faible/Modere/Eleve]
+  Facteurs GRADE appliques :
+    + convergence / grande echelle / effet important
+    - conflit d'interet / incoherence / biais de publication / ...
+  Balance benefices/risques :
+    Benefices : ___
+    Risques : ___
+    Balance : ___
+    Faisabilite : ___
+  Alternatives evaluees : ___
+  PRISMA : [reference au fichier PRISMA]
+  Date : ___
+```
+
+### Regles
+- Le lecteur doit pouvoir verifier chaque recommandation en ouvrant les sources citees
+- Si le score est <= 1, le guide ne recommande PAS — il dit "[CHOIX D'EQUIPE]" et liste les options
+- Chaque recommandation porte une date et sera revalidee a la prochaine revision
+- Les sources non verifiees (etape 2.5) sont signalees
+
+---
+
+## Etape 3.2 — Arbre de decision
 
 ### Principe
 
@@ -601,7 +953,118 @@ L'utilisateur voit la question metier. Le guide montre la deduction technique en
 
 ---
 
-## 12. Etape 10 — Maintenance
+## Etape 3.3 — Profils de stack et multi-stack
+
+### Objectif
+Regrouper les recommandations interdependantes en combinaisons coherentes et validees.
+
+### Methode
+1. Identifier les dependances : le choix de l'outil A influence-t-il le choix de l'outil B ?
+   - Source : doc officielle de A (recommande-t-elle un outil B specifique ?)
+   - Source : doc officielle de B (est-elle compatible avec A ?)
+2. Regrouper les outils interdependants en "profils"
+3. Chaque profil est une combinaison complete et coherente
+
+### Exemple de profil
+
+```
+PROFIL : Web App — Java/React
+  Backend     : Spring Boot     [RECOMMANDE] (SO Survey #1 satisfaction Java web)
+  Frontend    : React           [RECOMMANDE] (SO Survey + State of JS)
+  BDD         : PostgreSQL      [RECOMMANDE] (SO Survey #1 satisfaction SGBD)
+  Tests back  : JUnit 5         [STANDARD] (doc Spring recommande JUnit)
+  Tests front : Vitest          [RECOMMANDE] (doc Vite recommande Vitest)
+  Test UI     : Testing Library [RECOMMANDE] (doc React recommande Testing Library)
+  CI/CD       : GitHub Actions  [RECOMMANDE] (#1 adoption CI pour projets GitHub)
+  Linter JS   : ESLint          [STANDARD] (doc React recommande ESLint)
+  Formatter   : Prettier        [RECOMMANDE] (State of JS #1 formatter)
+  
+  Interdependances validees :
+    - Spring docs → JUnit (niveau 3)
+    - Vite docs → Vitest (niveau 3)
+    - React docs → Testing Library + ESLint (niveau 3)
+```
+
+### Recommandations conditionnelles et multi-stack
+
+#### Principe
+
+Une recommandation peut dependre d'un choix precedent. Par exemple :
+- "Quel framework de test ?" depend de "Quel framework backend ?"
+- Si backend = Spring Boot → JUnit 5. Si backend = NestJS → Jest/Vitest. Si backend = Django → pytest.
+
+#### Format JSON conditionnel
+
+Chaque recommandation est stockee en JSON avec :
+- `universal` : principes valables pour TOUTE stack (ex: "pyramide 70/20/10")
+- `variants` : outils specifiques par stack (ex: { "java-spring-boot": "JUnit 5", "typescript-nestjs": "Vitest" })
+- `depends_on` : liste des choix prealables qui affectent cette recommandation
+
+#### Classification des pages
+
+Chaque page est classee comme :
+- **UNIVERSEL** : la recommandation est valable quelle que soit la stack
+- **MIXTE** : principes universels + outils stack-specific (la majorite des pages)
+- **STACK-SPECIFIC** : uniquement pour une stack donnee
+
+#### Obligation multi-stack
+
+Pour chaque page MIXTE ou STACK-SPECIFIC :
+- Les variantes pour **au moins 3 stacks backend** (Java/Spring Boot, TypeScript/NestJS, Python/Django) doivent exister
+- Chaque variante est sourcee via EBSE (PICO, GRADE, double extraction)
+- Les agents recherchant les variantes NE DOIVENT PAS voir le contenu des autres stacks pour eviter le biais
+
+---
+
+## Etape 3.4 — Journal de decisions et deviations
+
+### Objectif
+Documenter toutes les decisions methodologiques et les deviations par rapport au protocole, pour garantir la transparence et la reproductibilite.
+
+### Journal de decisions (review diary)
+
+Un journal continu est maintenu tout au long du processus. Pour chaque decision significative :
+
+```
+JOURNAL DE DECISIONS — [Projet/Batch]
+
+| # | Date | Decision | Justification | Impact | Decideur |
+|---|------|----------|---------------|--------|----------|
+| 1 | YYYY-MM-DD | Description de la decision | Pourquoi cette decision a ete prise | Quelles etapes/resultats sont affectes | Qui a decide |
+```
+
+**Exemples de decisions a documenter :**
+- Ajout/retrait d'une base de recherche
+- Modification d'un critere d'inclusion/exclusion
+- Decision sur une source ambigue (incluse ou exclue)
+- Resolution d'une divergence entre reviewers
+- Choix methodologique non prevu par le protocole
+
+### Documentation des deviations de protocole
+
+Toute deviation par rapport au protocole approuve (etape 1.6) est documentee :
+
+```
+DEVIATION DE PROTOCOLE — #[numero]
+
+  Date : YYYY-MM-DD
+  Etape du protocole concernee : ___
+  Protocole original : ___
+  Ce qui a ete fait a la place : ___
+  Justification : ___
+  Impact sur les resultats : ___
+  Approuve par : ___
+```
+
+### Regles
+- Le journal est mis a jour EN TEMPS REEL, pas retrospectivement
+- Les deviations sont numerotees et referencees dans le rapport final
+- Un fichier de journal est maintenu dans `verification/decisions/`
+- L'absence de journal pour un batch rend les resultats non auditables
+
+---
+
+## Etape 3.5 — Maintenance
 
 ### Frequence
 - **Revue annuelle** : toutes les recommandations sont revalidees avec les sources mises a jour
@@ -609,9 +1072,10 @@ L'utilisateur voit la question metier. Le guide montre la deduction technique en
 
 ### Processus
 1. Pour chaque recommandation existante, verifier si les sources ont change
-2. Si oui, reprendre les etapes 3-5 (collecte → evaluation → recommandation)
+2. Si oui, reprendre les etapes 2.1-2.7 (recherche → synthese)
 3. Mettre a jour la date de la recommandation
 4. Archiver l'ancienne version (historique des changements)
+5. Re-executer l'analyse de sensibilite pour les recommandations modifiees
 
 ### Versioning
 - Le guide suit le versioning semantique : `ANNEE.MOIS` (ex: `2026.04`)
@@ -623,12 +1087,12 @@ Le guide couvre actuellement **le web** (navigateur). Les autres plateformes ne 
 
 | Plateforme | Statut | Prochaine etape |
 |-----------|--------|-----------------|
-| **Web (navigateur)** | ✓ Couvert | 106 decisions, 3 stacks backend, multi-frontend |
-| **Web → Mobile (PWA/Capacitor)** | ✓ Couvert | Page web-mobile-strategy.md, batch 16 |
-| Mobile natif Android | ❌ Pas couvert | Necessite EBSE : Kotlin, Jetpack Compose, etc. |
-| Mobile natif iOS | ❌ Pas couvert | Necessite EBSE : Swift, SwiftUI, etc. |
-| Mobile cross-platform | ❌ Pas couvert | Necessite EBSE : Flutter vs React Native vs KMP |
-| Desktop | ❌ Pas couvert | Necessite EBSE : Electron vs Tauri |
+| **Web (navigateur)** | Couvert | 106 decisions, 3 stacks backend, multi-frontend |
+| **Web → Mobile (PWA/Capacitor)** | Couvert | Page web-mobile-strategy.md, batch 16 |
+| Mobile natif Android | Pas couvert | Necessite EBSE : Kotlin, Jetpack Compose, etc. |
+| Mobile natif iOS | Pas couvert | Necessite EBSE : Swift, SwiftUI, etc. |
+| Mobile cross-platform | Pas couvert | Necessite EBSE : Flutter vs React Native vs KMP |
+| Desktop | Pas couvert | Necessite EBSE : Electron vs Tauri |
 
 **Regle** : le guide NE RECOMMANDE PAS une plateforme qu'il n'a pas recherchee. L'arbre de decision affiche "pas encore couvert" pour les plateformes non recherchees.
 
@@ -652,7 +1116,11 @@ Ces technologies sont a reevaluer lors de chaque revue annuelle. Si leur adoptio
 
 ---
 
-## 13. Limites documentees
+# Annexes
+
+---
+
+## Limites documentees
 
 | Limite | Explication |
 |--------|-------------|
@@ -662,18 +1130,23 @@ Ces technologies sont a reevaluer lors de chaque revue annuelle. Si leur adoptio
 | **Contexte** | Les recommandations sont formulees pour des contextes definis (P du PICO). Un contexte tres different peut invalider une recommandation. |
 | **Biais des enquetes** | Les enquetes (SO Survey, State of JS) mesurent la popularite et la satisfaction parmi les repondants, avec un biais de selection (qui repond ?). |
 | **Temporalite** | Les tendances (design, outils) evoluent. Les recommandations sont datees et doivent etre revalidees annuellement. |
+| **Verification** | La verification d'acces (etape 2.5) depend de la disponibilite des URLs au moment de la verification. Les sources peuvent devenir inaccessibles apres la verification. |
+| **Sensibilite** | Certaines recommandations peuvent etre fragiles (dependantes d'une seule source). L'analyse de sensibilite identifie ces cas mais ne les resout pas. |
 
 ---
 
-## 14. References
+## References
 
 ### Methode
 - Kitchenham, B.A. et al. (2004). *Evidence-Based Software Engineering*. ICSE 2004.
 - Kitchenham, B.A. & Charters, S. (2007). *Guidelines for performing Systematic Literature Reviews in Software Engineering*. EBSE Technical Report EBSE-2007-01.
 - Kitchenham, B.A., Budgen, D. & Brereton, P. (2015). *Evidence-Based Software Engineering and Systematic Reviews*. CRC Press.
 - GRADE Working Group. *GRADE Handbook*. https://gradepro.org/handbook/
+- GRADE Working Group. *Evidence to Decision (EtD) Framework*. https://www.gradeworkinggroup.org/
 - Moher, D. et al. (2009). *PRISMA Statement*. BMJ.
+- Page, M.J. et al. (2021). *PRISMA 2020 Statement: an updated guideline for reporting systematic reviews*. BMJ.
 - Cochrane Handbook for Systematic Reviews of Interventions. https://training.cochrane.org/handbook
+- Wohlin, C. (2014). *Guidelines for snowballing in systematic literature studies*. EASE 2014.
 
 ### Standards de scope (niveau 1)
 - ISO/IEC 25010:2023. *Systems and software engineering — Product quality model*.
