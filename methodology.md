@@ -560,13 +560,27 @@ Ce chemin est determine par EBSE :
 
 ### Chemin "contextuel"
 
-L'utilisateur repond a des questions sur son contexte :
-- Langage maitrise par l'equipe
-- Taille d'equipe
-- Budget (SaaS autorise ou self-hosted)
-- Type d'application (SPA, SSR, API only, mobile)
+L'utilisateur repond a des questions sur son contexte. Les questions sont organisees en 2 categories :
 
-Chaque branche mene a un profil de stack recommande, source via EBSE.
+**Questions sur le PROJET (affectent l'architecture) :**
+
+| Question | Options | Affecte quoi | Source |
+|----------|---------|-------------|--------|
+| Type de projet | SPA, site contenu, API only, temps-reel | Rendu (CSR/SSR/SSG), WebSocket, framework | SWEBOK v4 "Software Architecture" |
+| Echelle visee | Local (<100 users), startup (100-10k), scale (10k-1M), mondial (1M+) | HA, CDN, caching, i18n, multi-region | Twelve-Factor, Google SRE |
+| Besoins specifiques | Temps-reel, offline, mobile, i18n | WebSocket, PWA, service workers | ISO 25010 Functional Suitability |
+
+**Questions sur les CONTRAINTES (affectent les outils) :**
+
+| Question | Options | Affecte quoi | Source |
+|----------|---------|-------------|--------|
+| Langage maitrise | Java, TypeScript, Python, C#, aucun | Framework backend | SWEBOK v4 "SE Economics — productivity depends on mastery" |
+| Taille equipe | 1-5, 5-20, 20+ | Complexite acceptable, boilerplate | DORA/Accelerate "team size affects practices" |
+| Budget | Gratuit/open-source only, SaaS autorise | Outils (GlitchTip vs Sentry, Unleash vs LaunchDarkly) | — |
+| Delai | MVP rapide, projet long terme | Stack speed-to-market vs robustesse | — |
+
+Chaque branche mene a un ensemble de choix qui filtre les recommandations.
+Les questions elles-memes sont justifiees par des sources (colonne "Source").
 
 ### Regles
 
