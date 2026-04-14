@@ -158,27 +158,67 @@
         {
           "label": "Moins de 100 (outil interne, prototype)",
           "sets": { "scale": "local" },
-          "next": "team-experience"
+          "next": "team-size"
         },
         {
           "label": "100 a 10 000 (startup, PME)",
           "sets": { "scale": "startup" },
-          "next": "team-experience"
+          "next": "team-size"
         },
         {
           "label": "10 000 a 1 million",
           "sets": { "scale": "scale" },
-          "next": "team-experience"
+          "next": "team-size"
         },
         {
           "label": "Plus d'1 million (mondial)",
           "sets": { "scale": "global" },
-          "next": "team-experience"
+          "next": "team-size"
         },
         {
           "label": "Je ne sais pas",
           "default_recommendation": "Startup (100-10k) — les bonnes pratiques sont les memes, le scaling vient apres.",
           "sets": { "scale": "startup" },
+          "next": "team-size"
+        }
+      ]
+    },
+    "team-size": {
+      "type": "choice",
+      "question": "Combien de developpeurs travaillent sur le projet ?",
+      "source": "DORA/Accelerate — la taille d'equipe affecte les pratiques (review, CI/CD, ownership). Note : n'affecte PAS le choix de stack (TypeScript full-stack reste optimal quelle que soit la taille) mais affecte les pratiques recommandees.",
+      "options": [
+        {
+          "label": "1 a 5 developpeurs",
+          "criteria": "Tout le monde touche a tout. Pas d'equipes separees backend/frontend.",
+          "sets": { "team_size": "small" },
+          "deduced_tech": "Equipe polyvalente — les pratiques recommandees sont legeres (review par 1 personne, CI simple).",
+          "next": "team-experience"
+        },
+        {
+          "label": "5 a 20 developpeurs",
+          "criteria": "Debut de specialisation. Possible d'avoir des sous-equipes.",
+          "sets": { "team_size": "medium" },
+          "deduced_tech": "Equipe structuree — CODEOWNERS, reviews croisees, CI plus stricte.",
+          "next": "team-experience"
+        },
+        {
+          "label": "Plus de 20 developpeurs",
+          "criteria": "Equipes separees (backend, frontend, infra). Process formalises.",
+          "sets": { "team_size": "large" },
+          "deduced_tech": "Equipes specialisees — architecture microservices possible, governance plus formelle.",
+          "next": "team-experience"
+        },
+        {
+          "label": "Je suis seul",
+          "sets": { "team_size": "solo" },
+          "deduced_tech": "Solo — simplicite maximale, automatiser au max pour compenser.",
+          "next": "team-experience"
+        },
+        {
+          "label": "Je ne sais pas / je veux le mieux",
+          "default_recommendation": "La taille d'equipe n'affecte pas la stack recommandee — elle affecte les pratiques (code review, CI, ownership). Le guide adaptera les recos de pratiques.",
+          "sets": { "team_size": "small" },
           "next": "team-experience"
         }
       ]
