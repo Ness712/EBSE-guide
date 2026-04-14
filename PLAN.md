@@ -280,6 +280,58 @@ Response: {
 **Livrable** : profil optimal source et verifie
 **Critere de completion** : 2 agents independants convergent sur la stack optimale
 
+### Phase B2 — Pratiques d'ingenierie manquantes (EBSE)
+
+**Action** : ajouter les decisions de pratiques/process que le guide ne couvre pas encore
+**Methode** : PICO par decision, double extraction 2 agents separes, GRADE
+**Decisions a couvrir** :
+
+| Categorie | Decision |
+|-----------|----------|
+| **Organisation projet** | Structure de dossiers (archi fichiers) |
+| **Organisation projet** | Monorepo vs polyrepo |
+| **Gestion des issues** | Workflow issues (GitHub Issues, Linear, Jira) |
+| **Gestion du feedback** | Collecte feedback utilisateur/testeur |
+| **Documentation** | Quoi documenter, ou, comment (README, ADR, Storybook) |
+| **Onboarding** | Guide d'onboarding nouveau dev |
+| **Definition of done** | Criteres pour considerer une tache finie |
+| **Release management** | Process de release (semantic-release, changelog) |
+| **Code ownership** | CODEOWNERS file, qui review quoi |
+| **Gestion des environnements** | Workflow dev/staging/prod |
+| **Analytics** | Mesure comportement utilisateur (PostHog, Plausible) |
+| **Error monitoring UX** | Session replay, heatmaps |
+
+**Critere de completion** : chaque pratique sourcee via EBSE, double extraction
+
+### Phase B3 — Librairies UI granulaires (EBSE)
+
+**Action** : pour chaque besoin UI courant, trouver la meilleure librairie
+**Methode** : PICO par besoin, double extraction, GRADE
+**Decisions a couvrir** :
+
+| Besoin UI | PICO I (intervention evaluee) |
+|-----------|-------------------------------|
+| Panels redimensionnables | react-resizable-panels vs alternatives |
+| Drag and drop | dnd-kit vs react-beautiful-dnd vs alternatives |
+| Tables tri/filtre/pagination | @tanstack/react-table vs AG Grid vs alternatives |
+| Listes virtualisees (perf) | @tanstack/react-virtual vs react-window |
+| Data fetching + cache | @tanstack/react-query vs SWR vs alternatives |
+| Toast / notifications | sonner vs react-hot-toast vs alternatives |
+| Editeur rich text | TipTap vs Lexical vs Plate vs alternatives |
+| Command palette | cmdk vs alternatives |
+| Date picker | react-day-picker vs alternatives |
+| File upload | react-dropzone vs alternatives |
+| Icones | lucide-react vs heroicons vs alternatives |
+| Keyboard shortcuts | react-hotkeys-hook vs alternatives |
+| PDF viewer | react-pdf vs alternatives |
+| Markdown editor | MDXEditor vs alternatives |
+| URL state management | nuqs vs alternatives |
+| Image cropping | react-image-crop vs alternatives |
+
+**Note** : ces librairies sont FRONTEND-SPECIFIC (React). Si le guide couvre Vue/Angular/Svelte, des variantes sont necessaires.
+
+**Critere de completion** : chaque besoin UI a une reco sourcee, GRADE, double extraction
+
 ### Phase D — Convertir en JSON structure
 
 **Action** : transformer les 94 pages markdown + variantes en fichiers JSON
@@ -342,15 +394,17 @@ L'app tourne en local via `pnpm dev`. Le deploiement web sera fait plus tard si 
 
 ## 7. CE QUI RESTE A FAIRE (nouveau contenu)
 
-| Element | Travail | Methode |
-|---------|---------|---------|
-| Variantes NestJS pour ~40 pages | Recherche EBSE | Double extraction |
-| Variantes Django pour ~40 pages | Recherche EBSE | Double extraction |
-| Chemin optimal (stack sans contrainte) | Recherche EBSE | Double extraction |
-| Conversion 94 pages → JSON | Technique | Script + verif |
-| Application web | Developpement | Suivre notre guide |
-| API | Developpement | Serverless |
-| Tests | Developpement | Vitest + Playwright |
+| Element | Travail | Methode | Statut |
+|---------|---------|---------|--------|
+| Variantes NestJS pour ~26 pages | Recherche EBSE | Double extraction | ✓ FAIT (batches 9-11) |
+| Variantes Django pour ~26 pages | Recherche EBSE | Double extraction | ✓ FAIT (batches 9-11) |
+| Chemin optimal (stack sans contrainte) | Recherche EBSE | Double extraction | ✓ FAIT (batch 12) |
+| Pratiques d'ingenierie (~12 decisions) | Recherche EBSE | Double extraction | A FAIRE (Phase B2) |
+| Librairies UI granulaires (~16 decisions) | Recherche EBSE | Double extraction | A FAIRE (Phase B3) |
+| Conversion en JSON | Technique | Script + verif | A FAIRE (Phase D) |
+| Application web | Developpement | Suivre notre guide | A FAIRE (Phase E) |
+| API | Developpement | Serverless/static | A FAIRE (Phase F) |
+| Tests | Developpement | Vitest + Playwright | A FAIRE (Phase E) |
 
 ---
 
