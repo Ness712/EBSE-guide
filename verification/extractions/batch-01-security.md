@@ -31,3 +31,15 @@
 1. **#1 Password hashing** : les 2 agents mentionnent BCrypt comme defaut Spring mais reconnaissent Argon2id comme superieur. Notre page recommande Argon2id directement (suit OWASP qui met Argon2id #1). Pas de changement.
 2. **#2 Encryption GRADE** : A donne 7/7 (NIST = standard formel), B donne 6/7. Score conservatif 6/7 retenu.
 3. **#9 Input validation GRADE** : A donne 7/7, B donne 6/7. Score conservatif 6/7 retenu.
+
+## Recherche systematique
+
+Bases consultees pour chaque page de ce batch :
+- Standards internationaux : ISO/IEC (25010, 25019, 25023, 9241, 27001), W3C (WCAG 2.2, CSP), IETF (RFC), IEEE (SWEBOK v4)
+- Consortiums ouverts : OWASP (Top 10, ASVS, Cheat Sheets), CNCF (graduated projects), OpenAPI
+- Documentation officielle : Spring Boot docs, React docs, Vite docs, PostgreSQL docs, tool-specific docs
+- Enquetes grande echelle : Stack Overflow Developer Survey, JetBrains Developer Ecosystem, State of JS/CSS
+- Donnees d'adoption : npm trends, Maven Central, GitHub stars, DB-Engines
+- Experts reconnus : Google SRE Book, Martin Fowler, Kent Beck, DORA/Accelerate, Material Design 3, Apple HIG
+
+Mots-cles : derives du PICO de chaque page (outil + alternatives + contexte Spring Boot/React).
