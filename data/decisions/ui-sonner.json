@@ -1,0 +1,23 @@
+{
+  "id": "ui-sonner",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour les toast notifications ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "toast", "notifications", "feedback"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "sonner",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add sonner",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "sonner docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "ui-tanstack-react-virtual",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour la virtualisation de listes longues ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "virtualization", "performance", "list"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "@tanstack/react-virtual",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @tanstack/react-virtual",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "TanStack Virtual docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

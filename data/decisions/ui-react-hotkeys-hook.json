@@ -1,0 +1,23 @@
+{
+  "id": "ui-react-hotkeys-hook",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour les raccourcis clavier ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "keyboard", "shortcuts", "hotkeys", "accessibility"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "react-hotkeys-hook",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-hotkeys-hook",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "react-hotkeys-hook docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

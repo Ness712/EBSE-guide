@@ -86,22 +86,39 @@ export function Configurator({ onComplete }: ConfiguratorProps) {
       </div>
 
       <div className="space-y-3">
-        {currentNode.options?.map((option, i) => (
-          <button
-            key={i}
-            onClick={() => handleSelect(option)}
-            className="w-full rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-primary hover:bg-card/80"
-          >
-            <div className="font-medium">{option.label}</div>
-            {option.description && (
-              <div className="mt-1 text-sm text-muted">{option.description}</div>
-            )}
-          </button>
-        ))}
+        {currentNode.options?.map((option, i) => {
+          const opt = option as unknown as Record<string, unknown>;
+          const isDefault = !!opt.default_recommendation;
+          return (
+            <button
+              key={i}
+              onClick={() => handleSelect(option)}
+              className={`w-full rounded-lg border p-4 text-left transition-colors hover:border-primary hover:bg-card/80 ${isDefault ? 'border-primary/40 bg-primary/5' : 'border-border bg-card'}`}
+            >
+              <div className="font-medium">
+                {option.label}
+                {isDefault && <span className="ml-2 text-xs text-primary">(recommandé EBSE)</span>}
+              </div>
+              {(opt.criteria as string) && (
+                <div className="mt-1 text-sm text-muted">{opt.criteria as string}</div>
+              )}
+              {(opt.deduced_tech as string) && (
+                <div className="mt-2 rounded bg-background px-3 py-1.5 text-xs text-muted-foreground">
+                  💡 Le guide choisit : {opt.deduced_tech as string}
+                </div>
+              )}
+              {isDefault && (
+                <div className="mt-1 text-xs text-primary/80">
+                  {opt.default_recommendation as string}
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className="text-xs text-muted">
-        Étape {history.length + 1} · Chaque question est sourcée via EBSE
+        Étape {history.length + 1} · Chaque question sourcée EBSE · Rien d'inventé
       </div>
     </div>
   );

@@ -1,0 +1,23 @@
+{
+  "id": "ui-nuqs",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour la gestion d'etat dans l'URL ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "url", "state-management", "query-params"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "nuqs",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add nuqs",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "nuqs docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

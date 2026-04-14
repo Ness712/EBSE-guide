@@ -1,0 +1,23 @@
+{
+  "id": "ui-react-pdf",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour afficher des PDF ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "pdf", "viewer", "document"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "react-pdf",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-pdf",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "react-pdf docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

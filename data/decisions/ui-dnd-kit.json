@@ -1,0 +1,23 @@
+{
+  "id": "ui-dnd-kit",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour le drag and drop ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "drag-and-drop", "dnd", "sortable"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "@dnd-kit/core",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "dnd-kit docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

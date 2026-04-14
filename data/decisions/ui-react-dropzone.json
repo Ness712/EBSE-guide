@@ -1,0 +1,23 @@
+{
+  "id": "ui-react-dropzone",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour l'upload de fichiers par drag and drop ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "file-upload", "dropzone", "drag-and-drop"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "react-dropzone",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-dropzone",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "react-dropzone docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "id": "web-mobile-strategy",
+  "domain": "architecture",
+  "question": "Comment rendre une web app accessible sur mobile ?",
+  "depends_on": [],
+  "tags": ["mobile", "pwa", "capacitor", "react-native", "architecture"],
+  "classification": "mixed",
+  "universal": {
+    "principles": [
+      {
+        "text": "Commencer par PWA, upgrader vers Capacitor si app store necessaire, React Native seulement si mobile = plateforme principale",
+        "grade": 6,
+        "level": "RECOMMANDE",
+        "sources": [
+          { "name": "web.dev PWA docs", "pyramid": 3, "year": 2026 },
+          { "name": "Can I Use service worker 97%", "pyramid": 4, "year": 2026 },
+          { "name": "vite-plugin-pwa 3M+ dl/sem", "pyramid": 4, "year": 2026 }
+        ]
+      },
+      {
+        "text": "Chaque phase s'ajoute a la precedente sans rework : responsive → PWA → Capacitor → React Native",
+        "grade": 6,
+        "level": "RECOMMANDE",
+        "sources": [
+          { "name": "web.dev PWA docs", "pyramid": 3, "year": 2026 },
+          { "name": "Capacitor docs", "pyramid": 3, "year": 2026 }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "pwa": {
+      "condition": "Acces mobile leger depuis le navigateur",
+      "choice": "PWA (Progressive Web App) avec service worker + manifest",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "details": "Ajouter un service worker + manifest a l'app React existante. Zero nouvelle codebase. Installation home screen 97%+, offline via Service Worker, push notifications iOS 16.4+/Android/Chrome.",
+      "sources": [
+        { "name": "web.dev PWA docs", "pyramid": 3, "year": 2026 },
+        { "name": "Can I Use service worker 97%", "pyramid": 4, "year": 2026 },
+        { "name": "vite-plugin-pwa 3M+ dl/sem", "pyramid": 4, "year": 2026 }
+      ]
+    },
+    "capacitor": {
+      "condition": "App store obligatoire OU besoin d'APIs natives (camera, filesystem, push natif)",
+      "choice": "Capacitor pour wrapper l'app web en natif",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "details": "Reutilise 95%+ du code existant. Ajoute un shell natif pour l'app store + acces APIs natives.",
+      "sources": [
+        { "name": "Capacitor docs", "pyramid": 3, "year": 2026 },
+        { "name": "Ionic blog comparaisons", "pyramid": 5, "year": 2026 },
+        { "name": "SO Survey ~5% adoption mobile", "pyramid": 4, "year": 2026 }
+      ]
+    },
+    "react-native": {
+      "condition": "Mobile est la plateforme principale avec animations complexes, gestures lourdes, performance native critique",
+      "choice": "React Native avec codebase separee",
+      "grade": 3,
+      "level": "BONNE PRATIQUE",
+      "details": "Necessite une codebase separee. Les composants React web ne sont PAS reutilisables. Cout de dev et maintenance eleve (2 codebases).",
+      "sources": [
+        { "name": "reactnative.dev docs", "pyramid": 3, "year": 2026 },
+        { "name": "State of JS 2024 — haute satisfaction mais haute complexite", "pyramid": 4, "year": 2024 }
+      ]
+    }
+  }
+}

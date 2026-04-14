@@ -3,7 +3,7 @@
 **Version** : 0.1 (en construction)
 **Date** : 2026-04
 **Methode** : Evidence-Based Software Engineering (EBSE)
-**Couverture** : 94 recommandations techniques organisees par domaine
+**Couverture** : 123 recommandations techniques organisees par domaine
 
 ## Comment utiliser ce guide
 
@@ -33,14 +33,14 @@ Combinaisons completes, coherentes et validees par type de projet.
 
 ## Partie 2 — Recommandations par domaine
 
-94 recommandations organisees en 13 domaines.
+123 recommandations organisees en 14 domaines.
 
 ### A. Accessibilite (2)
 
 - [Internationalisation (i18n)](02-domains/accessibility/i18n.md)
 - [Niveau WCAG cible](02-domains/accessibility/wcag-level.md)
 
-### B. Architecture (11)
+### B. Architecture (12)
 
 - [Protocole API (REST/GraphQL/gRPC)](02-domains/architecture/api-protocol.md)
 - [Versioning d'API](02-domains/architecture/api-versioning.md)
@@ -53,6 +53,7 @@ Combinaisons completes, coherentes et validees par type de projet.
 - [Strategie de rendu (SSR/CSR/SSG)](02-domains/architecture/rendering-strategy.md)
 - [Scalabilite](02-domains/architecture/scaling.md)
 - [Gestion d'etat (Zustand)](02-domains/architecture/state-management.md)
+- [Strategie web mobile](02-domains/architecture/web-mobile-strategy.md)
 
 ### C. CI/CD & Deploiement (5)
 
@@ -120,12 +121,24 @@ Combinaisons completes, coherentes et validees par type de projet.
 - [JVM tuning](02-domains/performance/jvm-tuning.md)
 - [Tests de performance](02-domains/performance/performance-testing.md)
 
-### I. Gestion de projet (4)
+### I. Gestion de projet (16)
 
+- [Analytics](02-domains/project/analytics.md)
 - [Strategie de branching](02-domains/project/branching.md)
+- [Code ownership](02-domains/project/code-ownership.md)
 - [Conventions de commit](02-domains/project/commit-conventions.md)
+- [Definition of done](02-domains/project/definition-of-done.md)
 - [Gestion des dependances](02-domains/project/dependencies.md)
+- [Documentation](02-domains/project/documentation.md)
+- [Gestion des environnements](02-domains/project/environment-management.md)
+- [Feedback collection](02-domains/project/feedback-collection.md)
+- [Structure des dossiers](02-domains/project/folder-structure.md)
+- [Issue tracking](02-domains/project/issue-tracking.md)
+- [Monorepo vs polyrepo](02-domains/project/monorepo-vs-polyrepo.md)
+- [Onboarding](02-domains/project/onboarding.md)
+- [Release management](02-domains/project/release-management.md)
 - [Format des requirements](02-domains/project/requirements-format.md)
+- [Session replay](02-domains/project/session-replay.md)
 
 ### J. Fiabilite & Resilience (8)
 
@@ -167,6 +180,25 @@ Combinaisons completes, coherentes et validees par type de projet.
 - [Mutation testing](02-domains/testing/mutation-testing.md)
 - [Donnees de test](02-domains/testing/test-data.md)
 - [Tests unitaires](02-domains/testing/unit-tests.md)
+
+### N. Librairies UI (React) (16)
+
+- [Command palette (cmdk)](02-domains/design/libs/cmdk.md)
+- [Drag and drop (dnd-kit)](02-domains/design/libs/dnd-kit.md)
+- [Icones (lucide-react)](02-domains/design/libs/lucide-react.md)
+- [URL state management (nuqs)](02-domains/design/libs/nuqs.md)
+- [Date picker (react-day-picker)](02-domains/design/libs/react-day-picker.md)
+- [File upload (react-dropzone)](02-domains/design/libs/react-dropzone.md)
+- [Image cropping (react-easy-crop)](02-domains/design/libs/react-easy-crop.md)
+- [Raccourcis clavier (react-hotkeys-hook)](02-domains/design/libs/react-hotkeys-hook.md)
+- [PDF viewer (react-pdf)](02-domains/design/libs/react-pdf.md)
+- [Panels redimensionnables (react-resizable-panels)](02-domains/design/libs/react-resizable-panels.md)
+- [Toast notifications (sonner)](02-domains/design/libs/sonner.md)
+- [Data fetching et cache (@tanstack/react-query)](02-domains/design/libs/tanstack-react-query.md)
+- [Tables avec tri, filtre et pagination (@tanstack/react-table)](02-domains/design/libs/tanstack-react-table.md)
+- [Listes virtualisees (@tanstack/react-virtual)](02-domains/design/libs/tanstack-react-virtual.md)
+- [Editeur rich text (tiptap)](02-domains/design/libs/tiptap.md)
+- [Editeur Markdown (tiptap + react-markdown)](02-domains/design/libs/tiptap-markdown.md)
 
 ---
 

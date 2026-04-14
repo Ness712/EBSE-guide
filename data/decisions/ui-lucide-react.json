@@ -1,0 +1,23 @@
+{
+  "id": "ui-lucide-react",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour les icones ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "icons", "svg", "design-system"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "lucide-react",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add lucide-react",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "Lucide docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}

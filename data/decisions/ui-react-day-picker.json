@@ -1,0 +1,23 @@
+{
+  "id": "ui-react-day-picker",
+  "domain": "ui-libraries",
+  "question": "Quel outil pour la selection de dates ?",
+  "depends_on": ["frontend-framework"],
+  "tags": ["ui", "react", "date-picker", "calendar", "forms"],
+  "classification": "stack-specific",
+  "universal": {
+    "principles": []
+  },
+  "variants": {
+    "react": {
+      "recommendation": "react-day-picker",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add react-day-picker date-fns",
+      "sources": [
+        {"name": "npm trends", "pyramid": 4, "year": 2026},
+        {"name": "react-day-picker docs", "pyramid": 5, "year": 2026}
+      ]
+    }
+  }
+}
