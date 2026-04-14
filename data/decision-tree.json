@@ -1,78 +1,84 @@
 {
-  "version": "2026.04.3",
-  "methodology_note": "Ordre: plateforme → type projet → echelle → approche → langage → framework → BDD → budget. Le langage est la decision racine technique (SWEBOK v4 + batch 15). La plateforme est la decision racine globale (contrainte technique du runtime).",
+  "version": "2026.04.4",
+  "methodology_note": "Chaque question a des criteres d'aide a la decision + une option 'je ne sais pas' avec reco par defaut EBSE. L'utilisateur n'a jamais besoin de deviner.",
   "nodes": {
     "start": {
       "type": "choice",
       "question": "Quelle plateforme ?",
-      "source": "Contrainte technique : chaque plateforme a son propre runtime, langage et ecosysteme. Cette decision determine tout le reste.",
+      "source": "Contrainte technique : chaque plateforme a son propre runtime et ecosysteme.",
       "options": [
         {
           "label": "Web (navigateur)",
-          "description": "SPA, site, API, dashboard — fonctionne dans un navigateur.",
+          "criteria": "Tes utilisateurs accedent depuis un navigateur (Chrome, Firefox, Safari) sur PC ou mobile.",
           "sets": { "platform": "web" },
           "next": "web-mobile-need"
         },
         {
           "label": "Mobile natif Android",
-          "description": "App Android native (Kotlin/Java).",
+          "criteria": "Tu developpes exclusivement pour Android (Kotlin/Java).",
           "sets": { "platform": "android" },
           "next": "not-covered-yet"
         },
         {
           "label": "Mobile natif iOS",
-          "description": "App iOS native (Swift).",
+          "criteria": "Tu developpes exclusivement pour iOS (Swift).",
           "sets": { "platform": "ios" },
           "next": "not-covered-yet"
         },
         {
           "label": "Mobile cross-platform",
-          "description": "Une seule codebase pour Android + iOS (Flutter, React Native, KMP).",
+          "criteria": "Tu veux une app Android + iOS avec une seule codebase (Flutter, React Native).",
           "sets": { "platform": "mobile-cross" },
           "next": "not-covered-yet"
         },
         {
-          "label": "Web + Mobile",
-          "description": "App web qui doit aussi fonctionner comme app mobile.",
-          "sets": { "platform": "web" },
-          "next": "web-mobile-need"
-        },
-        {
           "label": "Desktop",
-          "description": "App desktop (Electron, Tauri).",
+          "criteria": "Tu veux une app installable sur Windows/Mac/Linux (Electron, Tauri).",
           "sets": { "platform": "desktop" },
           "next": "not-covered-yet"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "En cas de doute, le web est le choix par defaut : accessible partout, pas d'installation, fonctionne sur mobile via navigateur.",
+          "default_recommendation": "Web — accessible partout sans installation (EBSE default)",
+          "sets": { "platform": "web" },
+          "next": "web-mobile-need"
         }
       ]
     },
     "not-covered-yet": {
       "type": "result",
-      "description": "Cette plateforme n'est pas encore couverte par le guide EBSE. La recherche (PICO, double extraction, GRADE) n'a pas ete faite pour cette plateforme. Le guide sera etendu progressivement — chaque plateforme passe par le meme processus EBSE rigoureux.",
-      "sets": {
-        "status": "not-covered"
-      }
+      "description": "Cette plateforme n'est pas encore couverte par le guide EBSE. La recherche (PICO, double extraction, GRADE) n'a pas ete faite. Le guide sera etendu progressivement.",
+      "sets": { "status": "not-covered" }
     },
     "web-mobile-need": {
       "type": "choice",
       "question": "Ton app web doit-elle fonctionner sur mobile ?",
-      "source": "Le besoin mobile change les decisions techniques : PWA, Capacitor, responsive-only.",
+      "source": "Le besoin mobile determine si tu as besoin de PWA, Capacitor, ou responsive simple.",
       "options": [
         {
           "label": "Non, desktop/navigateur suffit",
-          "description": "Responsive design classique.",
+          "criteria": "Tes utilisateurs sont sur PC/laptop. L'acces mobile n'est pas un besoin.",
           "sets": { "mobile_need": "none" },
           "next": "approach"
         },
         {
           "label": "Oui, acces mobile leger (navigateur mobile)",
-          "description": "L'app fonctionne bien sur mobile via le navigateur. Responsive + eventuellement PWA.",
+          "criteria": "Tes utilisateurs ouvrent l'app depuis leur telephone via un lien ou un favori. Pas besoin d'etre dans l'App Store.",
           "sets": { "mobile_need": "pwa" },
           "next": "approach"
         },
         {
           "label": "Oui, presence app store obligatoire",
-          "description": "L'app doit etre installee depuis l'App Store / Play Store.",
+          "criteria": "Tes utilisateurs DOIVENT trouver l'app dans l'App Store / Play Store (politique entreprise, distribution B2C, marketing).",
           "sets": { "mobile_need": "app-store" },
+          "next": "approach"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "En cas de doute, commence par PWA (GRADE 6/7). Tu pourras passer a l'app store plus tard via Capacitor sans rework majeur.",
+          "default_recommendation": "PWA — tu pourras toujours upgrader plus tard (batch 16 EBSE)",
+          "sets": { "mobile_need": "pwa" },
           "next": "approach"
         }
       ]
@@ -83,14 +89,21 @@
       "options": [
         {
           "label": "Je veux le MIEUX possible, je m'adapte",
-          "description": "Le guide determine LA stack optimale selon les sources EBSE.",
+          "criteria": "Tu veux LA stack optimale selon les sources, peu importe le langage ou le cout d'apprentissage.",
           "sets": { "approach": "optimal" },
           "next": "project-type"
         },
         {
           "label": "J'ai des contraintes (equipe, langage, budget...)",
-          "description": "Le guide s'adapte a ton contexte.",
+          "criteria": "Tu as une equipe existante, un langage deja maitrise, ou un budget limite.",
           "sets": { "approach": "constrained" },
+          "next": "project-type"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "Si tu pars de zero sans equipe existante, choisis 'le mieux possible'. Si tu as deja une equipe, choisis 'contraintes'.",
+          "default_recommendation": "Choisis selon ta situation — pas de defaut universel",
+          "sets": {},
           "next": "project-type"
         }
       ]
@@ -98,23 +111,77 @@
     "project-type": {
       "type": "choice",
       "question": "Quel type de projet web ?",
-      "source": "SWEBOK v4 Software Architecture — project type affects architectural decisions",
+      "source": "SWEBOK v4 Software Architecture — le type de projet affecte les decisions architecturales.",
       "options": [
-        { "label": "Web app SPA (dashboard, outil, plateforme)", "sets": { "project_type": "spa" }, "next": "project-scale" },
-        { "label": "Site contenu (blog, docs, marketing)", "sets": { "project_type": "content" }, "next": "project-scale" },
-        { "label": "API only (backend pour mobile ou autre frontend)", "sets": { "project_type": "api-only" }, "next": "project-scale" },
-        { "label": "App temps-reel (chat, collaboration, streaming)", "sets": { "project_type": "realtime" }, "next": "project-scale" }
+        {
+          "label": "Web app SPA (dashboard, outil, plateforme)",
+          "criteria": "App interactive avec navigation client-side, etat complexe, plusieurs vues. Ex: Notion, Figma, Trello.",
+          "sets": { "project_type": "spa" },
+          "next": "project-scale"
+        },
+        {
+          "label": "Site contenu (blog, docs, marketing)",
+          "criteria": "Contenu principalement statique, SEO important, peu d'interactivite. Ex: blog, documentation, landing page.",
+          "sets": { "project_type": "content" },
+          "next": "project-scale"
+        },
+        {
+          "label": "API only (backend pour mobile ou autre frontend)",
+          "criteria": "Pas de frontend web — juste une API REST/GraphQL consommee par un autre client (mobile, desktop, tiers).",
+          "sets": { "project_type": "api-only" },
+          "next": "project-scale"
+        },
+        {
+          "label": "App temps-reel (chat, collaboration, streaming)",
+          "criteria": "Communication bidirectionnelle en temps reel. Ex: chat, editeur collaboratif, live dashboard.",
+          "sets": { "project_type": "realtime" },
+          "next": "project-scale"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "La plupart des projets web sont des SPA. En cas de doute, choisis SPA.",
+          "default_recommendation": "SPA — le type le plus courant (SO Survey)",
+          "sets": { "project_type": "spa" },
+          "next": "project-scale"
+        }
       ]
     },
     "project-scale": {
       "type": "choice",
       "question": "Quelle echelle visee ?",
-      "source": "Twelve-Factor App + Google SRE — scale affects infrastructure decisions",
+      "source": "Twelve-Factor App + Google SRE — l'echelle affecte les decisions d'infrastructure.",
       "options": [
-        { "label": "Local / interne (< 100 utilisateurs)", "sets": { "scale": "local" }, "next": "check-approach" },
-        { "label": "Startup / PME (100 - 10 000 utilisateurs)", "sets": { "scale": "startup" }, "next": "check-approach" },
-        { "label": "Scale (10 000 - 1 000 000 utilisateurs)", "sets": { "scale": "scale" }, "next": "check-approach" },
-        { "label": "Mondial (1M+ utilisateurs, multi-region)", "sets": { "scale": "global" }, "next": "check-approach" }
+        {
+          "label": "Local / interne (< 100 utilisateurs)",
+          "criteria": "Outil interne, prototype, projet personnel. Pas besoin de scalabilite.",
+          "sets": { "scale": "local" },
+          "next": "check-approach"
+        },
+        {
+          "label": "Startup / PME (100 - 10 000 utilisateurs)",
+          "criteria": "Produit lance avec de vrais utilisateurs. Besoin de fiabilite mais pas de scale massive.",
+          "sets": { "scale": "startup" },
+          "next": "check-approach"
+        },
+        {
+          "label": "Scale (10 000 - 1 000 000 utilisateurs)",
+          "criteria": "Produit en croissance, besoin de CDN, caching, monitoring avance.",
+          "sets": { "scale": "scale" },
+          "next": "check-approach"
+        },
+        {
+          "label": "Mondial (1M+ utilisateurs, multi-region)",
+          "criteria": "Produit global, multi-region, haute disponibilite critique, CDN mondial.",
+          "sets": { "scale": "global" },
+          "next": "check-approach"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "Commence par 'Startup'. Tu pourras scaler plus tard — les decisions de base sont les memes.",
+          "default_recommendation": "Startup — les bonnes pratiques sont les memes, le scaling vient apres",
+          "sets": { "scale": "startup" },
+          "next": "check-approach"
+        }
       ]
     },
     "check-approach": {
@@ -122,40 +189,43 @@
       "condition": "approach",
       "routes": {
         "optimal": "optimal-result",
-        "constrained": "language-choice"
+        "constrained": "language-choice",
+        "": "language-choice"
       }
     },
     "language-choice": {
       "type": "choice",
       "question": "Quel langage maitrise ton equipe ?",
-      "source": "SWEBOK v4 SE Economics — productivity depends on language mastery. Le langage determine le backend. Le frontend est TOUJOURS TypeScript/JS (contrainte navigateur W3C/WHATWG). Batch 15 double extraction confirme language-first.",
+      "source": "SWEBOK v4 SE Economics — la productivite depend de la maitrise du langage. Le langage determine le backend. Le frontend est TOUJOURS TypeScript/JS (contrainte navigateur W3C). Batch 15 confirme language-first.",
       "options": [
         {
           "label": "TypeScript (full-stack single-language)",
-          "description": "NestJS back + React front. Types partages DB→UI. Stack optimale EBSE.",
+          "criteria": "Ton equipe maitrise JavaScript/TypeScript. Tu veux le meme langage back + front pour partager les types.",
           "sets": { "language": "typescript", "backend": "typescript-nestjs", "backend_label": "NestJS (TypeScript)", "polyglot": "false" },
           "next": "frontend-choice"
         },
         {
           "label": "Java (backend Spring Boot + frontend TypeScript)",
-          "description": "Stack polyglotte. Ecosysteme enterprise mature.",
+          "criteria": "Ton equipe maitrise Java. Stack polyglotte : Java back + TypeScript front.",
           "sets": { "language": "java", "backend": "java-spring-boot", "backend_label": "Spring Boot (Java 21)", "polyglot": "true" },
           "next": "frontend-choice"
         },
         {
           "label": "Python (backend Django + frontend TypeScript)",
-          "description": "Stack polyglotte. MVP rapide, batteries incluses.",
+          "criteria": "Ton equipe maitrise Python. Stack polyglotte : Python back + TypeScript front.",
           "sets": { "language": "python", "backend": "python-django", "backend_label": "Django (Python)", "polyglot": "true" },
           "next": "frontend-choice"
         },
         {
           "label": "C# (backend ASP.NET + frontend TypeScript)",
-          "description": "Stack polyglotte. Performance top, ecosysteme Microsoft.",
+          "criteria": "Ton equipe maitrise C#/.NET. Stack polyglotte : C# back + TypeScript front.",
           "sets": { "language": "csharp", "backend": "csharp-aspnet", "backend_label": "ASP.NET Core (C#)", "polyglot": "true" },
           "next": "frontend-choice"
         },
         {
-          "label": "Aucun / je veux le mieux",
+          "label": "Aucun / je ne sais pas / je veux le mieux",
+          "criteria": "Si tu n'as pas de langage impose, le guide recommande TypeScript full-stack (stack optimale EBSE batch 12).",
+          "default_recommendation": "TypeScript full-stack — stack optimale EBSE, 2 agents convergent (batch 12)",
           "sets": { "approach": "optimal" },
           "next": "optimal-result"
         }
@@ -164,34 +234,95 @@
     "frontend-choice": {
       "type": "choice",
       "question": "Framework frontend (TypeScript/JavaScript) ?",
-      "source": "SO Survey 2025 + State of JS 2025. Le frontend web est TOUJOURS TypeScript/JS (W3C/WHATWG HTML spec). React #1 adoption 44.7% + satisfaction 83%.",
+      "source": "SO Survey 2025 + State of JS 2025. Le frontend web est TOUJOURS TypeScript/JS (W3C HTML spec). React #1 adoption 44.7% + satisfaction 83%.",
       "options": [
-        { "label": "React (recommande — GRADE 6/7)", "sets": { "frontend": "react", "frontend_label": "React 19 + TypeScript" }, "next": "database-choice" },
-        { "label": "Vue.js", "sets": { "frontend": "vue", "frontend_label": "Vue 3 + TypeScript" }, "next": "database-choice" },
-        { "label": "Angular", "sets": { "frontend": "angular", "frontend_label": "Angular + TypeScript" }, "next": "database-choice" },
-        { "label": "Svelte", "sets": { "frontend": "svelte", "frontend_label": "Svelte 5 + TypeScript" }, "next": "database-choice" }
+        {
+          "label": "React (recommande — GRADE 6/7)",
+          "criteria": "Le plus grand ecosysteme (shadcn/ui, React Query, etc.), plus grand hiring pool. Choix par defaut.",
+          "sets": { "frontend": "react", "frontend_label": "React 19 + TypeScript" },
+          "next": "database-choice"
+        },
+        {
+          "label": "Vue.js",
+          "criteria": "Courbe d'apprentissage plus douce. Bon si l'equipe prefere les templates au JSX.",
+          "sets": { "frontend": "vue", "frontend_label": "Vue 3 + TypeScript" },
+          "next": "database-choice"
+        },
+        {
+          "label": "Angular",
+          "criteria": "Framework tres structure (opinionne). Adapte aux grandes equipes enterprise.",
+          "sets": { "frontend": "angular", "frontend_label": "Angular + TypeScript" },
+          "next": "database-choice"
+        },
+        {
+          "label": "Svelte",
+          "criteria": "Satisfaction la plus haute (90%+) mais ecosysteme plus petit. Pour equipes experimentees.",
+          "sets": { "frontend": "svelte", "frontend_label": "Svelte 5 + TypeScript" },
+          "next": "database-choice"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "React est le choix par defaut (GRADE 6/7) — plus grand ecosysteme, plus grand hiring pool, plus de ressources d'apprentissage.",
+          "default_recommendation": "React — #1 adoption + satisfaction (SO Survey 2025, State of JS 2025)",
+          "sets": { "frontend": "react", "frontend_label": "React 19 + TypeScript" },
+          "next": "database-choice"
+        }
       ]
     },
     "database-choice": {
       "type": "choice",
       "question": "Type de base de donnees ?",
-      "source": "SO Survey 2025 — PostgreSQL #1 adoption 55.6% + satisfaction 65.5%",
+      "source": "SO Survey 2025 — PostgreSQL #1 adoption 55.6% + admiration 65.5%",
       "options": [
-        { "label": "Relationnelle (recommande : PostgreSQL — GRADE 5/7)", "sets": { "database": "postgresql", "database_label": "PostgreSQL" }, "next": "budget-choice" },
-        { "label": "Document (MongoDB)", "sets": { "database": "mongodb", "database_label": "MongoDB" }, "next": "budget-choice" }
+        {
+          "label": "Relationnelle (recommande : PostgreSQL — GRADE 5/7)",
+          "criteria": "Tes donnees ont des relations (utilisateurs → posts → commentaires). La majorite des apps web.",
+          "sets": { "database": "postgresql", "database_label": "PostgreSQL" },
+          "next": "budget-choice"
+        },
+        {
+          "label": "Document (MongoDB)",
+          "criteria": "Tes donnees sont non structurees ou ont un schema tres flexible (ex: CMS, logs, IoT).",
+          "sets": { "database": "mongodb", "database_label": "MongoDB" },
+          "next": "budget-choice"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "PostgreSQL dans 95% des cas. Il supporte aussi le JSON (JSONB) si tu as besoin de flexibilite.",
+          "default_recommendation": "PostgreSQL — #1 en adoption + satisfaction, supporte aussi le JSON (JSONB)",
+          "sets": { "database": "postgresql", "database_label": "PostgreSQL" },
+          "next": "budget-choice"
+        }
       ]
     },
     "budget-choice": {
       "type": "choice",
       "question": "Budget pour les outils ?",
       "options": [
-        { "label": "Open source / self-hosted uniquement (gratuit)", "sets": { "budget": "open-source" }, "next": "result" },
-        { "label": "SaaS autorise (budget disponible)", "sets": { "budget": "saas-ok" }, "next": "result" }
+        {
+          "label": "Open source / self-hosted uniquement (gratuit)",
+          "criteria": "Tu veux tout heberger toi-meme. Pas de SaaS payant (GlitchTip au lieu de Sentry, Unleash au lieu de LaunchDarkly).",
+          "sets": { "budget": "open-source" },
+          "next": "result"
+        },
+        {
+          "label": "SaaS autorise (budget disponible)",
+          "criteria": "Tu acceptes de payer pour des services (Sentry, Vercel, Auth0, etc.) si c'est le meilleur choix.",
+          "sets": { "budget": "saas-ok" },
+          "next": "result"
+        },
+        {
+          "label": "Je ne sais pas",
+          "criteria": "Commence open source. Tu pourras migrer vers SaaS plus tard si le besoin se fait sentir.",
+          "default_recommendation": "Open source — commence gratuit, upgrade si besoin",
+          "sets": { "budget": "open-source" },
+          "next": "result"
+        }
       ]
     },
     "optimal-result": {
       "type": "result",
-      "description": "Stack optimale web — determinee par EBSE (batch 12, 2 agents 100% convergence). TypeScript full-stack single-language.",
+      "description": "Stack optimale web — EBSE batch 12, 2 agents 100% convergence. TypeScript full-stack single-language. Type safety de la BDD au UI.",
       "source": "batch-12-optimal-stack.md",
       "sets": {
         "platform": "web",
