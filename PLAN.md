@@ -351,6 +351,33 @@ Response: {
   5. Tests (Vitest unit, Playwright E2E)
 **Critere de completion** : app fonctionnelle, tests verts, lint propre
 
+### Phase E2 — Profils sauvegardes
+
+**Action** : permettre de sauvegarder/charger un profil de projet
+**Fonctionnalites** :
+  - Sauvegarder les reponses au questionnaire (localStorage + export JSON)
+  - Charger un profil existant (import JSON ou selection)
+  - Profils pre-built : "Optimal", "Java/React", "NestJS/React", "Django/React"
+  - Partager un profil (export JSON → un collegue l'importe → meme guide)
+  - API : envoyer le profil JSON → recevoir les recos adaptees
+**Format profil** :
+```json
+{
+  "name": "Mon projet OLS",
+  "created": "2026-04-14",
+  "choices": {
+    "approach": "constraints",
+    "project_type": "spa",
+    "scale": "startup",
+    "backend": "java-spring-boot",
+    "frontend": "react",
+    "database": "postgresql",
+    "budget": "open-source-only"
+  }
+}
+```
+**Critere de completion** : profils sauvegardables, chargeables, exportables, importables
+
 ### Phase F — API
 
 **Action** : endpoint qui accepte les choix et retourne le guide personnalise
