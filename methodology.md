@@ -273,6 +273,34 @@ Ces clarifications resolvent les divergences observees entre reviewers (kappa ba
 - npm downloads = niveau 4 (donnees factuelles, pas d'enquete)
 - Enquete < 500 repondants = niveau 5 (trop petit pour etre representative)
 
+**Exemples de calibration concrets (pour aligner les reviewers) :**
+
+Ces exemples fixent le classement de sources courantes pour eviter les divergences entre reviewers.
+
+| Source | Niveau | Justification |
+|--------|--------|---------------|
+| NIST SP 800-63B "passwords SHALL be at least 8 characters" | **1** | Standard gouvernemental, langage normatif (SHALL) |
+| WCAG 2.2 SC 1.4.3 "contrast ratio at least 4.5:1" | **1** | W3C Recommendation, critere mesurable |
+| RGPD Article 17 "droit a l'effacement" | **1** | Loi europeenne |
+| OWASP ASVS V2.1.1 "passwords at least 12 characters" | **2** | Consortium ouvert, exigence numerotee |
+| OWASP Top 10 A03 "use parameterized queries" | **2** | Consortium ouvert, recommandation prescriptive |
+| Spring Boot docs "Logback is used for logging" (defaut) | **3** | Doc officielle, c'est le defaut auto-configure |
+| Spring Boot docs "Log4j2 is supported" (alternative) | **4** | Mention sans recommandation |
+| React docs "ESLint essential, eslint-plugin-react-hooks" | **3** | Doc officielle, mot "essential" = prescriptif |
+| Vite docs "Vitest shares vite.config" (Vite utilise Vitest) | **3** | Le framework utilise cet outil lui-meme |
+| SO Survey 2025 "PostgreSQL 55.6% adoption" | **4** | Enquete 70k repondants, donnee quantitative |
+| npm trends "Vitest 82M/mois" | **4** | Donnee factuelle d'adoption |
+| Google SRE Book "four golden signals" | **5** | Expert reconnu (une entreprise, pas un standard) |
+| Material Design 3 "8dp grid" | **5** | Design system d'une entreprise, pas un standard |
+| Martin Fowler "test pyramid" | **5** | Expert individuel reconnu |
+| Kent Beck "tests should minimize programmer waiting" | **5** | Expert individuel reconnu |
+
+**Regle de frontiere 4/5 → 3/4 (la plus critique pour le GRADE) :**
+Le score GRADE passe de [RECOMMANDE] (3-4) a [STANDARD] (5-7). La frontiere est entre 4 et 5.
+- Score de depart 2 (niveau 3-4) + convergence (+1) + grande echelle (+1) = 4 → [RECOMMANDE]
+- Score de depart 3 (niveau 2) + convergence (+1) + grande echelle (+1) = 5 → [STANDARD]
+La distinction depend du niveau de la source la PLUS HAUTE. Avec les exemples ci-dessus, cette source est clairement classable.
+
 ### Formulaire d'extraction standardise
 
 Pour CHAQUE source consultee, remplir :
