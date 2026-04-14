@@ -42,7 +42,7 @@ analytics.track('flow_completed', {
 
 | Methode | Frequence | Source |
 |---------|-----------|--------|
-| Test utilisateur (5 users) | Par feature majeure | Nielsen "5 users find 85% of issues" |
+| Test utilisateur (5 users) | Par feature majeure | Nielsen & Landauer 1993 — approximation (p=0.31), conteste par Spool 2001. Utile comme heuristique, pas comme loi universelle. |
 | Session recording (Hotjar, PostHog) | Continu | Analyse qualitative des frictions |
 | SUS score | Trimestriel | System Usability Scale (Brooke 1996) |
 

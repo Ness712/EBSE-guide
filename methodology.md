@@ -244,12 +244,34 @@ Pour chaque alternative trouvee, collecter les donnees factuelles depuis des sou
 
 | Niveau | Type de source | Exemple | Fiabilite |
 |--------|---------------|---------|-----------|
-| **1** | Standards internationaux (consensus, peer-review) | ISO/IEC, W3C WCAG, IEEE, IETF RFC | Tres haute |
+| **1** | Standards internationaux (consensus, peer-review) | ISO/IEC, W3C WCAG, IEEE, IETF RFC, lois (RGPD) | Tres haute |
 | **2** | Consortiums industrie ouverts | OWASP ASVS, CNCF, OpenAPI | Haute |
-| **3** | Documentation officielle de l'outil | react.dev, spring.io, postgresql.org/docs | Haute (pour leur propre outil) |
+| **3** | Documentation officielle du framework/outil | react.dev, spring.io, postgresql.org/docs | Haute (pour leur propre outil) |
 | **4** | Donnees empiriques grande echelle | SO Survey (70k), State of JS (20k), npm downloads | Moyenne |
 | **5** | Convergence d'experts reconnus | Fowler, Google SRE Book, Apple HIG, Material Design 3 | Moyenne (si convergent) |
 | **6** | Expert individuel, blog, tutoriel | Article Medium, video YouTube | Faible — NON UTILISE |
+
+### Clarifications pour le classement des sources (amelioration kappa)
+
+Ces clarifications resolvent les divergences observees entre reviewers (kappa batch 1 = 0.456).
+
+**Niveau 3 — "doc officielle RECOMMANDE" vs "doc officielle MENTIONNE" :**
+- Si la doc dit "nous recommandons X" ou X est le defaut auto-configure → score de depart = 2 (niveau 3 prescriptif)
+- Si la doc dit "X est supporte" sans recommandation explicite → traiter comme niveau 4 (mention, pas prescription)
+- Exemple : Spring Boot docs "Logback is used for logging" (defaut) = niveau 3 prescriptif
+- Exemple : Spring Boot docs "Log4j2 is supported" (alternative) = niveau 4 (mention)
+
+**Design systems (Material Design, Apple HIG) = niveau 5, PAS niveau 3 :**
+- Material Design est le design system de Google (une entreprise), pas un standard industriel
+- Apple HIG est le design system d'Apple (une entreprise), pas un standard industriel
+- Ils sont au niveau 5 (expert reconnu), pas au niveau 3 (doc officielle du framework utilise)
+- Exception : si le projet UTILISE Material Design comme design system (ex: Angular Material), alors c'est niveau 3
+
+**Enquetes — quel seuil pour "grande echelle" :**
+- SO Survey (~70k), JetBrains (~25k), State of JS (~20k) = niveau 4 (grande echelle)
+- Grafana Survey (~1250), Sparkbox (~1500) = niveau 4 (echelle moderee, mais donnees specifiques)
+- npm downloads = niveau 4 (donnees factuelles, pas d'enquete)
+- Enquete < 500 repondants = niveau 5 (trop petit pour etre representative)
 
 ### Formulaire d'extraction standardise
 
