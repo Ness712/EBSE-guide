@@ -2,27 +2,55 @@
   "id": "slos",
   "domain": "operations",
   "question": "Comment definir des SLOs mesurables et gerer les error budgets ?",
-  "depends_on": ["monitoring", "alerting"],
-  "tags": ["operations", "slos", "sli", "error-budget", "sre", "reliability"],
+  "depends_on": [
+    "monitoring",
+    "alerting"
+  ],
+  "tags": [
+    "operations",
+    "slos",
+    "sli",
+    "error-budget",
+    "sre",
+    "reliability"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Definir des SLOs mesurables : disponibilite >= 99.9% (8.7h downtime/an), latence P95 < 500ms, taux d'erreur < 0.1%, freshness donnees < 1 min.",
-        "grade": 2,
-        "level": "BONNE_PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Google SRE Book Ch. 4 — SLOs, error budgets, SLI definitions", "pyramid": 5, "year": 2016},
-          {"name": "ISO/IEC 25023 — mesures de qualite des systemes", "pyramid": 1, "year": 2016}
-        ]
+          {
+            "name": "Google SRE Book Ch. 4 — SLOs, error budgets, SLI definitions",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "ISO/IEC 25023 — mesures de qualite des systemes",
+            "pyramid": 1,
+            "year": 2016
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Error budget = 1 - SLO target. Si le budget est consume : gel des features, focus fiabilite. Si intact : deploiement de nouvelles fonctionnalites.",
         "grade": 2,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book Ch. 4", "pyramid": 5, "year": 2016},
-          {"name": "Google SRE Workbook Ch. 2 — implementing SLOs in practice", "pyramid": 5, "year": 2018}
+          {
+            "name": "Google SRE Book Ch. 4",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "Google SRE Workbook Ch. 2 — implementing SLOs in practice",
+            "pyramid": 5,
+            "year": 2018
+          }
         ]
       },
       {
@@ -30,7 +58,11 @@
         "grade": 2,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book Ch. 4", "pyramid": 5, "year": 2016}
+          {
+            "name": "Google SRE Book Ch. 4",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]

@@ -2,27 +2,56 @@
   "id": "api-protocol",
   "domain": "architecture",
   "question": "Quel protocole d'API utiliser pour une application web (REST, GraphQL, gRPC) ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["architecture", "api", "rest", "graphql", "grpc", "protocol"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "api",
+    "rest",
+    "graphql",
+    "grpc",
+    "protocol"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "REST comme protocole par defaut pour les web apps. 90%+ d'adoption (Postman 2024), caching HTTP natif, tooling navigateur natif (fetch).",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Fielding dissertation — REST architectural style", "pyramid": 5, "year": 2000},
-          {"name": "Postman State of APIs 2024", "pyramid": 4, "year": 2024, "quote": "REST 90%+, GraphQL 14%, gRPC 11%"},
-          {"name": "Spring Boot docs — @RestController", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Fielding dissertation — REST architectural style",
+            "pyramid": 5,
+            "year": 2000
+          },
+          {
+            "name": "Postman State of APIs 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "REST 90%+, GraphQL 14%, gRPC 11%"
+          },
+          {
+            "name": "Spring Boot docs — @RestController",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "GraphQL uniquement si donnees imbriquees complexes avec besoins variables cote frontend. Pas de caching HTTP natif, client necessaire (Apollo).",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Postman State of APIs 2024", "pyramid": 4, "year": 2024, "quote": "GraphQL ~14% adoption"}
+          {
+            "name": "Postman State of APIs 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "GraphQL ~14% adoption"
+          }
         ]
       },
       {
@@ -30,7 +59,12 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Postman State of APIs 2024", "pyramid": 4, "year": 2024, "quote": "gRPC ~11% adoption"}
+          {
+            "name": "Postman State of APIs 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "gRPC ~11% adoption"
+          }
         ]
       }
     ]
@@ -42,7 +76,11 @@
       "level": "RECOMMANDE",
       "implementation": "@RestController @RequestMapping(\"/api/v1/resource\") avec ResponseEntity<T> pour controle HTTP complet. @Valid @RequestBody pour validation.",
       "sources": [
-        {"name": "Spring Boot docs — @RestController, ResponseEntity", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot docs — @RestController, ResponseEntity",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -51,7 +89,11 @@
       "level": "RECOMMANDE",
       "implementation": "NestJS fournit @Controller, @Get/@Post, @Body, @Param. Validation pipes avec class-validator pour les DTOs.",
       "sources": [
-        {"name": "NestJS Controllers docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "NestJS Controllers docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -60,7 +102,11 @@
       "level": "RECOMMANDE",
       "implementation": "ModelViewSet + ModelSerializer pour CRUD auto. APIView pour les endpoints custom. Routing via DefaultRouter.",
       "sources": [
-        {"name": "Django REST Framework docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Django REST Framework docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

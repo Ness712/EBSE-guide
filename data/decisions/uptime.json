@@ -2,8 +2,18 @@
   "id": "uptime",
   "domain": "operations",
   "question": "Comment monitorer la disponibilite avec des checks externes et internes ?",
-  "depends_on": ["infrastructure", "backend-framework"],
-  "tags": ["operations", "uptime", "health-check", "monitoring", "prometheus", "actuator"],
+  "depends_on": [
+    "infrastructure",
+    "backend-framework"
+  ],
+  "tags": [
+    "operations",
+    "uptime",
+    "health-check",
+    "monitoring",
+    "prometheus",
+    "actuator"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,17 +22,35 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google SRE Book — monitoring externe obligatoire", "pyramid": 5, "year": 2016},
-          {"name": "SWEBOK v4 — availability monitoring", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "Google SRE Book — monitoring externe obligatoire",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "SWEBOK v4 — availability monitoring",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Separer liveness et readiness probes — Kubernetes/Docker healthcheck en depend.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Spring Boot Actuator docs — health probes, liveness/readiness", "pyramid": 3, "year": 2024},
-          {"name": "Prometheus blackbox exporter docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Spring Boot Actuator docs — health probes, liveness/readiness",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Prometheus blackbox exporter docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -30,7 +58,11 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google SRE Book", "pyramid": 5, "year": 2016}
+          {
+            "name": "Google SRE Book",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]
@@ -41,10 +73,26 @@
       "grade": 4,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Spring Boot Actuator docs", "pyramid": 3, "year": 2024},
-        {"name": "Prometheus blackbox exporter docs", "pyramid": 3, "year": 2024},
-        {"name": "Google SRE Book", "pyramid": 5, "year": 2016},
-        {"name": "SWEBOK v4 — availability monitoring", "pyramid": 1, "year": 2024}
+        {
+          "name": "Spring Boot Actuator docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prometheus blackbox exporter docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google SRE Book",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "SWEBOK v4 — availability monitoring",
+          "pyramid": 1,
+          "year": 2024
+        }
       ]
     }
   }

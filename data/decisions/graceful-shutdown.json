@@ -2,12 +2,27 @@
   "id": "graceful-shutdown",
   "domain": "reliability",
   "question": "Comment drainer les connexions avant l'arret pour zero requetes perdues ?",
-  "depends_on": ["backend-framework", "infrastructure"],
-  "tags": ["reliability", "graceful-shutdown", "deployment", "zero-downtime", "docker"],
+  "depends_on": [
+    "backend-framework",
+    "infrastructure"
+  ],
+  "tags": [
+    "reliability",
+    "graceful-shutdown",
+    "deployment",
+    "zero-downtime",
+    "docker"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
-      "Un arret brutal (SIGKILL) perd les requetes en cours",
+      {
+        "text": "Un arret brutal (SIGKILL) perd les requetes en cours",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Le graceful shutdown laisse les requetes actives se terminer avant de couper le processus",
       "stop_grace_period Docker > timeout-per-shutdown-phase de l'app (evite SIGKILL avant fin du drain)",
       "Jamais de kill -9 en prod (perte de donnees, connexions DB orphelines)"

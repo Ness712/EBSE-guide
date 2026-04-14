@@ -3,26 +3,51 @@
   "domain": "project",
   "question": "Quels types de documentation maintenir et comment appliquer le principe de single source of truth ?",
   "depends_on": [],
-  "tags": ["documentation", "readme", "adr", "conventions", "comments", "single-source-of-truth"],
+  "tags": [
+    "documentation",
+    "readme",
+    "adr",
+    "conventions",
+    "comments",
+    "single-source-of-truth"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "4 types de documentation : README.md (stack, setup), CONVENTIONS.md (regles obligatoires), ADR (decisions archi + contexte), inline comments (pourquoi, jamais quoi). Chaque information n'existe qu'a un seul endroit.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "SWEBOK v4 ch.11", "pyramid": 1, "year": 2024},
-          {"name": "Google developer documentation style guide", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "SWEBOK v4 ch.11",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Google developer documentation style guide",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Doc mise a jour dans le meme commit que le code. README : 'zero to running' en < 30 min. ADR au format titre + contexte + decision + consequences.",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "Google developer documentation style guide", "pyramid": 5, "year": 2024},
-          {"name": "SWEBOK v4 — onboarding", "pyramid": 1, "year": 2024}
+          {
+            "name": "Google developer documentation style guide",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "SWEBOK v4 — onboarding",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       }
     ]

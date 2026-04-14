@@ -2,11 +2,28 @@
   "id": "ui-tanstack-react-query",
   "domain": "ui-libraries",
   "question": "Quel outil pour le data fetching et le cache client ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["ui", "react", "data-fetching", "cache", "async", "state"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "ui",
+    "react",
+    "data-fetching",
+    "cache",
+    "async",
+    "state"
+  ],
   "classification": "stack-specific",
   "universal": {
-    "principles": []
+    "principles": [
+      {
+        "text": "(Voir variants pour les recommandations specifiques)",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      }
+    ]
   },
   "variants": {
     "react": {
@@ -15,9 +32,21 @@
       "level": "STANDARD",
       "implementation": "pnpm add @tanstack/react-query",
       "sources": [
-        {"name": "npm trends", "pyramid": 4, "year": 2026},
-        {"name": "State of JS 2024", "pyramid": 4, "year": 2024},
-        {"name": "TanStack Query docs", "pyramid": 5, "year": 2026}
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "TanStack Query docs",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

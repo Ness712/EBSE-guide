@@ -2,20 +2,30 @@
   "id": "onboarding",
   "domain": "design",
   "question": "Comment guider les nouveaux utilisateurs (onboarding, divulgation progressive) ?",
-  "depends_on": ["empty-states"],
-  "tags": ["onboarding", "tooltips", "progressive-disclosure", "ux", "nielsen"],
+  "depends_on": [
+    "empty-states"
+  ],
+  "tags": [
+    "onboarding",
+    "tooltips",
+    "progressive-disclosure",
+    "ux",
+    "nielsen"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Divulgation progressive : montrer les fonctions avancees au fur et a mesure. Empty states comme opportunite d'onboarding. Tooltips contextuels (3-5 etapes max, skip toujours possible).",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
           "Nielsen Norman Group — 'recognition rather than recall' heuristic #6 (niv. 5)",
           "Baymard Institute — empty state onboarding (niv. 4)",
           "Pendo 2024 — 80% churn sans onboarding (niv. 4)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Reconnaissance plutot que rappel (Nielsen #6) : labels visibles, pas d'icones seules.",

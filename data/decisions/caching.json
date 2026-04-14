@@ -2,20 +2,44 @@
   "id": "caching",
   "domain": "performance",
   "question": "Comment implementer une strategie de cache multi-niveaux (application, HTTP, static) ?",
-  "depends_on": ["backend-framework", "database"],
-  "tags": ["performance", "caching", "redis", "cache-control", "cdn", "etag"],
+  "depends_on": [
+    "backend-framework",
+    "database"
+  ],
+  "tags": [
+    "performance",
+    "caching",
+    "redis",
+    "cache-control",
+    "cdn",
+    "etag"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "3 niveaux de cache : Application (Spring @Cacheable + Redis pour donnees reference), HTTP (Cache-Control headers + ETags pour reponses API semi-statiques), Static (CDN / Vite hashed assets pour JS, CSS, images).",
-        "grade": 5,
+        "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "CNCF — Redis gradue", "pyramid": 2, "year": 2024},
-          {"name": "Twelve-Factor VI — stateless processes", "pyramid": 5, "year": 2012},
-          {"name": "Google SRE Book — caching strategies", "pyramid": 5, "year": 2016}
-        ]
+          {
+            "name": "CNCF — Redis gradue",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor VI — stateless processes",
+            "pyramid": 5,
+            "year": 2012
+          },
+          {
+            "name": "Google SRE Book — caching strategies",
+            "pyramid": 5,
+            "year": 2016
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -26,8 +50,16 @@
       "level": "RECOMMANDE",
       "implementation": "@EnableCaching, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(30)). GenericJackson2JsonRedisSerializer pour la serialisation.",
       "sources": [
-        {"name": "Spring Cache docs", "pyramid": 3, "year": 2024},
-        {"name": "Redis docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Cache docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Redis docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -36,8 +68,16 @@
       "level": "STANDARD",
       "implementation": "CacheModule.register({ store: redisStore, host: 'localhost', port: 6379, ttl: 1800 }). @UseInterceptors(CacheInterceptor) sur les controllers.",
       "sources": [
-        {"name": "NestJS Caching docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — @nestjs/cache-manager + Redis accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS Caching docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/cache-manager + Redis accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -46,9 +86,21 @@
       "level": "STANDARD",
       "implementation": "CACHES = {'default': {'BACKEND': 'django_redis.cache.RedisCache', 'LOCATION': 'redis://localhost:6379/1'}}. @cache_page(60*30) sur les vues.",
       "sources": [
-        {"name": "Django cache framework docs", "pyramid": 3, "year": 2024},
-        {"name": "django-redis docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — django-redis accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "Django cache framework docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "django-redis docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — django-redis accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

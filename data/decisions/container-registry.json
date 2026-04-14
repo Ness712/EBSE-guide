@@ -2,28 +2,59 @@
   "id": "container-registry",
   "domain": "cicd",
   "question": "Quel container registry pour stocker et distribuer les images Docker ?",
-  "depends_on": ["containerization", "ci-pipeline"],
-  "tags": ["cicd", "container-registry", "ghcr", "docker-hub", "oci"],
+  "depends_on": [
+    "containerization",
+    "ci-pipeline"
+  ],
+  "tags": [
+    "cicd",
+    "container-registry",
+    "ghcr",
+    "docker-hub",
+    "oci"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire.",
-        "grade": 4,
+        "grade": 3,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "GitHub docs — GHCR integration native avec Actions et permissions", "pyramid": 3, "year": 2024},
-          {"name": "CNCF Survey 2024 — container registry adoption", "pyramid": 4, "year": 2024},
-          {"name": "Twelve-Factor Factor V — build artifacts immutables", "pyramid": 5, "year": 2012}
-        ]
+          {
+            "name": "GitHub docs — GHCR integration native avec Actions et permissions",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "CNCF Survey 2024 — container registry adoption",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor Factor V — build artifacts immutables",
+            "pyramid": 5,
+            "year": 2012
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Alternatives selon contexte : Docker Hub (standard historique, rate limiting 100 pulls/6h anonymous), ECR (natif AWS, vendor lock-in), Harbor (self-hosted CNCF gradue, infra a gerer).",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "CNCF Survey 2024", "pyramid": 4, "year": 2024},
-          {"name": "Docker Hub docs — rate limiting", "pyramid": 3, "year": 2024}
+          {
+            "name": "CNCF Survey 2024",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Docker Hub docs — rate limiting",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

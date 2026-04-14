@@ -2,12 +2,25 @@
   "id": "e2e-tests",
   "domain": "testing",
   "question": "Quel framework pour les tests end-to-end ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["testing", "e2e", "playwright", "browser-testing"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "testing",
+    "e2e",
+    "playwright",
+    "browser-testing"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
-      "Les tests E2E representent ~10% de la pyramide de tests",
+      {
+        "text": "Les tests E2E representent ~10% de la pyramide de tests",
+        "grade": 6,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
+      },
       "Preferer un framework multi-browser avec auto-waiting natif",
       "Utiliser les retries en CI pour gerer le flakiness inherent aux tests E2E",
       "Configurer un webServer pour lancer l'app automatiquement"

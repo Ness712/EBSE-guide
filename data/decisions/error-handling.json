@@ -2,12 +2,27 @@
   "id": "error-handling",
   "domain": "reliability",
   "question": "Comment centraliser et securiser le traitement des erreurs ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["reliability", "error-handling", "rfc-9457", "security", "error-boundary"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "reliability",
+    "error-handling",
+    "rfc-9457",
+    "security",
+    "error-boundary"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "Centraliser le traitement des erreurs comme concern architectural",
+      {
+        "text": "Centraliser le traitement des erreurs comme concern architectural",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "JAMAIS de stack trace dans les reponses HTTP (OWASP, CWE-209 exploit likelihood HIGH)",
       "JAMAIS d'exception avalee silencieusement",
       "Log complet cote serveur avec correlation ID",

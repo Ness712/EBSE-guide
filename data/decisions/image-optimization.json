@@ -2,8 +2,18 @@
   "id": "image-optimization",
   "domain": "performance",
   "question": "Comment optimiser les images pour reduire le poids des pages web ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["performance", "images", "webp", "avif", "lazy-loading", "responsive", "srcset"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "performance",
+    "images",
+    "webp",
+    "avif",
+    "lazy-loading",
+    "responsive",
+    "srcset"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,19 +22,46 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "web.dev — image optimization guide", "pyramid": 3, "year": 2024},
-          {"name": "HTTP Archive 2025", "pyramid": 4, "year": 2025, "quote": "Images = 50% page weight"},
-          {"name": "MDN — loading=\"lazy\"", "pyramid": 3, "year": 2024},
-          {"name": "Can I Use — WebP 97%, AVIF 92%", "pyramid": 4, "year": 2026}
-        ]
+          {
+            "name": "web.dev — image optimization guide",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "HTTP Archive 2025",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "Images = 50% page weight"
+          },
+          {
+            "name": "MDN — loading=\"lazy\"",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Can I Use — WebP 97%, AVIF 92%",
+            "pyramid": 4,
+            "year": 2026
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Utiliser <picture> avec fallback pour les formats modernes. srcset + sizes pour le responsive. decoding=\"async\" pour ne pas bloquer le rendu.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "web.dev — image optimization guide", "pyramid": 3, "year": 2024},
-          {"name": "MDN — responsive images", "pyramid": 3, "year": 2024}
+          {
+            "name": "web.dev — image optimization guide",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "MDN — responsive images",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

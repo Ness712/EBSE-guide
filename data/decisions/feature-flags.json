@@ -2,27 +2,54 @@
   "id": "feature-flags",
   "domain": "operations",
   "question": "Comment activer progressivement les fonctionnalites sans redeploiement ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["operations", "feature-flags", "unleash", "progressive-rollout", "deployment"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "operations",
+    "feature-flags",
+    "unleash",
+    "progressive-rollout",
+    "deployment"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Les feature flags permettent de deployer du code inactif, d'activer progressivement et de rollback instantanement sans redeploiement.",
-        "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "CNCF Landscape — Unleash incubating project", "pyramid": 2, "year": 2024},
-          {"name": "Twelve-Factor App", "pyramid": 5, "year": 2012, "quote": "Build/run separation, config externe"},
-          {"name": "Fowler — Feature Toggles patterns", "pyramid": 5, "year": 2016}
-        ]
+          {
+            "name": "CNCF Landscape — Unleash incubating project",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor App",
+            "pyramid": 5,
+            "year": 2012,
+            "quote": "Build/run separation, config externe"
+          },
+          {
+            "name": "Fowler — Feature Toggles patterns",
+            "pyramid": 5,
+            "year": 2016
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Strategies : Standard (on/off), Gradual rollout (% users), UserID (beta-testeurs), Environment (staging vs prod).",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Fowler — Feature Toggles patterns", "pyramid": 5, "year": 2016}
+          {
+            "name": "Fowler — Feature Toggles patterns",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]
@@ -33,8 +60,16 @@
       "grade": 3,
       "level": "BONNE_PRATIQUE",
       "sources": [
-        {"name": "CNCF Landscape — Unleash incubating", "pyramid": 2, "year": 2024},
-        {"name": "Unleash docs — Java SDK", "pyramid": 3, "year": 2024}
+        {
+          "name": "CNCF Landscape — Unleash incubating",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Unleash docs — Java SDK",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

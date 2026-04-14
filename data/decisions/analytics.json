@@ -2,27 +2,54 @@
   "id": "analytics",
   "domain": "project",
   "question": "Quel outil d'analytics choisir et quelles metriques essentielles suivre, en respectant le RGPD ?",
-  "depends_on": ["gdpr"],
-  "tags": ["analytics", "posthog", "plausible", "rgpd", "product-analytics", "privacy"],
+  "depends_on": [
+    "gdpr"
+  ],
+  "tags": [
+    "analytics",
+    "posthog",
+    "plausible",
+    "rgpd",
+    "product-analytics",
+    "privacy"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Preferer le self-hosted pour les donnees sensibles (RGPD). PostHog (events, funnels, cohorts) ou Plausible (privacy-first, simple). Consentement explicite requis.",
-        "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "PostHog docs", "pyramid": 5, "year": 2024},
-          {"name": "Plausible docs", "pyramid": 5, "year": 2024},
-          {"name": "CNIL guidelines analytics", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "PostHog docs",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Plausible docs",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "CNIL guidelines analytics",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Metriques essentielles : page views, feature usage (events custom), conversion funnel (inscription, activation, retention), bounce rate. Tracker les actions, pas juste les pages.",
         "grade": 2,
         "level": "CHOIX D'EQUIPE",
         "sources": [
-          {"name": "PostHog docs — product analytics", "pyramid": 5, "year": 2024}
+          {
+            "name": "PostHog docs — product analytics",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       }
     ]

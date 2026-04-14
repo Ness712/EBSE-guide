@@ -3,19 +3,26 @@
   "domain": "design",
   "question": "Comment gerer les ecrans vides (empty states) ?",
   "depends_on": [],
-  "tags": ["empty-states", "ux", "onboarding", "nielsen"],
+  "tags": [
+    "empty-states",
+    "ux",
+    "onboarding",
+    "nielsen"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Toujours 3 elements dans un empty state : illustration/icone, message explicatif, CTA (call to action). Jamais d'ecran blanc vide.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
           "Nielsen Norman Group — heuristique #1 visibilite de l'etat du systeme (niv. 3)",
           "Material Design 3 — empty states guidelines (niv. 5)",
           "Luke Wroblewski — mobile empty states patterns (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Ton positif : 'Commencez par...' plutot que 'Rien ici'. L'empty state est une opportunite d'onboarding.",

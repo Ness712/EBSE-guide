@@ -2,20 +2,44 @@
   "id": "encoding",
   "domain": "data",
   "question": "Quel encodage de caracteres utiliser a travers toutes les couches de l'application ?",
-  "depends_on": ["database", "backend-framework"],
-  "tags": ["data", "encoding", "utf-8", "charset", "unicode"],
+  "depends_on": [
+    "database",
+    "backend-framework"
+  ],
+  "tags": [
+    "data",
+    "encoding",
+    "utf-8",
+    "charset",
+    "unicode"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "UTF-8 partout : base de donnees, API, fichiers source, HTML. Tout autre choix cause des bugs d'affichage et des failles de securite. 98.2% du web en UTF-8 (Web Almanac 2024).",
-        "grade": 7,
+        "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "IETF RFC 3629 — standard UTF-8", "pyramid": 1, "year": 2003},
-          {"name": "W3C — UTF-8 obligatoire pour HTML5", "pyramid": 1, "year": 2024},
-          {"name": "Web Almanac 2024", "pyramid": 4, "year": 2024, "quote": "98.2% du web en UTF-8"}
-        ]
+          {
+            "name": "IETF RFC 3629 — standard UTF-8",
+            "pyramid": 1,
+            "year": 2003
+          },
+          {
+            "name": "W3C — UTF-8 obligatoire pour HTML5",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Web Almanac 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "98.2% du web en UTF-8"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -26,7 +50,11 @@
       "level": "STANDARD",
       "implementation": "spring.servlet.encoding.charset: UTF-8, force: true. PostgreSQL : ENCODING 'UTF8' + LC_COLLATE 'fr_FR.UTF-8'. Content-Type: application/json; charset=utf-8.",
       "sources": [
-        {"name": "Spring Boot docs — encoding configuration", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot docs — encoding configuration",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -35,7 +63,11 @@
       "level": "STANDARD",
       "implementation": "Node.js gere UTF-8 nativement. Verifier Content-Type headers. PostgreSQL : ENCODING 'UTF8'.",
       "sources": [
-        {"name": "Node.js docs — Buffer encoding", "pyramid": 3, "year": 2024}
+        {
+          "name": "Node.js docs — Buffer encoding",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -44,8 +76,16 @@
       "level": "STANDARD",
       "implementation": "Python 3 strings = Unicode nativement. Django DEFAULT_CHARSET = 'utf-8' (defaut). FILE_CHARSET = 'utf-8'.",
       "sources": [
-        {"name": "Django docs — DEFAULT_CHARSET", "pyramid": 3, "year": 2024},
-        {"name": "Python 3 docs — Unicode HOWTO", "pyramid": 3, "year": 2024}
+        {
+          "name": "Django docs — DEFAULT_CHARSET",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Python 3 docs — Unicode HOWTO",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

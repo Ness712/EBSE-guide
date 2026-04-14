@@ -2,28 +2,61 @@
   "id": "authentication",
   "domain": "security",
   "question": "Comment implementer l'authentification de maniere securisee (tokens, sessions, OAuth2) ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["security", "authentication", "jwt", "oauth2", "csrf", "session"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "security",
+    "authentication",
+    "jwt",
+    "oauth2",
+    "csrf",
+    "session"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Tokens (JWT) dans des HttpOnly + Secure + SameSite cookies — JAMAIS localStorage ou sessionStorage.",
-        "grade": 6,
+        "grade": 7,
         "level": "STANDARD",
         "sources": [
-          {"name": "OWASP ASVS V3.4.1-V3.4.3", "pyramid": 2, "year": 2021, "quote": "Store tokens in HttpOnly, Secure, SameSite cookies"},
-          {"name": "OWASP JWT Cheat Sheet", "pyramid": 2, "year": 2024, "quote": "Store tokens in HttpOnly, Secure, SameSite cookies — not in localStorage or sessionStorage, which are vulnerable to XSS."},
-          {"name": "NIST SP 800-63B", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "OWASP ASVS V3.4.1-V3.4.3",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "Store tokens in HttpOnly, Secure, SameSite cookies"
+          },
+          {
+            "name": "OWASP JWT Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Store tokens in HttpOnly, Secure, SameSite cookies — not in localStorage or sessionStorage, which are vulnerable to XSS."
+          },
+          {
+            "name": "NIST SP 800-63B",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Valider signature + exp + iss + aud sur chaque JWT. Rejeter alg: none. Whitelist explicite (RS256 ou ES256).",
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "RFC 7519 (JWT)", "pyramid": 1, "year": 2015},
-          {"name": "OWASP JWT Cheat Sheet", "pyramid": 2, "year": 2024}
+          {
+            "name": "RFC 7519 (JWT)",
+            "pyramid": 1,
+            "year": 2015
+          },
+          {
+            "name": "OWASP JWT Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          }
         ]
       },
       {
@@ -31,8 +64,18 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP JWT Cheat Sheet", "pyramid": 2, "year": 2024, "quote": "Access token lifetime: 5-15 minutes maximum. Implement refresh token rotation."},
-          {"name": "NIST SP 800-63B", "pyramid": 1, "year": 2024, "quote": "30 min idle timeout AAL2, 12h max absolu"}
+          {
+            "name": "OWASP JWT Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Access token lifetime: 5-15 minutes maximum. Implement refresh token rotation."
+          },
+          {
+            "name": "NIST SP 800-63B",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "30 min idle timeout AAL2, 12h max absolu"
+          }
         ]
       },
       {
@@ -40,8 +83,17 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "NIST SP 800-63B Rev. 4", "pyramid": 1, "year": 2024, "quote": "Verifiers SHALL NOT impose composition rules for memorized secrets. Verifiers SHALL NOT require memorized secrets to be changed arbitrarily."},
-          {"name": "OWASP ASVS V2", "pyramid": 2, "year": 2021}
+          {
+            "name": "NIST SP 800-63B Rev. 4",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Verifiers SHALL NOT impose composition rules for memorized secrets. Verifiers SHALL NOT require memorized secrets to be changed arbitrarily."
+          },
+          {
+            "name": "OWASP ASVS V2",
+            "pyramid": 2,
+            "year": 2021
+          }
         ]
       },
       {
@@ -49,9 +101,22 @@
         "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "RFC 7636 (PKCE)", "pyramid": 1, "year": 2015, "quote": "PKCE is an extension to OAuth 2.0 that mitigates the authorization code interception attack for public clients."},
-          {"name": "RFC 6749 (OAuth2)", "pyramid": 1, "year": 2012},
-          {"name": "OWASP", "pyramid": 2, "year": 2024}
+          {
+            "name": "RFC 7636 (PKCE)",
+            "pyramid": 1,
+            "year": 2015,
+            "quote": "PKCE is an extension to OAuth 2.0 that mitigates the authorization code interception attack for public clients."
+          },
+          {
+            "name": "RFC 6749 (OAuth2)",
+            "pyramid": 1,
+            "year": 2012
+          },
+          {
+            "name": "OWASP",
+            "pyramid": 2,
+            "year": 2024
+          }
         ]
       },
       {
@@ -59,7 +124,12 @@
         "grade": 1,
         "level": "CHOIX_EQUIPE",
         "sources": [
-          {"name": "JetBrains Developer Survey 2024", "pyramid": 4, "year": 2024, "quote": "Spring Security 68-80% adoption Java"}
+          {
+            "name": "JetBrains Developer Survey 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Spring Security 68-80% adoption Java"
+          }
         ]
       }
     ]
@@ -71,8 +141,16 @@
       "level": "RECOMMANDE",
       "implementation": "Configurer Spring Security avec JwtDecoder, CSRF via CookieCsrfTokenRepository, cookies HttpOnly/Secure/SameSite. PKCE natif via oauth2Login().",
       "sources": [
-        {"name": "Spring Security docs", "pyramid": 3, "year": 2024},
-        {"name": "OWASP JWT Cheat Sheet", "pyramid": 2, "year": 2024}
+        {
+          "name": "Spring Security docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "OWASP JWT Cheat Sheet",
+          "pyramid": 2,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -81,8 +159,16 @@
       "level": "STANDARD",
       "implementation": "Installer @nestjs/passport et passport-jwt, configurer JwtStrategy avec validation des claims, utiliser AuthGuard pour proteger les routes.",
       "sources": [
-        {"name": "NestJS Authentication docs", "pyramid": 3, "year": 2024},
-        {"name": "passport-jwt docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "NestJS Authentication docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "passport-jwt docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -91,8 +177,16 @@
       "level": "STANDARD",
       "implementation": "Installer djangorestframework-simplejwt, configurer SIMPLE_JWT dans settings.py avec access token 5-15 min et refresh token rotation.",
       "sources": [
-        {"name": "djangorestframework-simplejwt docs", "pyramid": 3, "year": 2024},
-        {"name": "Django REST Framework docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "djangorestframework-simplejwt docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Django REST Framework docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

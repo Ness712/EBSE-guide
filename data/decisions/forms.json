@@ -2,18 +2,29 @@
   "id": "forms",
   "domain": "design",
   "question": "Comment gerer les formulaires (validation, layout, accessibilite) ?",
-  "depends_on": ["wcag-level"],
-  "tags": ["forms", "validation", "react-hook-form", "zod", "accessibility", "react"],
+  "depends_on": [
+    "wcag-level"
+  ],
+  "tags": [
+    "forms",
+    "validation",
+    "react-hook-form",
+    "zod",
+    "accessibility",
+    "react"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Validation inline (au blur/changement) plutot qu'a la soumission seule : reduit les erreurs de soumission de 22%.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 6,
+        "level": "STANDARD",
         "sources": [
           "Baymard Institute — inline validation +22% completion (niv. 3)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Labels toujours visibles (jamais placeholder seul — WCAG 3.3.2). Messages d'erreur sous le champ, en rouge avec icone (pas couleur seule). 1 colonne par defaut.",

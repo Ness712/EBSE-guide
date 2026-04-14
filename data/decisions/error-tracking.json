@@ -2,8 +2,17 @@
   "id": "error-tracking",
   "domain": "operations",
   "question": "Quel outil de suivi d'erreurs en production (capture, grouping, alerting) ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["operations", "error-tracking", "sentry", "glitchtip", "observability"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "operations",
+    "error-tracking",
+    "sentry",
+    "glitchtip",
+    "observability"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,17 +21,36 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Stack Overflow Survey 2024", "pyramid": 4, "year": 2024, "quote": "Sentry 32% adoption parmi les outils d'observabilite"},
-          {"name": "Sentry docs", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Stack Overflow Survey 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Sentry 32% adoption parmi les outils d'observabilite"
+          },
+          {
+            "name": "Sentry docs",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Sentry SaaS pour les equipes sans infra. GlitchTip self-hosted si budget zero et infra existante.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Sentry docs — Spring Boot integration, source maps, alerting", "pyramid": 3, "year": 2024},
-          {"name": "GlitchTip docs — Sentry SDK compatible, lightweight self-hosted", "pyramid": 3, "year": 2024}
+          {
+            "name": "Sentry docs — Spring Boot integration, source maps, alerting",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "GlitchTip docs — Sentry SDK compatible, lightweight self-hosted",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -33,8 +61,16 @@
       "grade": 4,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Sentry docs — Spring Boot integration", "pyramid": 3, "year": 2024},
-        {"name": "Stack Overflow Survey 2024", "pyramid": 4, "year": 2024}
+        {
+          "name": "Sentry docs — Spring Boot integration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Stack Overflow Survey 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
       ]
     },
     "typescript-react-vite": {
@@ -42,7 +78,11 @@
       "grade": 4,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Sentry docs — React integration", "pyramid": 3, "year": 2024}
+        {
+          "name": "Sentry docs — React integration",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

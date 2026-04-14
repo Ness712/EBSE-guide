@@ -2,27 +2,53 @@
   "id": "typescript-strict",
   "domain": "code-quality",
   "question": "Faut-il activer le mode strict de TypeScript ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["code-quality", "typescript", "strict-mode", "type-safety", "tsconfig"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "code-quality",
+    "typescript",
+    "strict-mode",
+    "type-safety",
+    "tsconfig"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "Activer strict: true dans tsconfig.json. Le mode strict detecte des categories entieres de bugs a la compilation (null/undefined, implicit any, function signatures, bind/call/apply, class init, catch unknown).",
-        "grade": 6,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "TypeScript docs — strict compiler options, migration guide", "pyramid": 3, "year": 2024},
-          {"name": "State of JS 2024 — TypeScript 89%+ satisfaction, strict mode recommande", "pyramid": 4, "year": 2024},
-          {"name": "Google TypeScript Style Guide — always use strict", "pyramid": 5, "year": 2023}
-        ]
+          {
+            "name": "TypeScript docs — strict compiler options, migration guide",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "State of JS 2024 — TypeScript 89%+ satisfaction, strict mode recommande",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Google TypeScript Style Guide — always use strict",
+            "pyramid": 5,
+            "year": 2023
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Migration progressive pour un projet existant : 1) noImplicitAny (le plus impactant), 2) strictNullChecks, 3) strict: true pour tout le reste.",
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "TypeScript docs — migration guide", "pyramid": 3, "year": 2024}
+          {
+            "name": "TypeScript docs — migration guide",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -33,9 +59,21 @@
       "grade": 6,
       "level": "STANDARD",
       "sources": [
-        {"name": "TypeScript docs — strict compiler options", "pyramid": 3, "year": 2024},
-        {"name": "Google TypeScript Style Guide", "pyramid": 5, "year": 2023},
-        {"name": "State of JS 2024", "pyramid": 4, "year": 2024}
+        {
+          "name": "TypeScript docs — strict compiler options",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google TypeScript Style Guide",
+          "pyramid": 5,
+          "year": 2023
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
       ]
     }
   }

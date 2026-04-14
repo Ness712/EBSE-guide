@@ -3,27 +3,56 @@
   "domain": "project",
   "question": "Combien d'environnements maintenir et comment garantir la parite dev/staging/prod ?",
   "depends_on": [],
-  "tags": ["environment", "staging", "production", "docker", "twelve-factor", "devops"],
+  "tags": [
+    "environment",
+    "staging",
+    "production",
+    "docker",
+    "twelve-factor",
+    "devops"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "3 environnements : dev (local Docker Compose), staging (auto-deploy miroir exact de prod), prod (CI/CD uniquement, jamais de deploy manuel).",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "SWEBOK v4 ch.8", "pyramid": 1, "year": 2024},
-          {"name": "DORA/Accelerate — predictor of elite performance", "pyramid": 4, "year": 2019},
-          {"name": "Twelve-Factor App", "pyramid": 5, "year": 2017}
-        ]
+          {
+            "name": "SWEBOK v4 ch.8",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "DORA/Accelerate — predictor of elite performance",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "Twelve-Factor App",
+            "pyramid": 5,
+            "year": 2017
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Staging = miroir exact de prod (memes images Docker, meme infra). Seules les variables d'env changent. Dev local reproductible via containers (Twelve-Factor X — dev/prod parity).",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "DORA — reduce change failure rate < 5%", "pyramid": 4, "year": 2019},
-          {"name": "Twelve-Factor App factor III et X", "pyramid": 5, "year": 2017}
+          {
+            "name": "DORA — reduce change failure rate < 5%",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "Twelve-Factor App factor III et X",
+            "pyramid": 5,
+            "year": 2017
+          }
         ]
       }
     ]

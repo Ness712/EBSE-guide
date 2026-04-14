@@ -2,12 +2,29 @@
   "id": "high-availability",
   "domain": "reliability",
   "question": "Comment assurer la haute disponibilite avec multi-instance et health checks ?",
-  "depends_on": ["backend-framework", "infrastructure", "database"],
-  "tags": ["reliability", "high-availability", "health-checks", "replication", "load-balancing", "docker"],
+  "depends_on": [
+    "backend-framework",
+    "infrastructure",
+    "database"
+  ],
+  "tags": [
+    "reliability",
+    "high-availability",
+    "health-checks",
+    "replication",
+    "load-balancing",
+    "docker"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
-      "Architecture multi-instance avec applications stateless",
+      {
+        "text": "Architecture multi-instance avec applications stateless",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Reverse proxy + load balancer devant les replicas",
       "Health checks pour detecter les instances defaillantes",
       "Database replication (PostgreSQL streaming replication)",

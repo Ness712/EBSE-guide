@@ -3,18 +3,27 @@
   "domain": "design",
   "question": "Quelle librairie de composants UI utiliser ?",
   "depends_on": [],
-  "tags": ["components", "ui-library", "shadcn", "radix", "tailwind", "react"],
+  "tags": [
+    "components",
+    "ui-library",
+    "shadcn",
+    "radix",
+    "tailwind",
+    "react"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "Choisir une librairie de composants accessible (WAI-ARIA), customisable et avec un bundle size minimal.",
-        "grade": 3,
+        "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
           "State of JS 2024 — shadcn/ui #1 satisfaction (niv. 4)",
           "Radix UI accessibilite WAI-ARIA 1.2 (niv. 3)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

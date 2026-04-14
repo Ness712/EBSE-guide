@@ -3,28 +3,64 @@
   "domain": "architecture",
   "question": "Quel framework frontend choisir pour une application web ?",
   "depends_on": [],
-  "tags": ["architecture", "frontend", "framework", "react", "vue", "svelte"],
+  "tags": [
+    "architecture",
+    "frontend",
+    "framework",
+    "react",
+    "vue",
+    "svelte"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "React — #1 en adoption (44.7% SO 2025), ecosysteme de composants le plus riche (MUI, shadcn/ui, Radix, Ant Design), hiring pool le plus grand. Convergence de 5 sources independantes.",
-        "grade": 6,
+        "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "SO Survey 2025", "pyramid": 4, "year": 2025, "quote": "React 44.7% (#1), Vue 17.6%, Svelte 7.2%"},
-          {"name": "State of JS 2025", "pyramid": 4, "year": 2025, "quote": "React satisfaction 82.95%, Svelte 89.62%"},
-          {"name": "JetBrains 2024", "pyramid": 4, "year": 2024, "quote": "23k devs"},
-          {"name": "npm trends — React 34M dl/semaine", "pyramid": 4, "year": 2025},
-          {"name": "GitHub stars — React 266k", "pyramid": 4, "year": 2025}
-        ]
+          {
+            "name": "SO Survey 2025",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "React 44.7% (#1), Vue 17.6%, Svelte 7.2%"
+          },
+          {
+            "name": "State of JS 2025",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "React satisfaction 82.95%, Svelte 89.62%"
+          },
+          {
+            "name": "JetBrains 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "23k devs"
+          },
+          {
+            "name": "npm trends — React 34M dl/semaine",
+            "pyramid": 4,
+            "year": 2025
+          },
+          {
+            "name": "GitHub stars — React 266k",
+            "pyramid": 4,
+            "year": 2025
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Vue si l'equipe le maitrise deja ou si courbe d'apprentissage douce prioritaire. Svelte si equipe petite et experimentee acceptant un ecosysteme restreint.",
         "grade": 6,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "SO Survey 2025 — Vue 17.6%, Svelte 7.2%", "pyramid": 4, "year": 2025}
+          {
+            "name": "SO Survey 2025 — Vue 17.6%, Svelte 7.2%",
+            "pyramid": 4,
+            "year": 2025
+          }
         ]
       }
     ]

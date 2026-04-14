@@ -2,27 +2,52 @@
   "id": "dev-onboarding",
   "domain": "project",
   "question": "Comment integrer efficacement un nouveau developpeur dans l'equipe pour minimiser le time-to-productivity ?",
-  "depends_on": ["documentation"],
-  "tags": ["onboarding", "developer-experience", "pair-programming", "productivity"],
+  "depends_on": [
+    "documentation"
+  ],
+  "tags": [
+    "onboarding",
+    "developer-experience",
+    "pair-programming",
+    "productivity"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Setup local < 30 min via README. Premiere PR < 24h (typo fix, small task). Pair programming premiere semaine avec un buddy attribue.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "DORA/Accelerate — frein #1 a la productivite", "pyramid": 4, "year": 2019},
-          {"name": "Microsoft NEET study 2022 — onboarding structure reduit time-to-productivity de 60%", "pyramid": 4, "year": 2022}
-        ]
+          {
+            "name": "DORA/Accelerate — frein #1 a la productivite",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "Microsoft NEET study 2022 — onboarding structure reduit time-to-productivity de 60%",
+            "pyramid": 4,
+            "year": 2022
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Checklist day 1 : acces repo/CI/channels, clone + setup, lire CONVENTIONS.md et architecture overview, premier commit, pair programming.",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "DORA/Accelerate", "pyramid": 4, "year": 2019},
-          {"name": "Microsoft NEET study 2022 — retention amelioree", "pyramid": 4, "year": 2022}
+          {
+            "name": "DORA/Accelerate",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "Microsoft NEET study 2022 — retention amelioree",
+            "pyramid": 4,
+            "year": 2022
+          }
         ]
       }
     ]

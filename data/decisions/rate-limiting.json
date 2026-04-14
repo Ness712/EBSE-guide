@@ -2,8 +2,15 @@
   "id": "rate-limiting",
   "domain": "security",
   "question": "Comment implementer le rate limiting et la protection DDoS ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["security", "rate-limiting", "ddos", "throttling"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "security",
+    "rate-limiting",
+    "ddos",
+    "throttling"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,8 +19,14 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP ASVS V11.1", "pyramid": 2, "year": 2021}
-        ]
+          {
+            "name": "OWASP ASVS V11.1",
+            "pyramid": 2,
+            "year": 2021
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       }
     ]
   },
@@ -24,8 +37,16 @@
       "level": "RECOMMANDE",
       "implementation": "Creer un OncePerRequestFilter avec Bucket4j, ConcurrentHashMap par IP, limites differenciees pour /auth et le reste. Retourner 429 si bucket vide.",
       "sources": [
-        {"name": "Bucket4j docs", "pyramid": 3, "year": 2024},
-        {"name": "OWASP ASVS V11.1", "pyramid": 2, "year": 2021}
+        {
+          "name": "Bucket4j docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "OWASP ASVS V11.1",
+          "pyramid": 2,
+          "year": 2021
+        }
       ]
     },
     "typescript-nestjs": {
@@ -34,7 +55,11 @@
       "level": "RECOMMANDE",
       "implementation": "Installer @nestjs/throttler, configurer ThrottlerModule.forRoot() avec ttl et limit, appliquer @Throttle() sur les routes sensibles.",
       "sources": [
-        {"name": "@nestjs/throttler docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "@nestjs/throttler docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -43,7 +68,11 @@
       "level": "RECOMMANDE",
       "implementation": "Configurer DEFAULT_THROTTLE_CLASSES et DEFAULT_THROTTLE_RATES dans REST_FRAMEWORK settings (ex: 'anon': '50/minute', 'user': '200/minute').",
       "sources": [
-        {"name": "DRF Throttling docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "DRF Throttling docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

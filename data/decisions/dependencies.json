@@ -3,7 +3,15 @@
   "domain": "project",
   "question": "Comment gerer les dependances pour garantir des builds reproductibles et eviter les vulnerabilites ?",
   "depends_on": [],
-  "tags": ["dependencies", "lockfile", "dependabot", "renovate", "security", "npm", "maven"],
+  "tags": [
+    "dependencies",
+    "lockfile",
+    "dependabot",
+    "renovate",
+    "security",
+    "npm",
+    "maven"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,17 +20,35 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Twelve-Factor App Factor II — declare dependencies explicitly", "pyramid": 5, "year": 2017},
-          {"name": "SWEBOK v4 — dependency management, supply chain", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "Twelve-Factor App Factor II — declare dependencies explicitly",
+            "pyramid": 5,
+            "year": 2017
+          },
+          {
+            "name": "SWEBOK v4 — dependency management, supply chain",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Automatiser la detection des mises a jour avec Dependabot ou Renovate (scan hebdomadaire). Reviewer le changelog avant toute upgrade majeure.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP A06:2021 — Vulnerable and Outdated Components", "pyramid": 2, "year": 2021},
-          {"name": "GitHub Dependabot docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "OWASP A06:2021 — Vulnerable and Outdated Components",
+            "pyramid": 2,
+            "year": 2021
+          },
+          {
+            "name": "GitHub Dependabot docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -30,7 +56,11 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP A06:2021 — Vulnerable and Outdated Components", "pyramid": 2, "year": 2021}
+          {
+            "name": "OWASP A06:2021 — Vulnerable and Outdated Components",
+            "pyramid": 2,
+            "year": 2021
+          }
         ]
       }
     ]

@@ -2,8 +2,19 @@
   "id": "deployment-strategy",
   "domain": "cicd",
   "question": "Quelle strategie de deploiement pour zero-downtime ?",
-  "depends_on": ["containerization", "graceful-shutdown"],
-  "tags": ["cicd", "deployment", "rolling-update", "zero-downtime", "blue-green", "canary", "health-check"],
+  "depends_on": [
+    "containerization",
+    "graceful-shutdown"
+  ],
+  "tags": [
+    "cicd",
+    "deployment",
+    "rolling-update",
+    "zero-downtime",
+    "blue-green",
+    "canary",
+    "health-check"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,18 +23,40 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "DORA State of DevOps — zero-downtime deployments = predictor of elite performance", "pyramid": 4, "year": 2024},
-          {"name": "Twelve-Factor App Factor IX — disposability, fast startup, graceful shutdown", "pyramid": 5, "year": 2012}
-        ]
+          {
+            "name": "DORA State of DevOps — zero-downtime deployments = predictor of elite performance",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor App Factor IX — disposability, fast startup, graceful shutdown",
+            "pyramid": 5,
+            "year": 2012
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Regles zero-downtime : health check obligatoire, migrations backward-compatible (N-1 et N coexistent), graceful shutdown, start-first ordering.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Docker Compose docs — deploy.update_config, healthcheck", "pyramid": 3, "year": 2024},
-          {"name": "Spring Boot docs — graceful shutdown, actuator health", "pyramid": 3, "year": 2024},
-          {"name": "DORA State of DevOps", "pyramid": 4, "year": 2024}
+          {
+            "name": "Docker Compose docs — deploy.update_config, healthcheck",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Spring Boot docs — graceful shutdown, actuator health",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "DORA State of DevOps",
+            "pyramid": 4,
+            "year": 2024
+          }
         ]
       },
       {
@@ -31,7 +64,11 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Twelve-Factor App Factor IX", "pyramid": 5, "year": 2012}
+          {
+            "name": "Twelve-Factor App Factor IX",
+            "pyramid": 5,
+            "year": 2012
+          }
         ]
       }
     ]
@@ -42,8 +79,16 @@
       "grade": 4,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Docker Compose docs — deploy.update_config", "pyramid": 3, "year": 2024},
-        {"name": "Spring Boot docs — actuator health endpoint", "pyramid": 3, "year": 2024}
+        {
+          "name": "Docker Compose docs — deploy.update_config",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot docs — actuator health endpoint",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

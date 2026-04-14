@@ -3,18 +3,26 @@
   "domain": "design",
   "question": "Quelles durees et courbes d'animation utiliser, et comment gerer prefers-reduced-motion ?",
   "depends_on": [],
-  "tags": ["animation", "motion", "transition", "reduced-motion", "css"],
+  "tags": [
+    "animation",
+    "motion",
+    "transition",
+    "reduced-motion",
+    "css"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Duree 200-300ms pour les transitions standard, ease-out pour les entrees, ease-in pour les sorties.",
-        "grade": 4,
-        "level": "STANDARD",
+        "grade": 5,
+        "level": "RECOMMANDE",
         "sources": [
           "Material Design 3 Motion — 200-500ms selon complexite (niv. 5)",
           "Apple HIG — 250ms standard (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Toujours respecter prefers-reduced-motion : desactiver ou reduire les animations quand le media query est actif.",

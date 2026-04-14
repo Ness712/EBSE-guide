@@ -2,8 +2,17 @@
   "id": "numeric-precision",
   "domain": "data",
   "question": "Comment gerer la precision numerique pour les calculs financiers et les montants ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["data", "numeric-precision", "bigdecimal", "money", "floating-point", "ieee-754"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "data",
+    "numeric-precision",
+    "bigdecimal",
+    "money",
+    "floating-point",
+    "ieee-754"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
@@ -12,9 +21,19 @@
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "IEEE 754 — limitations documentees des flottants", "pyramid": 1, "year": 2019},
-          {"name": "OWASP — rounding errors dans les paiements", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "IEEE 754 — limitations documentees des flottants",
+            "pyramid": 1,
+            "year": 2019
+          },
+          {
+            "name": "OWASP — rounding errors dans les paiements",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -25,7 +44,11 @@
       "level": "STANDARD",
       "implementation": "BigDecimal prix = new BigDecimal(\"19.99\"). Multiplication : prix.multiply(taux).setScale(2, RoundingMode.HALF_UP). Alternative : int prixCentimes = 1999.",
       "sources": [
-        {"name": "Java docs — BigDecimal pour calculs financiers", "pyramid": 5, "year": 2024}
+        {
+          "name": "Java docs — BigDecimal pour calculs financiers",
+          "pyramid": 5,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -34,8 +57,16 @@
       "level": "STANDARD",
       "implementation": "Stocker en centimes : const priceCents = 1999. Pour la precision arbitraire : import Decimal from 'decimal.js'; new Decimal('19.99'). Prisma Decimal type pour PostgreSQL NUMERIC.",
       "sources": [
-        {"name": "decimal.js docs", "pyramid": 3, "year": 2024},
-        {"name": "Prisma docs — Decimal type", "pyramid": 3, "year": 2024}
+        {
+          "name": "decimal.js docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prisma docs — Decimal type",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -44,8 +75,16 @@
       "level": "STANDARD",
       "implementation": "from decimal import Decimal. prix = Decimal('19.99'). Django : models.DecimalField(max_digits=10, decimal_places=2). JAMAIS models.FloatField pour les montants.",
       "sources": [
-        {"name": "Python docs — decimal module", "pyramid": 3, "year": 2024},
-        {"name": "Django docs — DecimalField", "pyramid": 3, "year": 2024}
+        {
+          "name": "Python docs — decimal module",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Django docs — DecimalField",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

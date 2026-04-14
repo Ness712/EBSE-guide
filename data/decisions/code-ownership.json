@@ -3,25 +3,45 @@
   "domain": "project",
   "question": "Comment organiser l'ownership du code pour reduire les defauts tout en diffusant la connaissance ?",
   "depends_on": [],
-  "tags": ["code-ownership", "codeowners", "code-review", "bus-factor", "quality"],
+  "tags": [
+    "code-ownership",
+    "codeowners",
+    "code-review",
+    "bus-factor",
+    "quality"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Ownership collectif avec domain experts identifies. Pas de proprietaire unique (bus factor de 1). CODEOWNERS pour auto-assign les reviewers. 1 reviewer minimum par PR.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Bird et al. 2011 — Microsoft code ownership study (Windows Vista)", "pyramid": 4, "year": 2011},
-          {"name": "GitHub CODEOWNERS docs", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "Bird et al. 2011 — Microsoft code ownership study (Windows Vista)",
+            "pyramid": 4,
+            "year": 2011
+          },
+          {
+            "name": "GitHub CODEOWNERS docs",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Rotation des reviewers pour diffuser la connaissance et reduire le bus factor. Le code avec 1 seul owner a +65% de defauts (etude Microsoft).",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "Bird et al. 2011 — Microsoft code ownership study", "pyramid": 4, "year": 2011}
+          {
+            "name": "Bird et al. 2011 — Microsoft code ownership study",
+            "pyramid": 4,
+            "year": 2011
+          }
         ]
       }
     ]

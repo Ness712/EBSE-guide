@@ -3,19 +3,27 @@
   "domain": "design",
   "question": "Quel type de pagination utiliser (offset vs cursor-based) ?",
   "depends_on": [],
-  "tags": ["pagination", "offset", "cursor", "infinite-scroll", "api"],
+  "tags": [
+    "pagination",
+    "offset",
+    "cursor",
+    "infinite-scroll",
+    "api"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Offset pour listes admin et tableaux triables (acces direct a page N). Cursor-based pour feeds, fils de discussion, infinite scroll et exports (performant, resultats stables).",
-        "grade": 4,
+        "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
           "Spring Data docs — Pageable (niv. 3)",
           "Baymard Institute — pagination UX research (niv. 4)",
           "Slack Engineering — cursor pagination at scale (niv. 4)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

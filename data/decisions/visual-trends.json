@@ -3,19 +3,28 @@
   "domain": "design",
   "question": "Quelles tendances visuelles suivre (2026) : borders, elevation, coins arrondis ?",
   "depends_on": [],
-  "tags": ["visual-trends", "glassmorphism", "border-radius", "elevation", "m3", "apple-hig"],
+  "tags": [
+    "visual-trends",
+    "glassmorphism",
+    "border-radius",
+    "elevation",
+    "m3",
+    "apple-hig"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Convergence M3 + Apple HIG : tonal elevation (surface teintee plutot que drop shadows lourdes), subtle borders (1px, 6% opacity), glassmorphism subtil (blur 20px), coins arrondis 8-16px.",
-        "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "grade": 4,
+        "level": "BONNE_PRATIQUE",
         "sources": [
           "Material Design 3 — tonal elevation, shape system (niv. 5)",
           "Apple HIG 2025 — materials, vibrancy, corner radius (niv. 5)",
           "Dribbble/Behance trends 2025-2026 — observation empirique (niv. 6)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

@@ -2,12 +2,27 @@
   "id": "mutation-testing",
   "domain": "testing",
   "question": "Comment valider la qualite des tests au-dela de la couverture de code ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["testing", "mutation-testing", "pitest", "stryker", "test-quality"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "testing",
+    "mutation-testing",
+    "pitest",
+    "stryker",
+    "test-quality"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "La couverture mesure si le code est execute, pas s'il est verifie",
+      {
+        "text": "La couverture mesure si le code est execute, pas s'il est verifie",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Le mutation testing injecte des bugs (mutants) et verifie que les tests les detectent",
       "Mutation score = mutants tues / mutants totaux",
       "> 80% = tests solides, 60-80% = acceptable, < 60% = tests superficiels"

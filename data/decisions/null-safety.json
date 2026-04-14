@@ -2,19 +2,40 @@
   "id": "null-safety",
   "domain": "code-quality",
   "question": "Comment eliminer les null non controles (Optional en Java, strictNullChecks en TS) ?",
-  "depends_on": ["backend-framework", "frontend-framework", "typescript-strict"],
-  "tags": ["code-quality", "null-safety", "optional", "nullish-coalescing", "npe"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework",
+    "typescript-strict"
+  ],
+  "tags": [
+    "code-quality",
+    "null-safety",
+    "optional",
+    "nullish-coalescing",
+    "npe"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "NullPointerException est la premiere cause de bugs en Java. TypeError: Cannot read properties of undefined est l'erreur #1 en JavaScript. Rendre l'absence explicite.",
-        "grade": 5,
+        "grade": 3,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Effective Java (Bloch) Item 55", "pyramid": 5, "year": 2018, "quote": "Return Optional instead of null"},
-          {"name": "TypeScript docs — strictNullChecks", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Effective Java (Bloch) Item 55",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Return Optional instead of null"
+          },
+          {
+            "name": "TypeScript docs — strictNullChecks",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -24,8 +45,17 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Java 17+ docs — Optional API", "pyramid": 3, "year": 2024, "quote": "Primarily intended for method return types"},
-        {"name": "Effective Java (Bloch) Item 55", "pyramid": 5, "year": 2018}
+        {
+          "name": "Java 17+ docs — Optional API",
+          "pyramid": 3,
+          "year": 2024,
+          "quote": "Primarily intended for method return types"
+        },
+        {
+          "name": "Effective Java (Bloch) Item 55",
+          "pyramid": 5,
+          "year": 2018
+        }
       ]
     },
     "typescript-react-vite": {
@@ -33,7 +63,11 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "TypeScript docs — strictNullChecks, nullish coalescing operator", "pyramid": 3, "year": 2024}
+        {
+          "name": "TypeScript docs — strictNullChecks, nullish coalescing operator",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

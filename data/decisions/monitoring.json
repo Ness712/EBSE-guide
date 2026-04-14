@@ -2,12 +2,28 @@
   "id": "monitoring",
   "domain": "reliability",
   "question": "Quoi monitorer et avec quel stack d'observabilite ?",
-  "depends_on": ["infrastructure"],
-  "tags": ["reliability", "monitoring", "prometheus", "grafana", "sentry", "opentelemetry", "slo"],
+  "depends_on": [
+    "infrastructure"
+  ],
+  "tags": [
+    "reliability",
+    "monitoring",
+    "prometheus",
+    "grafana",
+    "sentry",
+    "opentelemetry",
+    "slo"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
-      "Monitorer les 4 golden signals : Latency (P95 < 500ms), Traffic (req/s), Errors (5xx < 0.1%), Saturation (CPU, memoire, connexions DB)",
+      {
+        "text": "Monitorer les 4 golden signals : Latency (P95 < 500ms), Traffic (req/s), Errors (5xx < 0.1%), Saturation (CPU, memoire, connexions DB)",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Ajouter le monitoring securite : echecs login, acces non autorises",
       "Definir des SLOs mesurables : disponibilite 99.9%, latence P95 < 500ms, taux d'erreur < 0.1%",
       "Logs as event streams (Twelve-Factor App)"

@@ -3,7 +3,13 @@
   "domain": "security",
   "question": "Comment chiffrer les donnees en transit (TLS) et au repos (at-rest) ?",
   "depends_on": [],
-  "tags": ["security", "encryption", "tls", "https", "aes"],
+  "tags": [
+    "security",
+    "encryption",
+    "tls",
+    "https",
+    "aes"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,18 +18,40 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "NIST SP 800-52 Rev. 2", "pyramid": 1, "year": 2019},
-          {"name": "OWASP ASVS V6", "pyramid": 2, "year": 2021},
-          {"name": "Mozilla TLS Guidelines", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "NIST SP 800-52 Rev. 2",
+            "pyramid": 1,
+            "year": 2019
+          },
+          {
+            "name": "OWASP ASVS V6",
+            "pyramid": 2,
+            "year": 2021
+          },
+          {
+            "name": "Mozilla TLS Guidelines",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "HSTS avec includeSubDomains, maxAge >= 1 an (31536000s), preload active.",
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "NIST SP 800-52 Rev. 2", "pyramid": 1, "year": 2019},
-          {"name": "OWASP ASVS V6", "pyramid": 2, "year": 2021}
+          {
+            "name": "NIST SP 800-52 Rev. 2",
+            "pyramid": 1,
+            "year": 2019
+          },
+          {
+            "name": "OWASP ASVS V6",
+            "pyramid": 2,
+            "year": 2021
+          }
         ]
       },
       {
@@ -31,7 +59,11 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "Let's Encrypt docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Let's Encrypt docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -39,8 +71,16 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "NIST SP 800-175B", "pyramid": 1, "year": 2020},
-          {"name": "OWASP ASVS V6", "pyramid": 2, "year": 2021}
+          {
+            "name": "NIST SP 800-175B",
+            "pyramid": 1,
+            "year": 2020
+          },
+          {
+            "name": "OWASP ASVS V6",
+            "pyramid": 2,
+            "year": 2021
+          }
         ]
       }
     ]

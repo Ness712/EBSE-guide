@@ -2,28 +2,61 @@
   "id": "performance-testing",
   "domain": "performance",
   "question": "Comment tester et mesurer la performance d'une application web (backend et frontend) ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["performance", "testing", "k6", "lighthouse", "core-web-vitals", "load-testing", "budgets"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "performance",
+    "testing",
+    "k6",
+    "lighthouse",
+    "core-web-vitals",
+    "load-testing",
+    "budgets"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Definir des budgets de performance : LCP < 2.5s, INP < 200ms, CLS < 0.1, bundle JS < 200KB gzipped, API P95 < 500ms, TTFB < 800ms. Sans budget, la performance se degrade commit apres commit.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "web.dev Core Web Vitals — LCP, INP, CLS", "pyramid": 3, "year": 2024},
-          {"name": "Google CrUX report — Core Web Vitals impact ranking", "pyramid": 4, "year": 2024},
-          {"name": "Google SRE Book — latency SLOs, performance budgets", "pyramid": 5, "year": 2016}
-        ]
+          {
+            "name": "web.dev Core Web Vitals — LCP, INP, CLS",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Google CrUX report — Core Web Vitals impact ranking",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Google SRE Book — latency SLOs, performance budgets",
+            "pyramid": 5,
+            "year": 2016
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "k6 pour le load testing backend (ramp up, plateau, ramp down, thresholds P95 < 500ms, < 1% erreurs). Lighthouse CI pour le frontend (Core Web Vitals automatises dans le CI).",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "k6 docs — load testing, thresholds, CI integration", "pyramid": 3, "year": 2024},
-          {"name": "Google SRE Book — latency SLOs", "pyramid": 5, "year": 2016}
+          {
+            "name": "k6 docs — load testing, thresholds, CI integration",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Google SRE Book — latency SLOs",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]
@@ -35,7 +68,11 @@
       "level": "RECOMMANDE",
       "implementation": "k6 script avec stages (ramp up 1m, plateau 3m, ramp down 1m). check() sur status 200. Integrer dans le CI.",
       "sources": [
-        {"name": "k6 docs — load testing", "pyramid": 3, "year": 2024}
+        {
+          "name": "k6 docs — load testing",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -44,7 +81,11 @@
       "level": "RECOMMANDE",
       "implementation": "k6 script identique (protocol-level testing, agnostique du framework). Integrer dans le CI.",
       "sources": [
-        {"name": "k6 docs — load testing", "pyramid": 3, "year": 2024}
+        {
+          "name": "k6 docs — load testing",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -53,8 +94,16 @@
       "level": "RECOMMANDE",
       "implementation": "k6 ou Locust. k6 recommande pour la CI (plus leger, pas de dependance Python). Locust si besoin de scenarios complexes en Python.",
       "sources": [
-        {"name": "k6 docs — load testing", "pyramid": 3, "year": 2024},
-        {"name": "Locust docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "k6 docs — load testing",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Locust docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

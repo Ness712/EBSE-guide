@@ -3,18 +3,26 @@
   "domain": "design",
   "question": "Comment mesurer l'efficacite utilisateur (task success, completion time, satisfaction) ?",
   "depends_on": [],
-  "tags": ["ux-metrics", "effectiveness", "usability-testing", "analytics", "iso-25019"],
+  "tags": [
+    "ux-metrics",
+    "effectiveness",
+    "usability-testing",
+    "analytics",
+    "iso-25019"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Mesurer 4 metriques cles : task success rate (>95%), task completion time (<budget), error rate (en baisse), satisfaction SUS/CSAT (SUS >68).",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "RECOMMANDE",
         "sources": [
           "ISO 25019:2023 (niv. 1)",
           "SUS (Brooke 1996, standard industriel) (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Test utilisateur (5 users) par feature majeure, session recording continu, SUS score trimestriel. Analytics pour tracker les flows critiques et funnels.",

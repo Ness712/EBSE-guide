@@ -2,12 +2,27 @@
   "id": "transactions",
   "domain": "reliability",
   "question": "Comment gerer les transactions et l'idempotence des mutations API ?",
-  "depends_on": ["backend-framework", "database"],
-  "tags": ["reliability", "transactions", "idempotency", "acid", "transactional"],
+  "depends_on": [
+    "backend-framework",
+    "database"
+  ],
+  "tags": [
+    "reliability",
+    "transactions",
+    "idempotency",
+    "acid",
+    "transactional"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
-      "Transactions au service layer, jamais au controller (boundary HTTP) ni au repository (trop granulaire)",
+      {
+        "text": "Transactions au service layer, jamais au controller (boundary HTTP) ni au repository (trop granulaire)",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Default readOnly=true au niveau classe, ecraser pour les mutations",
       "Idempotency-Key header pour les mutations API (eviter les doublons)",
       "Attention aux pieges : @Transactional sur methode private ne fonctionne pas (proxy), exception checked non propagee, transaction trop longue"

@@ -3,27 +3,56 @@
   "domain": "code-quality",
   "question": "Quelles conventions de nommage par langage et contexte ?",
   "depends_on": [],
-  "tags": ["code-quality", "naming", "conventions", "camelCase", "PascalCase", "kebab-case"],
+  "tags": [
+    "code-quality",
+    "naming",
+    "conventions",
+    "camelCase",
+    "PascalCase",
+    "kebab-case"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "La convention est moins importante que sa coherence. Conventions par contexte : camelCase (variables/methodes Java et TS), PascalCase (classes Java, composants React), kebab-case (fichiers utilitaires TS, endpoints REST), SCREAMING_SNAKE_CASE (constantes, variables d'env), snake_case (tables SQL).",
         "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google Java Style Guide — camelCase methods, PascalCase classes", "pyramid": 3, "year": 2024},
-          {"name": "Spring Boot conventions — repository, service, controller naming", "pyramid": 3, "year": 2024},
-          {"name": "Clean Code (Martin) — meaningful names, intention-revealing names", "pyramid": 5, "year": 2008}
-        ]
+          {
+            "name": "Google Java Style Guide — camelCase methods, PascalCase classes",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Spring Boot conventions — repository, service, controller naming",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Clean Code (Martin) — meaningful names, intention-revealing names",
+            "pyramid": 5,
+            "year": 2008
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Noms descriptifs sans abreviations, booleens avec prefixe is/has/can, collections au pluriel, fonctions = verbe + nom.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Clean Code (Martin) — meaningful names", "pyramid": 5, "year": 2008},
-          {"name": "Google Java Style Guide", "pyramid": 3, "year": 2024}
+          {
+            "name": "Clean Code (Martin) — meaningful names",
+            "pyramid": 5,
+            "year": 2008
+          },
+          {
+            "name": "Google Java Style Guide",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

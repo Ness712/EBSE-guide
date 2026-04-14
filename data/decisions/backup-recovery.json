@@ -2,12 +2,28 @@
   "id": "backup-recovery",
   "domain": "reliability",
   "question": "Quelle strategie de backup et disaster recovery pour la base de donnees ?",
-  "depends_on": ["database"],
-  "tags": ["reliability", "backup", "disaster-recovery", "postgresql", "pitr", "rpo", "rto"],
+  "depends_on": [
+    "database"
+  ],
+  "tags": [
+    "reliability",
+    "backup",
+    "disaster-recovery",
+    "postgresql",
+    "pitr",
+    "rpo",
+    "rto"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
-      "Strategie 2 niveaux : backup logique quotidien (pg_dump, RPO 24h) + WAL archiving continu (RPO < 1h)",
+      {
+        "text": "Strategie 2 niveaux : backup logique quotidien (pg_dump, RPO 24h) + WAL archiving continu (RPO < 1h)",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
+      },
       "Cibles : RPO <= 1h (WAL archiving), RTO <= 4h (pg_restore + WAL replay)",
       "Offsite backup obligatoire (rclone vers stockage distant)",
       "Retention 30 jours minimum",

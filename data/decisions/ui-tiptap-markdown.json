@@ -2,11 +2,28 @@
   "id": "ui-tiptap-markdown",
   "domain": "ui-libraries",
   "question": "Quel outil pour l'edition et l'affichage Markdown ?",
-  "depends_on": ["frontend-framework", "ui-tiptap"],
-  "tags": ["ui", "react", "markdown", "editor", "wysiwyg"],
+  "depends_on": [
+    "frontend-framework",
+    "ui-tiptap"
+  ],
+  "tags": [
+    "ui",
+    "react",
+    "markdown",
+    "editor",
+    "wysiwyg"
+  ],
   "classification": "stack-specific",
   "universal": {
-    "principles": []
+    "principles": [
+      {
+        "text": "(Voir variants pour les recommandations specifiques)",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      }
+    ]
   },
   "variants": {
     "react": {
@@ -15,8 +32,16 @@
       "level": "BONNE PRATIQUE",
       "implementation": "pnpm add @tiptap/react @tiptap/starter-kit tiptap-markdown react-markdown",
       "sources": [
-        {"name": "npm trends", "pyramid": 4, "year": 2026},
-        {"name": "tiptap-markdown docs", "pyramid": 5, "year": 2026}
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap-markdown docs",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

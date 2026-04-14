@@ -2,8 +2,17 @@
   "id": "state-management",
   "domain": "architecture",
   "question": "Comment gerer l'etat dans une application React ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["architecture", "state-management", "zustand", "redux", "react-query", "react"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "state-management",
+    "zustand",
+    "redux",
+    "react-query",
+    "react"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,17 +21,35 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "npm trends 2025-2026 — Zustand #1 croissance", "pyramid": 4, "year": 2025},
-          {"name": "State of JS 2024 — satisfaction Zustand 96%", "pyramid": 4, "year": 2024},
-          {"name": "Zustand docs — no providers, no boilerplate", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "npm trends 2025-2026 — Zustand #1 croissance",
+            "pyramid": 4,
+            "year": 2025
+          },
+          {
+            "name": "State of JS 2024 — satisfaction Zustand 96%",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "Zustand docs — no providers, no boilerplate",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "useState/useReducer pour l'etat local, props/context pour le partage entre composants proches, React Query (TanStack Query) pour le cache serveur, Redux Toolkit uniquement pour les apps tres complexes.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "React docs — useState pour etat local", "pyramid": 3, "year": 2024}
+          {
+            "name": "React docs — useState pour etat local",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

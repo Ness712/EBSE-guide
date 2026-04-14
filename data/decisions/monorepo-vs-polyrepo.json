@@ -3,25 +3,45 @@
   "domain": "project",
   "question": "Faut-il utiliser un monorepo ou un polyrepo pour organiser les repositories du projet ?",
   "depends_on": [],
-  "tags": ["monorepo", "polyrepo", "repository", "architecture", "git"],
+  "tags": [
+    "monorepo",
+    "polyrepo",
+    "repository",
+    "architecture",
+    "git"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Pas de consensus scientifique. Monorepo si code partage important et petite equipe ; polyrepo si equipes independantes, cycles de release differents ou stack heterogene.",
         "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google monorepo paper — Potvin & Levenberg 2016", "pyramid": 5, "year": 2016},
-          {"name": "Fowler 'MonolithFirst'", "pyramid": 5, "year": 2015}
-        ]
+          {
+            "name": "Google monorepo paper — Potvin & Levenberg 2016",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "Fowler 'MonolithFirst'",
+            "pyramid": 5,
+            "year": 2015
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Sans outillage adapte (Turborepo, Nx, Bazel), un monorepo peut devenir un frein. Le choix depend du contexte, pas d'une regle universelle.",
         "grade": 2,
         "level": "CHOIX D'EQUIPE",
         "sources": [
-          {"name": "Google monorepo paper — Potvin & Levenberg 2016", "pyramid": 5, "year": 2016}
+          {
+            "name": "Google monorepo paper — Potvin & Levenberg 2016",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]

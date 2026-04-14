@@ -3,26 +3,52 @@
   "domain": "safety",
   "question": "Quelles sont les exigences RGPD obligatoires pour tout traitement de donnees personnelles UE ?",
   "depends_on": [],
-  "tags": ["rgpd", "gdpr", "privacy", "legal", "data-protection", "cnil", "compliance"],
+  "tags": [
+    "rgpd",
+    "gdpr",
+    "privacy",
+    "legal",
+    "data-protection",
+    "cnil",
+    "compliance"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Le RGPD est une obligation legale (amende jusqu'a 4% du CA mondial). Consentement explicite (opt-in, pas pre-coche), droit d'acces/export (Art. 15, 20), droit a l'effacement (Art. 17), minimisation des donnees (Art. 5), privacy by design (Art. 25).",
-        "grade": 7,
+        "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "Reglement UE 2016/679 (RGPD) — Art. 5, 6, 7, 15, 17, 20, 25, 30", "pyramid": 1, "year": 2016},
-          {"name": "CNIL — Guidelines consentement, droit a l'effacement, privacy by design", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "Reglement UE 2016/679 (RGPD) — Art. 5, 6, 7, 15, 17, 20, 25, 30",
+            "pyramid": 1,
+            "year": 2016
+          },
+          {
+            "name": "CNIL — Guidelines consentement, droit a l'effacement, privacy by design",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Checklist minimale : banner consentement (refus aussi simple qu'acceptation), politique de confidentialite accessible, endpoint export donnees personnelles (JSON), endpoint suppression/anonymisation, registre des traitements (Art. 30), retention definie et automatisee.",
         "grade": 7,
         "level": "STANDARD",
         "sources": [
-          {"name": "Reglement UE 2016/679 (RGPD)", "pyramid": 1, "year": 2016},
-          {"name": "OWASP Top 10 Privacy Risks — data minimization, consent management", "pyramid": 2, "year": 2021}
+          {
+            "name": "Reglement UE 2016/679 (RGPD)",
+            "pyramid": 1,
+            "year": 2016
+          },
+          {
+            "name": "OWASP Top 10 Privacy Risks — data minimization, consent management",
+            "pyramid": 2,
+            "year": 2021
+          }
         ]
       }
     ]

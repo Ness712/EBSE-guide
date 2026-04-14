@@ -3,19 +3,28 @@
   "domain": "design",
   "question": "Quel pattern de navigation utiliser (sidebar, top-nav, bottom tab bar) ?",
   "depends_on": [],
-  "tags": ["navigation", "sidebar", "top-nav", "bottom-tab-bar", "mobile", "ux"],
+  "tags": [
+    "navigation",
+    "sidebar",
+    "top-nav",
+    "bottom-tab-bar",
+    "mobile",
+    "ux"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Sidebar collapsible pour apps complexes (>5 sections, navigation imbriquee, dashboards). Top-nav horizontale pour sites vitrine (<7 liens). Bottom tab bar pour mobile (<5 sections).",
-        "grade": 3,
-        "level": "RECOMMANDE",
+        "grade": 6,
+        "level": "STANDARD",
         "sources": [
           "Nielsen Norman Group — F-pattern eye-tracking, sidebar superieur pour apps (niv. 3)",
           "Material Design 3 Navigation (niv. 5)",
           "Apple HIG — Tab bars mobile, sidebar desktop (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

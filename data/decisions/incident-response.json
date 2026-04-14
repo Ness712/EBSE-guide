@@ -2,27 +2,55 @@
   "id": "incident-response",
   "domain": "operations",
   "question": "Comment reagir aux incidents en production (runbooks, postmortems, blameless culture) ?",
-  "depends_on": ["alerting", "error-tracking"],
-  "tags": ["operations", "incident-response", "runbooks", "postmortem", "blameless", "sre"],
+  "depends_on": [
+    "alerting",
+    "error-tracking"
+  ],
+  "tags": [
+    "operations",
+    "incident-response",
+    "runbooks",
+    "postmortem",
+    "blameless",
+    "sre"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Processus en 5 etapes : Identifier (quel service, quel impact) → Contenir (rollback, feature flag off, scale up) → Resoudre (fix + deploy) → Communiquer (status page, equipe informee) → Postmortem (dans les 48h, blameless).",
-        "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Google SRE Book ch.15 — postmortem culture", "pyramid": 5, "year": 2016},
-          {"name": "PagerDuty Incident Response guide", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Google SRE Book ch.15 — postmortem culture",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "PagerDuty Incident Response guide",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Chaque alerte doit avoir un runbook associe : symptomes, diagnostic, actions correctives.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book ch.15", "pyramid": 5, "year": 2016},
-          {"name": "PagerDuty Incident Response guide", "pyramid": 3, "year": 2024}
+          {
+            "name": "Google SRE Book ch.15",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "PagerDuty Incident Response guide",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -30,8 +58,16 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book ch.15 — postmortem culture", "pyramid": 5, "year": 2016},
-          {"name": "Etsy — blameless postmortems", "pyramid": 4, "year": 2014}
+          {
+            "name": "Google SRE Book ch.15 — postmortem culture",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "Etsy — blameless postmortems",
+            "pyramid": 4,
+            "year": 2014
+          }
         ]
       }
     ]

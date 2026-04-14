@@ -3,20 +3,29 @@
   "domain": "design",
   "question": "Quel transport utiliser pour la communication temps reel (WebSocket, SSE, polling) ?",
   "depends_on": [],
-  "tags": ["realtime", "websocket", "stomp", "sse", "polling", "chat"],
+  "tags": [
+    "realtime",
+    "websocket",
+    "stomp",
+    "sse",
+    "polling",
+    "chat"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "WebSocket + STOMP pour communication bidirectionnelle (chat, collaboration). SSE pour serveur-vers-client uniquement (notifications, feeds). Polling en fallback pour compatibilite legacy.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
           "Spring WebSocket docs — WebSocket + STOMP reference implementation (niv. 3)",
           "IETF RFC 6455 — WebSocket protocol (niv. 1)",
           "MDN — Server-Sent Events specification (niv. 3)",
           "SWEBOK v4 — event-driven architecture patterns (niv. 1)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

@@ -2,30 +2,74 @@
   "id": "logging",
   "domain": "operations",
   "question": "Comment structurer, router et proteger les logs applicatifs ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["operations", "logging", "json", "structured-logging", "owasp", "opentelemetry", "twelve-factor"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "operations",
+    "logging",
+    "json",
+    "structured-logging",
+    "owasp",
+    "opentelemetry",
+    "twelve-factor"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Utiliser du JSON structure : chaque ligne de log = un objet JSON avec timestamp (ISO 8601 UTC), level, service, traceId, userId, event, message.",
-        "grade": 6,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "ISO/IEC 27002:2022 Control 8.15", "pyramid": 1, "year": 2022, "quote": "Audit logs obligatoires, 5 champs, protection, 1 an retention"},
-          {"name": "SWEBOK v4", "pyramid": 1, "year": 2024, "quote": "Logging must be collected and analyzed at application level"},
-          {"name": "OWASP Logging Cheat Sheet", "pyramid": 2, "year": 2024},
-          {"name": "OWASP Logging Vocabulary", "pyramid": 2, "year": 2024},
-          {"name": "OpenTelemetry Logs Spec", "pyramid": 2, "year": 2024, "quote": "Structured logs are preferred in production"}
-        ]
+          {
+            "name": "ISO/IEC 27002:2022 Control 8.15",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "Audit logs obligatoires, 5 champs, protection, 1 an retention"
+          },
+          {
+            "name": "SWEBOK v4",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Logging must be collected and analyzed at application level"
+          },
+          {
+            "name": "OWASP Logging Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "OWASP Logging Vocabulary",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "OpenTelemetry Logs Spec",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Structured logs are preferred in production"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Ecrire sur stdout, l'environnement route — l'application n'ecrit jamais dans des fichiers de log.",
         "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Twelve-Factor App Factor XI", "pyramid": 5, "year": 2012, "quote": "Treat logs as event streams, write to stdout"},
-          {"name": "CNCF TAG Observability", "pyramid": 2, "year": 2024}
+          {
+            "name": "Twelve-Factor App Factor XI",
+            "pyramid": 5,
+            "year": 2012,
+            "quote": "Treat logs as event streams, write to stdout"
+          },
+          {
+            "name": "CNCF TAG Observability",
+            "pyramid": 2,
+            "year": 2024
+          }
         ]
       },
       {
@@ -33,9 +77,23 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "OWASP Logging Cheat Sheet", "pyramid": 2, "year": 2024},
-          {"name": "OWASP Top 10:2025 A09", "pyramid": 2, "year": 2025, "quote": "Logging failures = 9e risque web"},
-          {"name": "CNCF TAG Observability", "pyramid": 2, "year": 2024, "quote": "Encrypt logs, no PII, use ERROR/WARN/INFO/DEBUG"}
+          {
+            "name": "OWASP Logging Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "OWASP Top 10:2025 A09",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Logging failures = 9e risque web"
+          },
+          {
+            "name": "CNCF TAG Observability",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Encrypt logs, no PII, use ERROR/WARN/INFO/DEBUG"
+          }
         ]
       },
       {
@@ -43,8 +101,16 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "OWASP Logging Vocabulary", "pyramid": 2, "year": 2024},
-          {"name": "ISO/IEC 27002:2022 Control 8.15", "pyramid": 1, "year": 2022}
+          {
+            "name": "OWASP Logging Vocabulary",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "ISO/IEC 27002:2022 Control 8.15",
+            "pyramid": 1,
+            "year": 2022
+          }
         ]
       },
       {
@@ -52,9 +118,21 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "ISO/IEC 27002:2022 Control 8.15", "pyramid": 1, "year": 2022},
-          {"name": "CNCF TAG Observability", "pyramid": 2, "year": 2024},
-          {"name": "OWASP Logging Cheat Sheet", "pyramid": 2, "year": 2024}
+          {
+            "name": "ISO/IEC 27002:2022 Control 8.15",
+            "pyramid": 1,
+            "year": 2022
+          },
+          {
+            "name": "CNCF TAG Observability",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "OWASP Logging Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -65,11 +143,31 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Spring Boot docs — structured JSON since 3.4", "pyramid": 3, "year": 2024},
-        {"name": "Logback benchmarks — 2140 ops/ms vs Log4j2 884", "pyramid": 3, "year": 2024},
-        {"name": "New Relic Java Ecosystem — SLF4J 83%, Logback 52%", "pyramid": 4, "year": 2024},
-        {"name": "NIST NVD CVE-2021-44228 — Log4Shell CVSS 10.0", "pyramid": 1, "year": 2021},
-        {"name": "Google SRE Book — structured logs for root cause", "pyramid": 5, "year": 2016}
+        {
+          "name": "Spring Boot docs — structured JSON since 3.4",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Logback benchmarks — 2140 ops/ms vs Log4j2 884",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "New Relic Java Ecosystem — SLF4J 83%, Logback 52%",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "NIST NVD CVE-2021-44228 — Log4Shell CVSS 10.0",
+          "pyramid": 1,
+          "year": 2021
+        },
+        {
+          "name": "Google SRE Book — structured logs for root cause",
+          "pyramid": 5,
+          "year": 2016
+        }
       ]
     },
     "typescript-nestjs": {
@@ -77,10 +175,26 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "NestJS docs — Logger", "pyramid": 3, "year": 2024},
-        {"name": "Pino benchmarks — 50k vs Winston 10k logs/sec", "pyramid": 3, "year": 2024},
-        {"name": "npm trends — Pino ~21.5M/sem", "pyramid": 4, "year": 2024},
-        {"name": "Double extraction batch 10 — accord 96%", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS docs — Logger",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Pino benchmarks — 50k vs Winston 10k logs/sec",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — Pino ~21.5M/sem",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -88,9 +202,21 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "python-json-logger docs", "pyramid": 3, "year": 2024},
-        {"name": "Django docs — Logging", "pyramid": 3, "year": 2024},
-        {"name": "Double extraction batch 10 — accord 96%", "pyramid": 5, "year": 2026}
+        {
+          "name": "python-json-logger docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Django docs — Logging",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

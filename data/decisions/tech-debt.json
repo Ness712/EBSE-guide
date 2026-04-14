@@ -2,27 +2,53 @@
   "id": "tech-debt",
   "domain": "code-quality",
   "question": "Comment mesurer, prioriser et reduire la dette technique ?",
-  "depends_on": ["linting"],
-  "tags": ["code-quality", "tech-debt", "sonarqube", "boy-scout-rule", "clean-code"],
+  "depends_on": [
+    "linting"
+  ],
+  "tags": [
+    "code-quality",
+    "tech-debt",
+    "sonarqube",
+    "boy-scout-rule",
+    "clean-code"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Mesurer la dette via SonarQube Technical Debt metric. Seuil : ratio dette < 5% (temps remediation / temps dev).",
-        "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "SonarQube docs — technical debt metric", "pyramid": 3, "year": 2024},
-          {"name": "Fowler — TechnicalDebt", "pyramid": 5, "year": 2009}
-        ]
+          {
+            "name": "SonarQube docs — technical debt metric",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Fowler — TechnicalDebt",
+            "pyramid": 5,
+            "year": 2009
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Prioriser par impact x frequence de contact : code touche souvent + dette = priorite haute.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Fowler — TechnicalDebt", "pyramid": 5, "year": 2009},
-          {"name": "SWEBOK v4 — Software Maintenance KA", "pyramid": 1, "year": 2024}
+          {
+            "name": "Fowler — TechnicalDebt",
+            "pyramid": 5,
+            "year": 2009
+          },
+          {
+            "name": "SWEBOK v4 — Software Maintenance KA",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       },
       {
@@ -30,7 +56,11 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Fowler — TechnicalDebt", "pyramid": 5, "year": 2009}
+          {
+            "name": "Fowler — TechnicalDebt",
+            "pyramid": 5,
+            "year": 2009
+          }
         ]
       },
       {
@@ -38,7 +68,11 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Martin — Clean Code, boy scout rule", "pyramid": 5, "year": 2008}
+          {
+            "name": "Martin — Clean Code, boy scout rule",
+            "pyramid": 5,
+            "year": 2008
+          }
         ]
       }
     ]

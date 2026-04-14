@@ -3,19 +3,27 @@
   "domain": "design",
   "question": "Quel systeme d'espacement utiliser (grille, tokens) ?",
   "depends_on": [],
-  "tags": ["spacing", "grid", "8px", "tokens", "layout"],
+  "tags": [
+    "spacing",
+    "grid",
+    "8px",
+    "tokens",
+    "layout"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Grille de base 8px, sous-unite 4px. Tous les espacements, marges et paddings doivent etre des multiples de 4px, privilegiant les multiples de 8px.",
         "grade": 4,
-        "level": "STANDARD",
+        "level": "RECOMMANDE",
         "sources": [
           "Material Design 3 — grille 8dp (niv. 5)",
           "Apple HIG — espacement 8pt systematique (niv. 5)",
           "ISO 9241-112:2017 — espacement regulier pour lisibilite (niv. 1)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Tokens : xs 4px (intra-composant), sm 8px (padding compact), md 16px (padding standard, gap grilles), lg 24px (separation sections), xl 32px (marges page), 2xl 48px (blocs majeurs).",

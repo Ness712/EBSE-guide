@@ -3,26 +3,50 @@
   "domain": "project",
   "question": "Quel format utiliser pour exprimer les exigences fonctionnelles de maniere structuree et testable ?",
   "depends_on": [],
-  "tags": ["requirements", "user-stories", "gherkin", "acceptance-criteria", "bdd"],
+  "tags": [
+    "requirements",
+    "user-stories",
+    "gherkin",
+    "acceptance-criteria",
+    "bdd"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Formuler les exigences en user stories : En tant que [role], je veux [action], afin de [benefice]. Accompagner chaque story de criteres d'acceptation Given/When/Then.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "SWEBOK v4 — Software Requirements Knowledge Area", "pyramid": 1, "year": 2024},
-          {"name": "Cohn 'User Stories Applied'", "pyramid": 5, "year": 2004}
-        ]
+          {
+            "name": "SWEBOK v4 — Software Requirements Knowledge Area",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Cohn 'User Stories Applied'",
+            "pyramid": 5,
+            "year": 2004
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Utiliser des templates GitHub Issue pour forcer la structure : user story, criteres d'acceptation (checklist), notes techniques.",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "Cucumber — Gherkin syntax reference", "pyramid": 3, "year": 2024},
-          {"name": "GitHub Issues docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Cucumber — Gherkin syntax reference",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "GitHub Issues docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

@@ -2,11 +2,28 @@
   "id": "ui-tiptap",
   "domain": "ui-libraries",
   "question": "Quel outil pour l'edition rich text ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["ui", "react", "rich-text", "editor", "prosemirror", "wysiwyg"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "ui",
+    "react",
+    "rich-text",
+    "editor",
+    "prosemirror",
+    "wysiwyg"
+  ],
   "classification": "stack-specific",
   "universal": {
-    "principles": []
+    "principles": [
+      {
+        "text": "(Voir variants pour les recommandations specifiques)",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      }
+    ]
   },
   "variants": {
     "react": {
@@ -15,8 +32,16 @@
       "level": "RECOMMANDE",
       "implementation": "pnpm add @tiptap/react @tiptap/starter-kit @tiptap/pm",
       "sources": [
-        {"name": "npm trends", "pyramid": 4, "year": 2026},
-        {"name": "tiptap docs", "pyramid": 5, "year": 2026}
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap docs",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

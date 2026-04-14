@@ -2,8 +2,19 @@
   "id": "module-structure",
   "domain": "architecture",
   "question": "Comment organiser les modules/packages d'une application (feature-based vs layer-based) ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["architecture", "module-structure", "package-by-feature", "clean-architecture", "ddd", "modularity", "enforcement"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "module-structure",
+    "package-by-feature",
+    "clean-architecture",
+    "ddd",
+    "modularity",
+    "enforcement"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,23 +23,70 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "ISO 25010:2023 — Modularity sub-characteristic", "pyramid": 1, "year": 2023, "quote": "Degree to which a system is composed of discrete components such that a change to one component has minimal impact on other components"},
-          {"name": "SWEBOK v4 — cohesion/coupling", "pyramid": 1, "year": 2024},
-          {"name": "Clean Architecture (Martin)", "pyramid": 5, "year": 2017, "quote": "The architecture should scream the use cases of the system, not the framework"},
-          {"name": "DDD (Evans) — bounded contexts", "pyramid": 5, "year": 2003},
-          {"name": "Baxter et al. 2006 — 56 Java projects", "pyramid": 4, "year": 2006, "quote": "40% fewer inter-package deps with feature-based"},
-          {"name": "Santos et al. 2019 — 12 projects", "pyramid": 4, "year": 2019, "quote": "25-30% defect reduction"},
-          {"name": "Koziolek et al. 2013 — systematic review", "pyramid": 4, "year": 2013, "quote": "30-50% maintenance effort reduction"}
-        ]
+          {
+            "name": "ISO 25010:2023 — Modularity sub-characteristic",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Degree to which a system is composed of discrete components such that a change to one component has minimal impact on other components"
+          },
+          {
+            "name": "SWEBOK v4 — cohesion/coupling",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Clean Architecture (Martin)",
+            "pyramid": 5,
+            "year": 2017,
+            "quote": "The architecture should scream the use cases of the system, not the framework"
+          },
+          {
+            "name": "DDD (Evans) — bounded contexts",
+            "pyramid": 5,
+            "year": 2003
+          },
+          {
+            "name": "Baxter et al. 2006 — 56 Java projects",
+            "pyramid": 4,
+            "year": 2006,
+            "quote": "40% fewer inter-package deps with feature-based"
+          },
+          {
+            "name": "Santos et al. 2019 — 12 projects",
+            "pyramid": 4,
+            "year": 2019,
+            "quote": "25-30% defect reduction"
+          },
+          {
+            "name": "Koziolek et al. 2013 — systematic review",
+            "pyramid": 4,
+            "year": 2013,
+            "quote": "30-50% maintenance effort reduction"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Les dependances pointent vers l'interieur (infrastructure → domaine, jamais l'inverse). Le domaine ne depend de rien d'externe.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Clean Architecture — dependency rule", "pyramid": 5, "year": 2017},
-          {"name": "Hexagonal Architecture (Cockburn)", "pyramid": 5, "year": 2005},
-          {"name": "DDD Bounded Context", "pyramid": 5, "year": 2003}
+          {
+            "name": "Clean Architecture — dependency rule",
+            "pyramid": 5,
+            "year": 2017
+          },
+          {
+            "name": "Hexagonal Architecture (Cockburn)",
+            "pyramid": 5,
+            "year": 2005
+          },
+          {
+            "name": "DDD Bounded Context",
+            "pyramid": 5,
+            "year": 2003
+          }
         ]
       },
       {
@@ -36,9 +94,22 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Abdeen et al. 2013", "pyramid": 4, "year": 2013, "quote": "2-3x more modifications in coupled packages, +40% defects"},
-          {"name": "ArchUnit docs", "pyramid": 3, "year": 2024},
-          {"name": "eslint-plugin-boundaries docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Abdeen et al. 2013",
+            "pyramid": 4,
+            "year": 2013,
+            "quote": "2-3x more modifications in coupled packages, +40% defects"
+          },
+          {
+            "name": "ArchUnit docs",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "eslint-plugin-boundaries docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -50,10 +121,26 @@
       "level": "RECOMMANDE",
       "implementation": "Chaque feature contient Controller, Service, Repository, domain/, dto/. Shared/ minimal. ArchUnit rules : noClasses().that().resideInAPackage(\"..chat..\").should().dependOnClassesThat().resideInAPackage(\"..mycology..\").",
       "sources": [
-        {"name": "Spring Modulith — modular monolith verification", "pyramid": 3, "year": 2024},
-        {"name": "ArchUnit — architecture testing", "pyramid": 3, "year": 2024},
-        {"name": "Spring Boot docs — package-by-feature samples", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — module enforcement accord", "pyramid": 5, "year": 2026}
+        {
+          "name": "Spring Modulith — modular monolith verification",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "ArchUnit — architecture testing",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot docs — package-by-feature samples",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — module enforcement accord",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "typescript-nestjs": {
@@ -62,9 +149,21 @@
       "level": "RECOMMANDE",
       "implementation": "Chaque module NestJS contient controller, service, entities, dto. exports[] pour l'API publique. eslint-plugin-boundaries pour interdire feature → feature.",
       "sources": [
-        {"name": "NestJS Modules docs", "pyramid": 3, "year": 2024},
-        {"name": "eslint-plugin-boundaries docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — eslint-plugin-boundaries/dependency-cruiser accord", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS Modules docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "eslint-plugin-boundaries docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — eslint-plugin-boundaries/dependency-cruiser accord",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -73,9 +172,21 @@
       "level": "RECOMMANDE",
       "implementation": "Chaque app Django contient models.py, views.py, serializers.py, urls.py. INSTALLED_APPS ordonne. import-linter dans la CI pour interdire les imports croises.",
       "sources": [
-        {"name": "Django docs — apps", "pyramid": 3, "year": 2024},
-        {"name": "import-linter docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — import-linter GRADE 5/7", "pyramid": 5, "year": 2026}
+        {
+          "name": "Django docs — apps",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "import-linter docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — import-linter GRADE 5/7",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

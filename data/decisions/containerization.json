@@ -2,8 +2,19 @@
   "id": "containerization",
   "domain": "cicd",
   "question": "Comment conteneuriser l'application (Docker, Dockerfile best practices, orchestration) ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["cicd", "docker", "containerization", "dockerfile", "docker-compose", "multi-stage", "oci"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "cicd",
+    "docker",
+    "containerization",
+    "dockerfile",
+    "docker-compose",
+    "multi-stage",
+    "oci"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,20 +23,50 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "SWEBOK v4 s6.1 — container technologies to standardize deployment", "pyramid": 1, "year": 2024},
-          {"name": "OCI — standard ouvert container formats/runtimes", "pyramid": 2, "year": 2024},
-          {"name": "CNCF — containerd projet gradue", "pyramid": 2, "year": 2024},
-          {"name": "Stack Overflow Survey 2025 — Docker 73.8%", "pyramid": 4, "year": 2025},
-          {"name": "Twelve-Factor Factor X — dev/prod parity", "pyramid": 5, "year": 2012}
-        ]
+          {
+            "name": "SWEBOK v4 s6.1 — container technologies to standardize deployment",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "OCI — standard ouvert container formats/runtimes",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "CNCF — containerd projet gradue",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Stack Overflow Survey 2025 — Docker 73.8%",
+            "pyramid": 4,
+            "year": 2025
+          },
+          {
+            "name": "Twelve-Factor Factor X — dev/prod parity",
+            "pyramid": 5,
+            "year": 2012
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Multi-stage builds + base minimale (JRE pas JDK, alpine) + USER non-root + .dockerignore + layered JARs (Spring Boot).",
         "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Docker best practices docs", "pyramid": 3, "year": 2024},
-          {"name": "Spring Boot Container Images docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Docker best practices docs",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Spring Boot Container Images docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -33,8 +74,16 @@
         "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "SWEBOK v4 s6.1 — orchestrators to improve scalability", "pyramid": 1, "year": 2024},
-          {"name": "Stack Overflow Survey 2025 — K8s 30%", "pyramid": 4, "year": 2025}
+          {
+            "name": "SWEBOK v4 s6.1 — orchestrators to improve scalability",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Stack Overflow Survey 2025 — K8s 30%",
+            "pyramid": 4,
+            "year": 2025
+          }
         ]
       }
     ]
@@ -45,8 +94,16 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Spring Boot Container Images docs — layered JARs", "pyramid": 3, "year": 2024},
-        {"name": "Docker best practices docs — multi-stage, non-root", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot Container Images docs — layered JARs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Docker best practices docs — multi-stage, non-root",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-react-vite": {
@@ -54,7 +111,11 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "Docker best practices docs — multi-stage", "pyramid": 3, "year": 2024}
+        {
+          "name": "Docker best practices docs — multi-stage",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

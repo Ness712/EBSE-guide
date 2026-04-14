@@ -2,11 +2,27 @@
   "id": "ui-react-easy-crop",
   "domain": "ui-libraries",
   "question": "Quel outil pour le recadrage d'images ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["ui", "react", "image", "crop", "upload"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "ui",
+    "react",
+    "image",
+    "crop",
+    "upload"
+  ],
   "classification": "stack-specific",
   "universal": {
-    "principles": []
+    "principles": [
+      {
+        "text": "(Voir variants pour les recommandations specifiques)",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      }
+    ]
   },
   "variants": {
     "react": {
@@ -15,8 +31,16 @@
       "level": "BONNE PRATIQUE",
       "implementation": "pnpm add react-easy-crop",
       "sources": [
-        {"name": "npm trends", "pyramid": 4, "year": 2026},
-        {"name": "react-easy-crop docs", "pyramid": 5, "year": 2026}
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-easy-crop docs",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

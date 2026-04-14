@@ -3,26 +3,50 @@
   "domain": "project",
   "question": "Quelle convention de messages de commit adopter pour automatiser le versioning et maintenir un historique lisible ?",
   "depends_on": [],
-  "tags": ["commit", "conventional-commits", "semantic-release", "versioning", "git"],
+  "tags": [
+    "commit",
+    "conventional-commits",
+    "semantic-release",
+    "versioning",
+    "git"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Adopter Conventional Commits : type(scope): description. Types : feat (minor), fix (patch), refactor, docs, test, chore. BREAKING CHANGE declenche un major.",
-        "grade": 4,
+        "grade": 3,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "conventionalcommits.org v1.0.0", "pyramid": 5, "year": 2024},
-          {"name": "Angular commit guidelines", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "conventionalcommits.org v1.0.0",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Angular commit guidelines",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Automatiser le versioning semantique via semantic-release base sur les types de commit. Jamais de version manuelle.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "semantic-release docs", "pyramid": 3, "year": 2024},
-          {"name": "DORA — commit discipline correle avec deployment frequency", "pyramid": 4, "year": 2024}
+          {
+            "name": "semantic-release docs",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "DORA — commit discipline correle avec deployment frequency",
+            "pyramid": 4,
+            "year": 2024
+          }
         ]
       }
     ]

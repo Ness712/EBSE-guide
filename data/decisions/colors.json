@@ -2,8 +2,17 @@
   "id": "colors",
   "domain": "design",
   "question": "Combien de couleurs dans la palette et quels ratios de contraste respecter ?",
-  "depends_on": ["wcag-level"],
-  "tags": ["colors", "palette", "contrast", "wcag", "accessibility", "dark-mode"],
+  "depends_on": [
+    "wcag-level"
+  ],
+  "tags": [
+    "colors",
+    "palette",
+    "contrast",
+    "wcag",
+    "accessibility",
+    "dark-mode"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -14,7 +23,9 @@
         "sources": [
           "ISO 9241-125 (niv. 1)",
           "Material Design 3 Color System (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Contraste WCAG AA minimum : 4.5:1 pour texte normal, 3:1 pour texte large (>=24px ou >=18.66px bold), 3:1 pour composants UI et graphiques, 3:1 pour indicateurs de focus.",

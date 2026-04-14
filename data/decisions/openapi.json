@@ -2,8 +2,17 @@
   "id": "openapi",
   "domain": "architecture",
   "question": "Comment documenter les APIs de maniere standardisee et maintenable ?",
-  "depends_on": ["api-protocol", "backend-framework"],
-  "tags": ["architecture", "openapi", "swagger", "api-documentation", "contract"],
+  "depends_on": [
+    "api-protocol",
+    "backend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "openapi",
+    "swagger",
+    "api-documentation",
+    "contract"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
@@ -12,16 +21,31 @@
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "OpenAPI Specification 3.1 — standard IETF", "pyramid": 1, "year": 2024},
-          {"name": "SmartBear 2023 API Survey", "pyramid": 4, "year": 2023, "quote": "89% des equipes utilisent OpenAPI"}
-        ]
+          {
+            "name": "OpenAPI Specification 3.1 — standard IETF",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "SmartBear 2023 API Survey",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "89% des equipes utilisent OpenAPI"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Exporter le JSON OpenAPI dans le CI pour detecter les breaking changes automatiquement.",
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "OpenAPI Specification 3.1", "pyramid": 1, "year": 2024}
+          {
+            "name": "OpenAPI Specification 3.1",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -33,7 +57,11 @@
       "level": "STANDARD",
       "implementation": "Ajouter springdoc-openapi-starter-webmvc-ui dans pom.xml. Annoter les endpoints avec @Operation(summary), @ApiResponse(responseCode, description).",
       "sources": [
-        {"name": "Spring Boot docs — springdoc-openapi integration native", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot docs — springdoc-openapi integration native",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -42,8 +70,16 @@
       "level": "STANDARD",
       "implementation": "SwaggerModule.setup('api', app, document) dans main.ts. Decorateurs @ApiTags, @ApiOperation, @ApiResponse sur les controllers.",
       "sources": [
-        {"name": "NestJS Swagger docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — @nestjs/swagger accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS Swagger docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/swagger accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -52,8 +88,16 @@
       "level": "STANDARD",
       "implementation": "pip install drf-spectacular. REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'}. SpectacularAPIView pour /api/schema/.",
       "sources": [
-        {"name": "drf-spectacular docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — drf-spectacular accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "drf-spectacular docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — drf-spectacular accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

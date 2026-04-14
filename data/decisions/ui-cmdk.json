@@ -2,11 +2,28 @@
   "id": "ui-cmdk",
   "domain": "ui-libraries",
   "question": "Quel outil pour la command palette ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["ui", "react", "command-palette", "search", "keyboard", "navigation"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "ui",
+    "react",
+    "command-palette",
+    "search",
+    "keyboard",
+    "navigation"
+  ],
   "classification": "stack-specific",
   "universal": {
-    "principles": []
+    "principles": [
+      {
+        "text": "(Voir variants pour les recommandations specifiques)",
+        "grade": 5,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      }
+    ]
   },
   "variants": {
     "react": {
@@ -15,8 +32,16 @@
       "level": "RECOMMANDE",
       "implementation": "pnpm add cmdk",
       "sources": [
-        {"name": "npm trends", "pyramid": 4, "year": 2026},
-        {"name": "cmdk docs", "pyramid": 5, "year": 2026}
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "cmdk docs",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

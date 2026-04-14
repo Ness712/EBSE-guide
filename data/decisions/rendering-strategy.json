@@ -2,21 +2,50 @@
   "id": "rendering-strategy",
   "domain": "architecture",
   "question": "Quelle strategie de rendu choisir (CSR, SSR, SSG) pour une application web ?",
-  "depends_on": ["frontend-framework"],
-  "tags": ["architecture", "rendering", "csr", "ssr", "ssg", "vite", "nextjs", "seo"],
+  "depends_on": [
+    "frontend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "rendering",
+    "csr",
+    "ssr",
+    "ssg",
+    "vite",
+    "nextjs",
+    "seo"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "CSR (Vite) par defaut pour les SPA avec API backend. Zero config, HMR rapide, deploy static. SSR (Next.js) uniquement si SEO critique (blog, e-commerce public). SSG (Astro) pour les pages 100% statiques.",
-        "grade": 4,
+        "grade": 3,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Vite docs — SPA mode par defaut", "pyramid": 3, "year": 2024},
-          {"name": "web.dev Core Web Vitals — LCP/FCP metrics", "pyramid": 3, "year": 2024},
-          {"name": "Next.js docs — SSR/SSG tradeoffs", "pyramid": 3, "year": 2024},
-          {"name": "Google Search Central — SPA indexing", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Vite docs — SPA mode par defaut",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "web.dev Core Web Vitals — LCP/FCP metrics",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Next.js docs — SSR/SSG tradeoffs",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Google Search Central — SPA indexing",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       }
     ]
   },

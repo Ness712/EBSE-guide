@@ -2,20 +2,45 @@
   "id": "audit-logging",
   "domain": "security",
   "question": "Comment implementer une piste d'audit structuree pour la non-repudiation ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["security", "audit", "logging", "non-repudiation", "compliance"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "security",
+    "audit",
+    "logging",
+    "non-repudiation",
+    "compliance"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Chaque action sensible doit generer un enregistrement d'audit immutable contenant : qui (actor), quoi (action), quand (timestamp ISO 8601 UTC), ou (ip/origin), sur quoi (resource), et le resultat (outcome SUCCESS/FAILURE).",
-        "grade": 6,
+        "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "ISO/IEC 27002:2022 Control 8.15", "pyramid": 1, "year": 2022, "quote": "Audit logs obligatoires, retention >= 1 an"},
-          {"name": "OWASP ASVS V7", "pyramid": 2, "year": 2021, "quote": "Structured audit logging, non-repudiation"},
-          {"name": "OWASP Logging Cheat Sheet", "pyramid": 2, "year": 2024, "quote": "Qui/quoi/quand/ou, protection contre falsification"}
-        ]
+          {
+            "name": "ISO/IEC 27002:2022 Control 8.15",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "Audit logs obligatoires, retention >= 1 an"
+          },
+          {
+            "name": "OWASP ASVS V7",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "Structured audit logging, non-repudiation"
+          },
+          {
+            "name": "OWASP Logging Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Qui/quoi/quand/ou, protection contre falsification"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -26,7 +51,11 @@
       "level": "STANDARD",
       "implementation": "Creer un AuditAspect avec @Around sur @annotation(Audited), utiliser MDC pour actor/action/timestamp, logger les outcomes SUCCESS/FAILURE.",
       "sources": [
-        {"name": "Spring AOP + SLF4J MDC", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring AOP + SLF4J MDC",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -35,7 +64,11 @@
       "level": "RECOMMANDE",
       "implementation": "Creer un NestJS Interceptor qui capture les actions sensibles et les enregistre dans un format structure.",
       "sources": [
-        {"name": "NestJS Interceptors docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "NestJS Interceptors docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -44,7 +77,11 @@
       "level": "RECOMMANDE",
       "implementation": "Installer django-auditlog, enregistrer les modeles sensibles avec AuditlogHistoryField pour un suivi automatique des modifications.",
       "sources": [
-        {"name": "django-auditlog docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "django-auditlog docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

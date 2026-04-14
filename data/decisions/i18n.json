@@ -3,18 +3,26 @@
   "domain": "accessibility",
   "question": "Quelle solution d'internationalisation (i18n) utiliser ?",
   "depends_on": [],
-  "tags": ["i18n", "internationalisation", "react-i18next", "traduction", "react"],
+  "tags": [
+    "i18n",
+    "internationalisation",
+    "react-i18next",
+    "traduction",
+    "react"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "Externaliser toutes les chaines de texte dans des fichiers de traduction, avec namespaces par module et detection automatique de la langue du navigateur.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
           "npm trends — react-i18next 4M/sem #1 (niv. 4)",
           "State of JS 2024 — i18next #1 awareness (niv. 4)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

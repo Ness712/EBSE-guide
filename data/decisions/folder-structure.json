@@ -3,26 +3,49 @@
   "domain": "project",
   "question": "Comment organiser l'arborescence du projet pour maximiser la maintenabilite et la navigabilite du code ?",
   "depends_on": [],
-  "tags": ["folder-structure", "architecture", "feature-based", "project-organization"],
+  "tags": [
+    "folder-structure",
+    "architecture",
+    "feature-based",
+    "project-organization"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Grouper par feature, pas par type technique. Le groupement par type (components/, hooks/, utils/) ne scale pas : a 50+ fichiers, retrouver le code d'une feature demande de naviguer partout.",
         "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "Bulletproof React architecture guide", "pyramid": 5, "year": 2024},
-          {"name": "SWEBOK v4 ch.8 — modules, separation des responsabilites", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "Bulletproof React architecture guide",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "SWEBOK v4 ch.8 — modules, separation des responsabilites",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Backend et frontend a la racine (/backend, /frontend, /docs). Suivre les conventions du framework choisi. Limiter la profondeur a 3-4 niveaux.",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "SWEBOK v4 ch.8", "pyramid": 1, "year": 2024},
-          {"name": "Bulletproof React", "pyramid": 5, "year": 2024}
+          {
+            "name": "SWEBOK v4 ch.8",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "Bulletproof React",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       }
     ]

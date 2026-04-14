@@ -3,19 +3,27 @@
   "domain": "design",
   "question": "Quelle solution de recherche full-text utiliser ?",
   "depends_on": [],
-  "tags": ["search", "full-text", "meilisearch", "algolia", "elasticsearch"],
+  "tags": [
+    "search",
+    "full-text",
+    "meilisearch",
+    "algolia",
+    "elasticsearch"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "MeiliSearch pour recherche self-hosted : typo-tolerant, <50ms sur 1M docs, simple a operer. PostgreSQL full-text si zero infra supplementaire acceptable (pas de typo-tolerance). Algolia si SaaS acceptable. Elasticsearch pour enterprise scalable.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
           "MeiliSearch docs — benchmarks < 50ms sur 1M docs (niv. 5)",
           "DB-Engines ranking 2025 — search engines (niv. 4)",
           "PostgreSQL docs — full-text search (niv. 3)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

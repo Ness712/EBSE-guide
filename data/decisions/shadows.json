@@ -3,19 +3,27 @@
   "domain": "design",
   "question": "Quel systeme d'ombres et d'elevation utiliser ?",
   "depends_on": [],
-  "tags": ["shadows", "elevation", "box-shadow", "css", "visual-hierarchy"],
+  "tags": [
+    "shadows",
+    "elevation",
+    "box-shadow",
+    "css",
+    "visual-hierarchy"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Ombres diffuses sur 4 niveaux (sm/md/lg/xl), jamais de box-shadow durs. Ombres subtiles et multicouches pour hierarchie visuelle naturelle.",
-        "grade": 3,
+        "grade": 5,
         "level": "RECOMMANDE",
         "sources": [
           "Material Design 3 Elevation (niv. 5)",
           "Apple HIG — Depth (niv. 5)",
           "Web Almanac 2024 — 93% des sites utilisent box-shadow (niv. 4)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Usage par niveau : sm pour cartes au repos, md pour cartes survolees et dropdowns, lg pour modales et popovers, xl pour overlays et notifications flottantes.",

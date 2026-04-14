@@ -3,7 +3,13 @@
   "domain": "project",
   "question": "Quelle strategie de branching adopter pour maximiser la frequence de deploiement et minimiser le taux d'echec ?",
   "depends_on": [],
-  "tags": ["branching", "git", "trunk-based", "ci", "devops"],
+  "tags": [
+    "branching",
+    "git",
+    "trunk-based",
+    "ci",
+    "devops"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,17 +18,36 @@
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "DORA State of DevOps 2024", "pyramid": 4, "year": 2024, "quote": "Trunk-based development combined with automated testing in CI reduces change failure rate by 50% compared to long-lived branches"},
-          {"name": "DORA/Accelerate — 30k+ devs", "pyramid": 4, "year": 2019}
-        ]
+          {
+            "name": "DORA State of DevOps 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Trunk-based development combined with automated testing in CI reduces change failure rate by 50% compared to long-lived branches"
+          },
+          {
+            "name": "DORA/Accelerate — 30k+ devs",
+            "pyramid": 4,
+            "year": 2019
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Utiliser des feature flags pour le travail incomplet plutot que des branches long-lived. PR review obligatoire avant merge.",
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "DORA/Accelerate", "pyramid": 4, "year": 2019},
-          {"name": "trunkbaseddevelopment.com", "pyramid": 5, "year": 2024}
+          {
+            "name": "DORA/Accelerate",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "trunkbaseddevelopment.com",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       },
       {
@@ -30,8 +55,16 @@
         "grade": 5,
         "level": "STANDARD",
         "sources": [
-          {"name": "DORA State of DevOps 2019-2024", "pyramid": 4, "year": 2024},
-          {"name": "GitHub Flow docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "DORA State of DevOps 2019-2024",
+            "pyramid": 4,
+            "year": 2024
+          },
+          {
+            "name": "GitHub Flow docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

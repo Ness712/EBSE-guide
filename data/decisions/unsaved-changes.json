@@ -3,20 +3,45 @@
   "domain": "safety",
   "question": "Comment proteger l'utilisateur contre la perte de donnees non sauvegardees dans les formulaires ?",
   "depends_on": [],
-  "tags": ["safety", "unsaved-changes", "beforeunload", "forms", "ux", "data-loss"],
+  "tags": [
+    "safety",
+    "unsaved-changes",
+    "beforeunload",
+    "forms",
+    "ux",
+    "data-loss"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Avertir avant de perdre des donnees saisies. Protection fermeture onglet/refresh via beforeunload, protection navigation SPA via useBlocker (React Router). Si auto-save disponible, sauvegarder silencieusement sans dialog.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Apple HIG — 'hazard warning' avant perte de donnees", "pyramid": 5, "year": 2024},
-          {"name": "Nielsen — prevention des erreurs, heuristique #5", "pyramid": 3, "year": 2024},
-          {"name": "MDN — beforeunload event", "pyramid": 3, "year": 2024},
-          {"name": "React Router docs — useBlocker", "pyramid": 3, "year": 2024}
-        ]
+          {
+            "name": "Apple HIG — 'hazard warning' avant perte de donnees",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Nielsen — prevention des erreurs, heuristique #5",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "MDN — beforeunload event",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "React Router docs — useBlocker",
+            "pyramid": 3,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },

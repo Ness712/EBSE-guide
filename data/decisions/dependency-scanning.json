@@ -2,20 +2,42 @@
   "id": "dependency-scanning",
   "domain": "security",
   "question": "Comment detecter et gerer les vulnerabilites dans les dependances ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["security", "dependencies", "scanning", "ci-cd", "vulnerabilities"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "security",
+    "dependencies",
+    "scanning",
+    "ci-cd",
+    "vulnerabilities"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Scanner les dependances automatiquement en CI. Echouer le build sur les CVE high/critical. Revue et merge rapide des PRs de mise a jour.",
-        "grade": 6,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP Top 10 A06 (Vulnerable Components)", "pyramid": 2, "year": 2021},
-          {"name": "OWASP ASVS V14.2", "pyramid": 2, "year": 2021},
-          {"name": "NIST NVD", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "OWASP Top 10 A06 (Vulnerable Components)",
+            "pyramid": 2,
+            "year": 2021
+          },
+          {
+            "name": "OWASP ASVS V14.2",
+            "pyramid": 2,
+            "year": 2021
+          },
+          {
+            "name": "NIST NVD",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       }
     ]
   },
@@ -26,8 +48,16 @@
       "level": "STANDARD",
       "implementation": "Configurer dependabot.yml pour maven (weekly), ajouter dependency-check-maven plugin avec failBuildOnCVSS=7 dans le pom.xml.",
       "sources": [
-        {"name": "OWASP dependency-check docs", "pyramid": 2, "year": 2024},
-        {"name": "Dependabot docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "OWASP dependency-check docs",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Dependabot docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -36,8 +66,16 @@
       "level": "STANDARD",
       "implementation": "Configurer dependabot.yml pour npm (weekly), ajouter npm audit --audit-level=high dans le pipeline CI.",
       "sources": [
-        {"name": "npm audit docs", "pyramid": 3, "year": 2024},
-        {"name": "Dependabot docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "npm audit docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Dependabot docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -46,8 +84,16 @@
       "level": "STANDARD",
       "implementation": "Configurer dependabot.yml pour pip (weekly), ajouter pip-audit dans le pipeline CI pour scanner les vulnerabilites PyPI.",
       "sources": [
-        {"name": "pip-audit docs", "pyramid": 3, "year": 2024},
-        {"name": "Dependabot docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "pip-audit docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Dependabot docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

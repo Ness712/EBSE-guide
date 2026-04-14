@@ -2,20 +2,45 @@
   "id": "jvm-tuning",
   "domain": "performance",
   "question": "Comment configurer la JVM pour une application Spring Boot en conteneur Docker ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["performance", "jvm", "gc", "g1gc", "heap", "container", "docker", "java"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "performance",
+    "jvm",
+    "gc",
+    "g1gc",
+    "heap",
+    "container",
+    "docker",
+    "java"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "G1GC par defaut (Java 21), heap fixe (Xms = Xmx) pour eviter le resize en prod, container-aware depuis Java 10 (respecte les limites cgroups Docker).",
         "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "Oracle JVM Tuning Guide Java 21", "pyramid": 3, "year": 2024},
-          {"name": "Spring Boot Docker docs — container-aware JVM", "pyramid": 3, "year": 2024},
-          {"name": "Twelve-Factor V — build/release/run", "pyramid": 5, "year": 2012}
-        ]
+          {
+            "name": "Oracle JVM Tuning Guide Java 21",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Spring Boot Docker docs — container-aware JVM",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor V — build/release/run",
+            "pyramid": 5,
+            "year": 2012
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -26,9 +51,21 @@
       "level": "BONNE_PRATIQUE",
       "implementation": "FROM eclipse-temurin:21-jre-alpine. ENV JAVA_OPTS=\"-Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication\". ENTRYPOINT [\"sh\", \"-c\", \"java $JAVA_OPTS -jar app.jar\"].",
       "sources": [
-        {"name": "Oracle JVM Tuning Guide Java 21", "pyramid": 3, "year": 2024},
-        {"name": "Eclipse Temurin — distribution recommandee", "pyramid": 3, "year": 2024},
-        {"name": "Spring Boot Docker docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Oracle JVM Tuning Guide Java 21",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Eclipse Temurin — distribution recommandee",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot Docker docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

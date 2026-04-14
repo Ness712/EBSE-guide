@@ -2,19 +2,39 @@
   "id": "http-client",
   "domain": "architecture",
   "question": "Quel client HTTP utiliser cote backend et cote frontend ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["architecture", "http-client", "rest-client", "webclient", "fetch", "axios"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "http-client",
+    "rest-client",
+    "webclient",
+    "fetch",
+    "axios"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "Backend : utiliser le client HTTP recommande par le framework. Frontend : fetch natif (zero dependance, standard navigateur). Axios superflu si fetch suffit.",
-        "grade": 4,
+        "grade": 3,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "MDN fetch API — standard navigateur", "pyramid": 3, "year": 2024},
-          {"name": "Twelve-Factor IV — services externes = attached resources", "pyramid": 5, "year": 2012}
-        ]
+          {
+            "name": "MDN fetch API — standard navigateur",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Twelve-Factor IV — services externes = attached resources",
+            "pyramid": 5,
+            "year": 2012
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       }
     ]
   },
@@ -25,8 +45,16 @@
       "level": "RECOMMANDE",
       "implementation": "RestClient.builder().baseUrl(\"https://api.externe.com\").build(). Fluent API : restClient.get().uri(\"/resources/{id}\", id).retrieve().body(ResourceDto.class).",
       "sources": [
-        {"name": "Spring Boot 3.2+ docs — RestClient", "pyramid": 3, "year": 2024},
-        {"name": "Spring WebClient docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot 3.2+ docs — RestClient",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring WebClient docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -35,8 +63,16 @@
       "level": "STANDARD",
       "implementation": "HttpModule.register({ timeout: 5000, maxRedirects: 5 }) dans le module. Injection de HttpService dans les services.",
       "sources": [
-        {"name": "NestJS HTTP Module docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — @nestjs/axios accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS HTTP Module docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/axios accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -45,8 +81,16 @@
       "level": "STANDARD",
       "implementation": "httpx.Client() pour sync, httpx.AsyncClient() pour async. API compatible avec requests. Timeout et retry configurables.",
       "sources": [
-        {"name": "httpx docs", "pyramid": 3, "year": 2024},
-        {"name": "Batch 11 — httpx accord 100%", "pyramid": 5, "year": 2026}
+        {
+          "name": "httpx docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — httpx accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

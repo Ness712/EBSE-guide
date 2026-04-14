@@ -3,25 +3,44 @@
   "domain": "code-quality",
   "question": "Comment organiser les code reviews pour maximiser la detection de defauts ?",
   "depends_on": [],
-  "tags": ["code-quality", "code-review", "pull-request", "defect-detection"],
+  "tags": [
+    "code-quality",
+    "code-review",
+    "pull-request",
+    "defect-detection"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Review obligatoire par au moins 1 pair avant merge. La code review trouve 60-70% des defauts, contre 25-30% pour les tests unitaires seuls.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "SWEBOK v4 — code inspection as verification technique", "pyramid": 1, "year": 2024},
-          {"name": "SmartBear study — 60-70% defect detection rate", "pyramid": 4, "year": 2015}
-        ]
+          {
+            "name": "SWEBOK v4 — code inspection as verification technique",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "SmartBear study — 60-70% defect detection rate",
+            "pyramid": 4,
+            "year": 2015
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Processus : auteur ouvre PR avec description claire → reviewer assigne (24h max) → review → corrections/discussion → approbation → merge.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google Engineering Practices — code review guidelines", "pyramid": 5, "year": 2023}
+          {
+            "name": "Google Engineering Practices — code review guidelines",
+            "pyramid": 5,
+            "year": 2023
+          }
         ]
       },
       {
@@ -29,8 +48,16 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google Engineering Practices — reviewer responsibilities", "pyramid": 5, "year": 2023},
-          {"name": "SWEBOK v4", "pyramid": 1, "year": 2024}
+          {
+            "name": "Google Engineering Practices — reviewer responsibilities",
+            "pyramid": 5,
+            "year": 2023
+          },
+          {
+            "name": "SWEBOK v4",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       },
       {
@@ -38,8 +65,16 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "SmartBear study — 400 LOC max per review", "pyramid": 4, "year": 2015},
-          {"name": "Google Engineering Practices", "pyramid": 5, "year": 2023}
+          {
+            "name": "SmartBear study — 400 LOC max per review",
+            "pyramid": 4,
+            "year": 2015
+          },
+          {
+            "name": "Google Engineering Practices",
+            "pyramid": 5,
+            "year": 2023
+          }
         ]
       },
       {
@@ -47,7 +82,11 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google Engineering Practices", "pyramid": 5, "year": 2023}
+          {
+            "name": "Google Engineering Practices",
+            "pyramid": 5,
+            "year": 2023
+          }
         ]
       }
     ]

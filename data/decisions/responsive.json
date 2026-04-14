@@ -2,19 +2,29 @@
   "id": "responsive",
   "domain": "design",
   "question": "Quelle strategie responsive adopter (breakpoints, touch targets, mobile-first) ?",
-  "depends_on": ["wcag-level"],
-  "tags": ["responsive", "mobile-first", "breakpoints", "touch-targets", "tailwind"],
+  "depends_on": [
+    "wcag-level"
+  ],
+  "tags": [
+    "responsive",
+    "mobile-first",
+    "breakpoints",
+    "touch-targets",
+    "tailwind"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Mobile-first : commencer par le mobile et enrichir progressivement. Breakpoints : sm 640px, md 768px, lg 1024px, xl 1280px, 2xl 1536px.",
         "grade": 5,
-        "level": "STANDARD",
+        "level": "RECOMMANDE",
         "sources": [
           "Material Design 3 — 48dp touch targets (niv. 5)",
           "Apple HIG — 44pt minimum tap targets (niv. 5)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Touch targets minimum 48x48px (WCAG 2.5.8 AA), espacement entre cibles >= 8px. Viewport meta : width=device-width, initial-scale=1. Images : srcset + sizes.",

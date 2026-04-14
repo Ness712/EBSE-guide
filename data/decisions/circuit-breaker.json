@@ -2,12 +2,26 @@
   "id": "circuit-breaker",
   "domain": "reliability",
   "question": "Comment proteger le systeme contre les defaillances de services externes (circuit breaker) ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["reliability", "circuit-breaker", "resilience", "resilience4j", "fault-tolerance"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "reliability",
+    "circuit-breaker",
+    "resilience",
+    "resilience4j",
+    "fault-tolerance"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
-      "Proteger les appels aux services externes (email, stockage, APIs tiers) avec un circuit breaker",
+      {
+        "text": "Proteger les appels aux services externes (email, stockage, APIs tiers) avec un circuit breaker",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
+      },
       "Prevoir un fallback quand le circuit est ouvert (ex: file d'attente)",
       "Combiner circuit breaker avec retry et exponential backoff",
       "Le circuit breaker est le pattern #1 de stabilite (Nygard Release It!)"

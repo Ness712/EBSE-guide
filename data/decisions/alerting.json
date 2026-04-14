@@ -2,26 +2,52 @@
   "id": "alerting",
   "domain": "operations",
   "question": "Comment alerter efficacement sans alert fatigue ?",
-  "depends_on": ["monitoring", "slos"],
-  "tags": ["operations", "alerting", "grafana", "prometheus", "sre"],
+  "depends_on": [
+    "monitoring",
+    "slos"
+  ],
+  "tags": [
+    "operations",
+    "alerting",
+    "grafana",
+    "prometheus",
+    "sre"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Alerter sur les symptomes (latence, erreurs, disponibilite) — jamais sur les causes (CPU, memoire) seules.",
-        "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "Google SRE Book ch.6", "pyramid": 5, "year": 2016, "quote": "Every alert should be actionable"},
-          {"name": "DORA State of DevOps 2024", "pyramid": 4, "year": 2024, "quote": "Alert fatigue correle avec burnout"}
-        ]
+          {
+            "name": "Google SRE Book ch.6",
+            "pyramid": 5,
+            "year": 2016,
+            "quote": "Every alert should be actionable"
+          },
+          {
+            "name": "DORA State of DevOps 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Alert fatigue correle avec burnout"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Chaque alerte doit etre actionnable — si aucune action possible, supprimer l'alerte.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book ch.6", "pyramid": 5, "year": 2016, "quote": "Every alert should be actionable"}
+          {
+            "name": "Google SRE Book ch.6",
+            "pyramid": 5,
+            "year": 2016,
+            "quote": "Every alert should be actionable"
+          }
         ]
       },
       {
@@ -29,7 +55,11 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Alertmanager docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "Alertmanager docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -37,7 +67,11 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Google SRE Book ch.6", "pyramid": 5, "year": 2016}
+          {
+            "name": "Google SRE Book ch.6",
+            "pyramid": 5,
+            "year": 2016
+          }
         ]
       }
     ]

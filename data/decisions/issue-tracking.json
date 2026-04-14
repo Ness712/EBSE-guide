@@ -3,25 +3,46 @@
   "domain": "project",
   "question": "Quel outil et quel workflow d'issue tracking adopter pour gerer efficacement le backlog ?",
   "depends_on": [],
-  "tags": ["issue-tracking", "kanban", "linear", "github-issues", "jira", "project-management"],
+  "tags": [
+    "issue-tracking",
+    "kanban",
+    "linear",
+    "github-issues",
+    "jira",
+    "project-management"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Kanban 4 colonnes (Backlog, In Progress, Review, Done) avec WIP limite a 2-3 items par dev. Chaque issue a un owner clair et des criteres d'acceptation.",
-        "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "grade": 3,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "SWEBOK v4 ch.9 — gestion de projet", "pyramid": 1, "year": 2024},
-          {"name": "SO Developer Survey — satisfaction tools", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "SWEBOK v4 ch.9 — gestion de projet",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "SO Developer Survey — satisfaction tools",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "1 issue = 1 probleme ou 1 feature. Labels pour categoriser (bug, feat, chore). Triage hebdomadaire du backlog.",
         "grade": 2,
         "level": "CHOIX D'EQUIPE",
         "sources": [
-          {"name": "SWEBOK v4 ch.9 — tracabilite et triage", "pyramid": 1, "year": 2024}
+          {
+            "name": "SWEBOK v4 ch.9 — tracabilite et triage",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       }
     ]

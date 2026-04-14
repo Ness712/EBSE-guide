@@ -2,19 +2,38 @@
   "id": "connection-pooling",
   "domain": "performance",
   "question": "Comment configurer le pool de connexions a la base de donnees ?",
-  "depends_on": ["backend-framework", "database"],
-  "tags": ["performance", "connection-pooling", "hikaricp", "database", "pool-size"],
+  "depends_on": [
+    "backend-framework",
+    "database"
+  ],
+  "tags": [
+    "performance",
+    "connection-pooling",
+    "hikaricp",
+    "database",
+    "pool-size"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
       {
         "text": "Utiliser le pool par defaut du framework. Formule pool size : (2 * CPU cores) + nb disques SSD. Ne pas sur-dimensionner. minimum-idle = maximum-pool-size. max-lifetime inferieur au timeout DB.",
-        "grade": 5,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "HikariCP wiki — About Pool Sizing", "pyramid": 3, "year": 2024},
-          {"name": "PostgreSQL docs — connection management", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "HikariCP wiki — About Pool Sizing",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "PostgreSQL docs — connection management",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       }
     ]
   },
@@ -25,8 +44,16 @@
       "level": "STANDARD",
       "implementation": "spring.datasource.hikari.maximum-pool-size: 10, minimum-idle: 10, connection-timeout: 30000, idle-timeout: 600000, max-lifetime: 1800000.",
       "sources": [
-        {"name": "Spring Boot docs — HikariCP auto-configuration", "pyramid": 3, "year": 2024},
-        {"name": "HikariCP wiki — pool sizing benchmarks", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot docs — HikariCP auto-configuration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "HikariCP wiki — pool sizing benchmarks",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -35,7 +62,11 @@
       "level": "STANDARD",
       "implementation": "Prisma : datasource db { url = env(\"DATABASE_URL\") } avec ?connection_limit=10 dans l'URL. TypeORM : extra: { max: 10 }.",
       "sources": [
-        {"name": "Prisma docs — connection pool", "pyramid": 3, "year": 2024}
+        {
+          "name": "Prisma docs — connection pool",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -44,8 +75,16 @@
       "level": "STANDARD",
       "implementation": "DATABASES.default.CONN_MAX_AGE = 600 (10min). Pour du vrai pooling : pgBouncer devant PostgreSQL ou django-db-connection-pool.",
       "sources": [
-        {"name": "Django docs — persistent connections", "pyramid": 3, "year": 2024},
-        {"name": "pgBouncer docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Django docs — persistent connections",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "pgBouncer docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

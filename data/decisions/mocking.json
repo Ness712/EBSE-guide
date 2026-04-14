@@ -2,12 +2,27 @@
   "id": "mocking",
   "domain": "testing",
   "question": "Quelle strategie et quels outils pour le mocking dans les tests ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["testing", "mocking", "mockito", "msw", "test-doubles"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "testing",
+    "mocking",
+    "mockito",
+    "msw",
+    "test-doubles"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "Mocker aux frontieres (DB, HTTP, FS) — tests stables, refactoring-safe",
+      {
+        "text": "Mocker aux frontieres (DB, HTTP, FS) — tests stables, refactoring-safe",
+        "grade": 6,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
+      },
       "Ne pas mocker ce qu'on possede — evite le couplage a l'implementation",
       "Preferer les fakes aux mocks si possible — plus realistes, moins fragiles",
       "Ne jamais mocker les details d'implementation internes — rend les tests fragiles"

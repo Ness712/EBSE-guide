@@ -2,28 +2,58 @@
   "id": "release-management",
   "domain": "project",
   "question": "Comment automatiser le processus de release pour garantir reproductibilite et tracabilite ?",
-  "depends_on": ["commit-conventions"],
-  "tags": ["release", "semantic-versioning", "changelog", "ci-cd", "semantic-release"],
+  "depends_on": [
+    "commit-conventions"
+  ],
+  "tags": [
+    "release",
+    "semantic-versioning",
+    "changelog",
+    "ci-cd",
+    "semantic-release"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Versionning semantique strict (MAJOR.MINOR.PATCH) avec semantic-release base sur les conventional commits. Changelog auto-genere, jamais manuel.",
-        "grade": 3,
-        "level": "BONNE PRATIQUE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "semver.org", "pyramid": 5, "year": 2024},
-          {"name": "Humble & Farley 'Continuous Delivery'", "pyramid": 3, "year": 2010},
-          {"name": "semantic-release docs", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "semver.org",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Humble & Farley 'Continuous Delivery'",
+            "pyramid": 3,
+            "year": 2010
+          },
+          {
+            "name": "semantic-release docs",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Tag git immutable sur chaque release. Jamais de deploy manuel en prod — uniquement via CI/CD sur merge vers main.",
         "grade": 3,
         "level": "BONNE PRATIQUE",
         "sources": [
-          {"name": "semver.org — tracabilite", "pyramid": 5, "year": 2024},
-          {"name": "Humble & Farley 'Continuous Delivery' — reproducibilite", "pyramid": 3, "year": 2010}
+          {
+            "name": "semver.org — tracabilite",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Humble & Farley 'Continuous Delivery' — reproducibilite",
+            "pyramid": 3,
+            "year": 2010
+          }
         ]
       }
     ]

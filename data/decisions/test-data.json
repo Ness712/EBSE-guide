@@ -2,12 +2,27 @@
   "id": "test-data",
   "domain": "testing",
   "question": "Comment gerer les donnees de test (factories, faker, isolation) ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["testing", "test-data", "factory", "faker", "isolation"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "testing",
+    "test-data",
+    "factory",
+    "faker",
+    "isolation"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "Chaque test cree ses propres donnees via des factories — pas de couplage, pas de flaky",
+      {
+        "text": "Chaque test cree ses propres donnees via des factories — pas de couplage, pas de flaky",
+        "grade": 5,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      },
       "Factory avec defaults + overrides — DRY, lisible, flexible",
       "Faker pour donnees realistes — detecte les bugs de format/encoding",
       "Jamais d'etat mutable partage entre tests — independance, parallelisable"

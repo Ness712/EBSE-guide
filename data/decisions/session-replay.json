@@ -2,27 +2,55 @@
   "id": "session-replay",
   "domain": "project",
   "question": "Faut-il utiliser le session replay et avec quelles precautions RGPD ?",
-  "depends_on": ["gdpr", "analytics"],
-  "tags": ["session-replay", "posthog", "hotjar", "ux", "rgpd", "privacy"],
+  "depends_on": [
+    "gdpr",
+    "analytics"
+  ],
+  "tags": [
+    "session-replay",
+    "posthog",
+    "hotjar",
+    "ux",
+    "rgpd",
+    "privacy"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Session replay utile pour le debugging UX et la validation de features. PostHog recordings si deja PostHog, Hotjar pour UX pure.",
-        "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "PostHog session replay docs", "pyramid": 5, "year": 2024},
-          {"name": "Hotjar docs", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "PostHog session replay docs",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "Hotjar docs",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Regles RGPD strictes : masquer tous les inputs (emails, mots de passe), consentement explicite, sampler 10-20% max, retention 30-90 jours. Jamais pour la surveillance.",
         "grade": 2,
         "level": "CHOIX D'EQUIPE",
         "sources": [
-          {"name": "RGPD art. 5, 6 — minimisation, base legale", "pyramid": 5, "year": 2024},
-          {"name": "CNIL guidelines", "pyramid": 5, "year": 2024}
+          {
+            "name": "RGPD art. 5, 6 — minimisation, base legale",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "CNIL guidelines",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       }
     ]

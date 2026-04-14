@@ -3,26 +3,50 @@
   "domain": "project",
   "question": "Comment collecter et traiter efficacement les retours utilisateurs et les bug reports ?",
   "depends_on": [],
-  "tags": ["feedback", "bug-report", "triage", "ux", "github-issues"],
+  "tags": [
+    "feedback",
+    "bug-report",
+    "triage",
+    "ux",
+    "github-issues"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Templates structures obligatoires pour les bug reports : description, etapes de reproduction, resultat attendu vs actuel, environnement, captures. Un bug sans etapes de reproduction est inutile.",
         "grade": 2,
-        "level": "CHOIX D'EQUIPE",
+        "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "NNG — usability bug reporting guidelines", "pyramid": 5, "year": 2024},
-          {"name": "SWEBOK v4 ch.10 — qualite", "pyramid": 1, "year": 2024}
-        ]
+          {
+            "name": "NNG — usability bug reporting guidelines",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "SWEBOK v4 ch.10 — qualite",
+            "pyramid": 1,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Triage hebdomadaire, priorisation par impact utilisateur, labels (bug, ux, feature-request, low/medium/high). Feedback loop : informer le rapporteur quand corrige.",
         "grade": 2,
         "level": "CHOIX D'EQUIPE",
         "sources": [
-          {"name": "NNG — usability bug reporting guidelines", "pyramid": 5, "year": 2024},
-          {"name": "SWEBOK v4 ch.10 — qualite", "pyramid": 1, "year": 2024}
+          {
+            "name": "NNG — usability bug reporting guidelines",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "SWEBOK v4 ch.10 — qualite",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       }
     ]

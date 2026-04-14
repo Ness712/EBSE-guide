@@ -3,7 +3,15 @@
   "domain": "architecture",
   "question": "Quel framework backend choisir pour une application web ?",
   "depends_on": [],
-  "tags": ["architecture", "backend", "framework", "spring-boot", "nestjs", "django", "aspnet"],
+  "tags": [
+    "architecture",
+    "backend",
+    "framework",
+    "spring-boot",
+    "nestjs",
+    "django",
+    "aspnet"
+  ],
   "classification": "team-choice",
   "universal": {
     "principles": [
@@ -12,12 +20,37 @@
         "grade": 2,
         "level": "CHOIX_EQUIPE",
         "sources": [
-          {"name": "SWEBOK v4 — SE Economics", "pyramid": 1, "year": 2024, "quote": "Productivity depends on language mastery"},
-          {"name": "SO Survey 2025", "pyramid": 4, "year": 2025, "quote": "49k devs"},
-          {"name": "JetBrains Developer Ecosystem 2024", "pyramid": 4, "year": 2024, "quote": "23k devs"},
-          {"name": "State of JS 2025", "pyramid": 4, "year": 2025},
-          {"name": "TIOBE 2026", "pyramid": 4, "year": 2026}
-        ]
+          {
+            "name": "SWEBOK v4 — SE Economics",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Productivity depends on language mastery"
+          },
+          {
+            "name": "SO Survey 2025",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "49k devs"
+          },
+          {
+            "name": "JetBrains Developer Ecosystem 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "23k devs"
+          },
+          {
+            "name": "State of JS 2025",
+            "pyramid": 4,
+            "year": 2025
+          },
+          {
+            "name": "TIOBE 2026",
+            "pyramid": 4,
+            "year": 2026
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       }
     ]
   },
@@ -28,8 +61,16 @@
       "level": "CHOIX_EQUIPE",
       "implementation": "Spring Boot 3.x avec Java 21. Ecosysteme Maven, Spring Security, Spring Data JPA. Courbe d'apprentissage raide mais ecosysteme le plus mature.",
       "sources": [
-        {"name": "SO Survey 2025 — Spring Boot 14.7%", "pyramid": 4, "year": 2025},
-        {"name": "JetBrains 2024 — top satisfaction Java", "pyramid": 4, "year": 2024}
+        {
+          "name": "SO Survey 2025 — Spring Boot 14.7%",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "JetBrains 2024 — top satisfaction Java",
+          "pyramid": 4,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -38,9 +79,21 @@
       "level": "CHOIX_EQUIPE",
       "implementation": "NestJS avec Fastify adapter pour la performance. TypeORM ou Prisma pour l'ORM. Pipeline type-safe du schema DB au frontend React.",
       "sources": [
-        {"name": "State of JS 2025 — croissance la plus rapide", "pyramid": 4, "year": 2025},
-        {"name": "SO Survey 2025 — NestJS 6.7%", "pyramid": 4, "year": 2025},
-        {"name": "Batch 12 — stack optimale consensus 2 agents", "pyramid": 5, "year": 2026}
+        {
+          "name": "State of JS 2025 — croissance la plus rapide",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "SO Survey 2025 — NestJS 6.7%",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "Batch 12 — stack optimale consensus 2 agents",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -49,8 +102,16 @@
       "level": "CHOIX_EQUIPE",
       "implementation": "Django 5.x avec Django REST Framework. Migrations built-in, admin auto-genere, ORM mature. Performance sync par defaut, scaling plus complexe.",
       "sources": [
-        {"name": "TIOBE 2026 — Python #1 (26%)", "pyramid": 4, "year": 2026},
-        {"name": "SO Survey 2025 — Django 12.6%", "pyramid": 4, "year": 2025}
+        {
+          "name": "TIOBE 2026 — Python #1 (26%)",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "SO Survey 2025 — Django 12.6%",
+          "pyramid": 4,
+          "year": 2025
+        }
       ]
     }
   }

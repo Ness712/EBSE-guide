@@ -3,7 +3,13 @@
   "domain": "design",
   "question": "Quelles regles typographiques appliquer (taille, line-height, largeur de ligne, echelle) ?",
   "depends_on": [],
-  "tags": ["typography", "font-size", "line-height", "line-length", "type-scale"],
+  "tags": [
+    "typography",
+    "font-size",
+    "line-height",
+    "line-length",
+    "type-scale"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -16,7 +22,9 @@
           "Material Design 3 — Body Large 16sp (niv. 5)",
           "Apple HIG — Body 17pt (niv. 5)",
           "Web Almanac 2024 — median 16px (8M sites) (niv. 4)"
-        ]
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Line-height : 1.5 pour body text, 1.2-1.3 pour headings, 1.2 pour UI labels et boutons.",

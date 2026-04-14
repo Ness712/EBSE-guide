@@ -3,27 +3,58 @@
   "domain": "security",
   "question": "Comment modeliser les menaces (threat modeling) en phase de conception ?",
   "depends_on": [],
-  "tags": ["security", "threat-modeling", "stride", "design", "risk-assessment"],
+  "tags": [
+    "security",
+    "threat-modeling",
+    "stride",
+    "design",
+    "risk-assessment"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "Modelisation des menaces avec STRIDE en phase de conception. A realiser a chaque nouvelle fonctionnalite ou changement d'architecture.",
-        "grade": 3,
-        "level": "BONNE_PRATIQUE",
+        "grade": 5,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "SWEBOK v4 Security Knowledge Area", "pyramid": 1, "year": 2024, "quote": "Threat modeling in design phase"},
-          {"name": "OWASP Threat Modeling Cheat Sheet", "pyramid": 2, "year": 2024, "quote": "STRIDE methodology, DFD-based approach"},
-          {"name": "Microsoft SDL", "pyramid": 5, "year": 2024, "quote": "STRIDE originator, threat modeling mandatory in design"}
-        ]
+          {
+            "name": "SWEBOK v4 Security Knowledge Area",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Threat modeling in design phase"
+          },
+          {
+            "name": "OWASP Threat Modeling Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "STRIDE methodology, DFD-based approach"
+          },
+          {
+            "name": "Microsoft SDL",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "STRIDE originator, threat modeling mandatory in design"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Processus minimal : 1) Dessiner le Data Flow Diagram (DFD), 2) Appliquer STRIDE sur chaque flux/trust boundary (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege), 3) Prioriser par impact, 4) Documenter les mitigations dans les tickets.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "OWASP Threat Modeling Cheat Sheet", "pyramid": 2, "year": 2024},
-          {"name": "Microsoft SDL", "pyramid": 5, "year": 2024}
+          {
+            "name": "OWASP Threat Modeling Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Microsoft SDL",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       },
       {
@@ -31,8 +62,16 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "SWEBOK v4", "pyramid": 1, "year": 2024},
-          {"name": "OWASP Threat Modeling Cheat Sheet", "pyramid": 2, "year": 2024}
+          {
+            "name": "SWEBOK v4",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "OWASP Threat Modeling Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024
+          }
         ]
       }
     ]

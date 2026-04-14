@@ -2,27 +2,57 @@
   "id": "env-config",
   "domain": "operations",
   "question": "Comment gerer la configuration par environnement et les secrets ?",
-  "depends_on": ["backend-framework", "containerization"],
-  "tags": ["operations", "configuration", "secrets", "twelve-factor", "env-vars"],
+  "depends_on": [
+    "backend-framework",
+    "containerization"
+  ],
+  "tags": [
+    "operations",
+    "configuration",
+    "secrets",
+    "twelve-factor",
+    "env-vars"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "La configuration varie entre les environnements, le code non. Stocker la config dans l'environnement (variables d'env).",
-        "grade": 6,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "Twelve-Factor App Factor III", "pyramid": 5, "year": 2012, "quote": "Store config in the environment"},
-          {"name": "OWASP", "pyramid": 2, "year": 2024, "quote": "Ne jamais commiter de secrets"}
-        ]
+          {
+            "name": "Twelve-Factor App Factor III",
+            "pyramid": 5,
+            "year": 2012,
+            "quote": "Store config in the environment"
+          },
+          {
+            "name": "OWASP",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Ne jamais commiter de secrets"
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Jamais de secrets (mots de passe, cles API, tokens) dans les fichiers versiones.",
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "OWASP", "pyramid": 2, "year": 2024, "quote": "Ne jamais commiter de secrets"},
-          {"name": "Twelve-Factor App Factor III", "pyramid": 5, "year": 2012}
+          {
+            "name": "OWASP",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Ne jamais commiter de secrets"
+          },
+          {
+            "name": "Twelve-Factor App Factor III",
+            "pyramid": 5,
+            "year": 2012
+          }
         ]
       },
       {
@@ -30,8 +60,16 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "Twelve-Factor App", "pyramid": 5, "year": 2012},
-          {"name": "Spring Boot docs — Externalized Configuration", "pyramid": 3, "year": 2024}
+          {
+            "name": "Twelve-Factor App",
+            "pyramid": 5,
+            "year": 2012
+          },
+          {
+            "name": "Spring Boot docs — Externalized Configuration",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -42,9 +80,21 @@
       "grade": 6,
       "level": "STANDARD",
       "sources": [
-        {"name": "Spring Boot docs — Externalized Configuration", "pyramid": 3, "year": 2024},
-        {"name": "Twelve-Factor App Factor III", "pyramid": 5, "year": 2012},
-        {"name": "OWASP", "pyramid": 2, "year": 2024}
+        {
+          "name": "Spring Boot docs — Externalized Configuration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor App Factor III",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "OWASP",
+          "pyramid": 2,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -52,9 +102,21 @@
       "grade": 6,
       "level": "STANDARD",
       "sources": [
-        {"name": "NestJS docs — Configuration", "pyramid": 3, "year": 2024},
-        {"name": "Twelve-Factor App Factor III", "pyramid": 5, "year": 2012},
-        {"name": "Double extraction batch 10 — accord 96%", "pyramid": 5, "year": 2026}
+        {
+          "name": "NestJS docs — Configuration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor App Factor III",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     },
     "python-django": {
@@ -62,9 +124,21 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "django-environ docs", "pyramid": 3, "year": 2024},
-        {"name": "Twelve-Factor App Factor III", "pyramid": 5, "year": 2012},
-        {"name": "Double extraction batch 10 — accord 96%", "pyramid": 5, "year": 2026}
+        {
+          "name": "django-environ docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor App Factor III",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
       ]
     }
   }

@@ -2,12 +2,27 @@
   "id": "contract-tests",
   "domain": "testing",
   "question": "Comment verifier les contrats entre services (consumer-driven contract tests) ?",
-  "depends_on": ["backend-framework", "architecture"],
-  "tags": ["testing", "contract-tests", "pact", "spring-cloud-contract", "microservices"],
+  "depends_on": [
+    "backend-framework",
+    "architecture"
+  ],
+  "tags": [
+    "testing",
+    "contract-tests",
+    "pact",
+    "spring-cloud-contract",
+    "microservices"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "Les tests de contrat verifient que le producteur (API) respecte le contrat attendu par le consommateur (client)",
+      {
+        "text": "Les tests de contrat verifient que le producteur (API) respecte le contrat attendu par le consommateur (client)",
+        "grade": 5,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
+      },
       "Comblent le gap entre tests unitaires et tests E2E",
       "Utiles quand frontend consomme une API backend ou microservices qui communiquent",
       "Pas necessaires pour un monolithe avec une seule API (tests d'integration suffisent)"

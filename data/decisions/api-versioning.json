@@ -2,26 +2,48 @@
   "id": "api-versioning",
   "domain": "architecture",
   "question": "Comment versionner les APIs pour faire evoluer sans casser les clients existants ?",
-  "depends_on": ["api-protocol", "backend-framework"],
-  "tags": ["architecture", "api", "versioning", "backward-compatibility"],
+  "depends_on": [
+    "api-protocol",
+    "backend-framework"
+  ],
+  "tags": [
+    "architecture",
+    "api",
+    "versioning",
+    "backward-compatibility"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "URL path versioning (/api/v1/) — standard de facto (GitHub, Stripe, Google Cloud). Simple, visible, cacheable.",
-        "grade": 3,
+        "grade": 2,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "GitHub API — URL path versioning (/v3/)", "pyramid": 3, "year": 2024},
-          {"name": "Stripe API — URL versioning avec dates", "pyramid": 5, "year": 2024}
-        ]
+          {
+            "name": "GitHub API — URL path versioning (/v3/)",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Stripe API — URL versioning avec dates",
+            "pyramid": 5,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "FRAGILE"
       },
       {
         "text": "Incrementer la version uniquement pour les breaking changes. Ajout de champ = non-breaking, suppression = breaking.",
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "Stripe API — backwards compatibility guarantee", "pyramid": 5, "year": 2024}
+          {
+            "name": "Stripe API — backwards compatibility guarantee",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       },
       {
@@ -29,7 +51,11 @@
         "grade": 3,
         "level": "BONNE_PRATIQUE",
         "sources": [
-          {"name": "GitHub API deprecation policy", "pyramid": 3, "year": 2024}
+          {
+            "name": "GitHub API deprecation policy",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -41,7 +67,11 @@
       "level": "BONNE_PRATIQUE",
       "implementation": "Controllers separes UserControllerV1 et UserControllerV2 avec @RequestMapping path-based. Partage de la logique service entre versions.",
       "sources": [
-        {"name": "Spring Boot docs — @RequestMapping path-based versioning", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Boot docs — @RequestMapping path-based versioning",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -50,7 +80,11 @@
       "level": "BONNE_PRATIQUE",
       "implementation": "app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' }). Decorateur @Version('2') sur les controllers ou methodes.",
       "sources": [
-        {"name": "NestJS Versioning docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "NestJS Versioning docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -59,7 +93,11 @@
       "level": "BONNE_PRATIQUE",
       "implementation": "REST_FRAMEWORK = {'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning'}. Organiser les views par version.",
       "sources": [
-        {"name": "Django REST Framework Versioning docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Django REST Framework Versioning docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

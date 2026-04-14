@@ -2,12 +2,28 @@
   "id": "database-migrations",
   "domain": "reliability",
   "question": "Comment gerer les migrations de base de donnees de maniere versionnee et reproductible ?",
-  "depends_on": ["backend-framework", "database"],
-  "tags": ["reliability", "database", "migrations", "flyway", "schema-versioning", "zero-downtime"],
+  "depends_on": [
+    "backend-framework",
+    "database"
+  ],
+  "tags": [
+    "reliability",
+    "database",
+    "migrations",
+    "flyway",
+    "schema-versioning",
+    "zero-downtime"
+  ],
   "classification": "stack-specific",
   "universal": {
     "principles": [
-      "Les migrations manuelles sont la premiere source de drift entre environnements",
+      {
+        "text": "Les migrations manuelles sont la premiere source de drift entre environnements",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
+      },
       "Versionner chaque changement de schema",
       "Additive only : pas de DROP/RENAME direct (ajouter, migrer donnees, supprimer l'ancienne)",
       "Colonne nullable d'abord, backfill en migration separee, contrainte en dernier",

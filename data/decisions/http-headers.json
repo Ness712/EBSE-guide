@@ -2,8 +2,16 @@
   "id": "http-headers",
   "domain": "security",
   "question": "Quels headers HTTP de securite configurer et comment ?",
-  "depends_on": ["backend-framework"],
-  "tags": ["security", "http-headers", "hsts", "csp", "x-frame-options"],
+  "depends_on": [
+    "backend-framework"
+  ],
+  "tags": [
+    "security",
+    "http-headers",
+    "hsts",
+    "csp",
+    "x-frame-options"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
@@ -12,16 +20,30 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "OWASP Secure Headers Project", "pyramid": 2, "year": 2024},
-          {"name": "OWASP ASVS V14.4", "pyramid": 2, "year": 2021}
-        ]
+          {
+            "name": "OWASP Secure Headers Project",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "OWASP ASVS V14.4",
+            "pyramid": 2,
+            "year": 2021
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "Valider avec securityheaders.com et Mozilla Observatory — cible A+.",
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "Mozilla Observatory", "pyramid": 5, "year": 2024}
+          {
+            "name": "Mozilla Observatory",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -33,7 +55,11 @@
       "level": "STANDARD",
       "implementation": "Configurer via http.headers() : httpStrictTransportSecurity, contentTypeOptions, frameOptions(deny), referrerPolicy, permissionsPolicy, contentSecurityPolicy.",
       "sources": [
-        {"name": "Spring Security docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Spring Security docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "typescript-nestjs": {
@@ -42,8 +68,16 @@
       "level": "RECOMMANDE",
       "implementation": "Installer helmet, l'appliquer comme middleware global dans main.ts : app.use(helmet()). Configurer CSP et autres headers via les options helmet.",
       "sources": [
-        {"name": "helmet docs", "pyramid": 3, "year": 2024},
-        {"name": "NestJS Security docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "helmet docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NestJS Security docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     },
     "python-django": {
@@ -52,7 +86,11 @@
       "level": "STANDARD",
       "implementation": "Activer SecurityMiddleware dans MIDDLEWARE, configurer SECURE_HSTS_SECONDS, SECURE_HSTS_INCLUDE_SUBDOMAINS, SECURE_CONTENT_TYPE_NOSNIFF, X_FRAME_OPTIONS, CSP via django-csp.",
       "sources": [
-        {"name": "Django SecurityMiddleware docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Django SecurityMiddleware docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

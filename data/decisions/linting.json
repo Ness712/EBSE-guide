@@ -2,30 +2,73 @@
   "id": "linting",
   "domain": "code-quality",
   "question": "Quels outils de linting, formatting et analyse statique par langage ?",
-  "depends_on": ["backend-framework", "frontend-framework"],
-  "tags": ["code-quality", "linting", "eslint", "prettier", "checkstyle", "sonarqube", "static-analysis"],
+  "depends_on": [
+    "backend-framework",
+    "frontend-framework"
+  ],
+  "tags": [
+    "code-quality",
+    "linting",
+    "eslint",
+    "prettier",
+    "checkstyle",
+    "sonarqube",
+    "static-analysis"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
       {
         "text": "Le linting et l'analyse statique sont des techniques primaires de qualite (SWEBOK). L'analyse statique seule detecte 55-65% des defauts. Combinee avec tests + reviews : >97%.",
-        "grade": 6,
-        "level": "STANDARD",
+        "grade": 4,
+        "level": "RECOMMANDE",
         "sources": [
-          {"name": "SWEBOK v4 Sections 1.3, 1.5, 3.4.1, 3.6", "pyramid": 1, "year": 2024, "quote": "Primary techniques: static analysis"},
-          {"name": "SWEBOK v4 Computing Foundations", "pyramid": 1, "year": 2024, "quote": "82% of vulnerabilities are caused by clashes between programming styles"},
-          {"name": "OWASP SAST", "pyramid": 2, "year": 2024},
-          {"name": "Capers Jones — 13000+ projets, static analysis 55-65% DRE, combined >97%", "pyramid": 5, "year": 2020}
-        ]
+          {
+            "name": "SWEBOK v4 Sections 1.3, 1.5, 3.4.1, 3.6",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Primary techniques: static analysis"
+          },
+          {
+            "name": "SWEBOK v4 Computing Foundations",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "82% of vulnerabilities are caused by clashes between programming styles"
+          },
+          {
+            "name": "OWASP SAST",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Capers Jones — 13000+ projets, static analysis 55-65% DRE, combined >97%",
+            "pyramid": 5,
+            "year": 2020
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "SonarQube avec quality gate Sonar way pour l'analyse statique multi-langage : 0 new issues, 100% security hotspots reviewed, 80% coverage new code, 3% duplication max. Approche Clean as You Code.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP SAST tools — SonarQube liste pour Java et JS/TS", "pyramid": 2, "year": 2024},
-          {"name": "Yeboah & Popoola 2024 — SonarQube #1 defect detection", "pyramid": 5, "year": 2024},
-          {"name": "SonarQube docs — quality gate Sonar way", "pyramid": 3, "year": 2024}
+          {
+            "name": "OWASP SAST tools — SonarQube liste pour Java et JS/TS",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Yeboah & Popoola 2024 — SonarQube #1 defect detection",
+            "pyramid": 5,
+            "year": 2024
+          },
+          {
+            "name": "SonarQube docs — quality gate Sonar way",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -33,7 +76,11 @@
         "grade": 6,
         "level": "STANDARD",
         "sources": [
-          {"name": "Etudes empiriques Springer/ScienceDirect 2022-2024", "pyramid": 5, "year": 2024}
+          {
+            "name": "Etudes empiriques Springer/ScienceDirect 2022-2024",
+            "pyramid": 5,
+            "year": 2024
+          }
         ]
       }
     ]
@@ -44,9 +91,21 @@
       "grade": 5,
       "level": "RECOMMANDE",
       "sources": [
-        {"name": "React docs — ESLint essential, Prettier recommended", "pyramid": 3, "year": 2024},
-        {"name": "State of Frontend 2024 — ESLint 89.3%, Prettier 87.5%", "pyramid": 4, "year": 2024},
-        {"name": "npm trends — ESLint 115M/sem, Biome 7M", "pyramid": 4, "year": 2024}
+        {
+          "name": "React docs — ESLint essential, Prettier recommended",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "State of Frontend 2024 — ESLint 89.3%, Prettier 87.5%",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — ESLint 115M/sem, Biome 7M",
+          "pyramid": 4,
+          "year": 2024
+        }
       ]
     },
     "java-spring-boot": {
@@ -54,9 +113,21 @@
       "grade": 2,
       "level": "BONNE_PRATIQUE",
       "sources": [
-        {"name": "Google Java Style Guide", "pyramid": 3, "year": 2024},
-        {"name": "Checkstyle docs — google_checks.xml built-in", "pyramid": 3, "year": 2024},
-        {"name": "google-java-format docs", "pyramid": 3, "year": 2024}
+        {
+          "name": "Google Java Style Guide",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Checkstyle docs — google_checks.xml built-in",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "google-java-format docs",
+          "pyramid": 3,
+          "year": 2024
+        }
       ]
     }
   }

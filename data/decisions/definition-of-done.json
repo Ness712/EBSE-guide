@@ -3,27 +3,55 @@
   "domain": "project",
   "question": "Quelle checklist appliquer avant de considerer une tache comme terminee et mergeable ?",
   "depends_on": [],
-  "tags": ["definition-of-done", "quality", "code-review", "ci", "checklist"],
+  "tags": [
+    "definition-of-done",
+    "quality",
+    "code-review",
+    "ci",
+    "checklist"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
         "text": "DoD explicite et partagee : code review par au moins 1 pair, tests passent (unit + integration), zero erreur lint/format, deploye sur staging et verifie, documentation a jour, criteres d'acceptation remplis.",
-        "grade": 4,
-        "level": "RECOMMANDE",
+        "grade": 5,
+        "level": "STANDARD",
         "sources": [
-          {"name": "Scrum Guide 2020 — transparence", "pyramid": 5, "year": 2020},
-          {"name": "SWEBOK v4 ch.10 — quality gate", "pyramid": 1, "year": 2024},
-          {"name": "DORA/Accelerate — predictor of elite performance", "pyramid": 4, "year": 2019}
-        ]
+          {
+            "name": "Scrum Guide 2020 — transparence",
+            "pyramid": 5,
+            "year": 2020
+          },
+          {
+            "name": "SWEBOK v4 ch.10 — quality gate",
+            "pyramid": 1,
+            "year": 2024
+          },
+          {
+            "name": "DORA/Accelerate — predictor of elite performance",
+            "pyramid": 4,
+            "year": 2019
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "MODERE"
       },
       {
         "text": "Enforcer via PR template GitHub et checks CI bloquants. Pas de merge sans CI vert. Review obligatoire (pas d'auto-merge). Staging valide avant prod.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "DORA/Accelerate — reduce change failure rate", "pyramid": 4, "year": 2019},
-          {"name": "SWEBOK v4 ch.10", "pyramid": 1, "year": 2024}
+          {
+            "name": "DORA/Accelerate — reduce change failure rate",
+            "pyramid": 4,
+            "year": 2019
+          },
+          {
+            "name": "SWEBOK v4 ch.10",
+            "pyramid": 1,
+            "year": 2024
+          }
         ]
       }
     ]

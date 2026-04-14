@@ -2,8 +2,19 @@
   "id": "reverse-proxy",
   "domain": "operations",
   "question": "Quel reverse proxy utiliser (auto-HTTPS, TLS, load balancing) ?",
-  "depends_on": ["infrastructure", "containerization"],
-  "tags": ["operations", "reverse-proxy", "caddy", "nginx", "https", "tls", "lets-encrypt"],
+  "depends_on": [
+    "infrastructure",
+    "containerization"
+  ],
+  "tags": [
+    "operations",
+    "reverse-proxy",
+    "caddy",
+    "nginx",
+    "https",
+    "tls",
+    "lets-encrypt"
+  ],
   "classification": "universal",
   "universal": {
     "principles": [
@@ -12,18 +23,40 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Caddy docs — automatic HTTPS", "pyramid": 3, "year": 2024},
-          {"name": "Let's Encrypt stats — 300M+ certificats actifs", "pyramid": 3, "year": 2024},
-          {"name": "OWASP TLS guidelines", "pyramid": 2, "year": 2024}
-        ]
+          {
+            "name": "Caddy docs — automatic HTTPS",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "Let's Encrypt stats — 300M+ certificats actifs",
+            "pyramid": 3,
+            "year": 2024
+          },
+          {
+            "name": "OWASP TLS guidelines",
+            "pyramid": 2,
+            "year": 2024
+          }
+        ],
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
       },
       {
         "text": "HTTPS obligatoire avec HSTS (Strict-Transport-Security max-age=31536000 includeSubDomains) et X-Content-Type-Options nosniff.",
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "OWASP TLS guidelines", "pyramid": 2, "year": 2024},
-          {"name": "Nginx docs", "pyramid": 3, "year": 2024}
+          {
+            "name": "OWASP TLS guidelines",
+            "pyramid": 2,
+            "year": 2024
+          },
+          {
+            "name": "Nginx docs",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       },
       {
@@ -31,7 +64,11 @@
         "grade": 4,
         "level": "RECOMMANDE",
         "sources": [
-          {"name": "Caddy docs — reverse_proxy health checks", "pyramid": 3, "year": 2024}
+          {
+            "name": "Caddy docs — reverse_proxy health checks",
+            "pyramid": 3,
+            "year": 2024
+          }
         ]
       }
     ]

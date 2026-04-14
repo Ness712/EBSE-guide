@@ -2,12 +2,26 @@
   "id": "integration-tests",
   "domain": "testing",
   "question": "Comment structurer les tests d'integration avec une vraie base de donnees ?",
-  "depends_on": ["backend-framework", "database"],
-  "tags": ["testing", "integration-tests", "testcontainers", "database"],
+  "depends_on": [
+    "backend-framework",
+    "database"
+  ],
+  "tags": [
+    "testing",
+    "integration-tests",
+    "testcontainers",
+    "database"
+  ],
   "classification": "mixed",
   "universal": {
     "principles": [
-      "Tester avec une vraie base de donnees, pas un substitut en memoire (H2 masque les differences de dialecte SQL)",
+      {
+        "text": "Tester avec une vraie base de donnees, pas un substitut en memoire (H2 masque les differences de dialecte SQL)",
+        "grade": 5,
+        "level": "STANDARD",
+        "v3_review": "2026-04-14",
+        "robustness": "ROBUSTE"
+      },
       "Utiliser Testcontainers pour lancer les services reels dans Docker pendant les tests",
       "Les tests d'integration representent ~20% de la pyramide de tests"
     ]
