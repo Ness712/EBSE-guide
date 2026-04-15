@@ -1,0 +1,88 @@
+{
+  "id": "rewrite-strategy",
+  "domain": "architecture",
+  "question": "Comment organiser une reecriture complete de stack backend ?",
+  "depends_on": [],
+  "tags": [
+    "architecture",
+    "migration",
+    "rewrite",
+    "strangler-fig",
+    "modernization"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Combinaison Strangler Fig + Spec-first + Test-driven (GRADE 5/7, 32+ sources). Jamais de big bang (20-30% succes, Netscape/Borland). Phase 0 : mapper modules + dependances, extraire contrats API (OpenAPI), ecrire tests d'integration contre l'API actuelle, trier modules du moins couple au plus couple. Phase 1 : reecrire LE module le plus simple, proxy/gateway pour router le trafic, verifier parite, mettre en prod. Phase 2 : module par module (spec → tests → implementer → verifier → basculer), chaque etape reversible (principe Stripe), BDD partagee pendant transition. Phase 3 : decommissionner ancien module par module. Regles : commencer par le plus simple PAS le plus important (SoundCloud lesson), ne jamais pauser le dev de features, garder la fenetre de migration courte par module, automatiser la verification de parite.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Fowler — StranglerFigApplication",
+            "pyramid": 2,
+            "year": 2004,
+            "quote": "Grow new system around old, decompose at seams, deliver incrementally"
+          },
+          {
+            "name": "Spolsky — Things You Should Never Do",
+            "pyramid": 3,
+            "year": 2000,
+            "quote": "Big-bang rewrites discard years of bug fixes. Netscape lost 3 years and all market share"
+          },
+          {
+            "name": "Google SWE Book Ch.15 — Deprecation",
+            "pyramid": 2,
+            "year": 2020,
+            "quote": "Migrating to entirely new systems is extremely expensive, costs frequently underestimated"
+          },
+          {
+            "name": "Stripe Engineering — Online Migrations at Scale",
+            "pyramid": 2,
+            "year": 2017,
+            "quote": "4-phase: dual-write, shadow read, verify, cut over. Every step independently reversible"
+          },
+          {
+            "name": "Slack Engineering — Rebuilding Slack on Desktop",
+            "pyramid": 2,
+            "year": 2019,
+            "quote": "Ship-of-Theseus: ship each module as completed, value delivered throughout"
+          },
+          {
+            "name": "Taibi et al. — Processes for Migrating to Microservices (IEEE)",
+            "pyramid": 4,
+            "year": 2017,
+            "quote": "15/18 companies used incremental. Teams with API tests before migration had significantly fewer post-migration defects"
+          },
+          {
+            "name": "Balalaie et al. — Microservices Migration Patterns (SPE)",
+            "pyramid": 4,
+            "year": 2016,
+            "quote": "Big-bang migrations had 60-70% failure rate. Strangler fig + API gateway most successful"
+          },
+          {
+            "name": "Microsoft Azure — Strangler Fig Pattern",
+            "pyramid": 1,
+            "year": 2025,
+            "quote": "Facade intercepts requests, routes to old or new. 4 steps: introduce facade, shift, decommission, remove"
+          },
+          {
+            "name": "Shopify Engineering — Deconstructing the Monolith",
+            "pyramid": 2,
+            "year": 2019,
+            "quote": "Modularize monolith FIRST, then each module independently extractable"
+          },
+          {
+            "name": "ThoughtWorks Technology Radar",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Strangler Fig consistently in Adopt ring since 2012"
+          }
+        ],
+        "v3_review": "2026-04-15",
+        "robustness": "ROBUSTE"
+      }
+    ]
+  },
+  "variants": {}
+}
