@@ -1,0 +1,71 @@
+{
+  "id": "repo-standard-files",
+  "domain": "project",
+  "question": "Quels fichiers standard un repo doit-il contenir et quoi mettre dans chacun ?",
+  "depends_on": ["documentation-organization", "guide-application-docs"],
+  "tags": [
+    "documentation",
+    "repository",
+    "readme",
+    "contributing",
+    "conventions",
+    "changelog"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "4 fichiers obligatoires avec scopes distincts (single source of truth) : (1) README.md = landing page (description, stack, prerequis, install, commandes, quick-start). (2) CONTRIBUTING.md = process de contribution (workflow PR, branches, commits, setup dev, tests requis). (3) CONVENTIONS.md = regles de code (nommage, patterns, architecture, regles non automatisables). (4) LICENSE. Recommandes : CHANGELOG.md (par version, categories Added/Changed/Fixed), SECURITY.md, CODE_OF_CONDUCT.md. CLAUDE.md = pointeurs uniquement vers les fichiers canoniques + contraintes AI-specifiques, jamais de duplication. Regle cardinale : chaque info existe dans un seul fichier, les autres font des liens. CONTRIBUTING \u2260 CONVENTIONS : process (comment contribuer, lu une fois) \u2260 reference (regles de code, consulte en continu).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "GitHub Docs \u2014 Community health files",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "README, CONTRIBUTING, LICENSE, CODE_OF_CONDUCT, SECURITY recommended for healthy contributions"
+          },
+          {
+            "name": "Google SWE Book Ch.10 \u2014 Documentation",
+            "pyramid": 2,
+            "year": 2020,
+            "quote": "Style guides are standalone canonical documents, referenced from CONTRIBUTING but never inlined"
+          },
+          {
+            "name": "InnerSource Commons \u2014 Standard Base Documentation",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Do not copy organizational coding standards into the repo \u2014 link to them. CONTRIBUTING = how to participate, CONVENTIONS = how to write code"
+          },
+          {
+            "name": "Open Source Guides (opensource.guide)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Lower the barrier to first contribution with clear CONTRIBUTING.md"
+          },
+          {
+            "name": "Linux Foundation CII Best Practices Badge",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "README with description/install/build, CONTRIBUTING, LICENSE, CHANGELOG required for passing"
+          },
+          {
+            "name": "Keep a Changelog",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Categories: Added, Changed, Deprecated, Removed, Fixed, Security. Human-curated, not git log dumps"
+          },
+          {
+            "name": "Anthropic \u2014 CLAUDE.md documentation",
+            "pyramid": 1,
+            "year": 2025,
+            "quote": "CLAUDE.md acts as pointer file for AI context, not duplication of rules"
+          }
+        ],
+        "v3_review": "2026-04-15",
+        "robustness": "ROBUSTE"
+      }
+    ]
+  },
+  "variants": {}
+}
