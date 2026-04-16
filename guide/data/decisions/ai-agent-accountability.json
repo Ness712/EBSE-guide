@@ -1,0 +1,78 @@
+{
+  "id": "ai-agent-accountability",
+  "domain": "ai-collaboration",
+  "question": "Quels mecanismes d'accountability et de gouvernance permettent de s'assurer qu'au moins un humain est responsable des actions d'un agent IA autonome dans un contexte de developpement logiciel ?",
+  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-human-only-gates", "ai-agent-escalation-protocol"],
+  "tags": [
+    "ai-collaboration",
+    "accountability",
+    "governance",
+    "human-oversight",
+    "audit",
+    "agentic-ai"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Designer explicitement une chaine d'accountability pour chaque agent IA autonome : (1) designer au moins un humain responsable de toutes les actions de l'agent (principal designé) ; (2) maintenir un registre auditable de toutes les actions agentiques (quoi, quand, par quel agent, sur quelle autorisation) ; (3) implementer un mecanisme d'interruptibilite fiable (kill switch, pause, rollback) ; (4) deployer progressivement en elargissant l'autonomie uniquement apres validation de chaque palier. Fondements : convergence normative forte de 5 sources institutionnelles independantes sur la necessite d'une accountability humaine explicite — EU AI Act Art.14 (Regulation 2024/1689) impose une supervision effective des systemes haut-risque ; OpenAI Shavit 2023 : 'at least one human entity should be accountable for every uncompensated direct harm caused by an agentic AI system' ; IMDA Singapore 2026 : 'humans are ultimately accountable' ; AI Agent Index 2025 (N=30 systemes) : 25/30 agents ne publient aucun resultat safety, 23/30 sans third-party testing — deficit massif actuel ; BCG/MIT 2025 (N=2102 dirigeants) : 58% anticipent changements significatifs de gouvernance IA en 3 ans. Limitation critique : aucune etude ne mesure l'efficacite causale de ces mecanismes sur la reduction des harms en developpement logiciel — le corpus est majoritairement normatif/prescriptif, pas evaluatif. GRADE fragile : retrait des sources normatives laisserait seulement GRADE 2.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "EU AI Act Article 14 — Regulation (EU) 2024/1689 (EUR-Lex)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "High-risk AI systems shall be designed and developed in such a way, including with appropriate human-machine interface tools, that they can be effectively overseen by natural persons during the period in which they are in use.",
+            "note": "Norme legale contraignante UE. Quote APPROXIMATIVE (variation mineure pronom). Substance confirmee Agent C. Niveau 4 dans pyramide EBSE (prescrit l'obligation, ne prouve pas l'efficacite)."
+          },
+          {
+            "name": "OpenAI Shavit et al. 2023 — Practices for Governing Agentic AI Systems (cdn.openai.com)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "At least one human entity should be accountable for every uncompensated direct harm caused by an agentic AI system, creating incentives to reduce harm.",
+            "note": "Framework fondateur accountability agentique. Quote APPROXIMATIVE (variation 'should be' vs 'is'). PDF accessible cdn.openai.com. Source critique. VERIFIE Agent C."
+          },
+          {
+            "name": "IMDA Singapore Model AI Governance Framework for Agentic AI — janvier 2026 (imda.gov.sg)",
+            "pyramid": 4,
+            "year": 2026,
+            "quote": "humans are ultimately accountable",
+            "note": "Premier framework gouvernemental mondial dedie aux agents IA. Lance 22 jan 2026 au WEF Davos. CONFIRME Agent C (substance)."
+          },
+          {
+            "name": "Staufer et al. 2025 — The 2025 AI Agent Index (arXiv:2602.17753, Cambridge/Washington/Harvard/Stanford/MIT)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "25/30 agents disclose no internal safety results, and 23/30 agents have no third-party testing.",
+            "note": "N=30 systemes reels, 45 champs, 4 semaines review. Quote APPROXIMATIVE (Agent A avait chiffre contradictoire interne). Source observationnelle (preuve negative : documenter le deficit actuel). VERIFIE Agent C."
+          },
+          {
+            "name": "BCG/MIT Sloan 2025 — The Emerging Agentic Enterprise (N=2102 dirigeants)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "58% of executives expect significant changes to AI governance within 3 years",
+            "note": "Titre exact confirme (pas 'AI at Work 2024'). N=2102 confirme. Biais consulting BCG. Mesure perception, pas efficacite causale. VERIFIE Agent C."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": ["convergence : 5 sources institutionnelles independantes (EU, USA, Singapore, BCG/MIT, AI Agent Index) convergent sur necessite accountability humaine explicite"],
+          "minus": ["indirectness : aucune source ne mesure l'efficacite causale des mecanismes d'accountability en developpement logiciel — corpus prescriptif, pas evaluatif"]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": ["OpenAI Shavit 2023 (framework fondateur)", "IMDA Singapore 2026 (premier framework gouvernemental mondial)"],
+        "etd_balance": {
+          "benefices": "Traçabilite des actions agentiques, responsabilite claire en cas de harm, audit possible, confiance accrue des parties prenantes, conformite reglementaire (EU AI Act)",
+          "risques": "Overhead de documentation et de gouvernance, potentiel ralentissement du deploiement, risque de 'accountability washing' sans substance",
+          "balance": "Benefices > Risques : l'absence d'accountability entraine des risques legaux (EU AI Act), organisationnels et de confiance bien documentes. Le surcoût de gouvernance est faible comparé au coût des incidents non tracés.",
+          "faisabilite": "Haute — logging des actions agentiques, audit trail, kill switch sont implementables nativement dans la plupart des frameworks agents (Claude Code, LangChain, AutoGen)"
+        },
+        "prisma_ref": "verification/prisma/ai-agent-accountability.md",
+        "sensitivity_ref": "verification/extractions/picoc-20-accountability.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

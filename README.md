@@ -1,4 +1,4 @@
-# EBSE Guide Tool
+# ebse-scaffold
 
 Outil interactif de decisions techniques pour le developpement logiciel, base sur l'Evidence-Based Software Engineering (EBSE).
 
@@ -42,21 +42,27 @@ curl -X POST http://localhost:5173/api/guide \
 ```
 
 ### Donnees brutes
-Les recommandations sont dans `data/decisions/*.json` (lisibles par humain et machine).
+Les recommandations sont dans `guide/data/decisions/*.json` (lisibles par humain et machine).
 
 ## Structure du projet
 
 ```
-EBSE-guide/
-├── methodology.md          ← Methode EBSE (PICO, GRADE, double extraction)
-├── matrix.md               ← Matrice ISO 25010 x SWEBOK (scope)
-├── data/                   ← Base de donnees de recommandations (JSON)
-│   ├── decisions/          ← 1 fichier par decision
-│   ├── decision-tree.json  ← Arbre de decision (questions)
-│   └── stacks/             ← Profils pre-calcules
+ebse-scaffold/
+├── guide/                  ← Guide EBSE (decisions techniques basees sur preuves)
+│   ├── methodology.md      ← Methode EBSE (PICOC, GRADE, double extraction)
+│   ├── data/               ← Base de donnees de recommandations (JSON)
+│   │   ├── decisions/      ← 1 fichier par decision (PICOC)
+│   │   ├── decision-tree.json
+│   │   └── stacks/         ← Profils pre-calcules par stack
+│   └── verification/       ← Traces de double extraction + PRISMA
+├── scaffold/               ← Scaffold agent (templates operationnels)
+│   ├── claude-md-autonomous-agent.md  ← Template CLAUDE.md universel
+│   ├── settings-autonomous-agent.jsonc
+│   ├── commands/           ← Slash commands templates
+│   └── ...
 ├── app/                    ← Application web (React + Vite + TypeScript)
-├── guide/                  ← Pages markdown (source, reference)
-└── verification/           ← Traces de double extraction + formulaires
+├── matrix.md               ← Matrice ISO 25010 x SWEBOK (scope)
+└── PLAN.md                 ← Avancement
 ```
 
 ## Stacks couvertes

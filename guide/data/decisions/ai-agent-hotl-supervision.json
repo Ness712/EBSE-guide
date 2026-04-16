@@ -1,0 +1,88 @@
+{
+  "id": "ai-agent-hotl-supervision",
+  "domain": "ai-collaboration",
+  "question": "Comment superviser efficacement un agent IA autonome sans micro-management, et a quel niveau d'autonomie deleguer selon le type de tache (Human-On-The-Loop vs Human-In-The-Loop) ?",
+  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-human-only-gates", "ai-agent-escalation-protocol"],
+  "tags": [
+    "ai-collaboration",
+    "supervision",
+    "HOTL",
+    "HITL",
+    "autonomy",
+    "oversight",
+    "levels-of-autonomy",
+    "delegation"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Appliquer HITL (Human-In-The-Loop : approbation de chaque action critique avant execution) pour les taches a forte irreversibilite ou ambiguite domaine (modifications schema DB, code auth, operations infra) — le gain de taux de completion justifie la friction (+71% relatif sur GAIA : 30.3% → 51.9% avec acces au contexte, Magentic-UI ; 82% taux d'approbation en SE reel sur 663 work items Jira, HULA ICSE 2025). Appliquer HOTL (Human-On-The-Loop : supervision par exception sans approbation de chaque etape) pour les taches routinieres a fort volume — les praticiens experimentes migrent naturellement vers ce mode (taux d'auto-approbation x2 apres 750 sessions, Anthropic ~2M interactions) et l'autonomie moyenne maximise le trade-off productivite/controle (precision +17 pts, rappel +49 pts vs baseline, N=230, IP&M 2026). REGLE DE ROUTAGE : criticite × irreversibilite → HITL ; volume × routinisation → HOTL. PRECISION METHODOLOGIQUE : le claim +71% Magentic-UI repose sur des utilisateurs simules (GPT-4o), pas des utilisateurs reels — valeur indicative de la borne inferieure du gain HITL.",
+        "grade": 3,
+        "level": "RECOMMANDE_FRAGILE",
+        "sources": [
+          {
+            "name": "Mozannar, Bansal et al. (Microsoft Research) 2025 — Magentic-UI (arXiv:2507.22358)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Magentic-UI with the simulated user that has access to side information improves the accuracy of autonomous Magentic-UI by 71%, from a 30.3% task-completion rate to a 51.9% task-completion rate.",
+            "note": "CORRECTION Agent C CRITIQUE : +71% = amelioration RELATIVE (30.3%→51.9% = +21.6 pts absolus), pas +71 pts absolus. Utilisateur = simule (GPT-4o avec acces aux plans humains GAIA), PAS un utilisateur reel. N=162 taches GAIA. Preprint non peer-reviewed. VERIFIE Agent C avec nuances."
+          },
+          {
+            "name": "Takerngsaksiri, Pasuksmit et al. (Atlassian) — HULA (arXiv:2411.12924, ICSE SEIP 2025)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "we introduce a Human-in-the-loop LLM-based Agents framework (HULA) for software development that allows software engineers to refine and guide LLMs when generating coding plans and source code for a given task.",
+            "note": "ICSE SEIP 2025 (peer-reviewed, rang A en SE). N=663 work items Jira, 2 mois, deploiement interne Atlassian. 79% taux de generation plans ; 82% taux d'approbation. Source critique pour la validite HITL en SE reel. VERIFIE Agent C."
+          },
+          {
+            "name": "Geninatti Cossatin, Ferrero, Ardissono, Mauro (Univ. Turin) 2026 — The autonomy equation (IP&M, SJR Q1)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "autonomy moyenne = meilleur equilibre entre productivite et preferences de controle utilisateur",
+            "note": "Information Processing & Management, Elsevier, SJR Q1. DOI 10.1016/j.ipm.2026.104681, vol. 63:5. N=230 participants. 3 conditions experimentales : baseline manuel, autonomie moyenne avec confirmation, haute autonomie proactive. NASA-TLX + metriques precision/rappel. Precision >82% (IA) vs 65% (baseline) ; rappel 63% (haute autonomie) vs 14% (baseline). VERIFIE Agent C."
+          },
+          {
+            "name": "Anthropic — Measuring AI Agent Autonomy in Practice (rapport institutionnel, fevrier 2026)",
+            "pyramid": 4,
+            "year": 2026,
+            "quote": "Effective oversight doesn't require approving every action but being in a position to intervene when it matters.",
+            "note": "20 auteurs Anthropic. N=~2M interactions : 998 481 tool calls API + donnees Claude Code. Tres grand N mais biais institutionnel — Anthropic mesure ses propres produits. Resultat : praticiens experimentes migrent naturellement vers HOTL (taux auto-approbation x2 apres 750 sessions). VERIFIE Agent C."
+          },
+          {
+            "name": "Feng, McDonald, Zhang (Univ. Washington) 2025 — Levels of Autonomy for AI Agents (arXiv:2506.12469)",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "We define five levels of escalating agent autonomy, characterized by the roles a user can take when interacting with an agent: operator, collaborator, consultant, approver, and observer.",
+            "note": "Framework conceptuel (non empirique). Knight First Amendment Institute, Columbia University. 5 niveaux : operator, collaborator, consultant, approver, observer. CORRECTION Agent C : confondre ce papier avec OrchVis (Jieyu Zhou arXiv:2510.24937) est une erreur — ce sont deux sources distinctes. VERIFIE Agent C."
+          },
+          {
+            "name": "Sheridan & Verplank 1978 — Human and Computer Control of Undersea Teleoperators (MIT DTIC ADA057655)",
+            "pyramid": 4,
+            "year": 1978,
+            "quote": "Niveaux 1-10 d'automatisation : du controle humain total a l'autonomie complete de l'ordinateur sans information de l'operateur",
+            "note": "Reference fondatrice taxonomie LOA (Levels of Automation). MIT Man-Machine Systems Laboratory. 10 niveaux. Non empirique — travail theorique / teleroperation sous-marine 1970s. Indirectness forte pour agents LLM. VERIFIE Agent C (DTIC ADA057655 confirme)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence : 4 sources convergent sur le principe (supervision par exception > aucune supervision ; autonomie moyenne optimale) : Magentic-UI, Anthropic, HULA, IP&M", "effet important : +71% relatif Magentic-UI ; precision +17 pts + rappel +49 pts (IP&M) ; 82% taux approbation HULA"],
+          "minus": ["biais : Magentic-UI = utilisateurs simules (validite externe limitee) ; Anthropic = auto-mesure institutionnelle (biais institutionnel)", "indirectness : HULA/Magentic-UI = HITL (approbation plans), pas HOTL strictement ; Sheridan 1978 = teleroperation, pas agents LLM"],
+          "note": "GRADE 3 reflete l'absence d'etude empirique peer-reviewed comparant directement HITL vs HOTL sur des agents de SE avec utilisateurs reels. La recommandation HOTL pour taches routinieres repose principalement sur Anthropic (institutionnel) et IP&M (N=230, experimentation plutot que terrain). La recommandation HITL pour taches critiques est mieux documentee empiriquement (HULA ICSE 2025)."
+        },
+        "robustness": "PARTIELLE",
+        "critical_sources": ["Takerngsaksiri et al. HULA arXiv:2411.12924 (ICSE SEIP, source critique HITL)", "Geninatti Cossatin et al. IP&M 2026 (source critique autonomie moyenne)"],
+        "etd_balance": {
+          "benefices": "Reduction du temps de supervision (HOTL) sur les taches routinieres, amelioration du taux de completion sur les taches critiques (HITL), adaptation naturelle au profil de risque de chaque tache",
+          "risques": "Overhead cognitif pour classifier les taches (HOTL vs HITL), risque de sous-supervision sur taches frontiere, friction HITL peut ralentir les pipelines a haut volume",
+          "balance": "Benefices > Risques si la regle de routage est clairement definie a l'avance. L'enjeu principal est operationnel : definir explicitement les criteres de criticite et d'irreversibilite pour chaque categorie de taches.",
+          "faisabilite": "Haute — Claude Code, LangChain, AutoGen supportent nativement les modes HITL (confirmation requise) et HOTL (monitoring par exception). La regle de routage necessite une phase de calibration initiale."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-hotl-supervision.md",
+        "sensitivity_ref": "verification/extractions/picoc-26-hotl-supervision.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

@@ -6,7 +6,7 @@ import { GuideView } from './features/guide/guide-view';
 import { useProfiles } from './shared/hooks/use-profiles';
 import { useAllDecisions, useFilteredDecisions } from './shared/hooks/use-decisions';
 import { generateApiResponse } from './features/export/api-export';
-import decisionTreeData from '../../data/decision-tree.json';
+import decisionTreeData from '../../guide/data/decision-tree.json';
 
 type AppState = 'home' | 'configurator' | 'guide';
 
@@ -33,7 +33,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ebse-guide-${choices.backend ?? 'custom'}-${Date.now()}.json`;
+    a.download = `ebse-scaffold-${choices.backend ?? 'custom'}-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

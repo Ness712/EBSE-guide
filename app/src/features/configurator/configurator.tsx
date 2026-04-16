@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { DecisionTree, UserChoices, TreeNode } from '../../shared/types/decisions';
-import decisionTreeData from '../../../../data/decision-tree.json';
+import decisionTreeData from '../../../../guide/data/decision-tree.json';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const tree = decisionTreeData as any as DecisionTree;

@@ -1,0 +1,93 @@
+{
+  "id": "ai-agent-performance-calibration",
+  "domain": "ai-collaboration",
+  "question": "Quel est l'ecart entre les performances des agents IA sur les benchmarks et leur performance reelle en production sur des taches de developpement logiciel reelles, et comment calibrer les attentes en consequence ?",
+  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-task-type-routing", "ai-agent-intermediate-task-delegation"],
+  "tags": [
+    "ai-collaboration",
+    "performance",
+    "calibration",
+    "benchmark",
+    "production",
+    "productivity",
+    "expectation"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Calibrer les attentes de performance des agents IA sur des donnees de production reelles, pas sur les scores benchmark. Les benchmarks surestiment systematiquement et massivement la performance reelle en developpement logiciel : (1) PRODUCTIVITE : le RCT METR 2025 (N=16 devs experimentes, 246 issues open-source reelles) mesure +19% de temps de completion avec IA vs sans IA, alors que les developpeurs prevoyaient -24% et percevaient -20% apres usage — ecart total de 43 points entre attente et realite ; (2) TAUX DE RESOLUTION : SWE-bench Verified ~70% → SWE-bench Pro taches enterprise complexes ~23% → taches enterprise proprietaires ~18% (Scale AI 2025, arXiv:2509.16941) ; (3) QUALITE CODE : +30.26% warnings statiques et +41.64% complexite cognitive dans le code IA-genere vs code humain (CMU MSR'26, arXiv:2511.04427, diff-in-diff quasi-experimental) ; (4) TAUX DE MERGE PR : 83.8% pour les agents vs 91.0% pour les humains (arXiv:2509.14745, N=567 PRs) ; (5) SCORE PRODUCTION : 39-64/100 sur taches production reelles issues de 7 entreprises (AlphaEval 2026, arXiv:2604.12162). Consequence operationnelle : avant de deleguer une categorie de taches a un agent, valider sur un echantillon representatif de taches reelles du projet (pas des benchmarks), mesurer le temps de completion objectivement (pas la perception), et integrer la degradation de qualite dans le calcul du cout total.",
+        "grade": 5,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "METR 2025 — Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity (arXiv:2507.09089)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "allowing AI actually increases completion time by 19% [...] developers forecast AI would reduce completion time by 24%",
+            "note": "RCT crossover design. N=16 developpeurs experimentes, 246 issues GitHub reelles, ~2h/tache. arXiv ID corrige par Agent C (2507.09089, pas 2507.09479). Source critique — seul RCT dans le domaine. VERIFIE Agent C."
+          },
+          {
+            "name": "Deng, Da et al. (Scale AI) 2025 — SWE-Bench Pro (arXiv:2509.16941)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "The benchmark features long-horizon tasks that may require hours to days for a professional software engineer to complete, often involving patches across multiple files and substantial code modifications.",
+            "note": "Benchmark standardise. ~70% SWE-bench Verified → ~23% SWE-bench Pro public → ~18% (Claude Opus 4.1). Auteur corrige par Agent C (Deng, Da et al., Scale AI — pas Drozdov). VERIFIE Agent C."
+          },
+          {
+            "name": "Rabanser, Kapoor, Narayanan et al. 2026 — Towards a Science of AI Agent Reliability (arXiv:2602.16666)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "recent capability gains have only yielded small improvements in reliability",
+            "note": "14 modeles, 2 benchmarks, Princeton/Kapoor/Narayanan. Stagnation fiabilite confirmee. Formulation '18 mois' non retrouvee verbatim dans l'abstract (Agent C). VERIFIE Agent C."
+          },
+          {
+            "name": "Etude merge PR (arXiv:2509.14745)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "83.8% (agents) vs 91.0% (humains) merge rate",
+            "note": "CORRECTIONS Agent C obligatoires : venue = arXiv preprint (PAS TOSEM) ; N=567 PRs Claude Code sur 157 repos (pas 33 000). Les deux chiffres 83.8%/91.0% sont exacts. VERIFIE Agent C."
+          },
+          {
+            "name": "Kastner, Vasilescu et al. (CMU) 2026 — Speed at the Cost of Quality (arXiv:2511.04427, MSR'26)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "AI-generated code introduces more static analysis warnings and higher cognitive complexity",
+            "note": "Quasi-experimental diff-in-diff, repos open-source multiples. Chiffres CORRIGES par Agent C : +30.26% warnings (pas +18%) et +41.64% complexity (pas +35%). La realite est pire que ce que les agents A/B rapportaient. Accepte MSR'26. VERIFIE Agent C."
+          },
+          {
+            "name": "Lu, Xu, Zhang et al. 2026 — AlphaEval: Evaluating Agents in Production (arXiv:2604.12162)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "the best configuration achieves only 64.41/100",
+            "note": "14 configurations, 6 modeles frontier, 94 taches production issues de 7 entreprises reelles. Range 39-64/100 exact confirme Agent C. VERIFIE Agent C."
+          },
+          {
+            "name": "Gupta 2026 — ReliabilityBench (arXiv:2601.06112)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "pass@1 metrics on clean data provide dangerously optimistic estimates",
+            "note": "1280 episodes, chaos engineering (timeouts, rate limits, schema drift). 1280 episodes confirmes. Verbatim exact non retrouve dans abstract Agent C (possible paraphrase). VERIFIE Agent C (PARTIEL)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence forte : 5 sources independantes (METR, SWE-Bench Pro, AlphaEval, CMU, ReliabilityBench) convergent sans contradiction sur l'existence d'un ecart benchmark/production", "effet important : ecart massif et coherent (+19% temps reel METR, 70%→18% resolution, +30-41% degradation qualite CMU)"],
+          "minus": ["biais partiel : erreurs factuelles dans formulation agents A/B (venue P4, chiffres P6) reduisent legerement la confiance dans la rigueur de la synthese — corrigees Agent C"]
+        },
+        "robustness": "FORTE",
+        "critical_sources": ["METR RCT arXiv:2507.09089 (seul RCT, source critique)", "CMU MSR'26 arXiv:2511.04427 (degradation qualite, quasi-experimental)"],
+        "etd_balance": {
+          "benefices": "Evitement de la sur-delegation (taches ou l'agent performe mal en production), calibration des attentes des parties prenantes, decisions d'adoption basees sur des donnees reelles, calcul cout total honete integrant degradation qualite",
+          "risques": "Tendance a la sous-delegation si l'ecart benchmark/production est surinterprété (agents utiles pour certaines taches meme si moins que prevu), investissement en temps pour valider sur echantillon reel",
+          "balance": "Benefices > Risques : la sur-delegation engendre des couts caches (review time +91% Faros, bugs +9%) qui annulent les gains apparents. La validation sur taches reelles est un investissement modeste compare aux couts de correction.",
+          "faisabilite": "Haute — mesure du temps de completion sur echantillon de 10-20 taches reelles avant deploiement a grande echelle"
+        },
+        "prisma_ref": "verification/prisma/ai-agent-performance-calibration.md",
+        "sensitivity_ref": "verification/extractions/picoc-21-performance-reelle.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

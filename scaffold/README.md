@@ -1,8 +1,8 @@
-# Templates Agent Autonome — EBSE-guide
+# Scaffold — ebse-scaffold
 
 ## Qu'est-ce que c'est ?
 
-Templates pour transformer Claude Code en **equipe de developpement autonome** pilotee par un **Product Owner (PO)**. Le PO dit ce qu'il veut, l'agent gere tout le reste (decomposition, code, tests, review, PR, monitoring).
+Le **scaffold** configure Claude Code en agent autonome (HOTL) piloté par un **Product Owner (PO)**. Le PO définit l'objectif, l'agent gère tout le reste (décomposition, code, tests, review, PR, monitoring).
 
 **Chaque regle est sourcee** — EBSE domain `ai-collaboration` (17 PICOCs, Kitchenham 2007), docs officielles Claude Code, ou feedback PO. Rien n'est invente.
 

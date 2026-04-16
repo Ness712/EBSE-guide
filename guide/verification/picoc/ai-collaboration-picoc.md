@@ -11,7 +11,7 @@ Sauf precision differente, **P = "Equipe d'ingenierie logicielle, 1-10 devs, dev
 
 Cette population herite des hypotheses scope du guide EBSE existant (web app, equipes petites-moyennes) et ajoute la contrainte *"utilise un agent de codage IA"*.
 
-## Liste finale — 17 PICOCs
+## Liste finale — 27 PICOCs
 
 ### PICOC #1 — Autonomy granularity par action
 
@@ -222,7 +222,106 @@ Cette population herite des hypotheses scope du guide EBSE existant (web app, eq
 | 16 | Cost/budget caps per task | Strong | ISO 5338 §6.3 + ISO 42001 §8.1 |
 | 17 | Provenance/audit trail | Strong | ISO 42001 §7.5 + §8 |
 
-**Total : 17 PICOCs** (dans target 10-20 methodology.md §1.3).
+**Total : 18 PICOCs** (dans target 10-20 methodology.md §1.3).
+
+### PICOC #19 — Verification method (grep vs lecture vs agent independant)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Verification par lecture complete des fichiers sources + agent independant avec contexte frais pour les verifications critiques |
+| **C** | (1) Grep / pattern matching comme methode principale de verification d'alignement ; (2) Auto-verification par l'agent lui-meme (meme contexte) |
+| **O** | Taux de faux negatifs (gaps non detectes), precision de la verification, detection de violations semantiques |
+| **Co** | Agents IA autonomes (Claude Code, Cursor, Copilot, Devin) verifiant qu'un document/code est aligne a une reference (template, conventions, spec) |
+| **Question** | *"Pour un agent IA verifiant l'alignement semantique entre une implementation et une reference (template, conventions, spec), la lecture complete + agent independant reduit-elle les faux negatifs vs grep/pattern matching ou auto-verification ?"* |
+| **Anchor** | Lu et al. 2025 arXiv:2512.02304 (solver vs verifier gain) ; Wataoka et al. 2024 arXiv:2410.21819 (self-preference bias) ; AGENTIF arXiv:2505.16944 NeurIPS 2025 (constraint types) ; NIST AI 600-1 §2.2 Confabulation ; Manning et al. IR textbook (grep semantique) |
+
+### PICOC #20 — Accountability et gouvernance agentique
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Framework d'accountability explicite : chaine d'imputabilite humaine documentee, registre d'actions auditable, points de controle d'approbation humaine significatifs avant actions a fort impact |
+| **C** | (1) Deploiement sans framework de gouvernance formalise (responsabilite implicite ou distribuee) ; (2) Gouvernance basee sur la confiance au modele uniquement |
+| **O** | Clarte d'imputabilite en cas de defaillance, conformite reglementaire, detectabilite des incidents, confiance des parties prenantes |
+| **Co** | Systemes de developpement logiciel autonomes avec delegation PO→agent, contexte production |
+| **Question** | *"Un framework d'accountability explicite (chaine d'imputabilite, registre d'actions, checkpoints humains) ameliore-t-il la detectabilite des incidents et la conformite reglementaire vs deploiement sans gouvernance formalisee ?"* |
+| **Anchor** | OpenAI Practices for Governing Agentic AI 2023 ; IMDA Model AI Governance Framework 2026 ; WEF AI Agents in Action 2025 ; Feng et al. Levels of Autonomy 2025 |
+
+### PICOC #21 — Calibration performance reelle des agents
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Calibration des attentes sur les performances reelles en production : taux de succes par type de tache mesure en conditions reelles, gap benchmark vs production documente et communique au PO |
+| **C** | (1) Calibration basee sur les benchmarks academiques (SWE-bench, HumanEval) sans ajustement production ; (2) Confiance par defaut basee sur les benchmarks marketing |
+| **O** | Precision des attentes PO, taux de sur-delegation/sous-delegation, qualite des decisions de delegation, desillusion post-deploiement |
+| **Co** | Delegation PO→agent autonome en contexte production reel, taches de developpement logiciel |
+| **Question** | *"Calibrer les attentes sur les performances reelles en production (vs benchmarks) ameliore-t-il la qualite des decisions de delegation et reduit-il le taux de desillusion post-deploiement ?"* |
+| **Anchor** | SWE-bench (Jimenez 2024) ; SWE-bench Pro (Drozdov 2025) ; ReliabilityBench (2026) ; Anthropic Measuring Agent Autonomy 2026 ; Mehta CLEAR 2025 |
+
+### PICOC #22 — Securite agentique (prompt injection, IAM, tool misuse)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Mesures de securite specifiques aux agents autonomes : identites distinctes (IAM), least-privilege, sandboxing, defense contre prompt injection, audit logging des actions |
+| **C** | (1) Securite perimetrique classique sans adaptation aux risques specifiques des agents ; (2) Confiance implicite dans les inputs de l'agent |
+| **O** | Taux d'exploitation reussi, surface d'attaque, blast radius en cas de compromission, incidents de securite agent-specific |
+| **Co** | Agents autonomes de developpement logiciel avec acces a des outils (code execution, file system, APIs, web) |
+| **Question** | *"Les mesures de securite specifiques aux agents (IAM distinct, least-privilege, sandboxing, defense prompt injection) reduisent-elles significativement le taux d'exploitation et le blast radius vs securite perimetrique classique ?"* |
+| **Anchor** | Datta et al. Agentic AI Security 2025 ; ISACA Best Practices Agentic AI 2025 ; Arunkumar et al. Agentic AI Architectures 2026 ; AI Agent Index 2026 |
+
+### PICOC #23 — Evaluation multi-dimensionnelle (CLEAR)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Framework d'evaluation multi-dimensionnel des livrables d'agents : Cost, Latency, Efficacy, Assurance, Reliability (CLEAR ou equivalent) couvrant dimensions economiques et operationnelles |
+| **C** | (1) Evaluation basee sur le task completion binaire (succes/echec) uniquement ; (2) Accuracy ou pass@1 comme metrique principale |
+| **O** | Precision de prediction du succes en production, detection precoce des problemes de reliability et de cout, correlation avec valeur metier reelle |
+| **Co** | Systemes agentiques de developpement logiciel en contexte enterprise, evaluation par PO |
+| **Question** | *"Un framework d'evaluation multi-dimensionnel (CLEAR : Cost, Latency, Efficacy, Assurance, Reliability) predit-il mieux le succes en production que l'evaluation basee sur le task completion ou l'accuracy seule ?"* |
+| **Anchor** | Mehta CLEAR arXiv:2511.14136 2025 (rho=0.83) ; Mohammadi SAP KDD 2025 ; Akshathala IIIT-Hyderabad 2025 ; Arunkumar CLASSic 2026 |
+
+### PICOC #24 — Structure organisationnelle equipe agents (SE 3.0)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Structure organisationnelle explicite avec roles distincts pour les agents : manager / researcher / engineer / reviewer (ou equivalent agile), avec separations de responsabilites documentees |
+| **C** | (1) Agent unique polyvalent sans structure de roles ; (2) Topologie non-structuree sans separation de responsabilites ; (3) Structure ad hoc per-tache |
+| **O** | Taux de resolution de taches complexes, qualite architecturale des livrables, coherence des outputs multi-agents |
+| **Co** | Systemes multi-agents pour le developpement logiciel autonome delegue par un PO |
+| **Question** | *"Une structure organisationnelle explicite avec separation des roles (manager/researcher/engineer/reviewer) ameliore-t-elle le taux de resolution et la qualite vs agent unique ou topologie non-structuree ?"* |
+| **Anchor** | Agyn arXiv:2602.01465 2026 (72.2% SWE-bench 500) ; ALMAS JPMorgan 2025 ; Li/Zhang/Hassan SE 3.0 arXiv:2507.15003 2025 (456 535 PRs) ; ChatCollab Stanford 2024 |
+
+### PICOC #25 — Taxonomie des modes de defaillance agentiques (MAST)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Connaissance et prise en compte explicite d'une taxonomie des modes de defaillance specifiques aux agents (system design / inter-agent misalignment / task verification) dans le design du systeme |
+| **C** | (1) Design sans modele formel des modes de defaillance agents ; (2) Application des taxonomies de defaillance logicielle classiques sans adaptation agents |
+| **O** | Taux de detection precoce des defaillances, qualite du design, frequence des modes de defaillance en production |
+| **Co** | Systemes multi-agents LLM pour developpement logiciel, contexte enterprise |
+| **Question** | *"Integrer une taxonomie des modes de defaillance specifiques aux agents (ex: MAST) dans le design reduit-il la frequence et l'impact des defaillances vs design sans modele formel ?"* |
+| **Anchor** | Cemri et al. MAST ICLR 2025 arXiv:2503.13657 (kappa=0.88, 1600+ traces) ; Zhang et al. arXiv:2604.08906 2026 (409 bugs, 5 frameworks) |
+
+### PICOC #26 — Supervision sans micro-management (Human-On-The-Loop)
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Architecture Human-On-The-Loop (HOTL) : supervision par exception, definition d'objectifs de haut niveau, capacite d'intervention sans approbation de chaque action individuelle |
+| **C** | (1) Human-In-The-Loop (approbation de chaque action, micro-management) ; (2) Human-Out-Of-The-Loop (zero supervision) |
+| **O** | Qualite de supervision, detection des derives comportementales, charge cognitive du superviseur, autonomie preservee, taux d'intervention pertinente |
+| **Co** | PO ou managers supervisant des agents IA autonomes en developpement logiciel |
+| **Question** | *"Une architecture Human-On-The-Loop (supervision par exception + objectifs HN) maintient-elle une qualite de supervision equivalente au HITL en reduisant la charge cognitive vs micro-management action-par-action ?"* |
+| **Anchor** | Anthropic Measuring Agent Autonomy 2026 ; Zhou et al. OrchVis arXiv:2510.24937 2025 ; Feng et al. Levels of Autonomy arXiv:2506.12469 2025 ; Berretta et al. HAT Frontiers AI 2023 |
+
+### PICOC #27 — Redesign des processus pour delegation agentique
+
+| Element | Valeur |
+|---------|--------|
+| **I** | Redesign explicite des processus de developpement pour la delegation agentique : adapter les workflows, les ceremonies, et les definitions of done a la collaboration PO→agent plutot qu'automatiser les processus humains existants |
+| **C** | (1) Automatisation directe des processus existants sans redesign (memes steps, memes criteres, meme organisation) ; (2) Adoption incrementale sans changement de processus |
+| **O** | Taux de succes des initiatives agentiques, valeur metier livree, taux d'echec lie aux processus inadaptes |
+| **Co** | Organisations adoptant des agents IA autonomes pour le developpement logiciel, en remplacement ou complement d'une equipe humaine |
+| **Question** | *"Le redesign explicite des processus (vs automatisation de l'existant) ameliore-t-il significativement le taux de succes des initiatives agentiques et la valeur metier livree ?"* |
+| **Anchor** | Deloitte Tech Trends 2026 (40%+ projets echoueront si mauvaise gouvernance) ; Cemri MAST 2025 (system design = categorie defaillance) ; McKinsey QuantumBlack 2026 (SDD) |
 
 ## Corrections factuelles appliquees (via Agent C)
 

@@ -1,0 +1,88 @@
+{
+  "id": "ai-agent-mast-failure-modes",
+  "domain": "ai-collaboration",
+  "question": "Quels sont les modes de defaillance specifiques aux agents IA autonomes et comment les anticiper systematiquement pour minimiser les erreurs silencieuses en developpement logiciel ?",
+  "depends_on": ["ai-agent-silent-failure-monitoring", "ai-agent-multi-agent-topology", "ai-agent-verification-method"],
+  "tags": [
+    "ai-collaboration",
+    "failure-modes",
+    "MAST",
+    "taxonomy",
+    "reliability",
+    "silent-failure",
+    "multi-agent",
+    "monitoring"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Traiter chaque appel outil d'un agent comme un point de defaillance potentiellement silencieux et instrumenter la verification de sortie (pas seulement la detection d'exception) : les 4 modes de defaillance les plus frequents — (1) Disobey Task Specification (15.7%), (2) Reasoning-Action Mismatch (13.2%), (3) Step Repetition (13.2%), (4) No/Incomplete Verification (9.1%) — produisent des sorties syntaxiquement valides mais semantiquement incorrectes que ni le pipeline ni l'humain ne detectent sans assertions explicites (MAST, NeurIPS 2025, 1600+ traces, kappa=0.88 developpement/0.79 validation). Dans un systeme multi-agents, l'attribution causale de l'agent defaillant est non resolue avec les meilleures methodes actuelles (53.5% d'identification correcte, 14.2% pour l'etape precise — Who&When, ICML 2025 Spotlight, N=127 systemes) : concevoir les pipelines pour que chaque agent loggue son etat de confiance et ses hypotheses, non seulement ses outputs, afin de rendre les echecs attribuables post-mortem. Taux d'echec observes sur 7 frameworks MAS SOTA : 41% a 86.7%. En production reelle, 33 000 PRs d'agents analysees (MSR 2026) revelent que les PRs non-mergees sont characterisees par : manque d'engagement du reviewer, PRs dupliquees, features non desirees, misalignment agent. La fiabilite des agents stagne malgre 2 ans de gains rapides en capacite (Rabanser/Princeton, 14 modeles).",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Cemri, Pan, Yang et al. (UC Berkeley) — MAST (arXiv:2503.13657, NeurIPS 2025 D&B)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Despite growing enthusiasm for Multi-Agent LLM Systems (MAS), their performance gains on popular benchmarks often remain minimal compared with single-agent frameworks. This gap highlights the need to systematically analyze the challenges hindering MAS effectiveness.",
+            "note": "NeurIPS 2025 Datasets and Benchmarks (OpenReview fAjbYBmonr confirme). N=1600+ traces annotees, 150 traces developpement taxonomie, 7 frameworks, 6 annotateurs experts. CORRECTION Agent C : deux kappa distincts : kappa=0.88 (developpement) et kappa=0.79 (validation out-of-domain — le plus representatif de la generalisation). Categories exactes : specification issues / inter-agent misalignment / task verification (pas 'system design issues'). Taux echec : 41% a 86.7% sur 7 frameworks. VERIFIE Agent C."
+          },
+          {
+            "name": "Zhang, Yin, Zhang et al. (Penn State / Duke / Google DeepMind) — Who&When (arXiv:2505.00212, ICML 2025 Spotlight)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Which Agent Causes Task Failures and When? On Automated Failure Attribution of LLM Multi-Agent Systems",
+            "note": "ICML 2025 Spotlight (pas NeurIPS — CORRECTION Agent C). N=127 systemes multi-agents LLM avec annotations fine-grained. 53.5% = accuracy d'identification de l'agent causalement responsable (meilleure methode) ; 14.2% pour l'etape precise. Certaines methodes performent sous le niveau aleatoire. VERIFIE Agent C."
+          },
+          {
+            "name": "Ehsani, Pathak, Rawal et al. — Where Do AI Coding Agents Fail? (arXiv:2601.15195, MSR 2026)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "AI coding agents are now submitting pull requests (PRs) to software projects, acting not just as assistants but as autonomous contributors. As these agentic contributions are rapidly increasing across real repositories, little is known about how they behave in practice and why many of them fail to be merged.",
+            "note": "MSR 2026 (Mining Software Repositories, peer-reviewed). N=33 000 PRs, 5 agents coding, 600 PRs analyses qualitativement. Raisons rejet : manque engagement reviewer, PRs dupliquees, features non desirees, misalignment agent. Source critique pour la validation en production reelle. VERIFIE Agent C."
+          },
+          {
+            "name": "Gupta 2026 — ReliabilityBench (arXiv:2601.06112)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "pass@1 metrics on clean data provide dangerously optimistic estimates",
+            "note": "1280 episodes, chaos engineering (timeouts, rate limits, partial responses, schema drift). 2 modeles (Gemini 2.0 Flash, GPT-4o), 2 architectures (ReAct, Reflexion), 4 domaines. Succes 96.9% a epsilon=0, chute a 88.1% a epsilon=0.2. Preprint, auteur unique — a traiter avec precaution. VERIFIE Agent C."
+          },
+          {
+            "name": "Rabanser, Kapoor, Narayanan et al. (Princeton) 2026 — Towards a Science of AI Agent Reliability (arXiv:2602.16666)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "recent capability gains have only yielded small improvements in reliability",
+            "note": "14 modeles, 2 benchmarks, 12 metriques / 4 dimensions (consistency, robustness, predictability, safety). Princeton / Arvind Narayanan. Capability-reliability gap : accuracy monte, fiabilite stagne. VERIFIE Agent C (identique PICOC #21 et #23)."
+          },
+          {
+            "name": "Zhang, Zhang, Tan (Concordia Univ.) 2026 — Bugs in Agentic Frameworks (arXiv:2604.08906)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "Dissecting Bug Triggers and Failure Modes in Modern Agentic Frameworks: An Empirical Study",
+            "note": "N=409 bugs corriges, 5 frameworks (CrewAI, AutoGen, LangChain, LangGraph, SmolAgents). Causes racines : model-related faults, cognitive context mismanagement, orchestration faults. Complement important : bugs framework-level ≠ bugs agent-level. VERIFIE Agent C."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence forte : 5 sources independantes (Berkeley, PSU/Duke, MSR, Princeton, Concordia) convergent sur l'existence de defaillances systematiques et silencieuses", "effet important : 41-86.7% taux echec MAS (MAST) ; 53.5% identification max (Who&When) ; stagnation fiabilite malgre 2 ans progres (Rabanser)"],
+          "minus": ["biais : S1 analyse 7 frameworks specifiques 2024-2025 (selection, evolution rapide possible) ; S3 = 5 agents GitHub uniquement ; S4 = preprint auteur unique (2 modeles)"],
+          "note": "GRADE 4 reflete une convergence solide sur l'existence et la taxonomie des modes de defaillance (NeurIPS 2025 + ICML 2025 Spotlight = tier-1) validee en production reelle (MSR 2026, N=33K). La taxonomie MAST est la reference documentee la plus complete a ce jour. La fragility concerne la generalisation dans le temps (frameworks evoluent rapidement) et le fait qu'aucune etude ne mesure encore l'efficacite causale d'un framework de monitoring specifique sur la reduction des defaillances silencieuses."
+        },
+        "robustness": "PARTIELLE",
+        "critical_sources": ["MAST arXiv:2503.13657 (NeurIPS 2025, source critique taxonomie)", "Ehsani MSR 2026 arXiv:2601.15195 (source critique production reelle N=33K)"],
+        "etd_balance": {
+          "benefices": "Detection proactive des defaillances silencieuses avant qu'elles atteignent la production, attributabilite des echecs dans les pipelines multi-agents, conformite aux pratiques de monitoring recommandees (audit trail PICOC #17)",
+          "risques": "Overhead d'instrumentation (assertions explicites sur chaque outil, logging etat de confiance), complexite operationnelle accrue pour les pipelines multi-agents, risque de faux positifs si les seuils d'assertion sont mal calibres",
+          "balance": "Benefices >> Risques etant donne les taux d'echec observes (41-86.7%) et le fait que les defaillances silencieuses sont les plus coutEuses (produisent des outputs incorrects sans alerte). L'overhead d'instrumentation est faible compare au cout de revision du code defaillant decouverte tard.",
+          "faisabilite": "Haute — les frameworks modernes (Claude Code, LangChain, AutoGen) supportent nativement le logging des appels outils, les assertions sur les sorties et le monitoring des etats intermediaires. La taxonomie MAST (14 modes, 3 categories) fournit un checklist actionnable pour la conception des assertions."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-mast-failure-modes.md",
+        "sensitivity_ref": "verification/extractions/picoc-25-mast-failure-modes.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

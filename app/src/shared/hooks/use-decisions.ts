@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { Decision, UserChoices, StackVariant } from '../types/decisions';
 
 const decisionModules = import.meta.glob<{ default: Decision }>(
-  '../../../data/decisions/*.json',
+  '../../../guide/data/decisions/*.json',
   { eager: true },
 );
 

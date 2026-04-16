@@ -1,0 +1,81 @@
+{
+  "id": "ai-agent-org-structure",
+  "domain": "ai-collaboration",
+  "question": "Quelle structure organisationnelle d'equipe d'agents IA (roles, topologie, hierarchie) maximise la performance sur des taches de developpement logiciel complexes ?",
+  "depends_on": ["ai-agent-multi-agent-topology", "ai-agent-intermediate-task-delegation", "ai-agent-autonomy-granularity"],
+  "tags": [
+    "ai-collaboration",
+    "multi-agent",
+    "org-structure",
+    "roles",
+    "topology",
+    "team",
+    "hierarchy",
+    "feedback-loop"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Privilegier une structure hybride pour les equipes d'agents : sequentialite d'execution fixe (pipeline predetermine : PM → architecte → developpeur → reviewer) avec selection autonome des roles par les agents — ce protocole surpasse a la fois la hierarchie rigide (+14%, p<0.001) et la pleine autonomie emergente (+44%, Cohen's d=1.86, p<0.0001) sur 25 000 taches (Dochkina 2026), a condition que le systeme atteigne un seuil minimal de capacite du modele. CONDITION SINE QUA NON : coupler la structure de roles a une boucle de feedback d'execution runtime (compilation, tests, erreurs) — sans ce feedback, ajouter des agents n'ameliore pas la precision et degrade la robustesse (Ashrafi 2025, 19 LLMs). RESULTAT CONTRE-INTUITIF a documenter pour les equipes : la structure de roles standardisee (MetaGPT-style : 85.9% HumanEval, Agyn : 72.2% SWE-bench) reduit les hallucinations en cascade UNIQUEMENT couplée au feedback d'execution — la structure seule ne suffit pas. En production, un trust gap subsiste independamment de la topologie : les PRs d'agents sont acceptees moins frequemment que celles des humains (AIDev, 456 000 PRs, SE 3.0).",
+        "grade": 3,
+        "level": "RECOMMANDE_FRAGILE",
+        "sources": [
+          {
+            "name": "Dochkina 2026 — Drop the Hierarchy and Roles (arXiv:2603.28990)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "We present a 25,000-task computational experiment comparing coordination architectures in multi-agent LLM systems across 8 models, 4–256 agents, and 8 protocols. Our key finding is the endogeneity paradox: a hybrid protocol (Sequential) where agent ordering is fixed but role selection is autonomous outperforms both centralized coordination (+14%, p<0.001) and fully autonomous protocols (+44%, Cohen's d=1.86, p<0.0001).",
+            "note": "N=25 000 taches (20 810 configurations uniques), 8 modeles, 8 protocoles. Solo-author (Victoria Dochkina), preprint mars 2026, non replique independamment. CORRECTION Agent C : +44% = spread entre Sequential (Q=0.724) et Shared/Broadcast (Q=0.503) — pas strictement 'vs pleine autonomie' ; conditionnel au niveau de capacite du modele. VERIFIE Agent C."
+          },
+          {
+            "name": "Hong, Zhuge et al. — MetaGPT (arXiv:2308.00352, ICLR 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Remarkable progress has been made on automated problem solving through societies of agents based on large language models (LLMs). Existing LLM-based multi-agent systems can already solve simple dialogue tasks. Solutions to more complex tasks, however, are complicated through logic inconsistencies due to cascading hallucinations caused by naively chaining LLMs.",
+            "note": "ICLR 2024. Scores : 85.9% HumanEval (CORRECTION Agent C : pas 85%), 87.7% MBPP. Rôles : PM, architecte, dev, QA encodes en SOPs. Vendor bias fort : auteurs = developpeurs du systeme. Benchmark HumanEval/MBPP, pas SWE-bench. VERIFIE Agent C."
+          },
+          {
+            "name": "Benkovich & Valkov — Agyn (arXiv:2602.01465)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "real-world software development is organized as a collaborative activity carried out by teams following shared methodologies, with clear role separation, communication, and review.",
+            "note": "SWE-bench 500 taches, 72.2% taux de resolution. Roles specialises : coordination, recherche, implementation, review. Vendor bias : auteurs = developpeurs du systeme. VERIFIE Agent C."
+          },
+          {
+            "name": "Ashrafi, Bouktif, Mediani 2025 (arXiv:2505.02133)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "The use of large language models (LLMs) for automated code generation has emerged as a significant focus within AI research.",
+            "note": "19 LLMs, HumanEval. CORRECTION Agent C : sans runtime debugging, AC (2 agents) = 53.34% vs Basic (1 agent) = 54.09% (-0.75%). Degradation modeste en accuracy, plus visible en robustesse. AVEC runtime debugging : gains significatifs. VERIFIE Agent C."
+          },
+          {
+            "name": "Li, Zhang, Hassan — SE 3.0 / AIDev (arXiv:2507.15003)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "The future of software engineering--SE 3.0--is unfolding with the rise of AI teammates: autonomous, goal-driven systems collaborating with human developers.",
+            "note": "CORRECTION Agent C : N=456 000 PRs (pas 456 535). 61 000 repos, 47 000 developpeurs, 5 agents. Trust gap : agents plus rapides mais PRs acceptees moins frequemment ; code agents structurellement plus simple. VERIFIE Agent C."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence : 4 sources independantes convergent sur valeur structure + feedback (MetaGPT, Agyn, Dochkina, Ashrafi) depuis des angles differents", "effet important : Cohen's d=1.86 (Dochkina) = effet tres large, statistiquement tres robuste sur N=25K"],
+          "minus": ["biais vendor : MetaGPT et Agyn — auteurs = developpeurs des systemes evalues", "indirectness : HumanEval/MBPP/SWE-bench ≠ projets production reels ; seul AIDev est in-the-wild"],
+          "note": "GRADE 3 reflete une evidence moderee — robuste sur le principe (structure + feedback = necessaire) mais nuancee sur l'architecture optimale (hybride de Dochkina solo-author non replique). Le resultat contre-intuitif (hybride > hierarchie rigide) est statistiquement solide mais manque de replication independante."
+        },
+        "robustness": "PARTIELLE",
+        "critical_sources": ["Dochkina 2026 arXiv:2603.28990 (N=25K, resultat central — non replique)", "Ashrafi 2025 arXiv:2505.02133 (feedback loop critique — 19 LLMs)"],
+        "etd_balance": {
+          "benefices": "Reduction des hallucinations en cascade via structure de pipeline predeterminee, gains documentés sur benchmarks (85.9% MetaGPT, 72.2% Agyn), protocole hybride optimal sur evidence la plus large (N=25K)",
+          "risques": "Overhead de conception de la topologie, vendor bias des etudes principales, resultats conditionnels au niveau de capacite du modele, trust gap persistant en production",
+          "balance": "Benefices > Risques pour les systemes multi-agents en production, avec la condition explicite du feedback loop runtime. Sans feedback loop, la structure de roles seule n'apporte pas de gain et peut degrader la robustesse.",
+          "faisabilite": "Haute — MetaGPT, Agyn, et les frameworks modernes (Claude Code, AutoGen, LangChain) supportent nativement la definition de roles et les boucles de feedback."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-org-structure.md",
+        "sensitivity_ref": "verification/extractions/picoc-24-org-structure-agents.md",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

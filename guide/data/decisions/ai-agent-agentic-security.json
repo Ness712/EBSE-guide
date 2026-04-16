@@ -1,0 +1,102 @@
+{
+  "id": "ai-agent-agentic-security",
+  "domain": "ai-collaboration",
+  "question": "Quelles sont les vulnerabilites de securite specifiques aux systemes d'agents IA autonomes et quelles mesures de protection sont empiriquement validees ?",
+  "depends_on": ["ai-agent-permissions-sandbox", "ai-agent-silent-failure-monitoring", "ai-agent-multi-agent-topology"],
+  "tags": [
+    "ai-collaboration",
+    "security",
+    "prompt-injection",
+    "IAM",
+    "least-privilege",
+    "agent-isolation",
+    "tool-misuse",
+    "agentic-security"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Pour tout agent IA avec acces a des outils (bash, fichiers, API, web), appliquer systematiquement 4 mesures de securite : (1) MOINDRE PRIVILEGE — permissions minimales strictement necessaires ; reviser et reduire les permissions avant chaque nouveau deploiement ; (2) ISOLATION DES AGENTS — contextes d'execution separes entre agents dans un systeme multi-agent ; ne pas propager le contexte ou les credentials d'un agent a un autre sans validation explicite ; (3) SANITISATION DES INPUTS — valider et filtrer toutes les entrees provenant d'environnements non controles (web, fichiers externes, outputs d'autres agents) avant de les passer au LLM ou aux outils ; (4) MONITORING DES TOOL CALLS — logging auditable de toutes les invocations d'outils avec timestamp, parametre, resultat et agent source. Fondements cote ATTAQUE (GRADE 5 — Recommande fort) : 94.4% des modeles LLM sont vulnerables aux attaques de prompt injection directe ; 100% sont exploitables via l'inter-agent trust exploitation — aucun modele ne resiste (Lupinacci 2025, N=18 modeles, arXiv:2507.06850) ; ≥80% d'ASR (attack success rate) avec taux d'empoisonnement <0.1% via memory poisoning (AgentPoison NeurIPS 2024, arXiv:2407.12784) ; GPT-4 exploite 87% des CVEs one-day quand la description est fournie (Fang 2024, arXiv:2404.08144, N=15) ; 33-83% de succes d'escalade de privileges (LLMs as Hackers, Springer ESE 2025). Fondements cote DEFENSE (GRADE 3 — Recommande Fragile) : architecture Prompt Flow Integrity (PFI) reduit le taux d'attaque de 57.99% a 0.00% sur benchmarks fermés (Kim et al. 2025, arXiv:2503.15547) — resultat de laboratoire uniquement, non valide en production ouverte. Asymetrie fondamentale : la base de preuves est beaucoup plus solide pour les attaques (multiple sources independantes, N realistes) que pour les defenses (lab only, benchmarks fermes). Adaptive attacks contournent les defenses connues avec >85% de succes (Maloyan 2026).",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Lupinacci et al. 2025 — The Dark Side of LLMs: Agent-based Attacks (arXiv:2507.06850)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Direct Prompt Injection: 94.4% vulnerable; RAG Backdoor: 83.3%; Inter-Agent Trust: 100% (0/18 models resistant)",
+            "note": "N=18 modeles, Univ. Calabria. Chiffres CORRIGES Agent C : DPI 94.4% (pas 94.1%), RAG Backdoor 83.3% (pas 82.4%), inter-agent trust 100% (pas 82.4%). 1 modele resiste a DPI mais 0 a l'inter-agent trust. Lab uniquement. VERIFIE Agent C."
+          },
+          {
+            "name": "Chen et al. NeurIPS 2024 — AgentPoison (arXiv:2407.12784)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "average ASR higher than 80% with poison rate <0.1%, benign impact <1%",
+            "note": "NeurIPS 2024, U. Chicago / UIUC / U. Wisconsin / UC Berkeley. 3 types d'agents (driving, QA, healthcare). Quote verbatim CONFIRME Agent C. Source critique attaque. VERIFIE Agent C."
+          },
+          {
+            "name": "Fang et al. 2024 — LLM Agents Can Autonomously Exploit One-Day Vulnerabilities (arXiv:2404.08144)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "GPT-4 is capable of exploiting 87% of these vulnerabilities compared to 0% for every other model",
+            "note": "N=15 CVEs (faible). Condition optimale : description CVE fournie (sans description : 7%). Quote verbatim CONFIRME Agent C. Limitation N=15 critique. VERIFIE Agent C."
+          },
+          {
+            "name": "Kim et al. 2025 — Prompt Flow Integrity (PFI) (arXiv:2503.15547)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "ATR baseline 57.99% (AgentDojo) and 97.37% (AgentBench OS), reduced to 0.00% with PFI",
+            "note": "Seoul National University. ATR confirme : 57.99% AgentDojo et 97.37% AgentBench OS -> 0.00%. LAB ONLY : benchmarks fermes, pas valide en production ouverte. Adaptive attacks contournent (Maloyan). VERIFIE Agent C."
+          },
+          {
+            "name": "Happe & Cito — LLMs as Hackers (Springer Empirical SE 2025, arXiv:2310.11409)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "GPT-4-Turbo: 33% without guidance, 66-83% with guidance; privilege escalation success rates",
+            "note": "Peer-reviewed Springer. Lab VMs isolees. 33-83% privilege escalation confirme Agent C. hackingBuddyGPT. Source critique. VERIFIE Agent C."
+          },
+          {
+            "name": "Maloyan & Namiot 2026 — Prompt Injection Attacks on Agentic Coding Assistants (arXiv:2601.17548, SoK)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "attack success rates against state-of-the-art defenses exceed 85% when adaptive strategies are used",
+            "note": "SoK, 78 etudes 2021-2026. Claim '>85% ASR contre defenses' confirme. Claim '84% exfiltration rate' NON CONFIRME dans l'abstract — retire ou marquer non verifie. VERIFIE Agent C (PARTIEL)."
+          },
+          {
+            "name": "Chhabra, Datta et al. 2025 — Agentic AI Security (arXiv:2510.23883, v3 avril 2026)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "prompt injection attacks occur when malicious data, embedded within content processed by the LLM, manipulates the model's behavior to perform unauthorized or unintended actions",
+            "note": "Survey/taxonomie MCP/A2A vulnérabilités, memory poisoning. Le chiffre '87% tool misuse' non confirme dans l'abstract — a tracer dans corps du texte. VERIFIE Agent C (PARTIEL)."
+          },
+          {
+            "name": "ISACA Murali 2025 — Safeguarding the Enterprise: AI Evolution (isaca.org, juillet 2025)",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "An AI agent's role should be limited to its assigned tasks. Zero trust is often distilled into 'never trust, always verify.'",
+            "note": "Opinion experte praticien, non peer-reviewed. Convergence pratiques zero trust + IAM. VERIFIE Agent C."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": ["convergence forte cote attaque : 4+ sources independantes (Lupinacci, AgentPoison, Fang, LLMs as Hackers) convergent sur taux d'exploitation massifs 80-100%", "effet important cote attaque : 94-100% exploitation reproductibles dans conditions variees"],
+          "minus": ["asymetrie attaque/defense : preuves d'efficacite des defenses uniquement en lab — -1 indirectness forte cote defense"],
+          "note": "GRADE est une moyenne ponderee : attaque GRADE 5, defense GRADE 3. GRADE global 4 reflete que les mesures sont recommandees (preuves d'attaque solides) mais que leur efficacite en production reste partiellement non prouvee."
+        },
+        "robustness": "FORTE cote attaque, FRAGILE cote defense",
+        "critical_sources": ["AgentPoison NeurIPS 2024 arXiv:2407.12784 (source critique attaque)", "Lupinacci 2025 arXiv:2507.06850 (100% inter-agent trust vulnerable)"],
+        "etd_balance": {
+          "benefices": "Reduction du blast radius en cas de compromission, limitation des dommages en cas de prompt injection, traçabilite des actions pour forensics, conformite aux recommandations ISACA/IMDA",
+          "risques": "Overhead de configuration (least-privilege requiert audit des permissions), false sense of security si on se fie aux resultats lab sans validation production, complexite operationnelle accrue",
+          "balance": "Benefices >> Risques pour tout agent avec acces outils en production. L'asymetrie attaque/defense plaide pour appliquer les defenses meme partiellement validees plutot que d'attendre une preuve parfaite — le risque de ne rien faire est documenté a 94-100%.",
+          "faisabilite": "Haute — least-privilege, input sanitization et logging sont implementables nativement. Isolation des agents requiert architecture deliberee mais est supportee par les frameworks modernes (MCP, sandboxing)."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-agentic-security.md",
+        "sensitivity_ref": "verification/extractions/picoc-22-securite-agentique.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

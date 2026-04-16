@@ -1,0 +1,126 @@
+{
+  "id": "ai-agent-verification-method",
+  "domain": "ai-collaboration",
+  "question": "Quelle methode de verification l'agent doit-il utiliser pour verifier l'alignement semantique entre un document/code et une reference (template, conventions, spec) ?",
+  "depends_on": ["ai-agent-multi-agent-topology", "ai-agent-silent-failure-monitoring"],
+  "tags": [
+    "ai-collaboration",
+    "verification",
+    "alignment",
+    "review",
+    "self-evaluation"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Pour la verification d'alignement semantique (ex: 'ce fichier suit-il ce template ?', 'ce code respecte-t-il ces conventions ?'), prefer une verification par lecture complete des fichiers sources plutot que par grep/pattern matching, et pour les cas critiques spawner un agent independant avec contexte frais plutot que s'auto-verifier. Fondements : (1) le grep/pattern matching presente des faux negatifs structurels sur les contraintes semantiques — SAST pattern matching produit 22% de faux negatifs absolus sur des vulnerabilites connues (Charoenwet ISSTA 2024) ; le mismatch terminologique fait que deux experts choisissent le meme terme avec une probabilite < 0.20 (Furnas 1987) ; (2) l'auto-verification par le meme modele produit un gain de verification faible a nul — cross-family verification est superieure a la self-verification sur 37 modeles x 9 benchmarks (Lu et al. 2025) ; Claude-3.5-Sonnet chute de 64.3% a 44.8% lors de l'auto-evaluation de ses propres paires (Tan ICLR 2025) ; la self-correction intrinsique echoue en raisonnement et degrade parfois la performance (Huang ICLR 2024) ; (3) le self-preference bias biaise l'evaluation des propres outputs avec causalite demontree (Panickssery NeurIPS 2024 : correlation τ=0.41-0.74 entre self-recognition et self-preference) ; (4) la lecture complete structuree surpasse les checklists en detection de defauts (Porter IEEE TSE 1995 : inspecteur unique 20-40% detection, DBR > ad hoc > checklist). Exception : le grep reste approprie pour les contraintes de format strictement syntaxiques (presence d'une section, format d'une date, existence d'un mot-cle).",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Panickssery et al. NeurIPS 2024 — LLM Evaluators Are Not Robust to Changes in Prompt Order (arXiv:2404.13076)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "we discover a linear correlation between self-recognition capability and the strength of self-preference bias",
+            "note": "NeurIPS 2024 Main Oral. Causalite self-preference demontree, τ=0.41-0.74. VERIFIE Agent C."
+          },
+          {
+            "name": "Huang et al. ICLR 2024 — Large Language Models Cannot Self-Correct Reasoning Yet (arXiv:2310.01798)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "LLMs struggle to self-correct their responses without external feedback, and at times, their performance even degrades after self-correction",
+            "note": "ICLR 2024, >500 citations. Meta-analyse — auto-correction intrinseque echoue en raisonnement. VERIFIE Agent C."
+          },
+          {
+            "name": "Lu et al. 2025 — When Does Verification Pay Off? (arXiv:2512.02304)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "cross-family verification is often the most beneficial, particularly when compared to self-verification. Verifier models are biased toward accepting incorrect solutions when performing self-verification or intra-family verification.",
+            "note": "37 modeles x 9 benchmarks. Source critique. VERIFIE Agent C."
+          },
+          {
+            "name": "Tan et al. ICLR 2025 — JudgeBench (arXiv:2410.12784)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "many strong models (e.g., GPT-4o) performing just slightly better than random guessing",
+            "note": "ICLR 2025. Claude-3.5-Sonnet chute 64.3% → 44.8% en auto-evaluation. VERIFIE Agent C."
+          },
+          {
+            "name": "Zheng et al. NeurIPS 2023 — Judging LLM-as-a-Judge with MT-Bench (arXiv:2306.05685)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Strong LLM judges like GPT-4 can match both controlled and crowdsourced human preferences well, achieving over 80% agreement",
+            "note": "NeurIPS 2023 Datasets and Benchmarks. LLM externe fort fiable ; self-enhancement bias documente. VERIFIE Agent C."
+          },
+          {
+            "name": "Wu et al. 2025 — The Dark Side of Self-Correction (arXiv:2412.14959)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "GPT-3.5-turbo experienced a performance decrease of 12.1%, with 34% of correct responses reversed to incorrect ones",
+            "note": "En cours de publication ACL 2025 (preprint). 3 mecanismes documentes : Answer Wavering, Prompt Bias, Cognitive Biases. PARTIEL Agent C (chiffres o1-mini retires)."
+          },
+          {
+            "name": "Ye et al. TACL 2024 — When Can LLMs Actually Correct Their Own Mistakes? (arXiv:2406.01297)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "no prior work demonstrates successful self-correction with feedback from prompted LLMs, except for studies in tasks that are exceptionally suited for self-correction",
+            "note": "TACL peer-reviewed. Meta-conclusion de la litterature : auto-verification echoue dans les cas generaux. VERIFIE Agent C."
+          },
+          {
+            "name": "Charoenwet et al. ISSTA 2024 — Unintentional Security Bugs in Code Review (arXiv:2407.12241)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "At least 76% of the warnings in vulnerable functions are irrelevant to the VCCs, and 22% of VCCs remain undetected due to limitations of SAST rules",
+            "note": "ISSTA 2024. 22% FN absolus pattern matching sur 815 VCCs, 92 projets C/C++. VERIFIE Agent C."
+          },
+          {
+            "name": "Mitropoulos et al. 2026 — Confirmation Bias in Autonomous Code Agents (arXiv:2603.18740)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "Framing a change as bug-free reduces vulnerability detection rates by 16-93%",
+            "note": "Contexte : attaques iteratives sur Claude Code en mode agent autonome, taux 88% succes. VERIFIE Agent C."
+          },
+          {
+            "name": "Furnas et al. 1987 — The vocabulary problem in human-system communication (CACM)",
+            "pyramid": 5,
+            "year": 1987,
+            "quote": "In every case two people favored the same term with probability <0.20",
+            "note": "Classique IR. Vocabulary mismatch fondamental — 80% desaccord terminologique. PARTIEL Agent C (verbal confirmation via WebSearch)."
+          },
+          {
+            "name": "Manning, Raghavan, Schutze 2008 — Introduction to Information Retrieval (Cambridge UP)",
+            "pyramid": 5,
+            "year": 2008,
+            "quote": "grepping can be a very effective process... it is impractical to perform queries like 'Romans NEAR countrymen'",
+            "note": "Fondement theorique limitations grep/keyword pour contraintes semantiques. PARTIEL Agent C."
+          },
+          {
+            "name": "Porter et al. IEEE TSE 1995/1997 — An Experiment to Assess the Cost-Benefits of Code Inspections",
+            "pyramid": 3,
+            "year": 1995,
+            "quote": "single inspector defect detection rate: 20-40%",
+            "note": "IEEE TSE. DBR (lecture complete structuree) > ad hoc > checklist. PARTIEL Agent C (paywall)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": ["convergence : 8+ sources independantes sans contradiction couvrant 3 angles (self-preference C2, pattern FN C1, gain verificateur independant I)", "effet important : Tan -19.5pp auto-evaluation, Charoenwet 22% FN absolus SAST, Mitropoulos -16 a -93% confirmation bias, Lu et al. verifier gain mesure sur 37 modeles"],
+          "minus": ["indirectness : aucune etude mesure directement grep vs lecture vs agent frais sur taches de verification d'alignement document/template — sources portent sur reasoning/code review/LLM-as-judge"]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": ["Panickssery NeurIPS 2024 arXiv:2404.13076 (causalite self-preference, source critique)", "Lu et al. arXiv:2512.02304 (verifier gain quantifie, 37 modeles x 9 benchmarks)"],
+        "etd_balance": {
+          "benefices": "Reduction faux negatifs sur contraintes semantiques (violations exprimees differemment du pattern non manquees), elimination self-preference bias (agent independant non biaise vers ses propres outputs), detection confirmation bias contextuel (contexte frais = pas de biais lie a la conversation precedente)",
+          "risques": "Cout tokens supplementaire (agent independant ≈ 2x tokens), latence accrue pour verifications mineures, erreurs correlees entre modeles (B4 : ~60% accord sur erreurs vs 33% hasard) — independance ne garantit pas des biais orthogonaux",
+          "balance": "Benefices > Risques pour verifications critiques (alignement template, securite, conventions). Pour verifications syntaxiques mineures : grep reste approprie et suffisant.",
+          "faisabilite": "Haute (Agent tool Claude Code + lecture fichiers = nativement disponible)"
+        },
+        "prisma_ref": "verification/prisma/ai-agent-verification-method.md",
+        "sensitivity_ref": "verification/extractions/ai-agent-verification-method.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

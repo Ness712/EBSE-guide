@@ -1,0 +1,95 @@
+{
+  "id": "ai-agent-clear-evaluation",
+  "domain": "ai-collaboration",
+  "question": "Comment evaluer la performance des agents IA de maniere multi-dimensionnelle, au-dela du simple taux de completion de taches, pour permettre a un PO non-technique de prendre des decisions eclairees de delegation ?",
+  "depends_on": ["ai-agent-performance-calibration", "ai-agent-autonomy-granularity", "ai-agent-silent-failure-monitoring"],
+  "tags": [
+    "ai-collaboration",
+    "evaluation",
+    "metrics",
+    "CLEAR",
+    "reliability",
+    "benchmark",
+    "production",
+    "multi-dimensional"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Evaluer un agent IA selon au minimum cinq dimensions operationnelles — Cost, Latency, Efficacy, Assurance, Reliability (framework CLEAR) — plutot que le seul taux de completion de taches : les metriques multi-dimensionnelles correlent beaucoup mieux avec la performance en production (rho=0.83 vs rho=0.41 pour la metrique unique, p<0.001) et la fiabilite est identifiee comme defi principal par 306 equipes de production sur 26 domaines (Pan et al., Berkeley). Avant de deleguer une categorie de taches a un agent, definir des seuils explicites sur chacune de ces dimensions : (1) EFFICACY — taux de resolution correcte des taches ; (2) RELIABILITY — comportement consistant a travers les runs, incluant sous perturbation et chaos (timeouts, rate limits, schema drift) ; (3) COST — cout token et monetaire par tache ; (4) LATENCY — temps de completion par tache ; (5) ASSURANCE — comportement predictable en cas d'echec (fail-safe, pas de defaillance silencieuse). Note methodologique : le chiffre rho=0.83 provient d'un seul preprint (auteur unique, sans affiliation institutionnelle) non replique — la recommendation de l'approche multi-dimensionnelle reste robuste (convergence de 6+ sources independantes) mais la valeur precise de correlation est indicative.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Mehta 2025 — Beyond Accuracy: A Multi-Dimensional Framework for Evaluating Enterprise Agentic AI Systems (arXiv:2511.14136)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Expert validation (N=15 Enterprise-AI leads) shows that CLEAR predictions are strongly correlated with production success (rho=0.83, p<0.001) versus accuracy-alone (rho=0.41, p=0.03).",
+            "note": "CLEAR = Cost, Latency, Efficacy, Assurance, Reliability (CORRECTION : pas Completeness/Efficiency). Auteur unique (Sushant Mehta, email gmail, sans affiliation institutionnelle confirmee dans le papier). N=6 agents, 300 taches, 15 evaluateurs. Non replique. VERIFIE Agent C — rho=0.83 et dimensions correctes confirmes."
+          },
+          {
+            "name": "Pan, Arabzadeh et al. (Berkeley/CMU) 2025 — Measuring Agents in Production (arXiv:2512.04123)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Reliability (consistent correct behavior over time) remains the top development challenge, which practitioners currently address through systems-level design.",
+            "note": "N=306 praticiens, 26 domaines, 20 etudes de cas. UC Berkeley + Stanford + CMU. Mixed-methods rigoreux. Source critique pour la dimension reliability. VERIFIE Agent C."
+          },
+          {
+            "name": "Rabanser, Kapoor, Narayanan et al. (Princeton) 2026 — Towards a Science of AI Agent Reliability (arXiv:2602.16666)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "compressing agent behavior into a single success metric obscures critical operational flaws. Notably, it ignores whether agents behave consistently across runs, withstand perturbations, fail predictably, or have bounded error severity.",
+            "note": "14 modeles, 2 benchmarks, 12 metriques / 4 dimensions (consistency, robustness, predictability, safety). Princeton / Arvind Narayanan. Convergence avec Pan et al. sur insuffisance metrique unique. VERIFIE Agent C."
+          },
+          {
+            "name": "Lu, Xu, Zhang et al. 2026 — AlphaEval: Evaluating Agents in Production (arXiv:2604.12162)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "Unlike model-centric benchmarks, AlphaEval evaluates complete agent products—Claude Code, Codex, etc.—as commercial systems, capturing performance variations invisible to model-level evaluation.",
+            "note": "94 taches issues de 7 entreprises reelles, 6 domaines O*NET. 27 auteurs. Scores '39-64/100' NOT_VERIFIED dans l'abstract — a ne pas citer comme fait etabli. Structure et benchmark confirmes. VERIFIE Agent C (PARTIEL)."
+          },
+          {
+            "name": "Mohammadi, Li, Lo, Yip (SAP) 2025 — Evaluation and Benchmarking of LLM Agents: A Survey (arXiv:2507.21504, KDD 2025)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "introducing a two-dimensional taxonomy that organizes existing work along (1) evaluation objectives -- what to evaluate, such as agent behavior, capabilities, reliability, and safety -- and (2) evaluation process -- how to evaluate",
+            "note": "Tutorial KDD 2025 (DOI ACM 3711896.3736570, venue A*). SAP. Taxonomie 2D confirmee. VERIFIE Agent C."
+          },
+          {
+            "name": "Becker, Rush, Barnes, Rein (METR) 2025 — Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity (arXiv:2507.09089)",
+            "pyramid": 1,
+            "year": 2025,
+            "quote": "allowing AI actually increases completion time by 19%—AI tooling slowed developers down",
+            "note": "RCT niveau 1. N=16 developpeurs experimentes, 246 issues GitHub. Source indirecte pour PICOC #23 (mesure productivite, pas framework evaluation multi-dimensionnel) — mais valide la necessite d'aller au-dela de la perception et du task completion. VERIFIE Agent C (identique PICOC #21)."
+          },
+          {
+            "name": "Yehudai, Eden, Li et al. 2025 — Survey on Evaluation of LLM-based Agents (arXiv:2503.16416)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "the first comprehensive survey of evaluation methodologies for LLM-based agents",
+            "note": "Survey systematique. Dimensions : capabilities fondamentales (planning, tool use, self-reflection, memory) + benchmarks applicatifs. Confirme l'etendue du probleme de l'evaluation. VERIFIE Agent C."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence forte : 6+ sources independantes (Pan/Berkeley, Rabanser/Princeton, Mehta, AlphaEval, Mohammadi/KDD, Yehudai) convergent sur l'insuffisance de la metrique unique et la priorite de la fiabilite", "effet important : rho=0.83 vs 0.41 (delta +0.42 Mehta) ; 'capability gains → small reliability improvements' (Rabanser) ; reliability = defi #1 par 306 equipes (Pan)"],
+          "minus": ["biais : Mehta (source CLEAR centrale) = auteur unique sans affiliation institutionnelle, aucun CoI declare ; AlphaEval = 27 auteurs de startups, possible CoI"],
+          "note": "GRADE 4 reflete une convergence forte sur le principe (evaluation multi-dimensionnelle necessaire) mais la valeur precise rho=0.83 est fragile (non repliquee, auteur unique). La recommandation reste valide a GRADE 3 meme sans Mehta."
+        },
+        "robustness": "PARTIELLE",
+        "critical_sources": ["Pan/Berkeley arXiv:2512.04123 (N=306 praticiens, source critique terrain)", "Rabanser/Princeton arXiv:2602.16666 (12 metriques, source critique academique)"],
+        "etd_balance": {
+          "benefices": "Decisions de delegation fondees sur des dimensions operationnellement pertinentes, detection des degradations de fiabilite avant production, communication claire avec le PO non-technique via metriques multi-dimensionnelles",
+          "risques": "Overhead de mise en place du framework d'evaluation (definition des seuils, instrumentation), risque de sur-engineering pour des agents a faible criticite",
+          "balance": "Benefices > Risques pour les agents avec acces a des outils en production. Pour les agents exploratoires ou de faible criticite, le task completion seul peut suffire.",
+          "faisabilite": "Haute — les 5 dimensions CLEAR sont mesurables nativement dans la plupart des frameworks agents (Claude Code, LangChain, LiteLLM) sans instrumentation supplementaire majeure."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-clear-evaluation.md",
+        "sensitivity_ref": "verification/extractions/picoc-23-clear-evaluation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

@@ -1,0 +1,80 @@
+{
+  "id": "ai-agent-process-redesign",
+  "domain": "ai-collaboration",
+  "question": "Dans quelles conditions la delegation a des agents IA echoue-t-elle si les processus existants ne sont pas redesignes, et quels gains differentiels le redesign apporte-t-il par rapport a la simple automatisation ?",
+  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-task-type-routing", "ai-agent-performance-calibration"],
+  "tags": [
+    "ai-collaboration",
+    "process-redesign",
+    "automation",
+    "organizational-change",
+    "ROI",
+    "delegation",
+    "workflow"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Avant de deleguer une categorie de taches a un agent IA, auditer si le processus a ete concu pour des travailleurs humains : le simple deploiement d'agents sur un workflow existant produit au mieux des gains marginaux (5% selon les sources composites), au pire une degradation de performance (METR RCT : +19% temps reel avec IA vs sans IA, N=16 developpeurs, 246 taches) ou une amplification des inefficacites existantes (Deloitte : 'agentic workslop — poorly designed agentic applications can actually add work to a process'). Le redesign prealable du workflow autour des capacites agents — decoupage des taches, redefinition des interfaces humain-agent, clarification des responsabilites — est le predicteur le plus robuste d'impact EBIT parmi 25 attributs testes (McKinsey State of AI 2025, N=1993 repondants, 105 nations) : les organisations leaders redesignent leurs workflows 2-3x plus souvent que les autres et captent une part disproportionnee des gains (PwC 2026 : 74% des gains IA par 20% des organisations). CORRECTION METHODOLOGIQUE : le claim '3.6x plus probable d'observer impact enterprise-level' est une reformulation incorrecte du vrai finding McKinsey — le claim exact est que le redesign de workflows est le plus fort predicteur d'impact EBIT (sur 25 attributs), et que les high performers sont 'nearly 3x more likely' de redesigner fondamentalement leurs workflows.",
+        "grade": 3,
+        "level": "RECOMMANDE_FRAGILE",
+        "sources": [
+          {
+            "name": "McKinsey Global Institute — The State of AI in 2025: How Organizations Are Rewiring to Capture Value (mars 2025, N=1993)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Of 25 attributes tested for organizations of all sizes, the redesign of workflows has the biggest effect on an organization's ability to see EBIT impact from its use of gen AI.",
+            "note": "N=1993 repondants, 105 nations, juin-juillet 2025. CORRECTIONS Agent C : (1) claim '3.6x enterprise-level impact' = REFORMULATION INCORRECTE — le vrai claim est 'nearly 3x more likely to fundamentally redesign workflows' ; (2) chiffres '25-30% vs 10-15%' NOT_VERIFIED verbatim. Biais commercial potentiel (cabinet conseil). VERIFIE Agent C (PARTIEL)."
+          },
+          {
+            "name": "Deloitte Tech Trends 2026 — Agentic AI Strategy (rapport annuel Deloitte, PDF officiel)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "Poorly designed agentic applications can actually add work to a process, with some enterprises finding agentic 'workslop' can make processes even less efficient.",
+            "note": "17e rapport annuel Deloitte Tech Trends. Terme 'workslop' CONFIRME Agent C dans document officiel (mkto.deloitte.com). Mecanisme : automatiser un mauvais processus = amplifier ses inefficacites. Biais commercial (cabinet conseil). VERIFIE Agent C."
+          },
+          {
+            "name": "Becker, Rush, Barnes, Rein (METR) 2025 — Measuring AI Impact on Developer Productivity (arXiv:2507.09089)",
+            "pyramid": 1,
+            "year": 2025,
+            "quote": "allowing AI actually increases completion time by 19%—AI tooling slowed developers down",
+            "note": "RCT niveau 1. N=16 developpeurs experimentes, 246 issues GitHub, Cursor Pro + Claude 3.5/3.7 Sonnet. Source INDIRECTE pour PICOC #27 : mesure l'integration IA dans workflows OSS matures sans adaptation — corrobore que l'automatisation de l'existant ne fonctionne pas. Limite : N=16, contexte specifique (OSS mature), cause exacte non isolee. VERIFIE Agent C (identique PICOC #21)."
+          },
+          {
+            "name": "PwC — 2026 AI Performance Study (avril 2026, N=1217)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "74% des gains IA captes par 20% des organisations ; leaders twice as likely to redesign workflows to incorporate AI rather than simply adding AI tools",
+            "note": "N=1217 dirigeants seniors (director-level+), 25 secteurs. AI Fitness Index (60 pratiques). URL PwC officielle confirmee. Biais commercial (cabinet conseil). VERIFIE Agent C."
+          },
+          {
+            "name": "Bain & Company — Automation Scorecard 2024",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Real change comes from business redesign, not tool deployment. Leading companies redesign processes end-to-end.",
+            "note": "Automation leaders : -22% couts processus vs -8% laggards ; top quartile -37%. Chiffres non verifiables verbatim sans acces PDF. Biais commercial (cabinet conseil). VERIFIE Agent C (PARTIEL)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": ["convergence : 4 sources independantes (McKinsey, Deloitte, PwC, Bain) convergent sur le meme mecanisme depuis des methodologies differentes", "effet important : McKinsey = predicteur EBIT #1 sur 25 attributs ; PwC = 74% gains par 20% organisations ; METR = +19% echec sans adaptation"],
+          "minus": ["biais commercial systematique : McKinsey, Deloitte, PwC, Bain = cabinets conseil avec interet commercial direct a promouvoir la transformation. Biais systemique potentiel dans les resultats."],
+          "note": "GRADE 3 reflete une convergence robuste sur la direction de l'effet mais une base de preuves dominee par des cabinets de conseil (niveau 3) sans meta-analyse peer-reviewed independante. La seule source empirique rigoureuse (METR RCT) est indirecte. Ce GRADE reflète l'etat reel du corpus disponible sur ce sujet — la litterature academique peer-reviewed sur redesign vs automatisation dans le contexte IA est quasi-absente."
+        },
+        "robustness": "PARTIELLE",
+        "critical_sources": ["McKinsey State of AI 2025 N=1993 (source centrale — a citer avec ses biais)", "METR arXiv:2507.09089 (seule source RCT, indirecte mais rigoureuse)"],
+        "etd_balance": {
+          "benefices": "Evitement des couts caches de l'automatisation ratee (workslop), gains EBIT substantiels documentés pour les organisations qui redesignent, meilleure adoption des agents par les equipes (processus adaptes a leurs capacites)",
+          "risques": "Cout et temps du redesign prealable, resistance au changement organisationnel, risque de paralysie par sur-analyse si le redesign est trop ambitieux avant de valider les capacites agents",
+          "balance": "Benefices > Risques pour les deployements a grande echelle ou long terme. Pour les pilotes et deployements limites, une validation rapide avec l'existant peut etre preferable avant le redesign complet.",
+          "faisabilite": "Moyenne — le redesign requiert une capacite organisationnelle de gestion du changement souvent sous-estimee. Recommandation : commencer par redesigner un workflow pilote avant de generaliser."
+        },
+        "prisma_ref": "verification/prisma/ai-agent-process-redesign.md",
+        "sensitivity_ref": "verification/extractions/picoc-27-process-redesign.md",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}
