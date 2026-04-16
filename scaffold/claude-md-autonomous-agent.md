@@ -282,80 +282,48 @@ Exemples : ajout d'une decision au guide EBSE (→ sous-agent avec instruction d
 
 ## Méthode d'audit fiable
 
-Les audits basés sur grep ou recherche de patterns sont **insuffisants** : ils trouvent ce qu'on cherche, mais manquent les gaps par absence. L'auto-évaluation est non-fiable (NIST AI 600-1 §2.2 Confabulation — un agent ne peut pas évaluer de façon fiable ce qu'il a lui-même produit).
-
-**Règle fondamentale** : l'agent qui audite ≠ l'agent qui a construit le truc audité (PICOC #5 — biais de confirmation).
-
-**Quand spawner un agent reviewer** (PICOC #5) : le pattern writer/reviewer a un coût token — ne l'appliquer que si la tâche est non-triviale (multi-fichiers, feature complète, chemins critiques). Pour une vérification mineure (un fichier, syntaxe, format), un agent seul avec tool use suffit.
-
-Les trois types d'audit sont des **variantes d'un même pattern** : source-first + agent indépendant + output structuré. Ce qui varie c'est la nature de la cible.
-
-### Type 1 — Audit d'alignement documentation (doc A → doc B)
-
-*Exemples : "le template couvre-t-il tous les PICOCs ?", "CLAUDE.md suit-il le template ?"*
-
-La référence est une liste d'items (PICOC JSON, sections template). La cible est un document.
-
-1. **Source-first** : partir de la référence exhaustive (ex: liste des fichiers JSON), **pas** de la cible
-2. **Énumérer** tous les items de la référence avant de regarder la cible
-3. Pour chaque item : **lire le contenu réel** (pas grep-keywords), vérifier si la cible le reflète sémantiquement
-4. Output obligatoire : table `Item | Couvert | Partiel | Absent | Note`
-
-```
-Agent({
-  model: "sonnet",
-  prompt: "Audit d'alignement source-first. Tu n'as pas participé à la construction — contexte frais.
-  Référence : lire [LISTE EXHAUSTIVE — ex: chaque fichier PICOC JSON].
-  Cible : lire [FICHIER À AUDITER].
-  Pour CHAQUE item de la référence : vérifier si la cible le reflète sémantiquement (pas juste un mot-clé présent).
-  Output : table Item | Couvert | Partiel | Absent | Note. Rien ne doit manquer."
-})
-```
-
-### Type 2 — Audit d'alignement code (code → standards)
-
-*Exemples : /audit, relecture d'une feature, vérification sécurité*
-
-La référence est une checklist de standards (OWASP, conventions projet, recommandations EBSE). La cible est du code.
-
-1. **Lire d'abord** : CONVENTIONS.md + CLAUDE.md + recommandations EBSE — pas grep
-2. Agent indépendant avec contexte frais **lit les fichiers concernés en entier** (DBR — lecture complète structurée, Porter TSE 1995 : DBR > ad hoc > checklist)
-3. **Checklist comme aide-mémoire** (OWASP Top 10, conventions, EBSE) — pas un plafond. Lire les fichiers complètement, pas seulement chercher les items de la liste. Ce qui n'est pas sur la liste peut quand même être un défaut.
-4. **SAST sur diffs agent** (PICOC #10) : cibler `git diff main...HEAD` — pas l'ensemble du codebase. Le CI test suite seul ne détecte pas les API parameters hallucinés.
-5. **Hallucination package ≠ CVE** (PICOC #10 — base rate 19.7%) : CVE classiques → Snyk/Dependabot. Packages inventés → vérifier l'existence avant tout install (`npm info <pkg>` / `pip show <pkg>`). Les deux sont distincts et nécessitent des outils différents.
-6. Output obligatoire : Bloquants / Avertissements / Verdict OK ou KO
-
-```
-Agent({
-  model: "sonnet",
-  prompt: "Audit qualité code. Tu n'as pas participé à l'implémentation — contexte frais, sois critique.
-  Lis d'abord : CONVENTIONS.md, CLAUDE.md, recommandations EBSE, puis les fichiers [LISTE].
-  Checklist : OWASP Top 10 + conventions projet + recommandations EBSE.
-  Output : Bloquants / Avertissements / Verdict OK ou KO. Pas de prose — items concrets."
-})
-```
-
-### Type 3 — Audit runtime (health check)
-
-*Exemples : vérifier que la plateforme fonctionne après un deploy*
-
-Différent des deux premiers — c'est de l'observation de l'état runtime, pas de l'analyse statique. Inclure dans un audit complet en plus des types 1 et 2.
-
-- Monitoring erreurs (GlitchTip, Sentry)
-- Qualité statique (SonarQube quality gate)
-- Métriques infra (Grafana/Prometheus : CPU, RAM, latence)
-- Tests E2E navigateur (Playwright MCP)
-- **Semantic-drift** (PICOC #10) : après une intervention agent multi-fichiers, lancer les tests de régression sur les fonctionnalités non-modifiées pour détecter les effets de bord silencieux. Le CI seul est insuffisant — les comportements adjacents peuvent être dégradés sans que les tests de la feature modifiée le détectent.
-
-Implémenter comme commande slash `/health-check` séparée et l'appeler depuis `/audit`.
+Le grep et l'auto-évaluation sont non-fiables : grep manque les gaps par absence, l'auto-évaluation est biaisée (self-preference bias démontré, Panickssery NeurIPS 2024 ; framing "bug-free" réduit la détection de 16-93%, Mitropoulos 2026).
 
 **Déclenchement** : appliquer cette méthode **quelle que soit la formulation** — "/audit", "fais un audit", "vérifie X", "vérifie que", "check X", "contrôle X", "valide X", "confirme que", "assure-toi que", "est-ce que X est bien fait", "est-ce que X est correct", "est-ce qu'on suit bien le guide", "relis le code", "regarde si", etc. Ne pas improviser une méthode différente selon la formulation.
 
-**Grep vs lecture sémantique** (PICOC #19) : le grep est approprié pour les contraintes syntaxiques (présence d'une section, format d'un nom). Pour les contraintes sémantiques (ce concept est-il correctement couvert ?), le grep produit des faux négatifs structurels — utiliser la lecture complète des fichiers sources. Pour les vérifications critiques, spawner un agent indépendant avec contexte frais (gain de vérification significativement supérieur, Lu et al. 2025 sur 37 modèles). Note PICOC #19 : le cross-family verification (reviewer d'une famille de modèles différente) est supérieur au intra-family — non disponible dans Claude Code, le contexte frais reste la meilleure approximation atteignable.
+### Quand spawner un agent reviewer (PICOC #5)
 
-**Slash commands** : ces trois types d'audit sont implémentés comme commandes slash dans `.claude/commands/` — les utiliser en priorité car elles contiennent les chemins et checklists pré-remplis pour le projet. Si la commande ne couvre pas le périmètre demandé, appliquer le pattern ci-dessus manuellement.
+Pattern writer/reviewer uniquement si la tâche est non-triviale (multi-fichiers, feature complète, chemins critiques) — il a un coût token. Pour une vérification mineure (un fichier, syntaxe, format), un agent seul avec tool use suffit. L'agent qui audite ≠ l'agent qui a construit.
 
-`Source: PICOC #5 Writer/reviewer (Aider architect +30%, condition non-trivial multi-fichiers) + PICOC #10 Silent failure monitoring (semantic-drift, SAST sur diffs agent, hallucination package 19.7% Spracklen 2024) + PICOC #11 Team metrics + PICOC #19 Verification method (Lu et al. arXiv:2512.02304, Wataoka et al. arXiv:2410.21819, AGENTIF arXiv:2505.16944)`
+### Méthode de vérification sémantique (PICOC #19)
+
+Pour toute vérification sémantique ("ce document suit-il ce template ?", "ce code respecte-t-il ces conventions ?") :
+
+1. **Source-first** : partir de la référence exhaustive (source de vérité), pas de la cible — énumérer tous ses items avant de regarder la cible
+2. **Lecture complète (DBR)** : lire les fichiers en entier — DBR > ad hoc > checklist (Porter TSE 1995). La checklist est un aide-mémoire, pas un plafond.
+3. **Agent indépendant** avec contexte frais — cross-family supérieur (Lu et al. 2025, 37 modèles) mais non disponible dans Claude Code : contexte frais = meilleure approximation atteignable
+4. **Exception** : grep approprié pour les contraintes syntaxiques strictes (présence d'une section, format d'une date)
+
+Output : table `Item | Couvert | Partiel | Absent | Note` pour les vérifications d'alignement, `Bloquants / Avertissements / Verdict OK/KO` pour les vérifications de code.
+
+```
+Agent({
+  model: "sonnet",
+  prompt: "Audit [alignement/code]. Tu n'as pas participé à la construction — contexte frais, sois critique.
+  Lis d'abord : [RÉFÉRENCE — source de vérité, exhaustivement].
+  Puis : [CIBLE — fichiers à auditer], en entier (pas grep).
+  Pour chaque item de la référence : vérifier sémantiquement, pas juste chercher le mot-clé.
+  Output : [table Couvert/Partiel/Absent OU Bloquants/Avertissements/Verdict OK/KO]."
+})
+```
+
+### Pipeline détection silent failures (PICOC #10)
+
+À déclencher après toute intervention agent, en complément de la vérification sémantique. Le CI test suite seul est insuffisant — les API parameters hallucinés sont type-valid donc non détectés.
+
+1. **Package-hallucination** (base rate 19.7%, Spracklen 2024) : vérifier l'existence de tout package avant install (`npm info <pkg>` / `pip show <pkg>`). Distinct des CVE classiques (Snyk/Dependabot) — deux problèmes, deux outils.
+2. **Semantic-drift** : lancer les tests de régression sur les fonctionnalités non-modifiées — le CI seul ne détecte pas les effets de bord silencieux sur le comportement adjacent.
+3. **SAST sur diffs agent** : cibler `git diff main...HEAD` — pas l'ensemble du codebase.
+4. **Runtime observability** post-merge : monitoring erreurs (GlitchTip, Sentry), métriques infra (Grafana/Prometheus), tests E2E navigateur (Playwright MCP).
+
+**Slash commands** : implémenter les vérifications récurrentes comme commandes slash dans `.claude/commands/` avec chemins et procédures pré-remplis. Si la commande ne couvre pas le périmètre, appliquer les principes ci-dessus manuellement.
+
+`Source: PICOC #5 Writer/reviewer + PICOC #10 Silent failure monitoring (Spracklen arXiv:2406.10279, NIST AI 600-1, ISO 42001) + PICOC #19 Verification method (Porter TSE 1995, Lu et al. arXiv:2512.02304, Panickssery NeurIPS 2024 arXiv:2404.13076, Mitropoulos arXiv:2603.18740)`
 
 ---
 
