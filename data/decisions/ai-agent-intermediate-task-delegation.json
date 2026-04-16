@@ -1,0 +1,112 @@
+{
+  "id": "ai-agent-intermediate-task-delegation",
+  "domain": "ai-collaboration",
+  "question": "Quand un agent en cours d'execution rencontre une tache intermediaire specialisee (avec sa propre methodologie ou risquant de contaminer le contexte), doit-il la deleguer a un sous-agent dedie avec contexte frais ?",
+  "depends_on": ["ai-agent-multi-agent-topology", "ai-agent-task-type-routing", "ai-agent-context-compaction"],
+  "tags": [
+    "ai-collaboration",
+    "sub-agent",
+    "delegation",
+    "context-isolation",
+    "orchestration",
+    "intermediate-task"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Deleguer a un sous-agent dedie (contexte frais) quand la tache intermediaire est specialisee — c'est-a-dire : elle a une methodologie propre (ex: recherche bibliographique EBSE, revue de securite, generation de tests TDD), ou elle risque de contaminer le contexte principal par son volume ou sa nature. Ne pas deleguer les taches intermediaires simples et rapides (transformation de format, lookup ponctuel) : l'overhead de coordination depasse le benefice. Criteres de delegation : (1) la sous-tache requiert un prompt ou une methodologie distincts, (2) la sous-tache est de duree non triviale (plus de quelques tool calls), (3) la reintegration des resultats dans le contexte principal est clairement definie. Attention aux handoff boundaries : les 14 failure modes MAST (Cemri et al.) emergent principalement aux points de transfert — concevoir un protocole de handoff explicite (quelles informations passent, sous quel format, comment l'agent principal reintegre les resultats).",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Cemri et al. 2025 — Why Do Multi-Agent LLM Systems Fail? MAST (arXiv:2503.13657)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "1,600+ annotated traces; 14 unique modes, clustered into 3 categories; the most prevalent failure mode class involves context loss at task handoff boundaries"
+          },
+          {
+            "name": "Han et al. 2025 — TDFlow (arXiv:2510.23761)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "TDFlow employs a dedicated test-generation sub-agent with isolated context (function signature and specification only), achieving 88.8% pass rate on SWE-Bench Lite — 27.8 percentage points above the next best baseline"
+          },
+          {
+            "name": "Singh et al. 2025 — Enhancing LLM Code Generation via ACT (arXiv:2505.02133)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "The ACT system (Analyzer-Coder-Tester) assigns a dedicated Analyzer agent that examines task requirements independently before the Code Generator begins, reaching 64.82% vs 54.09% single-agent baseline (19 LLMs)"
+          },
+          {
+            "name": "Wang et al. 2025 — ACON (arXiv:2510.00615)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "reduces memory usage by 26-54% (peak tokens) while largely preserving task performance"
+          },
+          {
+            "name": "Chen et al. 2025 — Context-Folding (arXiv:2510.11967)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "An agent can procedurally branch into a sub-trajectory to handle a subtask and then fold it upon completion, collapsing the intermediate steps while retaining a concise summary — achieving 10x active context reduction vs ReAct"
+          },
+          {
+            "name": "He, Treude, Lo 2024/25 — LLM Multi-Agent Systems for SE (ACM TOSEM, arXiv:2404.04834)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "systematic review of recent primary studies to map the current landscape of LMA applications across various stages of the software development lifecycle"
+          },
+          {
+            "name": "Anthropic Claude Code — Task tool documentation (2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "The Task tool allows spawning sub-agents with isolated context windows for specialized subtasks, preventing context pollution from the parent session"
+          },
+          {
+            "name": "OpenAI Agents SDK — Handoffs documentation (2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Handoffs allow an agent to transfer control to another agent with a fresh context, enabling specialization without context contamination"
+          },
+          {
+            "name": "LangGraph — Subgraphs documentation (2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Subgraphs provide state isolation between sequential or concurrent agent tasks, preventing state pollution across agent boundaries"
+          },
+          {
+            "name": "Cognition — Don't Build Multi-Agents (2025)",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "running multiple agents in collaboration only results in fragile systems — spawning sub-agents for every intermediate task creates coordination overhead that outweighs isolation benefits in most production scenarios"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence (TDFlow + Singh ACT + ACON + Context-Folding : 4 sources independantes confirment les benefices de l'isolation de contexte pour sous-taches specialisees)",
+            "effet important (TDFlow 88.8% SWE-Bench Lite, Singh +10.73pp, ACON 26-54% memory reduction)"
+          ],
+          "minus": [
+            "CoI (3 sources vendor : Anthropic Task tool, OpenAI Handoffs, LangGraph subgraphs)",
+            "indirectness (TDFlow teste la generation de tests, Singh teste la generation de code — pas le pattern generique 'delegation dynamique de tache intermediaire' en production)"
+          ]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": [
+          "TDFlow (seule source empirique avec sous-agent dedie explicite et benchmark mesure — si retiree, score descend a BONNE_PRATIQUE)",
+          "Singh ACT (seule source avec agent analyseur dedie et delta mesure sur multiple LLMs)"
+        ],
+        "etd_balance": {
+          "benefices": "Prevention contamination contexte principal (ACON 26-54% memory), meilleure qualite sous-tache specialisee (TDFlow 88.8%, Singh +10.73pp), respect methodologie propre a la sous-tache (EBSE, TDD, securite, etc.)",
+          "risques": "Handoff boundaries : 14 failure modes MAST ; overhead de coordination contre-productive si delegation trop systematique (Cognition) ; complexite gestion du cycle de vie du sous-agent par l'orchestrateur",
+          "balance": "Benefices > Risques pour taches intermediaires specialisees (methodologie propre, contexte contaminant, duree non triviale). Risques > Benefices pour taches simples et rapides.",
+          "faisabilite": "Haute — Claude Code Task tool, OpenAI Agents SDK handoffs, LangGraph subgraphs supportent nativement le pattern"
+        },
+        "prisma_ref": "verification/extractions/ai-agent-intermediate-task-delegation.md",
+        "sensitivity_ref": "verification/extractions/ai-agent-intermediate-task-delegation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-16"
+      }
+    ]
+  },
+  "variants": {}
+}

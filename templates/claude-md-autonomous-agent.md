@@ -192,7 +192,12 @@ Si une tache intermediaire surge pendant l'execution (avec sa propre methodologi
 - Le sous-agent recoit un contexte frais et peut lui-meme spawner des sous-agents si necessaire (ex: double extraction EBSE)
 - Le sous-agent rapporte son resultat a l'agent principal qui continue
 
-Exemples : ajout d'une decision au guide EBSE (→ sous-agent qui suit methodology.md et spawne Agent A/B/C), audit securite (→ sous-agent specialise), generation de documentation (→ sous-agent).
+**Les sous-agents ne recoivent PAS automatiquement les fichiers CLAUDE.md ou methodology.** Le prompt doit toujours inclure explicitement :
+1. Les fichiers a lire en premier (CLAUDE.md du repo cible, fichiers de methodologie)
+2. La methodologie a suivre
+3. L'output attendu
+
+Exemples : ajout d'une decision au guide EBSE (→ sous-agent avec instruction de lire EBSE-guide/CLAUDE.md + methodology.md en entier, puis spawner Agent A/B/C), audit securite (→ sous-agent avec checklist explicite), generation de documentation (→ sous-agent avec structure Diataxis explicite).
 
 `Source: PICOC #14 Spec discipline (TiCoder +45.97% pass@1) + PICOC #15 TDD agent loop (TDFlow 94.3% SWE-Bench Verified) + Feedback PO "Never say done prematurely"`
 
