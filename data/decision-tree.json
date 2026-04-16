@@ -346,18 +346,46 @@
           "label": "Non, tout doit etre gratuit / open source",
           "criteria": "Tu heberges tout toi-meme. GlitchTip au lieu de Sentry, Unleash au lieu de LaunchDarkly.",
           "sets": { "budget": "open-source" },
-          "next": "result"
+          "next": "ai-agent-usage"
         },
         {
           "label": "Oui, je peux payer si c'est le meilleur choix",
           "criteria": "Tu es pret a utiliser des services SaaS payants (Vercel, Sentry, Auth0...) si c'est justifie.",
           "sets": { "budget": "saas-ok" },
-          "next": "result"
+          "next": "ai-agent-usage"
         },
         {
           "label": "Je ne sais pas",
           "default_recommendation": "Open source — commence gratuit. Tu pourras payer plus tard si un service payant se justifie.",
           "sets": { "budget": "open-source" },
+          "next": "ai-agent-usage"
+        }
+      ]
+    },
+    "ai-agent-usage": {
+      "type": "choice",
+      "question": "Vas-tu utiliser un agent de codage IA (Claude Code, Cursor, Copilot, Aider...) pour ecrire du code sur ce projet ?",
+      "source": "Batch AI-1 a AI-3 ai-collaboration — domaine EBSE construit via Kitchenham 2007 + double extraction + Agent C. 17 decisions couvrant autonomy, gates, permissions, monitoring, metrics, audit trail.",
+      "options": [
+        {
+          "label": "Oui, un agent IA ecrira du code regulierement",
+          "criteria": "L'agent modifiera des fichiers, fera des commits, executera des commands shell, eventuellement de facon autonome sur certaines taches.",
+          "sets": { "ai_agent": "yes" },
+          "deduced_tech": "Domaine ai-collaboration active : 17 decisions (autonomy granularity, task-type routing, human-only gates, deterministic verification, sandboxing, silent-failure monitoring, DORA/SPACE adapte, budget caps, audit trail lie aux commits...) — voir guide/02-domains/ai-collaboration/README.md",
+          "next": "result"
+        },
+        {
+          "label": "Non, uniquement humain",
+          "criteria": "Pas d'agent IA autonome. Peut utiliser autocomplete IDE (Copilot inline, tab completion) mais pas de delegation de taches.",
+          "sets": { "ai_agent": "no" },
+          "deduced_tech": "Domaine ai-collaboration non active. Les decisions classiques du guide suffisent.",
+          "next": "result"
+        },
+        {
+          "label": "Je ne sais pas",
+          "default_recommendation": "Oui par defaut — en 2026, la majorite des projets web SE utilisent un agent IA au moins partiellement. Active ai-collaboration pour avoir les bonnes gates et le bon niveau d'autonomie des le depart.",
+          "sets": { "ai_agent": "yes" },
+          "deduced_tech": "Domaine ai-collaboration active par defaut.",
           "next": "result"
         }
       ]
