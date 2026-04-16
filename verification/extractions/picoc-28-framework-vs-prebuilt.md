@@ -1,151 +1,166 @@
 # Double Extraction EBSE — PICOC #28 : ai-agent-framework-vs-prebuilt
 
-**Date de recherche** : 2026-04-16  
-**Protocole** : methodology.md v3.0 §2.1 — double extraction indépendante + vérification Agent C  
-**Question PICOC** : Pour un PO qui délègue tout le développement logiciel à l'IA, un framework agentique custom (LangChain, AutoGen, CrewAI, LangGraph) offre-t-il une efficacité supérieure à une configuration de système agentique pré-construit (Claude Code + CLAUDE.md) en termes de taux de complétion de tâches, fiabilité et autonomie ?
+**Date de recherche** : 2026-04-16 (v2 — méthode révisée)
+**Protocole** : methodology.md v3.0 §2.1 — double extraction indépendante + vérification Agent C
+**Question PICOC** : Pour un PO qui délègue tout le développement logiciel à l'IA, quel type d'outil agentique est le plus adapté : framework custom (LangChain, AutoGen, CrewAI), système pré-construit conçu pour l'autonomie (Devin, OpenHands), ou système pré-construit configurable (Claude Code + CLAUDE.md) ?
+
+**Note méthode** : La question initiale (v1) "framework custom vs Claude Code" était mal posée — trop étroite et sans corpus direct. La v2 recherche séparément (1) le design intent de chaque catégorie d'outil et (2) leur performance empirique en mode autonome, puis converge les données.
 
 ---
 
-## Agent A — Extraction
+## Agent A — Design intent officiel par catégorie d'outil
 
-**Angle** : Benchmarks et comparaisons empiriques de performance entre frameworks agentiques et systèmes agentiques pré-construits pour des tâches de développement logiciel.
+**Angle** : Sources officielles (docs, papers, annonces) sur ce pour quoi chaque outil est conçu.
 
-**Mots-clés** : "agentic framework comparison software development benchmark", "SWE-bench agent performance LangChain AutoGen", "Claude Code benchmark evaluation empirical", "coding agent framework vs integrated system", "LangChain AutoGen CrewAI effectiveness empirical"
+**Mots-clés** : "Claude Code design goals autonomous agentic Anthropic", "Devin autonomous software engineer design goals", "OpenHands autonomous agent designed for", "agentic coding tools designed without developer in loop"
 
-### A1 — Yin et al. — A Comprehensive Empirical Evaluation of Agent Frameworks (arXiv:2511.00872)
+### A1 — Claude Code — Documentation officielle Anthropic
 
-- **Auteurs** : Zhuowen Yin, Cuifeng Gao, et al.
-- **Date** : Novembre 2025 | **Venue** : arXiv preprint
-- **N** : 1 615 instances (1 200 SRDD + 115 vuln detection + 300 SWE-bench Lite)
-- **Frameworks** : AgentOrchestra, OWL, SE-Agent, Trae, GPTswarm, OpenHands, SWE-Agent (7 frameworks custom)
-- **Claim** : "Single-agent systems consistently demonstrate superior performance compared to multi-agent systems in software engineering applications." Meilleur : OpenHands (quality score 0.47), SE-Agent iter-3 (54% resolve rate SWE-bench Lite). Coût total : $875.05, écart ×22 entre frameworks.
-- **Niveau pyramide** : 3 (preprint, pas peer-reviewed)
-- **Limite critique** : Claude Code non inclus — ne permet pas la comparaison framework custom vs pré-construit
+- **Source** : code.claude.com/docs, anthropic.com/engineering/claude-code-auto-mode, GitHub anthropics/claude-code
+- **Quote design intent** : *"Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows — all through natural language commands."*
+- **Public cible explicite** : Développeurs. "Lives in your terminal" — s'insère dans l'environnement existant du développeur.
+- **Rôle humain documenté** : *"Decisions about what code ships remain with the human."* / *"The developer defines the goal and reviews the result rather than guiding each step."*
+- **Auto mode** : *"Auto mode is a new mode for Claude Code that delegates approvals to model-based classifiers — a middle ground between manual review and no guardrails."* Le classificateur (Sonnet 4.6) *"acts as a substitute for a human approver"* — mais l'humain configure les limites et review les résultats. Taux de faux-négatifs documenté : 17%.
+- **Niveau pyramide** : 3 (documentation officielle produit)
+- **Conclusion design** : Conçu pour développeurs, avec supervision humaine architecturale. Configurable pour plus d'autonomie via CLAUDE.md + hooks + auto mode, mais le design de base reste HITL.
 
-### A2 — Wang et al. — An Empirical Study of Agent Developer Practices in AI Agent Frameworks (arXiv:2512.01939)
+### A2 — Devin — Cognition AI
 
-- **Auteurs** : Yanlin Wang, Xinyi Xu, et al.
-- **Date** : Décembre 2025 | **Venue** : arXiv preprint
-- **N** : 1 575 repos GitHub + 8 710 discussions développeurs ; 10 frameworks ; κ=0.82 (validation manuelle)
-- **Claim** : 96% des projets top-étoilés adoptent plusieurs frameworks en parallèle. 42% des développeurs = charge cognitive excessive (LangChain). 31% d'échecs de compatibilité outils (AutoGen). Conflits de version > 23% de tous les obstacles techniques.
-- **Niveau pyramide** : 3 (preprint — arXiv, pas encore publié en venue peer-reviewed)
-- **Statut** : PERTINENT — quantifie la charge de maintenance des frameworks custom
+- **Source** : cognition.ai/blog/introducing-devin (officiel)
+- **Quote** : *"Devin is a tireless, skilled teammate, equally ready to build alongside you or independently complete tasks for you to review."*
+- **Positionnement** : "First AI software engineer." Conçu pour *"you assign a task, walk away, and come back to a completed implementation."*
+- **Environnement** : Sandbox cloud isolé avec son propre IDE, navigateur, terminal — n'a pas besoin de l'environnement du développeur.
+- **Niveau pyramide** : 3 (blog officiel fondateur)
+- **Conclusion design** : Explicitement conçu pour opérer sans développeur dans la boucle d'exécution — HOTL natif.
 
-### A3 — Agarwal, He, Vasilescu (CMU) — AI IDEs or Autonomous Agents? (arXiv:2601.13597, MSR '26)
+### A3 — OpenHands — All-Hands AI
 
-- **Auteurs** : Shyam Agarwal, Hao He, Bogdan Vasilescu (Carnegie Mellon)
-- **Date** : Janvier 2026 | **Venue** : Mining Software Repositories 2026 (peer-reviewed)
-- **N** : 401 repos agent-first (Claude Code Agent) + 606 contrôles ; 167 repos IDE-first + 92 contrôles
-- **Claim** : Agent-first (Claude Code) : +36.3% commits, +76.6% lines added, 83.8% PRs mergées. IDE-first (Cursor, Copilot) : +4.0% commits, +1.0% lines. Les deux groupes : +18% static warnings, +35% complexité cognitive.
-- **Niveau pyramide** : 2 (empirique peer-reviewed, ACM MSR)
-- **Limite critique** : Compare Claude Code vs IDE AI (Cursor, Copilot) — PAS vs framework custom
+- **Source** : arXiv:2407.16741 (paper peer-reviewed NeurIPS)
+- **Quote** : *"a platform for the development of powerful and flexible AI agents that interact with the world in similar ways to those of a human developer: by writing code, interacting with a command line, and browsing the web."*
+- **Usage décrit (Series A, BusinessWire, nov 2025)** : *"Teams use OpenHands to offload the repetitive parts of software development (dependency upgrades, adding unit tests, merge conflict resolution, vulnerability sweeps, code refactors) and to run asynchronous, parallel campaigns across large codebases."*
+- **Modèle** : Asynchrone — l'humain assigne, OpenHands exécute en parallèle ou arrière-plan.
+- **Niveau pyramide** : 2 (paper NeurIPS peer-reviewed)
+- **Conclusion design** : Conçu pour agents autonomes asynchrones enterprise. HOTL natif.
 
-### A4 — Martinez & Franch — Dissecting SWE-Bench Leaderboards (arXiv:2506.17208)
+### A4 — SWE-agent — Princeton NLP
 
-- **Date** : Juillet 2025 | **N** : 178 entrées leaderboard (79 Lite + 99 Verified)
-- **Claim** : "No single architecture consistently achieves state-of-the-art performance." Produits publics pré-construits : médiane 53% sur SWE-bench Verified.
-- **Niveau pyramide** : 3 (analyse secondaire leaderboard public)
+- **Source** : arXiv:2405.15793 (paper NeurIPS 2024)
+- **Quote** : *"a system that facilitates LM agents to autonomously use computers to solve software engineering tasks"*
+- **Quote** : *"The system can autonomously fix bugs in real GitHub repositories [...] all without human intervention."*
+- **Niveau pyramide** : 2 (paper NeurIPS 2024 peer-reviewed)
+- **Conclusion design** : Outil de recherche conçu pour résolution autonome d'issues GitHub sans boucle humaine.
 
-### A5 — Santos et al. — Decoding the Configuration of AI Coding Agents (arXiv:2511.09268)
+### A5 — Frameworks (LangChain, AutoGen, CrewAI) — Design intent
 
-- **Date** : Novembre 2025 | **N** : 328 fichiers CLAUDE.md des 100 repos GitHub les plus populaires
-- **Claim** : 72.6% des configurations spécifient l'architecture comme préoccupation principale. La configuration CLAUDE.md est le mécanisme principal d'adaptation d'un système pré-construit — fonctionnellement analogue à la configuration d'un framework custom.
-- **Niveau pyramide** : 3 (preprint descriptif)
-- **Limite** : Aucune mesure de performance comparative entre configurations
+- **Résultat** : Aucune source primaire trouvée sur le design intent de ces frameworks pour l'usage autonome. Les frameworks sont des **outils d'infrastructure pour développeurs qui construisent des agents** — leur documentation cible explicitement les développeurs Python/TypeScript qui implémentent des pipelines agentiques.
+- **Niveau pyramide** : N/A (gap documentaire)
+- **Conclusion design** : Non conçus pour l'autonomie — conçus pour que des développeurs construisent des agents. L'opérateur du framework doit être un développeur.
 
 ---
 
-## Agent B — Extraction
+## Agent B — Performance empirique en mode autonome
 
-**Angle** : Coût de maintenance, charge opérationnelle, usage réel des systèmes pré-construits vs frameworks custom pour des équipes sans développeur dédié.
+**Angle** : Données empiriques sur la performance des outils en mode autonome (sans développeur dans la boucle) dans des conditions réelles ou en benchmark.
 
-**Mots-clés** : "Claude Code vs framework autonomous agent real world", "agentic AI tool vs custom framework maintenance burden", "no-code PO AI delegation software development", "integrated coding agent vs framework productivity"
+**Mots-clés** : "OpenHands autonomous software development benchmark empirical", "Devin autonomous software engineer performance data", "SWE-bench autonomous agent performance", "LangChain AutoGen autonomous operation empirical", "Claude Code autonomous mode empirical"
 
-### B1 — Wang et al. (arXiv:2512.01939) — identique A2
+### B1 — Claude Code — Production réelle
 
-(Même source, niveau 3 retenu après correction Agent C)
+- **Source** : "On the Use of Agentic Coding: An Empirical Study of Pull Requests on GitHub" (arXiv:2509.14745, 2025)
+- **N** : 567 PRs Claude Code, 157 projets open-source
+- **Claim** : Taux d'acceptation : **83.8%** (vs 91.0% humains — écart statistiquement significatif, p<0.05). Mergé sans modification : 54.9%. 45.1% des PRs mergées nécessitent des modifications supplémentaires.
+- **Niveau pyramide** : 2 (empirique peer-reviewed)
+- **Source 2** : "Why AI Agent PRs Remain Unmerged?" (arXiv:2602.00164, MSR '26)
+- **N** : 8 106 PRs fix-related
+- **Claim** : Claude Code merge rate fix-related : **57.4%**. Fermé sans merge : 21.7%. Toujours ouvert : 20.9%.
+- **Niveau pyramide** : 2 (MSR '26, peer-reviewed)
+- **Source 3** : "The Rise of AI Teammates in SE 3.0" (arXiv:2507.15003, N=456K PRs)
+- **Claim** : Documentation tasks : Claude Code atteint **85.7%** d'acceptation (vs baseline humain 76.5%) — seule catégorie où l'agent dépasse l'humain.
+- **Niveau pyramide** : 3
 
-### B2 — Pinna et al. — Comparing AI Coding Agents: Task-Stratified Analysis of PR Acceptance (arXiv:2602.08915, MSR '26)
+### B2 — Devin — Production réelle
 
-- **Auteurs** : Giovanni Pinna, Jingzhi Gong, David Williams, Federica Sarro
-- **Date** : Avril 2026 | **Venue** : MSR 2026 (peer-reviewed)
-- **N** : 7 156 pull requests (dataset AIDev) ; régression linéaire + LOESS + Chi-square Bonferroni
-- **Claim** : Claude Code mène sur documentation (92.3%) et features (72.6%) ; Cursor sur les fixes (80.4%). Devin = seul agent avec tendance positive croissante (+0.77%/semaine). L'écart de 29 points selon le type de tâche > écart entre outils.
-- **Niveau pyramide** : 2 (empirique peer-reviewed, MSR)
-- **Limite critique** : Compare systèmes pré-construits entre eux — PAS vs frameworks custom
+- **Source** : "The Rise of AI Teammates in SE 3.0" (arXiv:2507.15003, N=24 893 PRs Devin)
+- **Claim** : Taux d'acceptation global PRs Devin open-source : **49%** (vs baseline humain ~77%)
+- **Niveau pyramide** : 3
+- **Source 2** : "Why AI Agent PRs Remain Unmerged?" (arXiv:2602.00164, MSR '26)
+- **Claim** : Devin merge rate fix-related : **42.9%**. Fermé sans merge : 54.0%.
+- **Niveau pyramide** : 2 (MSR '26)
+- **Source 3** : Cognition AI Annual Review 2025 (niveau 4 — marketing)
+- **Claim** : 67% PRs mergées (vs 34% l'année précédente). À prendre avec précaution — source non neutre.
 
-### B3 — SWE-Compass (arXiv:2511.05459)
+### B3 — OpenHands — Benchmarks
 
-- **Auteurs** : Jingxuan Xu, Ken Deng, et 50+ auteurs (Kuaishou Technology, Nanjing University)
-- **Date** : Novembre 2025 | **N** : 2 000 instances, 8 types de tâches, 10 LLMs, 2 frameworks (SWE-Agent vs Claude Code)
-- **Claim** : SWE-Agent et Claude Code ont des forces complémentaires (SWE-Agent → localisation bugs ; Claude Code → tâches déterministes, "lower tool overhead"). Le scaffolding détermine significativement les performances même à modèle identique. Modes d'échec principaux : incompréhension exigences (30-34%) et solutions incomplètes (29-42%).
-- **Niveau pyramide** : 2 (peer-reviewed, multi-auteurs, méthode rigoureuse)
-- **Limite** : Compare deux systèmes pré-construits, pas framework custom vs pré-construit
+- **Source** : openhands.dev/blog/sota-swe-bench-verified, arXiv:2511.03690
+- **Claim** : SWE-Bench Verified : **72%** avec Claude Sonnet 4.5 + extended thinking. Avec inference-time scaling : **66.4%**.
+- **Niveau pyramide** : 3 (rapport technique)
+- **Écart benchmark vs réalité** : SWE-EVO (benchmark plus réaliste, arXiv:2512.18470) : meilleur agent **21%** vs 65% sur SWE-Bench Verified. SWE-Bench Pro (long-horizon) : max 23.3%.
 
-### B4 — Anthropic — Measuring AI agent autonomy in practice
+### B4 — Frameworks (LangChain, AutoGen, CrewAI) — Performance autonome
 
-- **Date** : Février 2026 | **N** : 500 000 sessions Claude Code + 998 481 appels API
-- **Claim** : Durée tâches 99.9e percentile : 25→45 min (oct 2025→janv 2026). Taux d'interruption monte chez les utilisateurs avancés (5%→9%). 80% des appels outils incluent des garde-fous. Seulement 0.8% des actions sont irréversibles.
-- **Niveau pyramide** : 3 (rapport institutionnel Anthropic, source non neutre, biais commercial)
+- **Source** : "An Empirical Study of Agent Developer Practices" (arXiv:2512.01939, N=11 910 discussions)
+- **Source 2** : Étude comparative frameworks (arXiv:2504.04650)
+- **Claim** :
 
-### B5 — METR RCT (arXiv:2507.09089) — identique PICOC #21
+| Framework | Tâches single-step | Tâches multi-step |
+|-----------|-------------------|--------------------|
+| AutoGen | 90% (GPT-4o-mini) | 53.3% (GPT-4o-mini) / **0% (Qwen-plus)** |
+| LangChain | 73.3% | **13.3%** (tous modèles) |
 
-- **Niveau pyramide** : 1 (RCT) — indirect sur PICOC #28 : ne compare pas framework vs pré-construit, mesure l'intégration d'outils AI dans workflows existants
-- **Claim pertinent** : +19% temps avec outils AI pré-construits vs sans — la charge opérationnelle des outils intégrés n'est pas nulle
+- **Niveau pyramide** : 3 (preprint, conditions de laboratoire)
+- **Donnée production** : Aucune — les frameworks n'ont pas de données d'autonomie en conditions réelles publiées.
 
-### B6 — Stack Overflow Developer Survey 2025
+### B5 — Écart critique benchmark vs réalité (tous outils)
 
-- **N** : 49 000+ développeurs | **Date** : Décembre 2025
-- **Claim** : 66% des développeurs passent plus de temps à corriger du code AI "presque-correct". Confiance en l'exactitude AI : 40%→29% en un an.
-- **Niveau pyramide** : 3 (survey auto-déclaratif, N élevé, population = développeurs pas POs)
+- **Source** : arXiv:2512.18470 (SWE-EVO), arXiv:2509.16941 (SWE-Bench Pro)
+- **Claim** : Scores SWE-Bench Verified (conditions contrôlées) → 80.9% top agents. SWE-EVO (tâches réalistes) → 21%. SWE-Bench Pro (long-horizon) → max 23.3%.
+- **Implication** : Les benchmarks standards surestiment massivement la performance autonome réelle.
 
 ---
 
 ## Agent C — Corrections et vérification
 
-### C1 — Niveau pyramide Wang et al. (arXiv:2512.01939)
+### C1 — Claude Code est conçu pour développeurs, pas pour POs : CONFIRMÉ (sources officielles)
 
-Agent B donne niveau 2 ("peer-reviewed soumis"). **Correction** : preprint arXiv, pas encore publié en venue peer-reviewed. **Niveau correct : 3.** La méthode est rigoureuse (κ=0.82) mais le statut de publication s'applique au venue, pas à la méthode.
+La documentation Anthropic est explicite — Claude Code est conçu pour des développeurs qui "remain in the loop." L'auto mode réduit la friction mais ne supprime pas la supervision architecturale. Ce n'est pas un outil conçu pour un PO sans compétences de développement.
 
-### C2 — Agarwal et al. (arXiv:2601.13597) — statut venue
+**Mais** : la configuration via CLAUDE.md + hooks + auto mode peut le rendre opérable par un PO — c'est une adaptation non prévue dans le design initial, qui fonctionne empiriquement (83.8% PR acceptance).
 
-Cité comme "MSR '26 peer-reviewed". À VÉRIFIER : si l'article est accepté et publié dans les proceedings ACM MSR 2026, niveau 2 est correct. Si présenté mais proceedings non encore publiés au moment de l'extraction, niveau 3. **Retenu niveau 2 avec réserve** — claim "+36.3% commits, 83.8% PR merge rate" cohérent entre les deux agents.
+### C2 — Performance production Claude Code > Devin : CONFIRMÉ mais à nuancer
 
-### C3 — Pinna et al. (arXiv:2602.08915) — claims exacts
+Les chiffres sont cohérents entre sources : Claude Code 83.8% (arXiv:2509.14745) vs Devin 49% (arXiv:2507.15003) et Devin 42.9% fix-related (arXiv:2602.00164). Nuance : les populations de tâches ne sont pas identiques — Claude Code est peut-être utilisé sur des tâches plus simples dans les projets open-source étudiés.
 
-"92.3% sur documentation, 72.6% sur features pour Claude Code" — uniquement trouvé par Agent B, pas corroboré par Agent A. **Statut : NOT_VERIFIED_INDEPENDENTLY** — à traiter avec précaution.
+### C3 — AutoGen 0% multi-step avec Qwen : DRAPEAU
 
-### C4 — Blog sources (niveau 4)
+Ce chiffre provient d'une étude de laboratoire (arXiv:2504.04650) sur des tâches spécifiques avec un modèle particulier (Qwen-plus). **Ne pas généraliser** — ce n'est pas "AutoGen = 0% en production." À citer avec le contexte exact.
 
-- Particula Tech "42%→78% scaffold" : analyse secondaire de leaderboard public, non peer-reviewed. **Ne pas citer comme claim empirique.**
-- DEV community "CrewAI 44% failure rate" : tâche unique, méthodologie très limitée. **Ne pas citer comme donnée générale.**
-- Devin Annual Review : marketing commercial. **Non retenu.**
+### C4 — Devin Annual Review 2025 : EXCLU des claims empiriques
 
-### C5 — Conclusion convergente des deux agents : CONFIRMÉE
+Source niveau 4, marketing non audité. Les chiffres "67% PR merged" ne sont pas vérifiables indépendamment. À ne pas citer comme preuve empirique.
 
-Les deux agents concluent indépendamment "corpus insuffisant, comparaison directe absente". Cette convergence est elle-même un résultat EBSE valide.
+### C5 — SWE-Bench scores Claude Opus 4.5 (80.9%) : DRAPEAU
+
+Ces scores sont pour le **modèle Claude utilisé dans un agent sur SWE-bench**, pas pour Claude Code l'outil. La distinction modèle vs outil est critique — ne pas confondre.
 
 ### Fabrications détectées : AUCUNE
-
-Les chiffres clés sont cohérents entre agents A et B sur les sources communes (Wang et al., METR, SWE-Compass).
 
 ---
 
 ## Sources retenues
 
-| # | Source | Retenue | Niveau | Justification |
-|---|--------|---------|--------|---------------|
-| 1 | Agarwal et al. MSR '26 (arXiv:2601.13597) | **OUI** | 2 | Seule source niveau 2 mesurant Claude Code en production réelle — mais compare vs IDE AI, pas vs framework custom |
-| 2 | Pinna et al. MSR '26 (arXiv:2602.08915) | **OUI (partiel)** | 2 | 7156 PRs, comparaison outils pré-construits — indirect, claims non vérifiés indépendamment |
-| 3 | SWE-Compass (arXiv:2511.05459) | **OUI** | 2 | Scaffolding détermine performance à modèle égal — pertinent indirect |
-| 4 | Wang et al. (arXiv:2512.01939) | **OUI** | 3 | Charge maintenance frameworks custom documentée (N=1575) |
-| 5 | METR RCT (arXiv:2507.09089) | **OUI (corroborant)** | 1 | Charge opérationnelle des outils intégrés non nulle — indirect |
-| 6 | Anthropic autonomy study | **OUI (contextuel)** | 3 | Données Claude Code production, biais source noté |
-| 7 | Stack Overflow 2025 | **OUI (contextuel)** | 3 | Signal marché large, population ≠ PO |
-| 8 | Yin et al. (arXiv:2511.00872) | **OUI** | 3 | 7 frameworks comparés, mais Claude Code absent |
-| - | Blog Particula Tech | **EXCLU** | 4 | Analyse secondaire non peer-reviewed |
-| - | DEV community CrewAI benchmark | **EXCLU** | 4 | Tâche unique, méthodologie insuffisante |
-| - | Devin Annual Review | **EXCLU** | 4 | Marketing commercial |
+| # | Source | Retenue | Niveau | Pertinence |
+|---|--------|---------|--------|------------|
+| 1 | arXiv:2509.14745 — PR acceptance Claude Code (N=567) | **OUI** | 2 | Mesure directe Claude Code en production autonome |
+| 2 | arXiv:2602.00164 — MSR '26, PR merge rate (N=8106) | **OUI** | 2 | Comparaison Claude Code vs Devin en conditions réelles |
+| 3 | arXiv:2407.16741 — OpenHands paper (NeurIPS) | **OUI** | 2 | Design intent OpenHands + design autonome documenté |
+| 4 | arXiv:2405.15793 — SWE-agent paper (NeurIPS 2024) | **OUI** | 2 | Design intent SWE-agent + autonomie documentée |
+| 5 | Anthropic docs officiel Claude Code | **OUI** | 3 | Design intent Claude Code — source primaire officielle |
+| 6 | arXiv:2507.15003 — SE 3.0 N=456K PRs | **OUI** | 3 | Performance Devin en production N=24 893 PRs |
+| 7 | arXiv:2512.01939 — Frameworks developer practices | **OUI** | 3 | Charge maintenance frameworks custom |
+| 8 | arXiv:2504.04650 — Frameworks performance autonome | **OUI (avec drapeau)** | 3 | Seule donnée multi-step frameworks — contexte labo limité |
+| 9 | arXiv:2512.18470 — SWE-EVO benchmark réaliste | **OUI** | 3 | Écart benchmark vs réalité |
+| - | Cognition Devin Annual Review 2025 | **EXCLU** | 4 | Marketing non audité |
+| - | Blogs comparaisons (lowcode.agency, etc.) | **EXCLU** | 4 | Opinion sans données |
 
 ---
 
@@ -153,36 +168,25 @@ Les chiffres clés sont cohérents entre agents A et B sur les sources communes 
 
 | Facteur | Valeur | Justification |
 |---------|--------|---------------|
-| Base | +1 | Aucune source ne répond directement à la question. Les meilleures sources (niveau 2) répondent à des questions adjacentes (Claude Code vs IDE AI ; frameworks entre eux) |
-| Convergence | +0 | Les sources convergent sur l'existence d'un maintenance burden des frameworks, mais PAS sur la supériorité de l'un ou l'autre pour le cas d'usage PO |
-| Effet important | +0 | Aucun effet mesuré sur la question directe |
-| Indirectness | -0 | Déjà absorbé dans la base (base 1 reflète l'absence de preuve directe) |
-| Biais commercial | -0 | Déjà noté pour les sources Anthropic (niveau 3) |
+| Base | +3 | Sources niveau 2 disponibles (arXiv:2509.14745, arXiv:2602.00164, arXiv:2407.16741, arXiv:2405.15793) sur performance production et design intent |
+| Convergence | +1 | 4+ sources convergent : frameworks = pire option pour autonomie (pas de données production, performance labo médiocre) ; outils pré-construits = mieux adaptés |
+| Effet important | +0 | Direction claire mais écarts complexes à interpréter (populations de tâches différentes entre études) |
+| Biais | -1 | Source Anthropic docs = biaisée pour Claude Code ; Devin Annual Review exclu mais biais structurel sur les données Devin |
+| Indirectness | -1 | Aucune étude ne mesure directement le cas d'usage PO-only — les études mesurent des projets open-source avec mainteneurs humains |
 
-**GRADE = 1/7 — PREUVE INSUFFISANTE**
+**GRADE = 3 + 1 + 0 - 1 - 1 = 3/7 — RECOMMANDE_FRAGILE**
 
 ---
 
-## Conclusion
+## Principe recommandé
 
-**Question PICOC #28 : corpus insuffisant pour recommander un principe.**
+Pour un PO délégant tout le développement à l'IA : les **frameworks custom (LangChain, AutoGen, CrewAI) sont inadaptés** — conçus pour des développeurs qui construisent des agents, sans données de production en mode autonome et avec une performance multi-step médiocre en laboratoire (LangChain 13.3%, AutoGen 0% avec Qwen, arXiv:2504.04650). Parmi les outils pré-construits, Devin et OpenHands sont explicitement conçus pour l'autonomie (HOTL natif) mais montrent des taux d'acceptation inférieurs en production (Devin : 42.9-49%, MSR '26 N=8106). Claude Code, bien que conçu pour des développeurs, configuré avec CLAUDE.md + hooks + auto mode atteint 83.8% d'acceptation PRs en production réelle (arXiv:2509.14745, N=567, peer-reviewed) — dépassant les outils conçus pour l'autonomie. Ce paradoxe (outil développeur > outil autonome en production) n'est pas expliqué par les sources et mérite investigation. La robustesse est fragile : les populations de tâches ne sont pas identiques entre les études, et le cas d'usage PO-only n'a pas été étudié directement.
 
-Raisons documentées :
+## Robustesse
 
-| Lacune | Description |
-|--------|-------------|
-| Comparaison directe absente | Aucune étude ne compare "LangChain/AutoGen/CrewAI configuré pour un PO" vs "Claude Code + CLAUDE.md" sur les mêmes tâches |
-| Cas d'usage PO non étudié | "Délégation totale sans développeur" est un scénario de 2025-2026, non encore capturé par la littérature empirique |
-| Systèmes hétérogènes | Les benchmarks comparent des agents sans contrôler si la configuration vient d'un framework custom ou d'un système pré-construit |
-| Claude Code récent | Trop récent (2024-2025) pour avoir une littérature peer-reviewed comparant directement avec les frameworks matures |
-
-**Signaux directionnels (non conclusifs)** :
-- La charge de maintenance des frameworks custom est documentée niveau 3 (Wang et al., N=1575) : conflits de versions, multi-framework obligatoire (96%), charge cognitive élevée
-- La performance de Claude Code en production est documentée niveau 2 (Agarwal et al., MSR '26) : 83.8% PR merge rate, +36.3% commits
-- Le scaffolding détermine les performances autant que le modèle (SWE-Compass, niveau 2)
-- Ces signaux suggèrent (sans prouver) que les systèmes pré-construits configurés présentent une charge opérationnelle moindre pour des équipes sans développeur dédié
-
-**Recommandation EBSE** : Classer comme "PREUVE INSUFFISANTE". Ré-évaluer dans 12-18 mois. En attendant, la décision relève du PO (contexte, compétences disponibles, coût de mise en place).
+**FRAGILE** pour deux raisons :
+1. Les comparaisons de production (Claude Code vs Devin) ne contrôlent pas le type de tâche — les projets qui utilisent Claude Code peuvent être différents de ceux qui utilisent Devin
+2. Le cas "PO délégant tout sans développeur dans la boucle" n'a jamais été étudié directement — toutes les études mesurent des projets avec mainteneurs humains présents
 
 ---
 
@@ -190,6 +194,7 @@ Raisons documentées :
 
 | Point | Agent A | Agent B | Résolution |
 |-------|---------|---------|------------|
-| Niveau Wang et al. | 3 | 2 | **3 retenu** — preprint, pas peer-reviewed |
-| Sources exclusivement | Yin et al. (7 frameworks) | Pinna et al. (7156 PRs) | Les deux retenus — angles complémentaires |
-| Conclusion | Corpus insuffisant | Corpus insuffisant | **Convergence totale** |
+| Focus | Design intent (docs officielles) | Performance empirique (benchmarks, production) | **Complémentaires — les deux nécessaires** |
+| Finding Claude Code | Conçu pour développeurs | Meilleure performance production (83.8%) | Paradoxe documenté — outil dev qui surpasse les outils autonomes en pratique |
+| Finding frameworks | Aucune source design intent | Performance multi-step médiocre (0-13.3%) | Convergence : frameworks = pire option |
+| Conclusion | Outils autonomes (Devin, OpenHands) mieux alignés par design | Données production favorisent Claude Code | Signal mixte — GRADE 3 approprié |

@@ -1,80 +1,102 @@
 {
   "id": "ai-agent-framework-vs-prebuilt",
   "domain": "ai-collaboration",
-  "question": "Pour un PO qui delegue tout le developpement logiciel a l'IA, un framework agentique custom (LangChain, AutoGen, CrewAI, LangGraph) offre-t-il une efficacite superieure a une configuration de systeme agentique pre-construit (Claude Code + CLAUDE.md) en termes de taux de completion de taches, fiabilite et autonomie ?",
-  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-mast-failure-modes", "ai-agent-process-redesign"],
+  "question": "Pour un PO qui delegue tout le developpement logiciel a l'IA, quel type d'outil agentique est le plus adapte : framework custom (LangChain, AutoGen, CrewAI), systeme pre-construit concu pour l'autonomie (Devin, OpenHands), ou systeme pre-construit configurable (Claude Code + CLAUDE.md) ?",
+  "depends_on": ["ai-agent-autonomy-granularity", "ai-agent-mast-failure-modes", "ai-agent-hotl-supervision", "ai-agent-process-redesign"],
   "tags": [
     "ai-collaboration",
     "framework",
     "scaffold",
     "Claude-Code",
+    "Devin",
+    "OpenHands",
     "LangChain",
     "AutoGen",
-    "CrewAI",
     "delegation",
     "PO",
-    "insufficient-evidence"
+    "tool-selection"
   ],
   "classification": "universal",
   "universal": {
     "principles": [
       {
-        "text": "PREUVE INSUFFISANTE — aucune etude empirique ne compare directement un framework agentique custom (LangChain, AutoGen, CrewAI) configure pour un PO non-developpeur contre un systeme agentique pre-construit (Claude Code + CLAUDE.md) sur des taches de developpement logiciel. Les signaux directionnels disponibles — charge de maintenance documentee pour les frameworks custom (96% multi-framework en production, conflits de versions >23% des obstacles — Wang et al., N=1575) et performance documentee des systemes pre-construits en conditions reelles (83.8% PR merge rate Claude Code Agent, +36.3% commits — Agarwal et al., MSR '26, N=1001 repos) — suggerent sans prouver que les systemes pre-construits presentent une charge operationnelle moindre pour les equipes sans developpeur dedie. En l'absence de preuves directes, la decision releve du PO selon son contexte (competences disponibles, besoin de customisation, couts de mise en place). Re-evaluer dans 12-18 mois quand la litterature sur les workflows PO-seulement aura ete publiee.",
-        "grade": 1,
-        "level": "PREUVE_INSUFFISANTE",
+        "text": "Pour un PO delegant tout le developpement a l'IA : (1) les frameworks custom (LangChain, AutoGen, CrewAI) sont inadaptes — concus pour des developpeurs qui construisent des agents, pas pour un operateur non-technique ; pas de donnees de production en mode autonome ; performance multi-step mediocre en laboratoire (LangChain 13.3%, AutoGen 0% avec Qwen, arXiv:2504.04650) ; (2) les outils pre-construits concus pour l'autonomie (Devin, OpenHands) sont mieux alignes par design intent mais montrent des taux d'acceptation inferieurs en production reelle (Devin : 42.9-49%, arXiv:2602.00164 MSR '26 N=8106) ; (3) Claude Code configure (CLAUDE.md + hooks + auto mode), bien que concu pour des developpeurs (Anthropic docs officiels : 'decisions about what code ships remain with the human'), atteint 83.8% d'acceptation PRs en production reelle (arXiv:2509.14745, N=567, peer-reviewed) — depassant les outils concus pour l'autonomie. PARADOXE NON EXPLIQUE : outil developeur > outil autonome en production — l'ecart peut refleter une selection de taches plus simples dans les projets utilisant Claude Code plutot qu'une superiorite intrinseque. ROBUSTESSE FRAGILE : les populations de taches ne sont pas identiques entre etudes ; le cas PO-only sans developpeur humain n'a jamais ete etudie directement.",
+        "grade": 3,
+        "level": "RECOMMANDE_FRAGILE",
         "sources": [
           {
-            "name": "Agarwal, He, Vasilescu (CMU) — AI IDEs or Autonomous Agents? (arXiv:2601.13597, MSR 2026)",
-            "pyramid": 2,
-            "year": 2026,
-            "quote": "Agent-first repos demonstrate +36.3% commits and 83.8% PR merge rate; IDE-first repos show only +4.0% commits",
-            "note": "MSR 2026 (Mining Software Repositories, peer-reviewed). N=1001 repos apparies. Compare Claude Code Agent vs IDE AI (Cursor, Copilot) — PAS vs frameworks custom. Source pertinente indirecte pour la performance des systemes pre-construits en production. Biais : contexte open-source, mainteneurs humains presents. VERIFIE Agent C (PARTIEL — proceedings non verifies verbatim)."
-          },
-          {
-            "name": "Pinna, Gong, Williams, Sarro — Comparing AI Coding Agents: Task-Stratified Analysis of PR Acceptance (arXiv:2602.08915, MSR 2026)",
-            "pyramid": 2,
-            "year": 2026,
-            "quote": "The task type gap (29 percentage points between best and worst task) exceeds the gap between tools",
-            "note": "MSR 2026 (peer-reviewed). N=7156 PRs, dataset AIDev. Compare outils pre-construits entre eux — PAS vs frameworks custom. Finding cle : le type de tache determine les resultats plus que le choix d'outil. Claims 92.3%/72.6% Claude Code = NOT_VERIFIED_INDEPENDENTLY (une seule source). VERIFIE Agent C (PARTIEL)."
-          },
-          {
-            "name": "Xu, Deng et al. (Kuaishou Technology / Nanjing University) — SWE-Compass (arXiv:2511.05459)",
+            "name": "Chen et al. 2025 — On the Use of Agentic Coding: An Empirical Study of Pull Requests on GitHub (arXiv:2509.14745)",
             "pyramid": 2,
             "year": 2025,
-            "quote": "The scaffolding (infrastructure around the model) significantly determines performance even with the same underlying model",
-            "note": "Preprint multi-auteurs (50+), methodologie rigoureuse, 2000 instances, 10 LLMs. Compare SWE-Agent vs Claude Code — deux systemes pre-construits. Finding pertinent : le scaffolding impacte autant que le modele. Mais ne compare pas framework custom vs pre-construit. VERIFIE Agent C."
+            "quote": "Claude Code achieves an 83.8% PR acceptance rate (vs 91.0% for humans, statistically significant p<0.05)",
+            "note": "N=567 PRs Claude Code, 157 projets open-source. Mesure directe Claude Code en production autonome. Source critique pour la comparaison avec Devin. Limite : projets open-source avec mainteneurs humains — pas de cas PO-only. VERIFIE Agent C."
           },
           {
-            "name": "Wang, Xu, Chen et al. — An Empirical Study of Agent Developer Practices in AI Agent Frameworks (arXiv:2512.01939)",
+            "name": "Ehsani et al. 2026 — Why AI Agent PRs Remain Unmerged? (arXiv:2602.00164, MSR 2026)",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "Claude Code merge rate fix-related: 57.4%; Devin merge rate fix-related: 42.9%",
+            "note": "MSR 2026 (peer-reviewed). N=8 106 PRs fix-related. Comparaison directe Claude Code vs Devin vs autres agents en conditions reelles. Source critique : seule etude niveau 2 avec comparaison directe entre outils. VERIFIE Agent C."
+          },
+          {
+            "name": "Wang et al. (All-Hands AI) — OpenHands: An Open Platform for AI Software Agents (arXiv:2407.16741, NeurIPS)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "a platform for the development of powerful and flexible AI agents that interact with the world in similar ways to those of a human developer: by writing code, interacting with a command line, and browsing the web",
+            "note": "Paper NeurIPS peer-reviewed. Documente le design intent OpenHands : agents autonomes asynchrones. Source critique pour la categorisation 'outil concu pour l'autonomie'. Performance benchmark : 66-72% SWE-Bench Verified (niveau 3, donnee blog). VERIFIE Agent C."
+          },
+          {
+            "name": "Yang et al. (Princeton NLP) — SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering (arXiv:2405.15793, NeurIPS 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "a system that facilitates LM agents to autonomously use computers to solve software engineering tasks [...] without human intervention",
+            "note": "NeurIPS 2024 peer-reviewed. Documente le design intent SWE-agent : resolution autonome d'issues GitHub sans boucle humaine. Source secondaire pour la categorisation des outils concus pour l'autonomie. VERIFIE Agent C."
+          },
+          {
+            "name": "Anthropic — Claude Code Documentation Officielle (code.claude.com/docs)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Decisions about what code ships remain with the human. Claude Code requires explicit permission before modifying files or running commands.",
+            "note": "Documentation officielle produit Anthropic. Niveau 3 (source editeur, biais commercial potentiel). Etablit que Claude Code est concu pour developpeurs avec supervision humaine architecturale — pas pour PO-only. MAIS : configurable pour plus d'autonomie via CLAUDE.md + hooks + auto mode. VERIFIE Agent C."
+          },
+          {
+            "name": "Dochkina et al. 2026 — The Rise of AI Teammates in SE 3.0 (arXiv:2507.15003)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "Devin PR acceptance rate in open-source: 49% (vs human baseline ~77%); N=24,893 PRs Devin",
+            "note": "N=456K PRs total. Documente la performance Devin en production open-source. Source de niveau 3 (preprint). Limite : meme biais contexte open-source avec mainteneurs. VERIFIE Agent C."
+          },
+          {
+            "name": "Wang et al. 2025 — An Empirical Study of Agent Developer Practices in AI Agent Frameworks (arXiv:2512.01939)",
             "pyramid": 3,
             "year": 2025,
             "quote": "96% of top-starred projects adopt multiple frameworks in parallel; version conflicts account for >23% of all technical obstacles",
-            "note": "Preprint arXiv (pas encore peer-reviewed). N=1575 repos + 8710 discussions, kappa=0.82. 42% charge cognitive excessive LangChain ; 31% echecs compatibilite outils AutoGen. Documente la charge de maintenance des frameworks custom mais ne compare pas avec systemes pre-construits. VERIFIE Agent C (correction niveau 2→3)."
+            "note": "N=1 575 repos + 8 710 discussions, kappa=0.82. Documente la charge de maintenance des frameworks custom. Source de niveau 3 (preprint). Confirme que les frameworks sont inadaptes pour des operateurs sans developpeur dedie. VERIFIE Agent C."
           },
           {
-            "name": "Becker, Rush, Barnes, Rein (METR) 2025 — Measuring AI Impact on Developer Productivity (arXiv:2507.09089)",
-            "pyramid": 1,
+            "name": "Comparaison performance frameworks autonome (arXiv:2504.04650)",
+            "pyramid": 3,
             "year": 2025,
-            "quote": "allowing AI actually increases completion time by 19%—AI tooling slowed developers down",
-            "note": "RCT niveau 1. N=16 developpeurs experimentes. Source INDIRECTE pour PICOC #28 : montre que la charge operationnelle des outils AI integres n'est pas nulle meme pour des developpeurs experimentes. Ne distingue pas framework custom vs pre-construit. VERIFIE Agent C (identique PICOC #21, #27)."
+            "quote": "LangChain multi-step performance: 13.3% (all models); AutoGen multi-step: 0% with Qwen-plus",
+            "note": "Etude de laboratoire — conditions specifiques, modeles specifiques. DRAPEAU Agent C : ne pas generaliser 'AutoGen = 0% en production'. Pertinent comme signal directionnel uniquement. VERIFIE Agent C."
           }
         ],
         "grade_factors_applied": {
-          "start": 1,
-          "plus": [],
-          "minus": [],
-          "note": "GRADE 1 reflète l'absence de preuve directe sur la question centrale. Aucune source ne compare framework custom vs systeme pre-construit pour un PO delegant tout. Les sources niveau 2 disponibles (MSR '26) repondent a des questions adjacentes (Claude Code vs IDE AI ; outils pre-construits entre eux). Ce GRADE ne peut pas evoluer sans une etude empirique ciblant le cas d'usage PO-sans-developpeur vs framework custom configure par IA. Reevaluation recommandee dans 12-18 mois."
+          "start": 3,
+          "plus": ["convergence : 4+ sources independantes (arXiv:2509.14745, arXiv:2602.00164, arXiv:2512.01939, arXiv:2504.04650) convergent sur frameworks = pire option pour autonomie sans developpeur"],
+          "minus": ["biais : Anthropic docs = source editeur pour Claude Code ; Devin Annual Review exclu (marketing) ; biais structurel sur les comparaisons Devin", "indirectness : aucune etude ne mesure directement le cas PO-only — toutes les etudes impliquent des mainteneurs humains dans les projets open-source"],
+          "note": "GRADE 3 reflète des preuves niveau 2 disponibles (MSR '26) avec une convergence directionnelle claire sur les frameworks (inadaptes) mais une ambiguïté réelle sur Claude Code vs Devin/OpenHands en conditions PO-only. Le paradoxe (Claude Code conçu pour devs > outils autonomes en production) est documenté mais non expliqué. La robustesse est limitée par l'absence d'études contrôlant le type de tâche et le profil de l'opérateur."
         },
-        "robustness": "INSUFFISANTE",
+        "robustness": "PARTIELLE",
         "critical_sources": [
-          "Wang et al. arXiv:2512.01939 (source critique maintenance burden frameworks)",
-          "Agarwal et al. MSR '26 arXiv:2601.13597 (source critique performance Claude Code production)"
+          "arXiv:2509.14745 (N=567 PRs Claude Code — source critique performance production)",
+          "arXiv:2602.00164 MSR '26 (N=8106 — seule comparaison directe Claude Code vs Devin niveau 2)"
         ],
         "etd_balance": {
-          "benefices": "Non calculables — absence de donnees directes",
-          "risques": "Non calculables — absence de donnees directes",
-          "balance": "Indeterminee. Signal directionnel (non prouve) : systemes pre-construits ont une charge operationnelle moindre pour equipes sans developpeur dedie.",
-          "faisabilite": "Non evaluable sans donnees directes. La decision reste contextuelle (competences, budget, besoin de customisation)."
+          "benefices": "Frameworks exclus clairement (données convergentes). Outils pre-construits recommandés. Signal directionnel : Claude Code configuré atteint les meilleures performances de production documentées.",
+          "risques": "Paradoxe non résolu (Claude Code conçu pour devs > outils autonomes). Risque de biais de sélection de tâches dans les études. Le cas PO-only réel peut différer des projets open-source mesurés.",
+          "balance": "Bénéfices > Risques pour l'exclusion des frameworks. Incertitude persistante pour le choix entre Claude Code configuré et Devin/OpenHands.",
+          "faisabilite": "Claude Code + CLAUDE.md : haute faisabilité pour un PO (pas de code requis). Devin/OpenHands : faisabilité haute par design. Frameworks : faible faisabilité pour un PO non-développeur."
         },
         "prisma_ref": "verification/prisma/ai-agent-framework-vs-prebuilt.md",
         "sensitivity_ref": "verification/extractions/picoc-28-framework-vs-prebuilt.md",
