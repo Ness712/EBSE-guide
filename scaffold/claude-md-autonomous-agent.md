@@ -349,7 +349,7 @@ Différent des deux premiers — c'est de l'observation de l'état runtime, pas 
 
 Implémenter comme commande slash `/health-check` séparée et l'appeler depuis `/audit`.
 
-**Déclenchement** : appliquer cette méthode **quelle que soit la formulation** — "/audit", "fais un audit", "vérifie que tout est aligné", "relis le code", "est-ce qu'on suit bien le guide", etc. Ne pas improviser une méthode différente selon la formulation.
+**Déclenchement** : appliquer cette méthode **quelle que soit la formulation** — "/audit", "fais un audit", "vérifie X", "vérifie que", "check X", "contrôle X", "valide X", "confirme que", "assure-toi que", "est-ce que X est bien fait", "est-ce que X est correct", "est-ce qu'on suit bien le guide", "relis le code", "regarde si", etc. Ne pas improviser une méthode différente selon la formulation.
 
 **Grep vs lecture sémantique** (PICOC #19) : le grep est approprié pour les contraintes syntaxiques (présence d'une section, format d'un nom). Pour les contraintes sémantiques (ce concept est-il correctement couvert ?), le grep produit des faux négatifs structurels — utiliser la lecture complète des fichiers sources. Pour les vérifications critiques, spawner un agent indépendant avec contexte frais (gain de vérification significativement supérieur, Lu et al. 2025 sur 37 modèles).
 
