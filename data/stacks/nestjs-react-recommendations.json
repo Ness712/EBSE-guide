@@ -1,0 +1,4160 @@
+{
+  "guide_version": "2026.04.5",
+  "generated_at": "2026-04-16T11:01:40.259Z",
+  "profile_id": "nestjs-react",
+  "stack": {
+    "backend": "typescript-nestjs",
+    "frontend": "react",
+    "database": "postgresql"
+  },
+  "total": 168,
+  "methodology": "EBSE (Kitchenham 2004), adapted from Evidence-Based Medicine",
+  "recommendations": [
+    {
+      "id": "active-states",
+      "domain": "design",
+      "question": "Comment differencier les etats interactifs (hover, focus, selected, pressed) ?",
+      "recommendation": "5 etats distincts: hover (bg subtil 8%), focus (outline 2px+ 3:1 contrast WCAG 2.4.13), pressed (bg plus sombre 10-12%), selected (accent persistent), disabled (38% opacity). :focus-visible pas :focus. M3 state layers model. Chaque etat doit etre visuellement distinct des autres.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "WCAG 2.2 SC 2.4.13 Focus Appearance",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "WCAG 2.2 SC 1.4.11 Non-text Contrast",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "M3 State Layers",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NNg Button States",
+          "pyramid": 2,
+          "year": 2023
+        },
+        {
+          "name": "Deque Focus Indicators Guide",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "Sara Soueidan — Focus Indicators",
+          "pyramid": 3,
+          "year": 2022
+        }
+      ]
+    },
+    {
+      "id": "authentication",
+      "domain": "security",
+      "question": "Comment implementer l'authentification de maniere securisee (tokens, sessions, OAuth2) ?",
+      "recommendation": "@nestjs/passport + passport-jwt pour l'authentification JWT",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "Installer @nestjs/passport et passport-jwt, configurer JwtStrategy avec validation des claims, utiliser AuthGuard pour proteger les routes.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Authentication docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "passport-jwt docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "caching",
+      "domain": "performance",
+      "question": "Comment implementer une strategie de cache multi-niveaux (application, HTTP, static) ?",
+      "recommendation": "@nestjs/cache-manager + Redis — integration native NestJS avec intercepteurs de cache. CacheModule.register() avec store Redis.",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "CacheModule.register({ store: redisStore, host: 'localhost', port: 6379, ttl: 1800 }). @UseInterceptors(CacheInterceptor) sur les controllers.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Caching docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/cache-manager + Redis accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "accent-color-usage",
+      "domain": "design",
+      "question": "Comment utiliser la couleur d'accent dans un design system ?",
+      "recommendation": "Accent uniquement pour: CTAs primaires, etats actifs/selectionnes, liens, focus rings, toggles. PAS pour decoration, backgrounds non-fonctionnels. 60-30-10 rule (60% neutre, 30% secondary, 10% accent). Separer brand vs functional colors pour eviter les conflits semantiques.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "M3 Color Roles",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "EightShapes Color in Design Systems",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "UX4Sight Accent Colors",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "WCAG 2.2 SC 1.4.11 Non-text Contrast",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Adobe Spectrum Color System",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "domain": "project",
+      "question": "Quel outil d'analytics choisir et quelles metriques essentielles suivre, en respectant le RGPD ?",
+      "recommendation": "Preferer le self-hosted pour les donnees sensibles (RGPD). PostHog (events, funnels, cohorts) ou Plausible (privacy-first, simple). Consentement explicite requis.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "PostHog docs",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Plausible docs",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "CNIL guidelines analytics",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "animations",
+      "domain": "design",
+      "question": "Quelles durees et courbes d'animation utiliser, et comment gerer prefers-reduced-motion ?",
+      "recommendation": "Duree 200-300ms pour les transitions standard, ease-out pour les entrees, ease-in pour les sorties.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "api-protocol",
+      "domain": "architecture",
+      "question": "Quel protocole d'API utiliser pour une application web (REST, GraphQL, gRPC) ?",
+      "recommendation": "REST comme protocole par defaut pour les web apps. 90%+ d'adoption (Postman 2024), caching HTTP natif, tooling navigateur natif (fetch).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Fielding dissertation — REST architectural style",
+          "pyramid": 5,
+          "year": 2000
+        },
+        {
+          "name": "Postman State of APIs 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot docs — @RestController",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "backup-recovery",
+      "domain": "reliability",
+      "question": "Quelle strategie de backup et disaster recovery pour la base de donnees ?",
+      "recommendation": "Strategie 2 niveaux : backup logique quotidien (pg_dump, RPO 24h) + WAL archiving continu (RPO < 1h)",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": []
+    },
+    {
+      "id": "branching",
+      "domain": "project",
+      "question": "Quelle strategie de branching adopter pour maximiser la frequence de deploiement et minimiser le taux d'echec ?",
+      "recommendation": "Trunk-based development avec branches courtes (< 2 jours). Les long-lived branches correlent avec +50% de change failure rate.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "DORA State of DevOps 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "DORA/Accelerate — 30k+ devs",
+          "pyramid": 4,
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "id": "button-variants",
+      "domain": "design",
+      "question": "Quels variants de boutons definir dans un design system ?",
+      "recommendation": "5 variants: primary (filled, 1 par section), secondary (outlined), tertiary/ghost (text-only), danger (filled red), icon-only (avec aria-label + tooltip). Tous les variants: 5 etats (enabled, hover, focus, pressed, disabled). Un seul primary par section pour guider l'action principale.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Carbon Design System Buttons",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "EightShapes Buttons in Design Systems",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "M3 Button Types",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NNg Button States",
+          "pyramid": 2,
+          "year": 2023
+        },
+        {
+          "name": "SubUX Button Hierarchy",
+          "pyramid": 3,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "code-ownership",
+      "domain": "project",
+      "question": "Comment organiser l'ownership du code pour reduire les defauts tout en diffusant la connaissance ?",
+      "recommendation": "Ownership collectif avec domain experts identifies. Pas de proprietaire unique (bus factor de 1). CODEOWNERS pour auto-assign les reviewers. 1 reviewer minimum par PR.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Bird et al. 2011 — Microsoft code ownership study (Windows Vista)",
+          "pyramid": 4,
+          "year": 2011
+        },
+        {
+          "name": "GitHub CODEOWNERS docs",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "code-review",
+      "domain": "code-quality",
+      "question": "Comment organiser les code reviews pour maximiser la detection de defauts ?",
+      "recommendation": "Review obligatoire par au moins 1 pair avant merge. La code review trouve 60-70% des defauts, contre 25-30% pour les tests unitaires seuls.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 — code inspection as verification technique",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "SmartBear study — 60-70% defect detection rate",
+          "pyramid": 4,
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "id": "color-system",
+      "domain": "design",
+      "question": "Comment generer un systeme de couleurs coherent pour un design system ?",
+      "recommendation": "3-tier CSS custom property tokens (primitive → semantic → component), generate with HCT (@material/material-color-utilities) or OKLCH. Les primitives definissent la palette brute, les semantiques mappent l'intention (--color-primary, --color-surface), les component tokens specialisent par composant.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Material Design 3 Color System",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "M3 Color Roles",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "W3C WCAG 1.4.11 Non-text Contrast",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "EightShapes Color in Design Systems",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "State of CSS 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-model-routing",
+      "domain": "ai-collaboration",
+      "question": "Comment router les taches entre modeles IA selon la complexite pour optimiser cout et qualite ?",
+      "recommendation": "Utiliser un router task-aware pour selectionner le modele par tache : model cheap/fast (Haiku, Sonnet, GPT-4o-mini) pour scaffolding/renames/documentation ; model strong reasoning (Opus, o1) pour architecture/debug/security-sensitive. Les benchmarks (RouteLLM ICLR 2025, LLMRouterBench EMNLP 2025) montrent >2x cost savings vs single-strong-model sans degradation substantielle de qualite. Le pattern architect+editor (Aider 2024) demontre empiriquement +3-10pp gain sur SWE-Bench Lite en separant reasoning et execution. ATTENTION : RouteLLM '75% cost reduction' est vs random router baseline, pas absolute.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Ong et al. 2025 - RouteLLM: Learning to Route LLMs with Preference Data (ICLR 2025, arXiv:2406.18665)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Aider architect/editor mode announcement (September 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "LLMRouterBench (EMNLP Findings 2025)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "ISO/IEC 5338:2023 §6.2.2 Infrastructure management process et §6.2.4 Human resource management process",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "alerting",
+      "domain": "operations",
+      "question": "Comment alerter efficacement sans alert fatigue ?",
+      "recommendation": "Alerter sur les symptomes (latence, erreurs, disponibilite) — jamais sur les causes (CPU, memoire) seules.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google SRE Book ch.6",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "DORA State of DevOps 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "api-manual-testing",
+      "domain": "testing",
+      "question": "Comment tester manuellement les APIs pendant le developpement ?",
+      "recommendation": "Fichiers .http versionnes dans le repo + Swagger UI en complement. Pas Postman (pas versionne nativement). Pas curl comme outil principal.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "JetBrains IntelliJ HTTP Client",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "VS Code REST Client 5M+ installs",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "SpringDoc OpenAPI Swagger UI",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 Software Testing",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "audit-logging",
+      "domain": "security",
+      "question": "Comment implementer une piste d'audit structuree pour la non-repudiation ?",
+      "recommendation": "Custom Interceptor pour l'audit logging",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "implementation": "Creer un NestJS Interceptor qui capture les actions sensibles et les enregistre dans un format structure.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Interceptors docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "badge-status",
+      "domain": "design",
+      "question": "Comment concevoir des badges de statut dans un design system ?",
+      "recommendation": "5-6 variants semantiques (success/warning/error/info/neutral + optionnel accent). Couleur + icone + texte (jamais couleur seule, WCAG 1.4.1). Forme pill. Max 1-2 mots. Ne pas surcharger (3 max par element). Chaque variant doit etre distinguable sans couleur (icone ou forme differente).",
+      "grade": 4,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Carbon Design System Status Indicators",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Adobe Spectrum Badge",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Baymard Institute Trust Badges",
+          "pyramid": 2,
+          "year": 2023
+        },
+        {
+          "name": "WCAG 2.2 SC 1.4.1 Use of Color",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "GitLab Pajamas Badge",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "bundle-optimization",
+      "domain": "performance",
+      "question": "Comment optimiser la taille du bundle JavaScript pour des temps de chargement rapides ?",
+      "recommendation": "Vite code splitting + lazy routes + tree shaking. Cible : bundle initial < 200KB gzipped, LCP < 2.5s (Core Web Vital).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Vite docs — Build Optimizations",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "web.dev Core Web Vitals",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "web.dev — code splitting guide",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ci-pipeline",
+      "domain": "cicd",
+      "question": "Quel outil CI/CD, quelles stages et quality gates pour le pipeline ?",
+      "recommendation": "GitHub Actions pour les equipes sur GitHub : 53% adoption (SO 2024), 61% equipes 2-10 devs (JetBrains), integration native, 2000 min/mois gratuit, onboarding < 1 jour.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "DORA State of DevOps 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Stack Overflow Survey 2024 — GitHub Actions 53%",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "JetBrains 2024 — GitHub Actions 52%, 61% in 2-10 dev teams",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-autonomy-granularity",
+      "domain": "ai-collaboration",
+      "question": "Quel niveau d'autonomie accorder a un agent de codage IA par type d'action (read, edit, commit, push, deploy) ?",
+      "recommendation": "Utiliser une autonomie graduee par type d'action : read-only → edit-in-branch → commit → push → deploy, avec approbation humaine explicite entre tiers. Ne jamais utiliser le mode 'bypassPermissions' ou equivalent YOLO sur des repos production. L'autonomie doit etre commensurate avec le risque et le blast radius de l'action.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Regulation (EU) 2024/1689 (AI Act) Article 14 Human Oversight",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Parasuraman, Sheridan & Wickens 2000 - A Model for Types and Levels of Human Interaction with Automation",
+          "pyramid": 2,
+          "year": 2000
+        },
+        {
+          "name": "Claude Code permission-modes documentation",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "Faros AI - DORA Report 2025 Key Takeaways",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Toth, Feng et al. arXiv:2509.14745 - Empirical Study of Agentic Coding PRs",
+          "pyramid": 3,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-intermediate-task-delegation",
+      "domain": "ai-collaboration",
+      "question": "Quand un agent en cours d'execution rencontre une tache intermediaire specialisee (avec sa propre methodologie ou risquant de contaminer le contexte), doit-il la deleguer a un sous-agent dedie avec contexte frais ?",
+      "recommendation": "Deleguer a un sous-agent dedie (contexte frais) quand la tache intermediaire est specialisee — c'est-a-dire : elle a une methodologie propre (ex: recherche bibliographique EBSE, revue de securite, generation de tests TDD), ou elle risque de contaminer le contexte principal par son volume ou sa nature. Ne pas deleguer les taches intermediaires simples et rapides (transformation de format, lookup ponctuel) : l'overhead de coordination depasse le benefice. Criteres de delegation : (1) la sous-tache requiert un prompt ou une methodologie distincts, (2) la sous-tache est de duree non triviale (plus de quelques tool calls), (3) la reintegration des resultats dans le contexte principal est clairement definie. Attention aux handoff boundaries : les 14 failure modes MAST (Cemri et al.) emergent principalement aux points de transfert — concevoir un protocole de handoff explicite (quelles informations passent, sous quel format, comment l'agent principal reintegre les resultats).",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Cemri et al. 2025 — Why Do Multi-Agent LLM Systems Fail? MAST (arXiv:2503.13657)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Han et al. 2025 — TDFlow (arXiv:2510.23761)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Singh et al. 2025 — Enhancing LLM Code Generation via ACT (arXiv:2505.02133)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Wang et al. 2025 — ACON (arXiv:2510.00615)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Chen et al. 2025 — Context-Folding (arXiv:2510.11967)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "He, Treude, Lo 2024/25 — LLM Multi-Agent Systems for SE (ACM TOSEM, arXiv:2404.04834)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Anthropic Claude Code — Task tool documentation (2025)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "OpenAI Agents SDK — Handoffs documentation (2025)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "LangGraph — Subgraphs documentation (2025)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Cognition — Don't Build Multi-Agents (2025)",
+          "pyramid": 4,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-prompt-spec-discipline",
+      "domain": "ai-collaboration",
+      "question": "Quel niveau de discipline de spec/prompt adopter pour deleguer des taches a un agent IA ?",
+      "recommendation": "Adopter une discipline spec-first : plan-then-code (Claude Code plan mode via `/plan` et `--permission-mode plan`, Aider `/architect` mode), acceptance criteria explicites dans les issues, spec-driven development avec outils formels (GitHub Spec-Kit avec constitution.md, Amazon Kiro). Les evidences empiriques (TiCoder, TGen) montrent +12 a +46pp d'amelioration en pass@1 vs freeform prompting sur benchmarks synthetiques courts (MBPP, HumanEval). Indirectness a noter : ces gains ne sont pas encore valides sur du real-world feature work longer-horizon.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub Spec-Kit - spec-driven.md",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "GitHub Spec-Kit constitution.md Article III - Test-First Imperative",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Naik et al. 2024 - TiCoder: LLM-Based Test-Driven Interactive Code Generation (arXiv:2404.10100, TSE 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Mathews & Nadi 2024 - TGen: Test-Driven Development for Code Generation (arXiv:2402.13521, 2 LLMs tested)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Fowler/Bird - Understanding Spec-Driven Development: Kiro, spec-kit, Tessl",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "ISO/IEC 5338:2023 §6.4.2 Stakeholder needs + §6.4.3 System requirements (Technical processes)",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-provenance-audit",
+      "domain": "ai-collaboration",
+      "question": "Comment tracer la provenance et maintenir un audit trail du code genere par agent IA ?",
+      "recommendation": "Maintenir un audit trail structure par session d'agent : model name + version, prompt, tool calls, cost, final diff, lie au git commit via trailer metadata (ex: Agent-Logs-Url style GitHub Copilot). Le simple Co-Authored-By trailer est insuffisant pour compliance (pas de cryptographic signature, pas de contenu queryable). Pour contextes regles (SOC2, ISO 27001, HIPAA, ISO 42001 certification), escalade obligatoire vers **STANDARD** : audit trail structured + queryable + immutable. Full session replay est CHOIX d'equipe (storage cost tradeoff). Outils emergents : git-ai (OSS) + GitHub Copilot Agent-Logs-Url + CodeSlick (vendor).",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub Blog 2026-03-20 - Trace any Copilot coding agent commit to its session logs",
+          "pyramid": 3,
+          "year": 2026
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §7.5 Documented information + §8 Operation",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "ISO/IEC 5338:2023 §6.3.6 Information management + §6.3.7 Measurement (sous Technical management processes)",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "NIST AI RMF 1.0 GOVERN function (accountability)",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Regulation (EU) 2024/1689 AI Act Article 12 Record-keeping",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Kothari - Claude Code SOC 2 compliance practitioner guide",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "git-ai-project/git-ai - Git extension for AI-generated code tracking",
+          "pyramid": 3,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-silent-failure-monitoring",
+      "domain": "ai-collaboration",
+      "question": "Comment detecter les echecs silencieux (hallucinations, package invention, semantic drift) dans le code genere par agent ?",
+      "recommendation": "Deployer un pipeline de detection specifique aux silent-failure classes : (1) package-hallucination detection via Socket, Snyk dependency audit, pip-audit/npm audit (base rate empirique 19.7% hallucination sur 576k samples, 21.7% OSS / 5.2% commercial) ; (2) semantic-drift detection via regression testing sur behavior non-touche ; (3) SAST/DAST declenches sur agent diffs specifiquement ; (4) runtime observability (GlitchTip, Sentry, OpenTelemetry) pour attraper les effets post-merge. Le CI test suite seul est insuffisant car il ne detecte pas les API parameters hallucines (Knowledge Conflicting Hallucinations) qui sont type-valid.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Spracklen et al. 2024 - We Have a Package for You (arXiv:2406.10279)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Socket - The Rise of Slopsquatting blog",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "NIST AI 600-1 §2.2 Confabulation + §2.5 Information Integrity",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §9.1 Monitoring, measurement, analysis and evaluation",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-situational-awareness",
+      "domain": "ai-collaboration",
+      "question": "Comment preserver la competence humaine sur le code critique quand l'agent ecrit la majorite du code ?",
+      "recommendation": "Preserver activement la situational awareness humaine sur les chemins critiques (auth, payment, data deletion, security, architectural boundaries) via : (1) lecture obligatoire ligne-par-ligne avant merge sur fichiers designes critical-path ; (2) rotation 'hands-on days' ou l'humain ecrit du code manuellement ; (3) explications generees par l'agent a relire avant merge ; (4) un pourcentage minimum de code critical-path ecrit manuellement (le seuil >=30% reste CHOIX d'equipe). Fondement theorique : Bainbridge 1983 'Ironies of Automation' — les operateurs out-of-the-loop perdent la competence necessaire pour rattraper les erreurs. Evidence empirique : Shukla et al. 2025 montre +37.6% critical vulnerabilities apres 5 iterations AI sans review active.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Bainbridge 1983 - Ironies of Automation (Automatica 19(6), DOI 10.1016/0005-1098(83)90046-8)",
+          "pyramid": 2,
+          "year": 1983
+        },
+        {
+          "name": "Shukla, Joshi, Syed 2025 - Security Degradation in Iterative AI Code Generation (IEEE-ISTAS, arXiv:2506.11022)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Regulation (EU) 2024/1689 AI Act Article 14 §4(b)",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NIST AI RMF 1.0 GOVERN-3.2 Training competencies",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Qodo State of AI Code Quality 2025 - survey",
+          "pyramid": 4,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-task-type-routing",
+      "domain": "ai-collaboration",
+      "question": "Comment router les taches d'ingenierie logicielle entre agent-autonome, agent-propose et humain-led selon le type de tache ?",
+      "recommendation": "Etablir une policy explicite mappant les classes de taches a leur niveau d'autonomie. Agent autonome acceptable : test scaffolding, renames, dependency bumps, low/medium complexity bug fixes (SWE-bench-like). Agent propose (humain approuve) : refactors multi-fichiers, nouveaux endpoints. Humain-led obligatoire : architecture, schema migrations, security-sensitive code, data migrations, force-push main.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWE-Bench Pro arXiv:2509.16941 - Long-Horizon SE Tasks benchmark",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "GitHub Copilot coding agent documentation",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "Toth, Feng et al. arXiv:2509.14745",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Hou et al. 2024 - LLMs for Software Engineering: A Systematic Literature Review",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-tdd-loop",
+      "domain": "ai-collaboration",
+      "question": "Dans un workflow TDD avec agent IA, qui ecrit les tests : l'humain ou l'agent ?",
+      "recommendation": "Le pattern TDD agent loop preferable : l'humain ecrit le failing test (specifiant l'intent), l'agent itere l'implementation jusqu'a tests verts + tests existants toujours verts. Cette approche beats les alternatives : quand l'agent genere ses propres tests (self-test), la performance chute (TDFlow : 94.3% SWE-Bench Verified avec human tests vs 69.8% avec agent-generated tests). Le final human read of the diff before merge reste obligatoire (bridge avec PICOC #13 SA) — 'no human review per iteration' est valide sur benchmarks mais a qualifier pour production.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Han et al. 2025 - TDFlow: Agentic Workflows for Test Driven Development (arXiv:2510.23761)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Han et al. 2025 - TDFlow agent-generated tests performance drop",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Mathews & Nadi 2024 - TGen additional remediation loop gains",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Naik et al. 2024 - TiCoder (arXiv:2404.10100)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Simon Willison - Red/green TDD Agentic Engineering Patterns",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "SWEBOK v4 KA 5 §7.1 Testing of Emerging Technologies",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-team-metrics",
+      "domain": "ai-collaboration",
+      "question": "Quelles metriques utiliser pour mesurer la productivite et la qualite d'une equipe humain+agent ?",
+      "recommendation": "Composer DORA 4-keys (Deployment Frequency, Lead Time, Change Failure Rate, MTTR) + SPACE 5-dimensions (Satisfaction, Performance, Activity, Communication, Efficiency) + metrics agent-specific (agent-authored LOC ratio, human-override rate, escalation rate, cost per merged PR). Ne JAMAIS utiliser une metrique seule — Goodhart risk. Eviter les vanity metrics type Copilot acceptance rate ou Cursor tab-accept rate. Le DORA 2025 confirme que 'AI's primary role is as an amplifier' : les AI assistants augmentent l'output individuel (21% more tasks, 98% more PRs merged) mais incrementent aussi review time (+441%) et incidents per PR (+242%) — un composite DORA+SPACE capture ce tradeoff, un single-metric le manque.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Forsgren, Storey, Maddila, Zimmermann, Houck, Butler 2021 - The SPACE of Developer Productivity (ACM Queue 19(1))",
+          "pyramid": 3,
+          "year": 2021
+        },
+        {
+          "name": "DORA 2025 Report - State of AI-assisted Software Development",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Ziegler et al. 2024 - Measuring GitHub Copilot's Impact on Productivity (CACM)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Peng et al. 2023 - Impact of AI on Developer Productivity Copilot RCT (arXiv:2302.06590)",
+          "pyramid": 4,
+          "year": 2023
+        },
+        {
+          "name": "ISO/IEC 5338:2023 §6.3.7 Measurement process (sous Technical management processes)",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "NIST AI RMF 1.0 MEASURE function",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "changelog-display",
+      "domain": "project",
+      "question": "Comment communiquer les changements aux utilisateurs ?",
+      "recommendation": "2 tiers: page changelog persistante (historique complet) + notification in-app subtile (badge/dot, PAS modal bloquante) pour MAJ significatives. Modal uniquement pour breaking changes necessitant action utilisateur. Le changelog doit etre consultable a tout moment, la notification signale la nouveaute sans interrompre le flux.",
+      "grade": 3,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Appcues — Release Notes Best Practices",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "UserPilot — Release Notes UX",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "UX Studio — Product Updates Communication",
+          "pyramid": 4,
+          "year": 2023
+        },
+        {
+          "name": "AnnounceKit — Changelog Patterns",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Eleken — Modal UX Best Practices",
+          "pyramid": 4,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "circuit-breaker",
+      "domain": "reliability",
+      "question": "Comment proteger le systeme contre les defaillances de services externes (circuit breaker) ?",
+      "recommendation": "opossum — circuit breaker pour Node.js. Configuration programmatique, supporte les fallbacks.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "ai-agent-budget-caps",
+      "domain": "ai-collaboration",
+      "question": "Quels caps techniques imposer aux agents IA pour eviter les runaway loops ?",
+      "recommendation": "Imposer un dual cap (iterations + dollar budget) par session d'agent, avec hard-stop (HTTP 429 ou equivalent) et escalation sur breach. Implementations : LiteLLM max_iterations + max_budget_per_session ; Claude Code maxTurns en headless mode ; Cursor usage limits. NOTE TECHNIQUE : LiteLLM ne supporte PAS nativement un wall-clock cap — un 'triple cap' complet (iterations + tokens + wall-clock) necessite une implementation custom au niveau orchestrator (timeout wrapper, systemd timer, ou custom agent code). Incidents publics documentent des runaway loops 10x le cout normal ($0.90 → $9+ par session). ISO/IEC 42001 §8.1 (Operational planning and control) mandate des controls operationnels pour les AI systems.",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "LiteLLM Agent Iteration Budgets documentation",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "LiteLLM Max Budget Per Session",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §8.1 Operational planning and control",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "ISO/IEC 5338:2023 §6.2.2 Infrastructure management + §6.3.1 Project planning",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Anthropic Claude Code - Models usage and limits",
+          "pyramid": 3,
+          "year": 2026
+        },
+        {
+          "name": "RelayPlane - Agent Runaway Costs 2026",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-context-compaction",
+      "domain": "ai-collaboration",
+      "question": "Comment gerer le contexte de l'agent sur des sessions longues (>100k tokens) ?",
+      "recommendation": "Utiliser une compaction active (summarize-and-restart avec handoff note) plutot que la truncation naive (drop oldest) ou l'extended-context seul. Les benchmarks recents (Context-Folding, ACON, ReSum) montrent des gains de 26-54% reduction memory avec preservation de la task performance. Claude Code `/compact` et equivalents implementent ce pattern. La degradation 'lost in the middle' des long contextes (Liu et al. TACL 2023) reste un probleme meme avec des modeles 1M-token : la compaction contourne ce probleme en gardant l'active context focused.",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Anthropic Compaction API documentation",
+          "pyramid": 2,
+          "year": 2026
+        },
+        {
+          "name": "Chen et al. 2025 - Scaling Long-Horizon LLM Agent via Context-Folding (arXiv:2510.11967)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Wang et al. 2025 - ACON: Optimizing Context Compression for Long-horizon LLM Agents (arXiv:2510.00615)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Wu et al. 2025 - ReSum: Long-Horizon Search Intelligence via Context Summarization (arXiv:2509.13313)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Liu et al. 2023 - Lost in the Middle: How Language Models Use Long Contexts (TACL)",
+          "pyramid": 3,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-deterministic-gates",
+      "domain": "ai-collaboration",
+      "question": "Quelles verifications deterministes l'agent doit-il executer localement avant de presenter son travail a l'humain ?",
+      "recommendation": "L'agent doit executer localement un pipeline deterministe obligatoire avant de presenter son travail : typecheck + lint + unit tests + build + SAST + dependency audit. Ne jamais accepter le self-report de l'agent comme seule evidence de correction. Le CI seul (post-PR) est trop tardif : il decale la charge de verification sur l'humain. Les pre-commit hooks seuls sont insuffisants (typecheck + build absents).",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NIST AI 600-1 §2.2 Confabulation risk category",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "METR 2025 - Measuring the Impact of Early-2025 AI on Experienced OSS Developers RCT",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "Anthropic Claude Code Auto Mode documentation",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "Faros AI DORA 2025 - PR review time impact",
+          "pyramid": 3,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-human-only-gates",
+      "domain": "ai-collaboration",
+      "question": "Quelles decisions doivent rester exclusivement humaines quelle que soit la confiance de l'agent ?",
+      "recommendation": "Maintenir une liste explicite et ecrite des decisions qui doivent rester humaines quelle que soit la confiance auto-reportee par l'agent : schema migrations, secret rotation, production deploys, license changes, customer-data handling (PII deletion/access), architectural boundary changes, force-push sur branches protegees. Enforcer techniquement via allow/deny lists, branch protection, CI approvals nommees. Ne JAMAIS utiliser de confidence-threshold gating : la confabulation (NIST AI 600-1) rend la confiance auto-reportee non-fiable.",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Regulation (EU) 2024/1689 (AI Act) Article 14 §5",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NIST AI 600-1 Generative AI Profile §2.2 Confabulation",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §8.2 AI risk assessment + §9.2 Internal audit",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Fortune 2025 - Replit catastrophic failure incident",
+          "pyramid": 5,
+          "year": 2025
+        },
+        {
+          "name": "AI Incident Database Incident #1152 - Replit Agent Destructive Commands",
+          "pyramid": 3,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-multi-agent-topology",
+      "domain": "ai-collaboration",
+      "question": "Quelle architecture multi-agents adopter : writer/reviewer, orchestrator-worker, single-agent avec tool use ?",
+      "recommendation": "Defaut : single-agent avec tool use. N'adopter un pattern writer/reviewer 2-agents que pour des taches non-triviales multi-fichiers ou un defect specifique est mesure et justifie le surcout token. Eviter les architectures N-agents orchestrator-worker sauf preuve concrete de gains : la litterature est contradictoire. Cognition (Devin team) rapporte que les systemes multi-agents produisent 'fragile systems' en production ; les benchmarks (ACT, DARS, Aider architect) montrent des gains de +3 a +10pp mais au prix d'un token cost x2-3 et de complexity cascade failures (MAST paper, Cemri et al.).",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Dong et al. 2025 - A Survey on Code Generation with LLM-based Agents (arXiv:2508.00083)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Singh et al. 2025 - Enhancing LLM Code Generation (arXiv:2505.02133)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Cemri et al. 2025 - Why Do Multi-Agent LLM Systems Fail? MAST (arXiv:2503.13657)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Cognition - Don't Build Multi-Agents",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "Aider architect/editor benchmark (September 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "He, Treude, Lo 2024/25 - LLM Multi-Agent Systems for SE (ACM TOSEM, arXiv:2404.04834)",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-permissions-sandbox",
+      "domain": "ai-collaboration",
+      "question": "Comment configurer les permissions et le sandbox pour limiter le blast radius d'un agent IA ?",
+      "recommendation": "Appliquer le principe du least-privilege avec deny-by-default + allow-list explicite des outils accessibles. Combiner avec isolation au niveau OS : microVM (E2B/Firecracker, Devin VM, Sculptor par Imbue) pour isolation hardware ; devcontainers ou git-worktrees pour isolation moindre mais plus ergonomique. Le shared-kernel container seul est insuffisant pour du code AI non-trusted. Les regles deny doivent avoir precedence sur allow. Ne jamais utiliser 'bypassPermissions' ou YOLO mode contre des repos production (prompt injection documente peut exfiltrer secrets / executer rm -rf).",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Claude Code permissions documentation",
+          "pyramid": 2,
+          "year": 2026
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §8.4 AI system impact assessment",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "NIST AI 600-1 §2.10 Information Security risk category",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "ISO/IEC 23894:2023 - Guidance on AI risk management",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "E2B Firecracker microVMs documentation",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Claude Code issue #10077 - rm -rf incident in bypass mode",
+          "pyramid": 4,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-project-instructions",
+      "domain": "ai-collaboration",
+      "question": "Comment persister les instructions et conventions de projet pour l'agent IA ?",
+      "recommendation": "Maintenir un fichier d'instructions de projet committed dans le repo (CLAUDE.md pour Claude Code, AGENTS.md pour le standard cross-vendor stewarded par Agentic AI Foundation/Linux Foundation, .cursorrules/.cursor/rules/*.mdc pour Cursor, .clinerules/ pour Cline, .github/copilot-instructions.md pour GitHub Copilot). ATTENTION paradoxe empirique : Gloaguen et al. 2026 (arXiv:2602.11988) montre que les context files peuvent *reduire* la task success rate et augmenter le cout d'inference de 20%+. Recommendation : **keep minimal and non-inferable** — documenter uniquement ce qui ne peut pas etre devine du code source (build/run commands, conventions de nommage custom, constraints techniques non-evidentes). Eviter les listes exhaustives.",
+      "grade": 2,
+      "level": "BONNE PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Gloaguen, Mundler, Muller, Raychev, Vechev 2026 - Evaluating AGENTS.md (arXiv:2602.11988)",
+          "pyramid": 3,
+          "year": 2026
+        },
+        {
+          "name": "Daiki et al. 2025 - On the Use of Agentic Coding Manifests (arXiv:2509.14744, PROFES 2025)",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Agent READMEs arXiv:2511.12884",
+          "pyramid": 3,
+          "year": 2025
+        },
+        {
+          "name": "Jiang & Nam 2026 - Beyond the Prompt: Cursor Rules Empirical Study (arXiv:2512.18925, MSR'26)",
+          "pyramid": 2,
+          "year": 2026
+        },
+        {
+          "name": "Linux Foundation AAIF - AGENTS.md standardization",
+          "pyramid": 5,
+          "year": 2025
+        },
+        {
+          "name": "ISO/IEC 42001:2023 §7.5 Documented information",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "api-versioning",
+      "domain": "architecture",
+      "question": "Comment versionner les APIs pour faire evoluer sans casser les clients existants ?",
+      "recommendation": "URL path versioning (/api/v1/) — standard de facto (GitHub, Stripe, Google Cloud). Simple, visible, cacheable.",
+      "grade": 2,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub API — URL path versioning (/v3/)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Stripe API — URL versioning avec dates",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "backend-framework",
+      "domain": "architecture",
+      "question": "Quel framework backend choisir pour une application web ?",
+      "recommendation": "NestJS — meme langage front+back (TypeScript), structure Angular-like, Swagger auto. Croissance la plus rapide (State of JS 2025).",
+      "grade": 2,
+      "level": "CHOIX_EQUIPE",
+      "implementation": "NestJS avec Fastify adapter pour la performance. TypeORM ou Prisma pour l'ORM. Pipeline type-safe du schema DB au frontend React.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "State of JS 2025 — croissance la plus rapide",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "SO Survey 2025 — NestJS 6.7%",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "Batch 12 — stack optimale consensus 2 agents",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ai-agent-escalation-protocol",
+      "domain": "ai-collaboration",
+      "question": "Quel format d'escalation agent-vers-humain adopter quand l'agent est bloque ou incertain ?",
+      "recommendation": "Adopter un schema d'escalation structure (state + attempted approaches + specific question + blocking decision-type + recommended option) plutot qu'un message free-text. Le pattern 'I intend to...' (Marquet 2013, intent-based leadership) ou equivalent permet une decision humaine rapide et une reprise agent fluide. Implementations techniques : LangGraph `interrupt()` payload, Claude Code plan mode. ATTENTION : aucune etude empirique ne mesure directement time-to-resolution / decision quality pour AI coding agents — a traiter comme convention d'equipe, pas standard evidence-based.",
+      "grade": 0,
+      "level": "CHOIX D'EQUIPE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "LangChain LangGraph Interrupts documentation",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "NIST AI RMF 1.0 GOVERN-5 Stakeholder engagement",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "charts",
+      "domain": "design",
+      "question": "Quelle librairie de graphiques utiliser pour la visualisation de donnees ?",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "colors",
+      "domain": "design",
+      "question": "Combien de couleurs dans la palette et quels ratios de contraste respecter ?",
+      "recommendation": "2-3 teintes principales + neutres : 1 primaire (10 nuances), 1 accent, 1 jeu semantique (succes/warning/erreur), 1 echelle neutre. Maximum 5 +/- 2 familles de teintes.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "commit-conventions",
+      "domain": "project",
+      "question": "Quelle convention de messages de commit adopter pour automatiser le versioning et maintenir un historique lisible ?",
+      "recommendation": "Adopter Conventional Commits : type(scope): description. Types : feat (minor), fix (patch), refactor, docs, test, chore. BREAKING CHANGE declenche un major.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "conventionalcommits.org v1.0.0",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Angular commit guidelines",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "component-library",
+      "domain": "design",
+      "question": "Quelle librairie de composants UI utiliser ?",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "database-migrations",
+      "domain": "reliability",
+      "question": "Comment gerer les migrations de base de donnees de maniere versionnee et reproductible ?",
+      "recommendation": "Prisma Migrate — migrations versionnees generees automatiquement a partir du schema Prisma. Integre au workflow de developpement NestJS.",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "date-time",
+      "domain": "data",
+      "question": "Comment gerer les dates et heures de maniere coherente entre backend, frontend et base de donnees ?",
+      "recommendation": "Date native ou dayjs cote serveur. Stocker en UTC, serialiser en ISO 8601. Validation via class-transformer @Type(() => Date).",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "new Date().toISOString() pour l'UTC. Prisma gere les dates en UTC nativement. Frontend : dayjs avec plugins utc + timezone pour l'affichage local.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "dayjs docs — utc + timezone plugins",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "dependency-scanning",
+      "domain": "security",
+      "question": "Comment detecter et gerer les vulnerabilites dans les dependances ?",
+      "recommendation": "Dependabot (GitHub) + npm audit --audit-level=high en CI",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "Configurer dependabot.yml pour npm (weekly), ajouter npm audit --audit-level=high dans le pipeline CI.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm audit docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Dependabot docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "e2e-tests",
+      "domain": "testing",
+      "question": "Quel framework pour les tests end-to-end ?",
+      "recommendation": "Les tests E2E representent ~10% de la pyramide de tests",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": []
+    },
+    {
+      "id": "encoding",
+      "domain": "data",
+      "question": "Quel encodage de caracteres utiliser a travers toutes les couches de l'application ?",
+      "recommendation": "UTF-8 partout : base de donnees, API, fichiers source, HTML. Tout autre choix cause des bugs d'affichage et des failles de securite. 98.2% du web en UTF-8 (Web Almanac 2024).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "IETF RFC 3629 — standard UTF-8",
+          "pyramid": 1,
+          "year": 2003
+        },
+        {
+          "name": "W3C — UTF-8 obligatoire pour HTML5",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Web Almanac 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "encryption",
+      "domain": "security",
+      "question": "Comment chiffrer les donnees en transit (TLS) et au repos (at-rest) ?",
+      "recommendation": "TLS 1.3 obligatoire pour toutes les communications. HTTPS everywhere avec redirection automatique.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NIST SP 800-52 Rev. 2",
+          "pyramid": 1,
+          "year": 2019
+        },
+        {
+          "name": "OWASP ASVS V6",
+          "pyramid": 2,
+          "year": 2021
+        },
+        {
+          "name": "Mozilla TLS Guidelines",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "env-config",
+      "domain": "operations",
+      "question": "Comment gerer la configuration par environnement et les secrets ?",
+      "recommendation": "@nestjs/config avec ConfigModule.forRoot() et validation via Joi ou class-validator. Variables d'environnement via .env (jamais commite) et process.env.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS docs — Configuration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor App Factor III",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "gdpr",
+      "domain": "safety",
+      "question": "Quelles sont les exigences RGPD obligatoires pour tout traitement de donnees personnelles UE ?",
+      "recommendation": "Le RGPD est une obligation legale (amende jusqu'a 4% du CA mondial). Consentement explicite (opt-in, pas pre-coche), droit d'acces/export (Art. 15, 20), droit a l'effacement (Art. 17), minimisation des donnees (Art. 5), privacy by design (Art. 25).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Reglement UE 2016/679 (RGPD) — Art. 5, 6, 7, 15, 17, 20, 25, 30",
+          "pyramid": 1,
+          "year": 2016
+        },
+        {
+          "name": "CNIL — Guidelines consentement, droit a l'effacement, privacy by design",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "connection-pooling",
+      "domain": "performance",
+      "question": "Comment configurer le pool de connexions a la base de donnees ?",
+      "recommendation": "Prisma connection pool (par defaut) ou TypeORM connection pool. Configuration via DATABASE_URL avec ?connection_limit=10.",
+      "grade": 5,
+      "level": "STANDARD",
+      "implementation": "Prisma : datasource db { url = env(\"DATABASE_URL\") } avec ?connection_limit=10 dans l'URL. TypeORM : extra: { max: 10 }.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Prisma docs — connection pool",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "containerization",
+      "domain": "cicd",
+      "question": "Comment conteneuriser l'application (Docker, Dockerfile best practices, orchestration) ?",
+      "recommendation": "Dockerfile multi-stage : eclipse-temurin:21-jdk (build) → eclipse-temurin:21-jre (runtime). Layered JARs via java -Djarmode=tools extract --layers. USER non-root. Image finale ~200MB vs ~800MB sans multi-stage.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Spring Boot Container Images docs — layered JARs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Docker best practices docs — multi-stage, non-root",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "dark-mode",
+      "domain": "design",
+      "question": "Comment implementer un dark mode dans un design system ?",
+      "recommendation": "Simultaneous light+dark avec semantic tokens. Jamais inverser le light. Tonal elevation en dark (surfaces plus claires = plus elevees). prefers-color-scheme par defaut. Chaque semantic token a une valeur light et une valeur dark, switchees via attribut data-theme ou media query.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Material Design 3 Dark Theme",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Apple HIG Dark Mode",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Nielsen Norman Group Dark Mode Research",
+          "pyramid": 2,
+          "year": 2020
+        },
+        {
+          "name": "WCAG 2.2 SC 1.4.3 Contrast",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "database",
+      "domain": "architecture",
+      "question": "Quelle base de donnees relationnelle choisir pour un nouveau projet ?",
+      "recommendation": "PostgreSQL pour les donnees relationnelles. #1 en adoption (55.6% SO 2025) et admiration (65.5%). 13x plus rapide que MySQL en SELECT 1M records (MDPI 2024, peer-reviewed).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SO Survey 2025",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "SO Survey 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "JetBrains 2025",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "DB-Engines 2026",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "MDPI benchmark 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "CNCF — CloudNativePG",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "definition-of-done",
+      "domain": "project",
+      "question": "Quelle checklist appliquer avant de considerer une tache comme terminee et mergeable ?",
+      "recommendation": "DoD explicite et partagee : code review par au moins 1 pair, tests passent (unit + integration), zero erreur lint/format, deploye sur staging et verifie, documentation a jour, criteres d'acceptation remplis.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Scrum Guide 2020 — transparence",
+          "pyramid": 5,
+          "year": 2020
+        },
+        {
+          "name": "SWEBOK v4 ch.10 — quality gate",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "DORA/Accelerate — predictor of elite performance",
+          "pyramid": 4,
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "id": "destructive-confirmation",
+      "domain": "safety",
+      "question": "Comment proteger l'utilisateur contre les actions irreversibles (suppression, ecrasement) ?",
+      "recommendation": "Toute action destructive requiert une confirmation explicite via dialog modale (jamais window.confirm). Privilegier soft-delete + undo quand possible.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Apple HIG — confirmation pour actions destructives",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Material Design 3 — dialogs de confirmation",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "WCAG 2.2 SC 3.3.4 — prevention des erreurs, reversibilite",
+          "pyramid": 1,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "dev-onboarding",
+      "domain": "project",
+      "question": "Comment integrer efficacement un nouveau developpeur dans l'equipe pour minimiser le time-to-productivity ?",
+      "recommendation": "Setup local < 30 min via README. Premiere PR < 24h (typo fix, small task). Pair programming premiere semaine avec un buddy attribue.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "DORA/Accelerate — frein #1 a la productivite",
+          "pyramid": 4,
+          "year": 2019
+        },
+        {
+          "name": "Microsoft NEET study 2022 — onboarding structure reduit time-to-productivity de 60%",
+          "pyramid": 4,
+          "year": 2022
+        }
+      ]
+    },
+    {
+      "id": "documentation-organization",
+      "domain": "project",
+      "question": "Comment organiser la documentation d'un projet ?",
+      "recommendation": "Split par type/audience (Diataxis): tutorials, how-to guides, reference, explanation. Chaque info a un seul endroit. Mettre a jour docs dans le meme commit que le code. Supprimer docs mortes. Le framework Diataxis evite le melange tutorial/reference qui rend la doc inutilisable.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google SWE Book Ch.10 — Documentation",
+          "pyramid": 2,
+          "year": 2020
+        },
+        {
+          "name": "Google Style Guide — Doc Best Practices",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Diataxis Framework",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 — Software Engineering Management",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Martin Fowler — Architecture Decision Records",
+          "pyramid": 2,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "documentation",
+      "domain": "project",
+      "question": "Quels types de documentation maintenir et comment appliquer le principe de single source of truth ?",
+      "recommendation": "4 types de documentation : README.md (stack, setup), CONVENTIONS.md (regles obligatoires), ADR (decisions archi + contexte), inline comments (pourquoi, jamais quoi). Chaque information n'existe qu'a un seul endroit.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 ch.11",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Google developer documentation style guide",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "dto-projection",
+      "domain": "architecture",
+      "question": "Comment exposer les donnees d'une entite via API ?",
+      "recommendation": "Toujours DTO explicite, jamais entite directe. Un DTO par cas d'usage (Summary, Detail, Create, Update). MapStruct pour mappings simples.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "OWASP API Security Top 10 API3:2023",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Spring Data JPA Projections",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 Information Hiding",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Martin Fowler LocalDTO",
+          "pyramid": 2,
+          "year": 2004
+        }
+      ]
+    },
+    {
+      "id": "entity-dto-mapping",
+      "domain": "code-quality",
+      "question": "Comment mapper les entites vers les DTOs ?",
+      "recommendation": "class-transformer avec @Exclude/@Expose pour la serialisation. class-validator pour la validation. Pas de mapper externe — les decorateurs TypeScript suffisent.",
+      "grade": 5,
+      "level": "STANDARD",
+      "implementation": "Definir les DTOs comme classes avec decorateurs class-validator. Utiliser ClassSerializerInterceptor pour la transformation automatique. @Exclude() pour les champs sensibles, @Expose() pour le whitelist approach.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Serialization Documentation",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "class-transformer npm — 5M+ dl/week",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "environment-management",
+      "domain": "project",
+      "question": "Combien d'environnements maintenir et comment garantir la parite dev/staging/prod ?",
+      "recommendation": "3 environnements : dev (local Docker Compose), staging (auto-deploy miroir exact de prod), prod (CI/CD uniquement, jamais de deploy manuel).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 ch.8",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "DORA/Accelerate — predictor of elite performance",
+          "pyramid": 4,
+          "year": 2019
+        },
+        {
+          "name": "Twelve-Factor App",
+          "pyramid": 5,
+          "year": 2017
+        }
+      ]
+    },
+    {
+      "id": "error-boundary",
+      "domain": "reliability",
+      "question": "Comment structurer les error boundaries dans une app React ?",
+      "recommendation": "3 layers: global (catch-all reload), per-route (isole crash module du shell), per-feature (optionnel, sections critiques). react-error-boundary package. NE PAS wrapper chaque composant — granularite excessive est contre-productive. Le global empeche le white screen, le per-route preserve la navigation.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "React Official Docs — Error Boundaries",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "React 19 Release Notes",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "react-error-boundary npm — 10M+ dl/week",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Kent C. Dodds — Use react-error-boundary",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "React Router errorElement",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "error-handling",
+      "domain": "reliability",
+      "question": "Comment centraliser et securiser le traitement des erreurs ?",
+      "recommendation": "ExceptionFilter global pour centraliser le traitement des erreurs. Format RFC 9457 Problem Details dans les reponses. Jamais de stack trace exposee.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "graceful-shutdown",
+      "domain": "reliability",
+      "question": "Comment drainer les connexions avant l'arret pour zero requetes perdues ?",
+      "recommendation": "enableShutdownHooks() dans main.ts pour activer les lifecycle hooks NestJS (OnModuleDestroy, BeforeApplicationShutdown). Docker stop_grace_period > timeout applicatif.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "contract-tests",
+      "domain": "testing",
+      "question": "Comment verifier les contrats entre services (consumer-driven contract tests) ?",
+      "recommendation": "Pact (pact-js) — consumer-driven contracts, Pact Broker pour partager les contrats entre services. Prefere quand producteur et consommateur sont dans des langages differents.",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "dependencies",
+      "domain": "project",
+      "question": "Comment gerer les dependances pour garantir des builds reproductibles et eviter les vulnerabilites ?",
+      "recommendation": "Epingler les versions et utiliser un lockfile. En CI, utiliser npm ci (jamais npm install) pour des builds reproductibles.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Twelve-Factor App Factor II — declare dependencies explicitly",
+          "pyramid": 5,
+          "year": 2017
+        },
+        {
+          "name": "SWEBOK v4 — dependency management, supply chain",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "deployment-strategy",
+      "domain": "cicd",
+      "question": "Quelle strategie de deploiement pour zero-downtime ?",
+      "recommendation": "Docker Compose avec deploy.replicas=2, update_config.parallelism=1, delay=30s, order=start-first. Healthcheck sur /actuator/health (interval=10s, timeout=5s, retries=3, start_period=40s).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Docker Compose docs — deploy.update_config",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot docs — actuator health endpoint",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "drill-down-navigation",
+      "domain": "design",
+      "question": "Comment naviguer dans des collections imbriquees (parent/enfants) ?",
+      "recommendation": "Routes imbriquees parent/:id/children. Breadcrumbs pour 3+ niveaux. Bouton retour pour 2 niveaux. Jamais de modals pour navigation detail.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "React Router nested routes",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NNg Breadcrumbs Guidelines",
+          "pyramid": 2,
+          "year": 2023
+        },
+        {
+          "name": "W3C ARIA Breadcrumb pattern",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Material Design Navigation",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "empty-states",
+      "domain": "design",
+      "question": "Comment gerer les ecrans vides (empty states) ?",
+      "recommendation": "Toujours 3 elements dans un empty state : illustration/icone, message explicatif, CTA (call to action). Jamais d'ecran blanc vide.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "frontend-framework",
+      "domain": "architecture",
+      "question": "Quel framework frontend choisir pour une application web ?",
+      "recommendation": "React — #1 en adoption (44.7% SO 2025), ecosysteme de composants le plus riche (MUI, shadcn/ui, Radix, Ant Design), hiring pool le plus grand. Convergence de 5 sources independantes.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SO Survey 2025",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "State of JS 2025",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "JetBrains 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — React 34M dl/semaine",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "GitHub stars — React 266k",
+          "pyramid": 4,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "container-registry",
+      "domain": "cicd",
+      "question": "Quel container registry pour stocker et distribuer les images Docker ?",
+      "recommendation": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub docs — GHCR integration native avec Actions et permissions",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "CNCF Survey 2024 — container registry adoption",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor Factor V — build artifacts immutables",
+          "pyramid": 5,
+          "year": 2012
+        }
+      ]
+    },
+    {
+      "id": "entity-listener",
+      "domain": "architecture",
+      "question": "Comment gerer les preoccupations transversales sur les entites JPA ?",
+      "is_universal": false,
+      "sources": []
+    },
+    {
+      "id": "enum-vs-label",
+      "domain": "architecture",
+      "question": "Quand utiliser un enum code vs des labels configurables en base ?",
+      "recommendation": "3 questions dans l'ordre : (1) Le code branche-t-il sur cette valeur ? (if/switch) → enum. (2) Les utilisateurs doivent-ils ajouter des valeurs sans deploiement ? → label configurable (table lookup en BDD). (3) La valeur a-t-elle besoin de metadata (i18n, tri, couleur) ? → label. Regle d'or : si ajouter une nouvelle valeur necessite zero changement de code → label. Si ca necessite un nouveau branchement → enum. Pattern hybride possible : enum pour les valeurs code-critical + table BDD pour les labels utilisateur.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Bloch — Effective Java 3rd ed., Item 34",
+          "pyramid": 2,
+          "year": 2018
+        },
+        {
+          "name": "Evans — Domain-Driven Design, Ch. 5 & 9",
+          "pyramid": 2,
+          "year": 2003
+        },
+        {
+          "name": "Karwin — SQL Antipatterns, Ch. 10",
+          "pyramid": 2,
+          "year": 2010
+        },
+        {
+          "name": "Vernon — Implementing DDD, Ch. 6 Standard Types",
+          "pyramid": 2,
+          "year": 2013
+        },
+        {
+          "name": "Microsoft .NET Architecture Guide — Enum vs Lookup",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Fowler — Refactoring 2nd ed., Ch. 12",
+          "pyramid": 2,
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "id": "error-tracking",
+      "domain": "operations",
+      "question": "Quel outil de suivi d'erreurs en production (capture, grouping, alerting) ?",
+      "recommendation": "Sentry SDK pour Spring Boot : sentry.dsn, sentry.traces-sample-rate=0.2, sentry.environment=${SPRING_PROFILES_ACTIVE}. Source maps pour le frontend React.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Sentry docs — Spring Boot integration",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Stack Overflow Survey 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "glass-effects",
+      "domain": "design",
+      "question": "Quand utiliser des effets de verre (backdrop-blur/glassmorphism) ?",
+      "recommendation": "UNIQUEMENT pour overlays (modals, dropdowns, command palette). Blur 8-12px max. Semi-opaque bg (alpha >= 0.7) pour WCAG AA. Max 3-5 elements blur par viewport. prefers-reduced-transparency fallback obligatoire pour les utilisateurs sensibles.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Apple HIG Materials/Vibrancy",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Axess Lab Glassmorphism Accessibility",
+          "pyramid": 3,
+          "year": 2022
+        },
+        {
+          "name": "Can I Use backdrop-filter — 92% support",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "WCAG 2.2 SC 1.4.3 Contrast",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Josh Comeau — backdrop-filter",
+          "pyramid": 3,
+          "year": 2023
+        }
+      ]
+    },
+    {
+      "id": "feature-flags",
+      "domain": "operations",
+      "question": "Comment activer progressivement les fonctionnalites sans redeploiement ?",
+      "recommendation": "Unleash self-hosted avec le SDK Java. DefaultUnleash configure avec appName et unleashAPI. Verification par unleash.isEnabled('feature-name').",
+      "grade": 3,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "CNCF Landscape — Unleash incubating",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Unleash docs — Java SDK",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "folder-structure",
+      "domain": "project",
+      "question": "Comment organiser l'arborescence du projet pour maximiser la maintenabilite et la navigabilite du code ?",
+      "recommendation": "Grouper par feature, pas par type technique. Le groupement par type (components/, hooks/, utils/) ne scale pas : a 50+ fichiers, retrouver le code d'une feature demande de naviguer partout.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Bulletproof React architecture guide",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 ch.8 — modules, separation des responsabilites",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "form-spellcheck",
+      "domain": "design",
+      "question": "Comment gerer la verification orthographique dans les formulaires web ?",
+      "recommendation": "Spellcheck natif navigateur actif par defaut (gratuit, zero maintenance). Desactiver explicitement sur champs techniques (noms scientifiques, code, identifiants). Service externe (LanguageTool) optionnel a la demande, pas en temps reel.",
+      "grade": 3,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "HTML Living Standard WHATWG spellcheck attribute",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "MDN Web Docs spellcheck",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "W3C WCAG 2.2 Input Assistance",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "LanguageTool API docs",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "feedback-collection",
+      "domain": "project",
+      "question": "Comment collecter et traiter efficacement les retours utilisateurs et les bug reports ?",
+      "recommendation": "Templates structures obligatoires pour les bug reports : description, etapes de reproduction, resultat attendu vs actuel, environnement, captures. Un bug sans etapes de reproduction est inutile.",
+      "grade": 2,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NNG — usability bug reporting guidelines",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 ch.10 — qualite",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "forms",
+      "domain": "design",
+      "question": "Comment gerer les formulaires (validation, layout, accessibilite) ?",
+      "is_universal": false,
+      "sources": [
+        {}
+      ]
+    },
+    {
+      "id": "ui-lucide-react",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les icones ?",
+      "recommendation": "lucide-react",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add lucide-react",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "Lucide docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-query",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le data fetching et le cache client ?",
+      "recommendation": "@tanstack/react-query",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add @tanstack/react-query",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "TanStack Query docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-table",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les tables avec tri, filtre et pagination ?",
+      "recommendation": "@tanstack/react-table",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add @tanstack/react-table",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "TanStack Table docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "http-client",
+      "domain": "architecture",
+      "question": "Quel client HTTP utiliser cote backend et cote frontend ?",
+      "recommendation": "@nestjs/axios (wrapper HttpModule) — integration native NestJS avec intercepteurs et injection de dependance.",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "HttpModule.register({ timeout: 5000, maxRedirects: 5 }) dans le module. Injection de HttpService dans les services.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS HTTP Module docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/axios accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "icon-usage",
+      "domain": "design",
+      "question": "Quand et comment utiliser des icones dans une interface ?",
+      "recommendation": "Toujours pairer icone + texte visible. Icon-only uniquement pour universels (search, close, home) + tooltip. Regle 5 secondes (si pas d'icone evidente en 5s, utiliser texte seul). Icons pour actions, pas decoration. Chaque icone icon-only doit avoir un aria-label explicite.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NNg Icon Usability",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "NNg Bad Icons — Why They Fail",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Apple HIG Icons",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "WCAG 2.2 SC 1.1.1 Text Alternatives",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "NNg How to Test Icons",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "mocking",
+      "domain": "testing",
+      "question": "Quelle strategie et quels outils pour le mocking dans les tests ?",
+      "recommendation": "Jest mocks natifs pour les dependances. MSW (Mock Service Worker) pour intercepter les appels reseau au niveau HTTP.",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "safe-defaults",
+      "domain": "safety",
+      "question": "Comment appliquer le principe deny-by-default pour que tout oubli de configuration ne cree pas de faille ?",
+      "recommendation": "Tout est interdit par defaut — autoriser explicitement. Deny-by-default pour l'authorization (.anyRequest().authenticated()), whitelist > blacklist, CORS restrictif (jamais '*' en prod), feature flags off par defaut.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "OWASP A01:2021 — Broken Access Control, deny by default",
+          "pyramid": 2,
+          "year": 2021
+        },
+        {
+          "name": "SWEBOK v4 — security principles, least privilege",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "CWE-276 — Incorrect Default Permissions",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "scaling",
+      "domain": "architecture",
+      "question": "Comment scaler une application web de maniere progressive ?",
+      "recommendation": "Monolithe modulaire d'abord (0-10k users), puis replicas horizontaux avec load balancer (10k-100k), puis read replicas PostgreSQL, puis microservices (rarement justifie avant des centaines de devs).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Fowler — MonolithFirst",
+          "pyramid": 5,
+          "year": 2015
+        },
+        {
+          "name": "Twelve-Factor VI — stateless processes",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "Docker Compose deploy docs — replicas",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "secrets-management",
+      "domain": "security",
+      "question": "Comment gerer les secrets (credentials, API keys, tokens) de maniere securisee ?",
+      "recommendation": "@nestjs/config pour la gestion des variables d'environnement",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "Installer @nestjs/config, importer ConfigModule.forRoot() avec validation via Joi ou class-validator. Acceder aux valeurs via ConfigService.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "@nestjs/config docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "guide-application-docs",
+      "domain": "project",
+      "question": "Comment un projet doit-il documenter son application d'un guide de standards ?",
+      "recommendation": "Option C unanime (12 sources, 0 dissidente) : les docs projet contiennent les choix concrets d'implementation (outils, versions, config, structure) et pointent vers le guide pour le pourquoi. Ne jamais dupliquer le guide dans les docs projet (drift garanti). Ne jamais omettre les docs projet (le guide ne peut pas contenir les valeurs specifiques au projet). Pattern : Guide = 'quoi faire et pourquoi' (principes, evidence). Docs projet = 'ce qu'on a fait et ou' (instantiation, config, pointeurs vers le guide). Modele SWEBOK : tailoring = documenter comment le projet instancie le standard organisationnel.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google SWE Book Ch.10 — Documentation",
+          "pyramid": 2,
+          "year": 2020
+        },
+        {
+          "name": "SWEBOK v4 — Process Tailoring",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Diataxis Framework — Reference vs Explanation",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NASA Software Engineering Handbook (NASA-HDBK-2203)",
+          "pyramid": 1,
+          "year": 2020
+        },
+        {
+          "name": "Nygard — Architecture Decision Records",
+          "pyramid": 3,
+          "year": 2011
+        },
+        {
+          "name": "ISO/IEC 26511:2018 — Information for users",
+          "pyramid": 1,
+          "year": 2018
+        },
+        {
+          "name": "InnerSource Commons — Standard Base Documentation",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Fowler — Pattern language vs pattern application",
+          "pyramid": 2,
+          "year": 2002
+        }
+      ]
+    },
+    {
+      "id": "high-availability",
+      "domain": "reliability",
+      "question": "Comment assurer la haute disponibilite avec multi-instance et health checks ?",
+      "recommendation": "Architecture multi-instance avec applications stateless",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": []
+    },
+    {
+      "id": "http-headers",
+      "domain": "security",
+      "question": "Quels headers HTTP de securite configurer et comment ?",
+      "recommendation": "helmet middleware pour les headers de securite HTTP",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "Installer helmet, l'appliquer comme middleware global dans main.ts : app.use(helmet()). Configurer CSP et autres headers via les options helmet.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "helmet docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NestJS Security docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "i18n",
+      "domain": "accessibility",
+      "question": "Quelle solution d'internationalisation (i18n) utiliser ?",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "input-validation",
+      "domain": "security",
+      "question": "Comment valider les entrees utilisateur pour prevenir les injections (SQL, XSS, CSRF) ?",
+      "recommendation": "class-validator + ValidationPipe pour la validation serveur",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "Activer ValidationPipe globalement dans main.ts, utiliser les decorateurs class-validator (@IsString, @IsEmail, @MinLength, etc.) sur les DTOs.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Validation docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "class-validator docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "navigation",
+      "domain": "design",
+      "question": "Quel pattern de navigation utiliser (sidebar, top-nav, bottom tab bar) ?",
+      "recommendation": "Sidebar collapsible pour apps complexes (>5 sections, navigation imbriquee, dashboards). Top-nav horizontale pour sites vitrine (<7 liens). Bottom tab bar pour mobile (<5 sections).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "openapi",
+      "domain": "architecture",
+      "question": "Comment documenter les APIs de maniere standardisee et maintenable ?",
+      "recommendation": "@nestjs/swagger — generation automatique depuis les decorateurs NestJS. Support OpenAPI 3.x complet.",
+      "grade": 6,
+      "level": "STANDARD",
+      "implementation": "SwaggerModule.setup('api', app, document) dans main.ts. Decorateurs @ApiTags, @ApiOperation, @ApiResponse sur les controllers.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS Swagger docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Batch 11 — @nestjs/swagger accord 100%",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "password-hashing",
+      "domain": "security",
+      "question": "Quel algorithme utiliser pour le hashing des mots de passe ?",
+      "recommendation": "Utiliser Argon2id avec memory >= 19 MiB, iterations >= 2, parallelism >= 1, salt 16 bytes, hash 32 bytes. Fallback bcrypt (work factor >= 12) si Argon2id non disponible.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "OWASP Password Storage Cheat Sheet",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "NIST SP 800-63B",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Password Hashing Competition",
+          "pyramid": 5,
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "id": "incident-response",
+      "domain": "operations",
+      "question": "Comment reagir aux incidents en production (runbooks, postmortems, blameless culture) ?",
+      "recommendation": "Processus en 5 etapes : Identifier (quel service, quel impact) → Contenir (rollback, feature flag off, scale up) → Resoudre (fix + deploy) → Communiquer (status page, equipe informee) → Postmortem (dans les 48h, blameless).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google SRE Book ch.15 — postmortem culture",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "PagerDuty Incident Response guide",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "integration-tests",
+      "domain": "testing",
+      "question": "Comment structurer les tests d'integration avec une vraie base de donnees ?",
+      "recommendation": "Testcontainers-node pour lancer PostgreSQL/Redis reels dans Docker pendant les tests d'integration NestJS.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "linting",
+      "domain": "code-quality",
+      "question": "Quels outils de linting, formatting et analyse statique par langage ?",
+      "recommendation": "ESLint (89.3% adoption, 115M dl/sem) avec @eslint/js + typescript-eslint + eslint-plugin-react-hooks (qualifie 'essentiel' par React). Prettier (87.5% adoption) pour le formatting, avec eslint-config-prettier pour separer les roles. Biome a surveiller (35x plus rapide, 7M dl/sem) mais pas encore recommande par React.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "React docs — ESLint essential, Prettier recommended",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "State of Frontend 2024 — ESLint 89.3%, Prettier 87.5%",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — ESLint 115M/sem, Biome 7M",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "loading-states",
+      "domain": "design",
+      "question": "Quel pattern de chargement utiliser (skeleton, spinner, barre de progression) ?",
+      "recommendation": "Skeleton screens plutot que spinners : reduisent la perception du temps d'attente de ~35% et l'abandon de 10-20%.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "logging",
+      "domain": "operations",
+      "question": "Comment structurer, router et proteger les logs applicatifs ?",
+      "recommendation": "Pino via nestjs-pino pour le logging structure JSON. Pino est 5x plus performant que Winston (50k vs 10k logs/sec), JSON natif par defaut, stdout par defaut (Twelve-Factor).",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "NestJS docs — Logger",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Pino benchmarks — 50k vs Winston 10k logs/sec",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — Pino ~21.5M/sem",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Double extraction batch 10 — accord 96%",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "meta-seo",
+      "domain": "design",
+      "question": "Quels meta tags, HTML semantique et donnees structurees implementer pour le SEO ?",
+      "recommendation": "Meta tags essentiels : title, description, OpenGraph (og:title, og:description, og:image, og:type) sur chaque page.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "monitoring",
+      "domain": "reliability",
+      "question": "Quoi monitorer et avec quel stack d'observabilite ?",
+      "recommendation": "Monitorer les 4 golden signals : Latency (P95 < 500ms), Traffic (req/s), Errors (5xx < 0.1%), Saturation (CPU, memoire, connexions DB)",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": []
+    },
+    {
+      "id": "mutation-testing",
+      "domain": "testing",
+      "question": "Comment valider la qualite des tests au-dela de la couverture de code ?",
+      "recommendation": "Stryker — mutation testing pour JS/TS, supporte Jest. npx stryker init puis npx stryker run.",
+      "grade": 5,
+      "level": "BONNE PRATIQUE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "null-safety",
+      "domain": "code-quality",
+      "question": "Comment eliminer les null non controles (Optional en Java, strictNullChecks en TS) ?",
+      "recommendation": "Retourner Optional pour les valeurs potentiellement absentes. Ne jamais passer Optional en parametre (anti-pattern Java docs). Ne jamais appeler .get() sans .isPresent(). Utiliser .orElseThrow() pour les cas obligatoires.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Java 17+ docs — Optional API",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Effective Java (Bloch) Item 55",
+          "pyramid": 5,
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "id": "numeric-precision",
+      "domain": "data",
+      "question": "Comment gerer la precision numerique pour les calculs financiers et les montants ?",
+      "recommendation": "Integer centimes (le plus simple en JS) ou library decimal.js / big.js pour la precision arbitraire. Eviter les calculs flottants natifs pour les montants.",
+      "grade": 5,
+      "level": "STANDARD",
+      "implementation": "Stocker en centimes : const priceCents = 1999. Pour la precision arbitraire : import Decimal from 'decimal.js'; new Decimal('19.99'). Prisma Decimal type pour PostgreSQL NUMERIC.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "decimal.js docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prisma docs — Decimal type",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "pagination",
+      "domain": "design",
+      "question": "Quel type de pagination utiliser (offset vs cursor-based) ?",
+      "recommendation": "Offset pour listes admin et tableaux triables (acces direct a page N). Cursor-based pour feeds, fils de discussion, infinite scroll et exports (performant, resultats stables).",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "performance-testing",
+      "domain": "performance",
+      "question": "Comment tester et mesurer la performance d'une application web (backend et frontend) ?",
+      "recommendation": "Definir des budgets de performance : LCP < 2.5s, INP < 200ms, CLS < 0.1, bundle JS < 200KB gzipped, API P95 < 500ms, TTFB < 800ms. Sans budget, la performance se degrade commit apres commit.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "web.dev Core Web Vitals — LCP, INP, CLS",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google CrUX report — Core Web Vitals impact ranking",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Google SRE Book — latency SLOs, performance budgets",
+          "pyramid": 5,
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "id": "rate-limiting",
+      "domain": "security",
+      "question": "Comment implementer le rate limiting et la protection DDoS ?",
+      "recommendation": "@nestjs/throttler pour le rate limiting",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "Installer @nestjs/throttler, configurer ThrottlerModule.forRoot() avec ttl et limit, appliquer @Throttle() sur les routes sensibles.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "@nestjs/throttler docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "realtime",
+      "domain": "design",
+      "question": "Quel transport utiliser pour la communication temps reel (WebSocket, SSE, polling) ?",
+      "recommendation": "WebSocket + STOMP pour communication bidirectionnelle (chat, collaboration). SSE pour serveur-vers-client uniquement (notifications, feeds). Polling en fallback pour compatibilite legacy.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "release-management",
+      "domain": "project",
+      "question": "Comment automatiser le processus de release pour garantir reproductibilite et tracabilite ?",
+      "recommendation": "Versionning semantique strict (MAJOR.MINOR.PATCH) avec semantic-release base sur les conventional commits. Changelog auto-genere, jamais manuel.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "semver.org",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Humble & Farley 'Continuous Delivery'",
+          "pyramid": 3,
+          "year": 2010
+        },
+        {
+          "name": "semantic-release docs",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "repo-standard-files",
+      "domain": "project",
+      "question": "Quels fichiers standard un repo doit-il contenir et quoi mettre dans chacun ?",
+      "recommendation": "4 fichiers obligatoires avec scopes distincts (single source of truth) : (1) README.md = landing page (description, stack, prerequis, install, commandes, quick-start). (2) CONTRIBUTING.md = process de contribution (workflow PR, branches, commits, setup dev, tests requis). (3) CONVENTIONS.md = regles de code (nommage, patterns, architecture, regles non automatisables). (4) LICENSE. Recommandes : CHANGELOG.md (par version, categories Added/Changed/Fixed), SECURITY.md, CODE_OF_CONDUCT.md. CLAUDE.md = pointeurs uniquement vers les fichiers canoniques + contraintes AI-specifiques, jamais de duplication. Regle cardinale : chaque info existe dans un seul fichier, les autres font des liens. CONTRIBUTING ≠ CONVENTIONS : process (comment contribuer, lu une fois) ≠ reference (regles de code, consulte en continu).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub Docs — Community health files",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Google SWE Book Ch.10 — Documentation",
+          "pyramid": 2,
+          "year": 2020
+        },
+        {
+          "name": "InnerSource Commons — Standard Base Documentation",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Open Source Guides (opensource.guide)",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "Linux Foundation CII Best Practices Badge",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Keep a Changelog",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Anthropic — CLAUDE.md documentation",
+          "pyramid": 1,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "responsive",
+      "domain": "design",
+      "question": "Quelle strategie responsive adopter (breakpoints, touch targets, mobile-first) ?",
+      "recommendation": "Mobile-first : commencer par le mobile et enrichir progressivement. Breakpoints : sm 640px, md 768px, lg 1024px, xl 1280px, 2xl 1536px.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "rewrite-strategy",
+      "domain": "architecture",
+      "question": "Comment organiser une reecriture complete de stack backend ?",
+      "recommendation": "Combinaison Strangler Fig + Spec-first + Test-driven (GRADE 5/7, 32+ sources). Jamais de big bang (20-30% succes, Netscape/Borland). Phase 0 : mapper modules + dependances, extraire contrats API (OpenAPI), ecrire tests d'integration contre l'API actuelle, trier modules du moins couple au plus couple. Phase 1 : reecrire LE module le plus simple, proxy/gateway pour router le trafic, verifier parite, mettre en prod. Phase 2 : module par module (spec → tests → implementer → verifier → basculer), chaque etape reversible (principe Stripe), BDD partagee pendant transition. Phase 3 : decommissionner ancien module par module. Regles : commencer par le plus simple PAS le plus important (SoundCloud lesson), ne jamais pauser le dev de features, garder la fenetre de migration courte par module, automatiser la verification de parite.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Fowler — StranglerFigApplication",
+          "pyramid": 2,
+          "year": 2004
+        },
+        {
+          "name": "Spolsky — Things You Should Never Do",
+          "pyramid": 3,
+          "year": 2000
+        },
+        {
+          "name": "Google SWE Book Ch.15 — Deprecation",
+          "pyramid": 2,
+          "year": 2020
+        },
+        {
+          "name": "Stripe Engineering — Online Migrations at Scale",
+          "pyramid": 2,
+          "year": 2017
+        },
+        {
+          "name": "Slack Engineering — Rebuilding Slack on Desktop",
+          "pyramid": 2,
+          "year": 2019
+        },
+        {
+          "name": "Taibi et al. — Processes for Migrating to Microservices (IEEE)",
+          "pyramid": 4,
+          "year": 2017
+        },
+        {
+          "name": "Balalaie et al. — Microservices Migration Patterns (SPE)",
+          "pyramid": 4,
+          "year": 2016
+        },
+        {
+          "name": "Microsoft Azure — Strangler Fig Pattern",
+          "pyramid": 1,
+          "year": 2025
+        },
+        {
+          "name": "Shopify Engineering — Deconstructing the Monolith",
+          "pyramid": 2,
+          "year": 2019
+        },
+        {
+          "name": "ThoughtWorks Technology Radar",
+          "pyramid": 3,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "image-optimization",
+      "domain": "performance",
+      "question": "Comment optimiser les images pour reduire le poids des pages web ?",
+      "recommendation": "WebP/AVIF, lazy loading natif (loading=\"lazy\"), responsive srcset. Les images representent ~50% du poids des pages web (HTTP Archive 2025). WebP = -25 a -35% vs JPEG (97%+ support), AVIF = -40 a -50% (92%+ support).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "web.dev — image optimization guide",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "HTTP Archive 2025",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "MDN — loading=\"lazy\"",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Can I Use — WebP 97%, AVIF 92%",
+          "pyramid": 4,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "domain": "cicd",
+      "question": "Comment gerer l'infrastructure de maniere declarative et reproductible (IaC) ?",
+      "recommendation": "L'infrastructure doit etre declarative, versionnee et reproductible. Jamais de config manuelle en prod.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 s2.2 — infrastructure as code",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor Factor X — dev/prod parity",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "DORA 2024 — manual changes = #1 cause of incidents",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "lombok-usage",
+      "domain": "code-quality",
+      "question": "Quand utiliser Lombok vs Java Records ?",
+      "recommendation": "Lombok pour entities JPA: @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor. JAMAIS @Data sur entities. @RequiredArgsConstructor pour injection dans services. @Slf4j pour logging. Records pour tous les DTOs simples.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "implementation": "Configurer lombok.config a la racine: lombok.addLombokGeneratedAnnotation=true (pour exclusion Jacoco). Entities: @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor. Services: @RequiredArgsConstructor + champs final. DTOs: Java Records avec MapStruct 1.5+.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "JPA Buddy — Lombok Best Practices",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Thorben Janssen — Lombok+Hibernate Pitfalls",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "JetBrains State of Java 2025",
+          "pyramid": 2,
+          "year": 2025
+        }
+      ]
+    },
+    {
+      "id": "module-structure",
+      "domain": "architecture",
+      "question": "Comment organiser les modules/packages d'une application (feature-based vs layer-based) ?",
+      "recommendation": "Organiser par feature/domaine, pas par couche technique. 40% moins de dependances inter-packages (Baxter et al., 56 projets Java), 25-30% moins de defauts (Santos et al., 12 projets), 30-50% moins d'effort de maintenance (Koziolek et al., revue systematique).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "ISO 25010:2023 — Modularity sub-characteristic",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "SWEBOK v4 — cohesion/coupling",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Clean Architecture (Martin)",
+          "pyramid": 5,
+          "year": 2017
+        },
+        {
+          "name": "DDD (Evans) — bounded contexts",
+          "pyramid": 5,
+          "year": 2003
+        },
+        {
+          "name": "Baxter et al. 2006 — 56 Java projects",
+          "pyramid": 4,
+          "year": 2006
+        },
+        {
+          "name": "Santos et al. 2019 — 12 projects",
+          "pyramid": 4,
+          "year": 2019
+        },
+        {
+          "name": "Koziolek et al. 2013 — systematic review",
+          "pyramid": 4,
+          "year": 2013
+        }
+      ]
+    },
+    {
+      "id": "onboarding",
+      "domain": "design",
+      "question": "Comment guider les nouveaux utilisateurs (onboarding, divulgation progressive) ?",
+      "recommendation": "Divulgation progressive : montrer les fonctions avancees au fur et a mesure. Empty states comme opportunite d'onboarding. Tooltips contextuels (3-5 etapes max, skip toujours possible).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "plugin-registry",
+      "domain": "architecture",
+      "question": "Comment structurer une app modulaire avec systeme de plugins/registry ?",
+      "recommendation": "Registry interne VS Code-inspired (PAS micro-frontends pour single team). Module definition declarative + lazy loading React.lazy + communication par events types. Shell fournit extension points, modules les peuplent. Chaque module declare ses contributions (routes, panels, commandes) dans un manifest statique.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "VS Code Extension API — Contribution Points",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Martin Fowler — Micro Frontends",
+          "pyramid": 2,
+          "year": 2019
+        },
+        {
+          "name": "Module Federation Documentation",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "VS Code Extensibility Principles",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "requirements-format",
+      "domain": "project",
+      "question": "Quel format utiliser pour exprimer les exigences fonctionnelles de maniere structuree et testable ?",
+      "recommendation": "Formuler les exigences en user stories : En tant que [role], je veux [action], afin de [benefice]. Accompagner chaque story de criteres d'acceptation Given/When/Then.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 — Software Requirements Knowledge Area",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Cohn 'User Stories Applied'",
+          "pyramid": 5,
+          "year": 2004
+        }
+      ]
+    },
+    {
+      "id": "reverse-proxy",
+      "domain": "operations",
+      "question": "Quel reverse proxy utiliser (auto-HTTPS, TLS, load balancing) ?",
+      "recommendation": "Caddy pour les petites-moyennes equipes : auto-provision Let's Encrypt, HTTP/2 par defaut, config minimale. Nginx si besoin de controle avance a tres haute charge.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Caddy docs — automatic HTTPS",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Let's Encrypt stats — 300M+ certificats actifs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "OWASP TLS guidelines",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "inline-autosave",
+      "domain": "design",
+      "question": "Quand utiliser l'auto-save vs bouton save explicite ?",
+      "recommendation": "Auto-save on blur pour edition de contenu existant (detail panels). Bouton save explicite pour creation/formulaires de soumission. Indicateur visuel obligatoire.",
+      "grade": 3,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NNg Auto-Saving and Versions",
+          "pyramid": 2,
+          "year": 2016
+        },
+        {
+          "name": "Google Docs/Notion UX patterns",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "SWEBOK v4 Usability",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "W3C ARIA feedback",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "issue-tracking",
+      "domain": "project",
+      "question": "Quel outil et quel workflow d'issue tracking adopter pour gerer efficacement le backlog ?",
+      "recommendation": "Kanban 4 colonnes (Backlog, In Progress, Review, Done) avec WIP limite a 2-3 items par dev. Chaque issue a un owner clair et des criteres d'acceptation.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 ch.9 — gestion de projet",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "SO Developer Survey — satisfaction tools",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "jvm-tuning",
+      "domain": "performance",
+      "question": "Comment configurer la JVM pour une application Spring Boot en conteneur Docker ?",
+      "recommendation": "Eclipse Temurin 21 JRE Alpine. JAVA_OPTS=\"-Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication\". Docker memory limit >= Xmx + ~200MB (metaspace, threads). Alternative : -XX:MaxRAMPercentage=75.0.",
+      "grade": 3,
+      "level": "BONNE_PRATIQUE",
+      "implementation": "FROM eclipse-temurin:21-jre-alpine. ENV JAVA_OPTS=\"-Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication\". ENTRYPOINT [\"sh\", \"-c\", \"java $JAVA_OPTS -jar app.jar\"].",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Oracle JVM Tuning Guide Java 21",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Eclipse Temurin — distribution recommandee",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot Docker docs",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "naming",
+      "domain": "code-quality",
+      "question": "Quelles conventions de nommage par langage et contexte ?",
+      "recommendation": "La convention est moins importante que sa coherence. Conventions par contexte : camelCase (variables/methodes Java et TS), PascalCase (classes Java, composants React), kebab-case (fichiers utilitaires TS, endpoints REST), SCREAMING_SNAKE_CASE (constantes, variables d'env), snake_case (tables SQL).",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google Java Style Guide — camelCase methods, PascalCase classes",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Spring Boot conventions — repository, service, controller naming",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Clean Code (Martin) — meaningful names, intention-revealing names",
+          "pyramid": 5,
+          "year": 2008
+        }
+      ]
+    },
+    {
+      "id": "rendering-strategy",
+      "domain": "architecture",
+      "question": "Quelle strategie de rendu choisir (CSR, SSR, SSG) pour une application web ?",
+      "recommendation": "CSR (Vite) par defaut pour les SPA avec API backend. Zero config, HMR rapide, deploy static. SSR (Next.js) uniquement si SEO critique (blog, e-commerce public). SSG (Astro) pour les pages 100% statiques.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Vite docs — SPA mode par defaut",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "web.dev Core Web Vitals — LCP/FCP metrics",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Next.js docs — SSR/SSG tradeoffs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google Search Central — SPA indexing",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "monorepo-vs-polyrepo",
+      "domain": "project",
+      "question": "Faut-il utiliser un monorepo ou un polyrepo pour organiser les repositories du projet ?",
+      "recommendation": "Pas de consensus scientifique. Monorepo si code partage important et petite equipe ; polyrepo si equipes independantes, cycles de release differents ou stack heterogene.",
+      "grade": 2,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google monorepo paper — Potvin & Levenberg 2016",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "Fowler 'MonolithFirst'",
+          "pyramid": 5,
+          "year": 2015
+        }
+      ]
+    },
+    {
+      "id": "scheduled-tasks",
+      "domain": "reliability",
+      "question": "Comment gerer les taches planifiees dans un backend ?",
+      "is_universal": false,
+      "sources": []
+    },
+    {
+      "id": "typescript-strict",
+      "domain": "code-quality",
+      "question": "Faut-il activer le mode strict de TypeScript ?",
+      "recommendation": "strict: true dans tsconfig.json. Active strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, alwaysStrict, useUnknownInCatchVariables.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "TypeScript docs — strict compiler options",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google TypeScript Style Guide",
+          "pyramid": 5,
+          "year": 2023
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "typography",
+      "domain": "design",
+      "question": "Quelles regles typographiques appliquer (taille, line-height, largeur de ligne, echelle) ?",
+      "recommendation": "Body text : 16px minimum. Ne jamais descendre en dessous de 14px pour du texte de contenu.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "ui-cmdk",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la command palette ?",
+      "recommendation": "cmdk",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add cmdk",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "cmdk docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-dnd-kit",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le drag and drop ?",
+      "recommendation": "@dnd-kit/core",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "dnd-kit docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-dropzone",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'upload de fichiers par drag and drop ?",
+      "recommendation": "react-dropzone",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-dropzone",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-dropzone docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-resizable-panels",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les panels redimensionnables ?",
+      "recommendation": "react-resizable-panels",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-resizable-panels",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-resizable-panels docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-virtual",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la virtualisation de listes longues ?",
+      "recommendation": "@tanstack/react-virtual",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @tanstack/react-virtual",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "TanStack Virtual docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "unit-tests",
+      "domain": "testing",
+      "question": "Quel framework et quelle strategie pour les tests unitaires ?",
+      "recommendation": "Jest + @nestjs/testing. Jest est le framework par defaut de NestJS. Coverage avec v8 ou Istanbul.",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "wcag-level",
+      "domain": "accessibility",
+      "question": "Quel niveau WCAG cibler (A, AA, AAA) ?",
+      "recommendation": "WCAG 2.2 Level AA : obligatoire legalement (EU, US, Canada), contraste 4.5:1, pas de restriction de niveau de lecture (contrairement a AAA qui exige niveau college, impossible pour contenu scientifique).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "web-mobile-strategy",
+      "domain": "architecture",
+      "question": "Comment rendre une web app accessible sur mobile ?",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "web.dev PWA docs",
+          "pyramid": 3,
+          "year": 2026
+        },
+        {
+          "name": "Can I Use service worker 97%",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "vite-plugin-pwa 3M+ dl/sem",
+          "pyramid": 4,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "shadows",
+      "domain": "design",
+      "question": "Quel systeme d'ombres et d'elevation utiliser ?",
+      "recommendation": "Ombres diffuses sur 4 niveaux (sm/md/lg/xl), jamais de box-shadow durs. Ombres subtiles et multicouches pour hierarchie visuelle naturelle.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "slos",
+      "domain": "operations",
+      "question": "Comment definir des SLOs mesurables et gerer les error budgets ?",
+      "recommendation": "Definir des SLOs mesurables : disponibilite >= 99.9% (8.7h downtime/an), latence P95 < 500ms, taux d'erreur < 0.1%, freshness donnees < 1 min.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google SRE Book Ch. 4 — SLOs, error budgets, SLI definitions",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "ISO/IEC 25023 — mesures de qualite des systemes",
+          "pyramid": 1,
+          "year": 2016
+        }
+      ]
+    },
+    {
+      "id": "soft-delete",
+      "domain": "architecture",
+      "question": "Quand utiliser le soft delete vs hard delete ?",
+      "recommendation": "Soft delete (deletedAt timestamp) pour entites owned restaurables. Hard delete pour donnees techniques/ephemeres. Jamais event sourcing pour du CRUD.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Hibernate ORM @SoftDelete",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "JPA 3.1 Specification",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "SWEBOK v4 Software Maintenance",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Martin Fowler Temporal Patterns",
+          "pyramid": 2,
+          "year": 2005
+        },
+        {
+          "name": "RGPD Article 17 — Droit a l'effacement",
+          "pyramid": 1,
+          "year": 2018
+        }
+      ]
+    },
+    {
+      "id": "surface-elevation",
+      "domain": "design",
+      "question": "Comment organiser la hierarchie visuelle des surfaces (elevation) ?",
+      "recommendation": "5 niveaux (0=base, 1=cards/sidebars, 2=dropdowns/popovers, 3=modals/dialogs, 4=toasts). Tonal elevation en dark mode. Semantic tokens --elevation-0 a --elevation-4. En light mode, ombre portee croissante. En dark mode, surface de plus en plus claire.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "M3 Elevation",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "M3 Tone-based Surfaces",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Apple HIG Materials",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "GitLab Pajamas Elevation",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "designsystems.surf",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "tech-debt",
+      "domain": "code-quality",
+      "question": "Comment mesurer, prioriser et reduire la dette technique ?",
+      "recommendation": "Mesurer la dette via SonarQube Technical Debt metric. Seuil : ratio dette < 5% (temps remediation / temps dev).",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SonarQube docs — technical debt metric",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Fowler — TechnicalDebt",
+          "pyramid": 5,
+          "year": 2009
+        }
+      ]
+    },
+    {
+      "id": "test-data",
+      "domain": "testing",
+      "question": "Comment gerer les donnees de test (factories, faker, isolation) ?",
+      "recommendation": "@faker-js/faker + fishery pour les factories de donnees de test. Factory functions avec defaults + overrides.",
+      "grade": 5,
+      "level": "BONNE PRATIQUE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "threat-modeling",
+      "domain": "security",
+      "question": "Comment modeliser les menaces (threat modeling) en phase de conception ?",
+      "recommendation": "Modelisation des menaces avec STRIDE en phase de conception. A realiser a chaque nouvelle fonctionnalite ou changement d'architecture.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 Security Knowledge Area",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "OWASP Threat Modeling Cheat Sheet",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Microsoft SDL",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "ui-nuqs",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la gestion d'etat dans l'URL ?",
+      "recommendation": "nuqs",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add nuqs",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "nuqs docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-hotkeys-hook",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les raccourcis clavier ?",
+      "recommendation": "react-hotkeys-hook",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-hotkeys-hook",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-hotkeys-hook docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-pdf",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour afficher des PDF ?",
+      "recommendation": "react-pdf",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-pdf",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-pdf docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-sonner",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les toast notifications ?",
+      "recommendation": "sonner",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add sonner",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "sonner docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tiptap",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'edition rich text ?",
+      "recommendation": "@tiptap/react",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit @tiptap/pm",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "unsaved-changes",
+      "domain": "safety",
+      "question": "Comment proteger l'utilisateur contre la perte de donnees non sauvegardees dans les formulaires ?",
+      "recommendation": "Avertir avant de perdre des donnees saisies. Protection fermeture onglet/refresh via beforeunload, protection navigation SPA via useBlocker (React Router). Si auto-save disponible, sauvegarder silencieusement sans dialog.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Apple HIG — 'hazard warning' avant perte de donnees",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Nielsen — prevention des erreurs, heuristique #5",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "MDN — beforeunload event",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React Router docs — useBlocker",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "user-effectiveness",
+      "domain": "design",
+      "question": "Comment mesurer l'efficacite utilisateur (task success, completion time, satisfaction) ?",
+      "recommendation": "Mesurer 4 metriques cles : task success rate (>95%), task completion time (<budget), error rate (en baisse), satisfaction SUS/CSAT (SUS >68).",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "search",
+      "domain": "design",
+      "question": "Quelle solution de recherche full-text utiliser ?",
+      "recommendation": "MeiliSearch pour recherche self-hosted : typo-tolerant, <50ms sur 1M docs, simple a operer. PostgreSQL full-text si zero infra supplementaire acceptable (pas de typo-tolerance). Algolia si SaaS acceptable. Elasticsearch pour enterprise scalable.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "session-replay",
+      "domain": "project",
+      "question": "Faut-il utiliser le session replay et avec quelles precautions RGPD ?",
+      "recommendation": "Session replay utile pour le debugging UX et la validation de features. PostHog recordings si deja PostHog, Hotjar pour UX pure.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "PostHog session replay docs",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Hotjar docs",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "spacing",
+      "domain": "design",
+      "question": "Quel systeme d'espacement utiliser (grille, tokens) ?",
+      "recommendation": "Grille de base 8px, sous-unite 4px. Tous les espacements, marges et paddings doivent etre des multiples de 4px, privilegiant les multiples de 8px.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "state-management",
+      "domain": "architecture",
+      "question": "Comment gerer l'etat dans une application React ?",
+      "recommendation": "Zustand pour l'etat global applicatif. Lightweight (4kb), zero boilerplate, pas de Provider wrapper. Compatible React 19 et concurrent mode. Satisfaction 96% (State of JS 2024).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "npm trends 2025-2026 — Zustand #1 croissance",
+          "pyramid": 4,
+          "year": 2025
+        },
+        {
+          "name": "State of JS 2024 — satisfaction Zustand 96%",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Zustand docs — no providers, no boilerplate",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "transactions",
+      "domain": "reliability",
+      "question": "Comment gerer les transactions et l'idempotence des mutations API ?",
+      "recommendation": "TypeORM/Prisma transactions au service layer. Utiliser QueryRunner (TypeORM) ou prisma.$transaction (Prisma) pour les operations multi-tables. Idempotency-Key header pour les mutations API.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "ui-react-day-picker",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la selection de dates ?",
+      "recommendation": "react-day-picker",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add react-day-picker date-fns",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-day-picker docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-easy-crop",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le recadrage d'images ?",
+      "recommendation": "react-easy-crop",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add react-easy-crop",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-easy-crop docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tiptap-markdown",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'edition et l'affichage Markdown ?",
+      "recommendation": "tiptap-markdown + react-markdown",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit tiptap-markdown react-markdown",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap-markdown docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "uptime",
+      "domain": "operations",
+      "question": "Comment monitorer la disponibilite avec des checks externes et internes ?",
+      "recommendation": "Spring Boot Actuator avec /actuator/health, probes.enabled=true pour /health/liveness et /health/readiness. show-details: when_authorized. Check externe via UptimeRobot (SaaS gratuit 50 monitors) ou Prometheus blackbox exporter (self-hosted, integration Grafana native).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Spring Boot Actuator docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prometheus blackbox exporter docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google SRE Book",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "SWEBOK v4 — availability monitoring",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "visual-trends",
+      "domain": "design",
+      "question": "Quelles tendances visuelles suivre (2026) : borders, elevation, coins arrondis ?",
+      "recommendation": "Convergence M3 + Apple HIG : tonal elevation (surface teintee plutot que drop shadows lourdes), subtle borders (1px, 6% opacity), glassmorphism subtil (blur 20px), coins arrondis 8-16px.",
+      "grade": 4,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    }
+  ]
+}
