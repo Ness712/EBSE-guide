@@ -335,6 +335,52 @@ Decision tree : [ex: ../EBSE-guide/data/decision-tree.json]
 Domaine ai-collaboration : [ex: ../EBSE-guide/data/decisions/ai-agent-*.json]
 ```
 
+### Hooks qualite `[CONFIGURER]`
+
+Ajouter dans `.claude/settings.json` du projet :
+
+```json
+"hooks": {
+  "PreToolUse": [
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash .claude/hooks/pre-commit-quality.sh"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Creer `.claude/hooks/pre-commit-quality.sh` :
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+# Ne s'execute que sur les git commit
+echo "$CLAUDE_TOOL_INPUT" | grep -q 'git commit' || exit 0
+
+# [CONFIGURER: adapter les conditions et commandes a la structure du projet]
+# Exemple mono-repo :
+#   pnpm lint && pnpm type:check
+# Exemple multi-repo :
+#   if echo "$CLAUDE_TOOL_INPUT" | grep -q 'frontend'; then (cd frontend && pnpm lint && pnpm type:check) || exit 1; fi
+#   if echo "$CLAUDE_TOOL_INPUT" | grep -q 'backend'; then (cd backend && ./mvnw checkstyle:check -q) || exit 1; fi
+
+echo "[hook] Quality check OK"
+```
+
+Regles :
+- Le hook intercepte TOUS les Bash calls ; le script sort immediatement (`exit 0`) si ce n'est pas un `git commit`
+- Si le check echoue (exit 1), le commit est bloque
+- Ne jamais lancer les tests complets dans le hook (trop lent) — les tests sont lances explicitement avant la PR
+
+`Source: PICOC #4 Deterministic gates + Claude Code hooks documentation (2025)`
+
 ---
 
 ## References (tracabilite des regles)
