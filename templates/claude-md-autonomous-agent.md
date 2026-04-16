@@ -192,9 +192,9 @@ Si une tache intermediaire surge pendant l'execution (avec sa propre methodologi
 - Le sous-agent recoit un contexte frais et peut lui-meme spawner des sous-agents si necessaire (ex: double extraction EBSE)
 - Le sous-agent rapporte son resultat a l'agent principal qui continue
 
-**Les sous-agents ne recoivent PAS automatiquement les fichiers CLAUDE.md ou methodology.** Le prompt doit toujours inclure explicitement :
-1. Les fichiers a lire en premier (CLAUDE.md du repo cible, fichiers de methodologie)
-2. La methodologie a suivre
+**Les sous-agents demarrent avec un contexte vierge** — ils ne recoivent aucun fichier automatiquement. Le prompt doit toujours inclure explicitement :
+1. Les fichiers/ressources necessaires a la tache (ce qui est pertinent pour CE sous-agent specifiquement)
+2. La methodologie ou les contraintes a respecter
 3. L'output attendu
 
 Exemples : ajout d'une decision au guide EBSE (→ sous-agent avec instruction de lire EBSE-guide/CLAUDE.md + methodology.md en entier, puis spawner Agent A/B/C), audit securite (→ sous-agent avec checklist explicite), generation de documentation (→ sous-agent avec structure Diataxis explicite).
