@@ -1,7 +1,7 @@
 # /audit-alignment — Audit d'alignement source-first
 
 > **Type** : Audit d'alignement (Type 1)
-> **Source** : EBSE-guide — Méthode d'audit fiable (PICOC #5 + #10)
+> **Source** : ebse-scaffold — Méthode d'audit fiable (PICOC #5 + #10)
 > **Usage** : Vérifier qu'une implémentation X couvre exhaustivement une référence Y.
 > **Exemples** : template ↔ PICOCs, CLAUDE.md ↔ template, code ↔ CONVENTIONS.md
 
@@ -28,10 +28,10 @@ Agent({
 Audit d'alignement source-first. Tu n'as pas participé à la construction — contexte frais, sois rigoureux.
 
 RÉFÉRENCE (source de vérité) :
-Lire exhaustivement : [CONFIGURER — ex: chaque fichier JSON dans EBSE-guide/data/decisions/ai-agent-*.json]
+Lire exhaustivement : [CONFIGURER — ex: chaque fichier JSON dans ebse-scaffold/ebse/guide/data/decisions/ai-agent-*.json]
 
 IMPLÉMENTATION (ce qu'on vérifie) :
-Lire : [CONFIGURER — ex: EBSE-guide/templates/claude-md-autonomous-agent.md]
+Lire : [CONFIGURER — ex: ebse-scaffold/scaffold/claude-md-autonomous-agent.md]
 
 PROCÉDURE pour chaque item de la référence :
 1. Lire le principe complet (pas juste le titre)
@@ -58,8 +58,8 @@ Rien ne doit manquer — si tu n'es pas sûr d'un item, mets "Partiel" avec note
 
 | Référence | Implémentation | Question |
 |-----------|---------------|----------|
-| `EBSE-guide/data/decisions/ai-agent-*.json` (18 fichiers) | `templates/claude-md-autonomous-agent.md` | Le template couvre-t-il tous les PICOCs ? |
-| `templates/claude-md-autonomous-agent.md` | `OLS/CLAUDE.md` | OLS suit-il 100% le template ? |
+| `ebse-scaffold/ebse/guide/data/decisions/ai-agent-*.json` (18 fichiers) | `scaffold/claude-md-autonomous-agent.md` | Le template couvre-t-il tous les PICOCs ? |
+| `scaffold/claude-md-autonomous-agent.md` | `OLS/CLAUDE.md` | OLS suit-il 100% le template ? |
 | `OLS-frontend/CONVENTIONS.md` | Fichiers modifiés dans la PR | La PR respecte-t-elle les conventions ? |
 | `OLS-backend/CONVENTIONS.md` | Fichiers modifiés dans la PR | Idem côté backend |
 

@@ -20,7 +20,7 @@ Le **scaffold** configure Claude Code en agent autonome (HOTL) piloté par un **
 ### 1. Copier le CLAUDE.md template
 
 ```bash
-cp templates/claude-md-autonomous-agent.md /chemin/vers/mon-projet/CLAUDE.md
+cp scaffold/claude-md-autonomous-agent.md /chemin/vers/mon-projet/CLAUDE.md
 ```
 
 ### 2. Remplir les sections `[CONFIGURER]`
@@ -36,7 +36,7 @@ Ouvrir le CLAUDE.md copie et remplir :
 
 ```bash
 # Retirer les commentaires JSONC avant copie
-grep -v "^\s*//" templates/settings-autonomous-agent.jsonc > /chemin/vers/mon-projet/.claude/settings.json
+grep -v "^\s*//" scaffold/settings-autonomous-agent.jsonc > /chemin/vers/mon-projet/.claude/settings.json
 ```
 
 Adapter :

@@ -1,7 +1,7 @@
 # /audit-code — Audit qualité code
 
 > **Type** : Audit qualité code (Type 2)
-> **Source** : EBSE-guide — Méthode d'audit fiable (PICOC #5 + #10)
+> **Source** : ebse-scaffold — Méthode d'audit fiable (PICOC #5 + #10)
 > **Usage** : Revue de code complète — bugs, sécurité, conventions, recommandations EBSE.
 > **Quand** : après une feature complète, avant une PR, ou sur demande PO.
 
@@ -28,7 +28,7 @@ Audit qualité code. Tu n'as pas participé à l'implémentation — contexte fr
 LIS D'ABORD (dans cet ordre) :
 1. [CONFIGURER — ex: OLS-frontend/CONVENTIONS.md]
 2. [CONFIGURER — ex: OLS/CLAUDE.md]
-3. [CONFIGURER — ex: EBSE-guide/data/stacks/ols-recommendations.json]
+3. [CONFIGURER — ex: ebse-scaffold/data/stacks/ols-recommendations.json]
 4. Les fichiers à auditer : [CONFIGURER — ex: liste des fichiers modifiés dans la PR / feature]
 
 CHECKLIST — pour chaque fichier audité :

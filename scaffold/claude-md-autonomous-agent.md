@@ -492,7 +492,7 @@ Profil projet : [ex: ../ebse-scaffold/ebse/guide/data/stacks/ols.json]
 **Regles d'utilisation du profil :**
 - **En debut de session** : verifier que `guide_version` dans le profil correspond a la version dans `guide/data/decision-tree.json`. Si different → escalade PO avant toute decision technique (les recommandations peuvent avoir change)
 - Pour toute decision technique, lire le fichier `*-recommendations.json` du profil projet (recommandations pre-calculees filtrees pour la stack)
-- Si le guide est complete (nouveau PICOC, nouvelle decision) : lancer `node guide/scripts/generate-recommendations.js` et commiter le profil mis a jour dans ebse-scaffold
+- Si le guide est complete (nouveau PICOC, nouvelle decision) : lancer `node ebse/guide/scripts/generate-recommendations.js` et commiter le profil mis a jour dans ebse-scaffold
 
 ### Settings agent `[CONFIGURER]`
 
