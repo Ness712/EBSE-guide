@@ -1,0 +1,408 @@
+{
+  "id": "owasp-top10",
+  "domain": "security",
+  "question": "Comment identifier, prioriser et corriger les vulnerabilites web selon l'OWASP Top 10 ?",
+  "depends_on": ["authentication", "authorization-patterns", "input-validation"],
+  "tags": [
+    "security",
+    "owasp",
+    "vulnerability",
+    "web-security",
+    "broken-access-control",
+    "injection",
+    "xss",
+    "cryptography",
+    "misconfiguration",
+    "compliance"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "L'OWASP Top 10 n'est pas une checklist optionnelle mais un referentiel de risques empiriquement fonde sur des donnees massives (500k applications en 2021, 2,8M en 2025 avec 175k CVE mappes). Chaque categorie correspond a des CWE precises (taxonomie MITRE) et a des controles normatifs NIST SP 800-53 Rev.5 (AC/IA/SC/SI/AU). L'alignement OWASP→CWE→NIST est la base d'une securite prouvable et conforme.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP Top 10:2021",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "The OWASP Top 10 is a standard awareness document for developers and web application security. It represents a broad consensus about the most critical security risks to web applications.",
+            "note": "500k+ applications mesurees, base de donnees CVE/CWE mappees"
+          },
+          {
+            "name": "OWASP Top 10:2025",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "2.8M applications analyzed, 175k CVEs mapped across 10 categories",
+            "note": "Mise a jour majeure avec expansion du perimetre de donnees x5,6"
+          },
+          {
+            "name": "CWE Top 25:2024 — MITRE/CISA/DHS",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "31,770 CVEs analyzed. Top 3: XSS (CWE-79), Out-of-bounds Write (CWE-787), SQL Injection (CWE-89).",
+            "note": "Source normative CISA/DHS — taxonomie sous-jacente a l'ecosysteme OWASP"
+          },
+          {
+            "name": "NIST SP 800-53 Rev.5",
+            "pyramid": 1,
+            "year": 2020,
+            "quote": "Controls AC (Access Control), IA (Identification and Authentication), SC (System and Communications Protection), SI (System and Information Integrity), AU (Audit and Accountability) align directly with OWASP Top 10 categories.",
+            "note": "Update 5.2.0 aout 2025 — reference normative federale US, adoptee mondialement"
+          },
+          {
+            "name": "MITRE CWE Taxonomie v4.x",
+            "pyramid": 1,
+            "year": 2024,
+            "note": "Taxonomie normative sous-jacente a OWASP Top 10, NVD, CVE — referentiel universel"
+          },
+          {
+            "name": "ISO/IEC 27034-1:2011",
+            "pyramid": 1,
+            "year": 2011,
+            "note": "Standard normatif international securite applicative — cite OWASP Top 10 comme referentiel de risques"
+          },
+          {
+            "name": "NIST NVD",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "40,313 CVEs published in 2024 (+32% vs 2023), projection >50,000/year in 2025",
+            "note": "Source primaire des donnees OWASP Top 10 2025"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence forte : 4 sources niv.1 (NIST SP 800-53, CWE Top 25 CISA, ISO/IEC 27034, NIST NVD) + 5 sources niv.2 OWASP (Top 10 x2, ASVS, Proactive Controls, WSTG/Cheat Sheets) — 9 sources independantes sans contradiction",
+            "effet important a tres grande echelle : 2,8M applications mesurees, 40k+ CVE/an, DBIR 2024 +180% exploitation des vulnerabilites, 175k CVE mappes OWASP 2025"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "CWE Top 25:2024 — MITRE/CISA/DHS",
+          "NIST SP 800-53 Rev.5",
+          "OWASP Top 10:2025"
+        ],
+        "etd_balance": {
+          "benefices": "Reduction drastique de la surface d'attaque sur les vecteurs les plus exploites empiriquement. Conformite PCI DSS, SOC 2, ISO 27001 (tous citent ou se basent sur OWASP Top 10). Securite prouvable via mapping CVE/CWE. Prioritisation des efforts : les 10 categories couvrent la majorite des incidents web documentés.",
+          "risques": "Risque de faux sentiment de securite si l'equipe traite le Top 10 comme une checklist exhaustive plutot que comme un referentiel de risques. Le Top 10 ne couvre pas tous les vecteurs d'attaque (ex : attaques logiques specifiques au metier).",
+          "balance": "Benefices largement superieurs aux risques. Le Top 10 est le denominateur commun minimal de la securite web — son absence cree un risque regulatoire et operationnel documentable. Les limites sont compensees par ASVS (couverture exhaustive) et la modelisation des menaces.",
+          "faisabilite": "Tres haute : guides operationnels OWASP (Cheat Sheets, Proactive Controls, WSTG) couvrent l'implementation pour toutes les stacks. Outillage mature (scanners SAST/DAST, SCA). Apprentissage progressif possible via les 10 categories."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      },
+      {
+        "text": "Broken Access Control (A01:2021 et A01:2025) est la vulnerabilite #1 depuis 2021 et maintenue en 2025. Implémenter l'autorisation par defaut-refus (deny-by-default), verifier les permissions cote serveur sur chaque requete, journaliser les acces refuses. Ne jamais faire confiance aux identifiants cote client (IDOR). Utiliser un modele d'autorisation centralise (RBAC/ABAC).",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP Top 10 A01:2021 — Broken Access Control",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification, or destruction of all data.",
+            "note": "Premiere place en 2021, en progression depuis #5 en 2017 — 94% des applications testees presentent une forme de broken access control"
+          },
+          {
+            "name": "OWASP Top 10:2025",
+            "pyramid": 2,
+            "year": 2025,
+            "note": "A01 maintenu en premiere position en 2025"
+          },
+          {
+            "name": "NIST SP 800-53 Rev.5 — AC (Access Control)",
+            "pyramid": 1,
+            "year": 2020,
+            "note": "Controles AC-2, AC-3, AC-6 (least privilege), AC-17 prescrivent les memes exigences"
+          },
+          {
+            "name": "OWASP ASVS 5.0",
+            "pyramid": 2,
+            "year": 2025,
+            "note": "Mai 2025 — V4 Access Control Verification Requirements : criteres de verification exhaustifs"
+          },
+          {
+            "name": "OWASP Top 10 Proactive Controls 2024",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Implement Access Controls: enforce least privilege, deny-by-default, server-side verification on every request"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : NIST SP 800-53 AC + OWASP Top 10 (2021 et 2025) + ASVS + Proactive Controls convergent sans contradiction",
+            "effet mesure : 94% des applications presentent une forme d'echec — vulnerabilite #1 mondiale"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "OWASP Top 10 A01:2021",
+          "NIST SP 800-53 Rev.5 AC"
+        ],
+        "etd_balance": {
+          "benefices": "Prevention de la vulnerabilite web la plus frequente. Deny-by-default est une mesure de securite passive qui protege y compris contre les vecteurs non anticipes.",
+          "risques": "Complexite de mise en oeuvre dans les systemes legacy avec acces ad hoc. Risque de sur-blocage si mal configure.",
+          "balance": "Benefices nets — deny-by-default est le controle le plus impactant par rapport a son cout d'implementation.",
+          "faisabilite": "Haute pour les nouveaux systemes. Moderee pour les migrations legacy (refactoring progressif possible)."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      },
+      {
+        "text": "Injection (A03:2021) — SQL, OS, LDAP, NoSQL, template injection. Utiliser exclusivement des requetes parametrees (prepared statements) et des ORM. Valider les entrees par allowlist stricte. Ne jamais construire des requetes par concatenation de chaines. CWE-89 (SQL Injection) est dans le top 3 mondial des CWE exploitees.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP Top 10 A03:2021 — Injection",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "An application is vulnerable to attack when user-supplied data is not validated, filtered, or sanitized by the application. Use parameterized queries for all database calls."
+          },
+          {
+            "name": "CWE Top 25:2024 — CWE-89 SQL Injection",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "SQL Injection remains in top 3 of CWE Top 25 — 31,770 CVEs analyzed",
+            "note": "Source normative MITRE/CISA — confirme la criticite empirique"
+          },
+          {
+            "name": "OWASP Cheat Sheet Series — SQL Injection Prevention",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Use parameterized queries (also known as prepared statements). This is the primary defense against SQL injection."
+          },
+          {
+            "name": "OWASP Cheat Sheet Series — Input Validation",
+            "pyramid": 2,
+            "year": 2024,
+            "note": "Validation allowlist, contextual output encoding"
+          },
+          {
+            "name": "Tadhani et al. 2024 — Scientific Reports/Nature",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "CNN+LSTM model achieves 99.77% precision for XSS/SQLi detection",
+            "note": "Etude peer-reviewed Nature — confirme la detectabilite elevee des patterns injection"
+          },
+          {
+            "name": "NIST SP 800-53 Rev.5 — SI-10 Information Input Validation",
+            "pyramid": 1,
+            "year": 2020,
+            "note": "Controle SI-10 prescrit la validation de toutes les entrees utilisateur"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : NIST SI-10 + OWASP A03 + CWE Top 25 + Cheat Sheets + etude peer-reviewed convergent",
+            "effet important : CWE-89 top 3 mondial, 31770 CVE analyses, impact critique (exfiltration DB complete possible)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "CWE Top 25:2024 — MITRE/CISA",
+          "OWASP Top 10 A03:2021"
+        ],
+        "etd_balance": {
+          "benefices": "Les requetes parametrees eliminent quasi-totalement le risque SQLi avec un cout d'implementation negligeable sur les nouveaux projets.",
+          "risques": "Aucun risque significatif — les prepared statements sont une pratique standard supportee par tous les frameworks modernes.",
+          "balance": "Rapport benefice/risque exceptionnel — zero compromis sur la qualite, adoption universelle.",
+          "faisabilite": "Tres haute — tous les frameworks majeurs (Spring Data JPA, TypeORM, Prisma, Django ORM) implementent les prepared statements nativement."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      },
+      {
+        "text": "Cryptographic Failures (A02:2021) : TLS 1.2 minimum (TLS 1.3 recommande), hashing des mots de passe avec bcrypt/Argon2/scrypt (pas MD5/SHA-1 non salee), chiffrement des donnees sensibles au repos, zero secret en clair dans le code ou les logs. Desactiver les algorithmes faibles (RC4, DES, 3DES, MD5 pour les signatures).",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP Top 10 A02:2021 — Cryptographic Failures",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "The first thing is to determine the protection needs of data in transit and at rest. Passwords, credit card numbers, health records, personal information, and business secrets require extra protection."
+          },
+          {
+            "name": "NIST SP 800-53 Rev.5 — SC (System and Communications Protection)",
+            "pyramid": 1,
+            "year": 2020,
+            "note": "SC-8 Transmission Confidentiality, SC-28 Protection at Rest, SC-13 Cryptographic Protection — prescriptions directes"
+          },
+          {
+            "name": "NIST SP 800-44 v2 — Securing Public Web Servers",
+            "pyramid": 1,
+            "year": 2007,
+            "note": "Standard fondateur — prescrit TLS minimum pour tous les serveurs web publics"
+          },
+          {
+            "name": "OWASP Cheat Sheet Series — Cryptographic Storage",
+            "pyramid": 2,
+            "year": 2024,
+            "note": "Recommande bcrypt/Argon2/scrypt, deconseille MD5/SHA-1 pour le hashing de mots de passe"
+          },
+          {
+            "name": "OWASP ASVS 5.0 — V6 Cryptography",
+            "pyramid": 2,
+            "year": 2025,
+            "note": "Criteres de verification exhaustifs pour la cryptographie applicative"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 3 sources niv.1 + 3 sources niv.2 convergent sur TLS, hashing fort, chiffrement au repos",
+            "effet important : Cryptographic Failures classee A02 — impact direct sur la confidentialite des donnees de tous les utilisateurs"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-53 Rev.5 SC",
+          "OWASP Top 10 A02:2021"
+        ],
+        "etd_balance": {
+          "benefices": "Protection des donnees utilisateurs, conformite RGPD (Art.32), PCI DSS (Req.4), HIPAA. TLS est desormais gratuit (Let's Encrypt) — cout quasi nul.",
+          "risques": "Performance marginalement affectee par TLS (negligeable avec TLS 1.3 et HTTP/2). Gestion des certificats requiert un processus de renouvellement.",
+          "balance": "Benefices nets — TLS est la norme absolue du web depuis 2018 (Chrome marque HTTP comme 'Not Secure').",
+          "faisabilite": "Tres haute — Caddy/Nginx gere TLS automatiquement via ACME/Let's Encrypt. Bibliothequs crypto modernes (libsodium, JCA, bcrypt.js) disponibles sur toutes les stacks."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      },
+      {
+        "text": "Security Misconfiguration (A05:2021) : appliquer des configurations securisees par defaut (secure defaults), desactiver les fonctionnalites inutiles, patcher systematiquement, supprimer les comptes et mots de passe par defaut, configurer les HTTP security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options). 90% des applications presentent une forme de misconfiguration.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP Top 10 A05:2021 — Security Misconfiguration",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "90% of applications were tested for some form of misconfiguration. The application might be vulnerable if it is missing appropriate security hardening across any part of the application stack.",
+            "note": "Inclut A06:2021 Vulnerable and Outdated Components dans le perimetre de misconfiguration globale"
+          },
+          {
+            "name": "NIST SP 800-53 Rev.5 — CM (Configuration Management)",
+            "pyramid": 1,
+            "year": 2020,
+            "note": "CM-6 Configuration Settings, CM-7 Least Functionality — prescriptions directes sur les configurations securisees"
+          },
+          {
+            "name": "NIST SP 800-95 — Guide to Secure Web Services",
+            "pyramid": 1,
+            "year": 2007,
+            "note": "Secure defaults pour les services web — fondateur"
+          },
+          {
+            "name": "OWASP Proactive Controls 2024 — C10 : Stop Using Insecure Direct References",
+            "pyramid": 2,
+            "year": 2024,
+            "note": "Secure defaults, supprimer les fonctionnalites inutiles, patch management"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "effet important : 90% des applications testees presentent une forme de misconfiguration — prevalence documentee la plus haute de toutes les categories OWASP"
+          ],
+          "minus": [
+            "imprecision partielle : 'Security Misconfiguration' est une categorie large qui regroupe des problemes tres heterogenes (headers HTTP, comptes par defaut, patch management, cloud storage exposure) — la recommandation est moins prescriptive que pour l'injection ou le chiffrement"
+          ]
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "OWASP Top 10 A05:2021",
+          "NIST SP 800-53 Rev.5 CM"
+        ],
+        "etd_balance": {
+          "benefices": "Elimination des vecteurs d'attaque les plus triviaux (comptes par defaut, debug endpoints exposes, headers manquants). Secure defaults = securite passive sans effort continu.",
+          "risques": "Risque de sur-durcissement pouvant affecter la fonctionnalite (ex : CSP trop stricte cassant des scripts legitimes).",
+          "balance": "Benefices nets — la correction des misconfigurations est le ROI securite le plus eleve (effort minimal, impact maximal sur la reduction de surface d'attaque).",
+          "faisabilite": "Haute — outils d'audit automatises (Trivy, Scout Suite, Mozilla Observatory pour les headers). Frameworks modernes proposent des configurations securisees par defaut."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      },
+      {
+        "text": "Approche defense en profondeur structuree autour du cycle OWASP : prevention (ASVS — criteres de verification), test (WSTG — methodologie de test), guidelines developpeurs (Proactive Controls + Cheat Sheets). Les trois niveaux sont complementaires et ne se remplacent pas. Integrer SAST/DAST/SCA dans la CI/CD pipeline.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP ASVS 5.0",
+            "pyramid": 2,
+            "year": 2025,
+            "note": "Mai 2025 — Application Security Verification Standard : criteres de verification formels par niveau (L1/L2/L3)"
+          },
+          {
+            "name": "OWASP WSTG v4.2 — Web Security Testing Guide",
+            "pyramid": 2,
+            "year": 2021,
+            "note": "Methodologie de test par categorie OWASP — reference pour les pentesters et les equipes QA"
+          },
+          {
+            "name": "OWASP Top 10 Proactive Controls 2024",
+            "pyramid": 2,
+            "year": 2024,
+            "note": "10 controles prescriptifs pour les developpeurs — complement operationnel du Top 10"
+          },
+          {
+            "name": "OWASP Cheat Sheet Series IndexTopTen",
+            "pyramid": 2,
+            "year": 2024,
+            "note": "Contre-mesures operationnelles par categorie Top 10 — documentation de reference"
+          },
+          {
+            "name": "IEEE SLR Vulnerability Scanners — 90 articles 30 scanners",
+            "pyramid": 4,
+            "year": 2022,
+            "note": "Systematic Literature Review IEEE — confirme l'efficacite des scanners SAST/DAST alignes OWASP"
+          },
+          {
+            "name": "Verizon DBIR 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "30,458 security incidents analyzed. Exploitation of vulnerabilities +180% vs 2023.",
+            "note": "Confirme l'urgence operationnelle de la detection automatisee des vulnerabilites"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : 4 sources niv.2 OWASP (ASVS, WSTG, Proactive Controls, Cheat Sheets) + 2 sources niv.4 (IEEE SLR, DBIR) convergent sur l'approche en profondeur",
+            "effet important : DBIR +180% exploitation vulnérabilites — urgence documentee de l'outillage automatise"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "OWASP ASVS 5.0",
+          "Verizon DBIR 2024"
+        ],
+        "etd_balance": {
+          "benefices": "Detection automatisee des vulnerabilites OWASP dans la CI/CD evite les regressions. ASVS fournit un cadre d'audit auditable. Proactive Controls traduit le Top 10 en actions developpeur concretes.",
+          "risques": "Faux positifs SAST/DAST peuvent ralentir les pipelines. Cout d'outillage non negligeable pour les petites equipes.",
+          "balance": "Benefices nets — DBIR +180% exploitation justifie l'investissement. Les outils open source (ZAP, Semgrep, Trivy) couvrent l'essentiel sans cout de licence.",
+          "faisabilite": "Moderee — integration CI/CD requiert un investissement initial d'une a deux semaines. OWASP ZAP et Semgrep sont open source et bien documentes."
+        },
+        "prisma_ref": "verification/prisma/owasp-top10.md",
+        "sensitivity_ref": "verification/extractions/owasp-top10.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

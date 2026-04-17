@@ -1,0 +1,70 @@
+{
+  "id": "team-topology",
+  "domain": "project",
+  "question": "Comment organiser les équipes de développement pour que la structure organisationnelle favorise l'architecture logicielle souhaitée, en minimisant la charge cognitive et les dépendances inter-équipes ?",
+  "depends_on": [],
+  "tags": ["team-topology", "conways-law", "stream-aligned", "platform-team", "enabling-team", "cognitive-load", "organizational-design", "microservices", "inverse-conway"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Loi de Conway (règle fondamentale) : toute organisation produira une architecture qui est une copie de sa structure de communication (Conway, 1968). Corollaire opérationnel : si l'architecture souhaitée diffère de l'architecture actuelle, changer d'abord la structure organisationnelle — la refactorisation technique seule recréera l'ancienne architecture dans les semaines qui suivent. Inverse Conway Maneuver (InfoQ 2019) : concevoir proactivement les frontières d'équipes autour des domaines métier souhaités — pas des couches techniques — et laisser l'architecture émerger de cette structure. Anti-pattern à éviter absolument : organisation par couches techniques (« backend team / frontend team / DBA team ») — ce modèle génère mécaniquement des architectures monolithiques couplées et des goulots d'étranglement de communication inter-équipes pour chaque livraison. Préférer des équipes verticales par domaine métier (« équipe facturation », « équipe catalogue », « équipe notification »), chacune propriétaire end-to-end de son slice produit. Quatre topologies fondamentales (Skelton & Pais 2019) : (1) Stream-aligned team — propriétaire end-to-end d'un flux de valeur issu d'un domaine métier, capable de livrer en continu sans dépendre d'autres équipes pour les décisions quotidiennes ; (2) Platform team — fournit des capacités self-service en interne (infrastructure, tooling, observabilité) pour réduire la charge cognitive des stream-aligned teams, exposées comme un produit interne avec SLA ; (3) Enabling team — aide temporairement une ou plusieurs stream-aligned teams à acquérir des compétences manquantes (sécurité, performance, architecture) ; s'efface une fois la compétence transférée — ce n'est pas une équipe permanente ; (4) Complicated-subsystem team — gère un composant à expertise rare et haute complexité (moteur de règles, traitement signal, algorithme ML critique) pour réduire la charge cognitive sur la stream-aligned team consommatrice. Trois modes d'interaction (Skelton & Pais 2019) : (1) Collaboration — mode temporaire, intense, pour innover ensemble sur un nouveau domaine ou résoudre une incertitude technique — à limiter dans le temps car coûteux en communication ; (2) X-as-a-Service — une équipe consomme une API stable d'une autre équipe sans interaction requise — mode cible pour une platform team mature ; (3) Facilitating — une enabling team aide une stream-aligned team sans co-livrer — transfert de compétences, pas co-dépendance. Charge cognitive comme contrainte de design (teamtopologies.com 2022) : une équipe ne peut posséder qu'un nombre limité de services, domaines ou systèmes complexes avant d'être en surcharge et de ralentir. Règles pratiques : limiter à 6-8 microservices par équipe, 8-12 personnes maximum par équipe (loi de Brooks + two-pizza rule). Scoper les responsabilités pour maximiser le flux et minimiser les handoffs. Une équipe surchargée devient un goulot d'étranglement organisationnel aussi problématique qu'un couplage technique.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Melvin Conway — \"How Do Committees Invent?\" (Datamation, 1968)",
+            "pyramid": 5,
+            "year": 1968,
+            "quote": "Organizations which design systems (in the broad sense used here) are constrained to produce designs which are copies of the communication structures of those organizations.",
+            "note": "Article fondateur de Conway (Datamation, 1968, ~8k citations) — niv.5. Loi de Conway, fondement théorique de toute réflexion sur la relation organisation/architecture. Accord A/B."
+          },
+          {
+            "name": "Matthew Skelton & Manuel Pais — \"Team Topologies: Organizing Business and Technology Teams for Fast Flow\" (IT Revolution, 2019)",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "Four fundamental team topologies: 1) Stream-aligned team — aligned to a flow of work from a segment of the business domain (owns an end-to-end slice of the product). 2) Platform team — enables stream-aligned teams to work with self-service internal capabilities. 3) Enabling team — helps stream-aligned teams acquire missing capabilities. 4) Complicated-subsystem team — reduces cognitive load on stream-aligned teams for complex components. Three team interaction modes: Collaboration (temporary, for innovation), X-as-a-Service (for established APIs), Facilitating (for enabling teams). Cognitive load is a primary constraint on team design.",
+            "note": "Skelton & Pais (IT Revolution, 2019) — niv.5. Framework opérationnel Team Topologies, référence majeure sur l'organisation des équipes tech (~10k citations, adopté par Netflix, Spotify, Google). Accord A/B."
+          },
+          {
+            "name": "InfoQ — \"Team Topologies: Conway's Law and Inverse Conway Maneuver\" (infoq.com, 2019)",
+            "pyramid": 4,
+            "year": 2019,
+            "quote": "The Inverse Conway Maneuver proposes that organizations should evolve their team and organizational structure to achieve the desired architecture. Instead of letting Conway's Law constrain the architecture, you intentionally design your teams first, then let the architecture emerge from the team structure. This requires designing team boundaries around business domains rather than technical layers.",
+            "note": "Article InfoQ sur le Inverse Conway Maneuver — niv.4. Articule la stratégie d'application de Conway's Law en sens inverse pour guider l'architecture souhaitée. Accord A/B."
+          },
+          {
+            "name": "IT Revolution / Team Topologies website — \"Team Topologies patterns and anti-patterns\" (teamtopologies.com, 2022)",
+            "pyramid": 3,
+            "year": 2022,
+            "quote": "Cognitive load is the amount of mental processing required by a team to successfully build, test, and operate their software. Teams should be sized and scoped to keep cognitive load within healthy limits. A team that is responsible for too many services, too many domains, or too complex a subsystem will be overloaded and slow. The recommended approach is to limit team responsibilities to maximize flow and minimize handoffs.",
+            "note": "Ressources officielles Team Topologies (Skelton & Pais) — niv.3. Détaille le concept de charge cognitive comme contrainte de design organisationnel. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : Conway 1968 (niv.5), Skelton & Pais 2019 (niv.5), InfoQ 2019 (niv.4), teamtopologies.com 2022 (niv.3) — 4 sources indépendantes convergent sur les mêmes règles : la structure organisationnelle détermine l'architecture, les frontières d'équipes doivent suivre les domaines métier (pas les couches techniques), la charge cognitive est la contrainte principale de design"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Conway 1968 — formule la loi fondamentale (niv.5, ~8k citations, fondement théorique non contesté)",
+          "Skelton & Pais 2019 — opérationnalise la loi de Conway en framework actionnable avec les 4 topologies et 3 modes d'interaction (niv.5, ~10k citations)",
+          "teamtopologies.com 2022 — définit la charge cognitive comme contrainte de design avec les règles pratiques (niv.3)"
+        ],
+        "etd_balance": {
+          "benefices": "Architecture qui évolue naturellement dans la direction souhaitée (propriété émergente). Réduction des handoffs et des réunions de synchronisation inter-équipes. Livraison continue possible par des équipes stream-aligned autonomes. Charge cognitive maîtrisée — équipes capables de maintenir la qualité et la vélocité dans le temps. Séparation claire des responsabilités facilite le recrutement et l'onboarding. Diminution du couplage organisationnel qui génère du couplage technique involontaire.",
+          "risques": "Transition depuis une organisation par couches techniques coûteuse en réorganisation humaine (résistance au changement, redéfinition des périmètres). Risque de silos par domaine si les modes d'interaction ne sont pas explicitement définis (équipes stream-aligned sans plateforme commune → duplication d'infrastructure). Platform team sous-investie → les stream-aligned teams re-créent leur propre tooling (fragmentation). Enabling team qui ne s'efface pas → dépendance permanente au lieu de transfert de compétences.",
+          "balance": "Bénéfices >> Risques pour les organisations de plus de 3-4 équipes. Les risques sont opérationnels et gérables par des décisions explicites sur les modes d'interaction. Conway's Law s'applique que l'organisation en soit consciente ou non — ne pas appliquer l'Inverse Conway Maneuver revient à subir la loi par défaut avec ses effets négatifs. Pour une petite équipe unique (< 8 personnes), les topologies restent pertinentes mais l'organisation par domaine est moins critique.",
+          "faisabilite": "Haute pour les organisations nouvelles ou en refonte — les frontières d'équipes sont définies avant le code. Moyenne pour les organisations existantes en migration — requiert une transition progressive (identifier d'abord les domaines métier naturels, puis réorganiser autour d'eux). Outils pratiques : cartographier les flux de valeur (value stream mapping) pour identifier les candidats stream-aligned, définir les SLA des platform teams comme des produits internes, planifier les enabling teams comme des missions temporaires à durée définie."
+        },
+        "prisma_ref": "verification/prisma/team-topology.md",
+        "sensitivity_ref": "verification/extractions/team-topology.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

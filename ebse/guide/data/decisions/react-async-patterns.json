@@ -1,0 +1,99 @@
+{
+  "id": "react-async-patterns",
+  "domain": "frontend",
+  "question": "Comment gérer les opérations asynchrones dans React pour prévenir les race conditions, memory leaks et mises à jour d'état sur composants démontés ?",
+  "depends_on": ["nodejs-async-patterns"],
+  "tags": ["react", "async", "race-conditions", "useEffect", "AbortController", "TanStack-Query", "Suspense", "memory-leak", "cleanup", "useTransition", "use-hook"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Problème fondamental : useEffect + fetch sans cleanup crée deux classes de bugs systématiques. Première classe — race conditions : si une dépendance change (ex. userId) avant qu'une requête se termine, la réponse tardive de l'ancienne requête peut écraser l'état produit par la requête plus récente, affichant des données incorrectes à l'utilisateur. Deuxième classe — memory leaks / mises à jour orphelines : si le composant est démonté pendant qu'une requête est en vol, l'appel setState() qui suit la résolution de la Promise tente de mettre à jour un composant démonté — comportement indéfini, avertissement React en développement, fuite mémoire potentielle. Ces deux bugs partagent la même cause racine : l'absence de mécanisme d'annulation ou d'ignorance dans la cleanup function de useEffect.\n\nSolution 1 — ignore flag (simple, recommandé pour cas simples) : déclarer let ignore = false avant le fetch, n'appeler setState que si (!ignore), retourner une cleanup function () => { ignore = true }. Quand React démonte le composant ou que les dépendances changent, ignore passe à true et la réponse en vol est silencieusement ignorée. Cette solution ne cancelle pas la requête réseau — la requête part quand même jusqu'au bout, consomme de la bande passante et charge le serveur — mais elle garantit que l'état React ne sera jamais mis à jour depuis une réponse devenue obsolète. C'est le pattern documenté par React docs officiels et endossé par Max Rozen (2021, référencé par react.dev).\n\nSolution 2 — AbortController (recommandé quand la performance réseau compte) : instancier const controller = new AbortController() dans useEffect, passer { signal: controller.signal } à fetch(), retourner () => controller.abort() comme cleanup. Quand React appelle la cleanup, le signal est annulé, le navigateur abandonne la connexion réseau en cours (libération réelle des ressources réseau), et la Promise rejette avec une AbortError — à capturer explicitement (if (err.name === 'AbortError') return). Avantage : cancel réel côté réseau, pas seulement côté React. Inconvénient : légèrement plus verbeux, gestion explicite de l'AbortError obligatoire. Le standard AbortController est défini par le W3C/MDN et supporté nativement par tous les navigateurs modernes et Node.js 18+.\n\nRègle de choix entre les deux : ignore flag pour les cas simples où la performance réseau est secondaire (données légères, peu de changements rapides de dépendances). AbortController dès que les requêtes sont coûteuses, fréquentes, ou que l'on cible des environnements à faible bande passante.\n\nReact 18 Concurrent — useTransition : startTransition(() => setState(newValue)) marque une mise à jour d'état comme non-urgente. React peut interrompre et redémarrer un render en transition si une mise à jour de plus haute priorité survient entre-temps. Pour les opérations async, useTransition évite que des transitions lentes (chargement de données) ne bloquent les interactions urgentes (saisie clavier). Le composant n'entre pas dans un état de chargement brutal — React maintient l'UI précédente pendant la transition. isPending permet d'afficher un indicateur visuel subtil. Important : useTransition gère la priorité des renders, il ne remplace pas ignore flag ou AbortController — les race conditions réseau restent à gérer séparément.\n\nReact 19 — hook use() + Suspense : use(promise) suspend le composant courant tant que la Promise est en attente, déléguant l'affichage du fallback au Suspense boundary le plus proche. Les erreurs async de résolution sont capturées par le Error Boundary le plus proche si la Promise rejette. Restriction documentée : les Promises créées dans des Client Components sont recréées à chaque render — préférer les Promises stables (passées en props depuis Server Components, ou mémoïsées). use() est la direction React 19+ pour les cas Suspense-first.\n\nError Boundaries — limitation critique : les Error Boundaries React ne capturent PAS les erreurs asynchrones survenant dans les callbacks ordinaires (setTimeout, requestAnimationFrame, .catch() non relancé). Ils capturent uniquement les erreurs survenant pendant le rendu synchrone d'un composant enfant, et les erreurs dans startTransition. Pour les erreurs async hors rendu, utiliser try/catch local dans useEffect et setState sur un state d'erreur explicite.\n\nTanStack Query (React Query) : recommandé pour les cas complexes. Gère nativement : stale-while-revalidate (réponse cachée immédiate + revalidation en arrière-plan), déduplication des requêtes identiques simultanées, annulation automatique des requêtes obsolètes, retry configurable, synchronisation inter-composants via query key. Pour useEffect simple avec une seule requête et peu de dépendances, ignore flag suffit et TanStack Query serait sur-ingénierie. Seuil de bascule : dès qu'apparaissent plusieurs composants partageant les mêmes données, du caching, de l'invalidation, ou du pagination, TanStack Query apporte un ROI net.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "React docs — 'Synchronizing with Effects' (react.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "When you fetch data inside useEffect, you need a cleanup function. If userId changes before the fetch completes, the cleanup can either abort the fetch or ignore its result.",
+            "note": "Documentation officielle React détaillant le pattern ignore flag avec exemple complet. Présente les deux approches (ignore flag et AbortController) et explique pourquoi la cleanup est obligatoire. Niveau 3 — documentation framework officiel. Accord A/B."
+          },
+          {
+            "name": "React docs — 'useEffect Reference' (react.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "If your Effect fetches something, the cleanup function should either abort the fetch or ignore its result [...] to make sure that the code doesn't have race conditions.",
+            "note": "Référence API useEffect consolidant le pattern ignore flag pour les race conditions avec dépendances changeantes. Complément de la page conceptuelle 'Synchronizing with Effects'. Niveau 3 — référence API officielle React. Accord A/B."
+          },
+          {
+            "name": "MDN Web Docs — 'AbortController / AbortSignal' (developer.mozilla.org, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The AbortController interface represents a controller object that allows you to abort one or more Web platform requests as and when desired.",
+            "note": "Documentation de référence W3C/MDN sur le mécanisme d'annulation native des requêtes fetch. Définit le standard AbortController/AbortSignal utilisé dans la Solution 2. Niveau 3 — documentation référence W3C/MDN. Source A uniquement, incluse car elle documente le standard W3C sous-jacent à la Solution 2."
+          },
+          {
+            "name": "React docs — 'useTransition / startTransition' (react.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Concurrent React can gracefully cancel an in-progress async render if new data demands a different UI state. If a higher-priority update happens during a transition, React will handle the non-transition update first and restart the transition.",
+            "note": "Documentation officielle React sur useTransition et la gestion des transitions asynchrones en mode Concurrent. Complète la guidance sur les race conditions côté rendu (vs côté réseau). Niveau 3 — documentation framework officiel. Source A uniquement."
+          },
+          {
+            "name": "React docs — hook use() React 19 (react.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The component calling use suspends while the Promise is pending. If wrapped in a Suspense boundary, the fallback will be displayed. [...] Promises created in Client Components are recreated on every render.",
+            "note": "Documentation officielle React 19 sur le hook use() et l'intégration Suspense. Documente la restriction critique sur les Promises Client Component. Niveau 3 — documentation framework officiel. Source B uniquement."
+          },
+          {
+            "name": "React docs — Error Boundaries (react.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Asynchronous code (setTimeout, requestAnimationFrame) — Error Boundaries do NOT catch these.",
+            "note": "Documentation officielle React documentant explicitement la limitation des Error Boundaries vis-à-vis du code asynchrone ordinaire. Limitation critique pour les patterns async. Niveau 3 — documentation framework officiel. Source B uniquement."
+          },
+          {
+            "name": "TanStack Query docs (tanstack.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Queries are automatically garbage collected after they are no longer used. [...] If a query becomes stale while it is still being used, it will be refetched in the background. Duplicate requests are deduplicated automatically.",
+            "note": "Documentation officielle TanStack Query documentant stale-while-revalidate, déduplication et annulation automatique. Alternative recommandée pour les cas complexes. Niveau 3 — documentation bibliothèque officielle. Source A uniquement."
+          },
+          {
+            "name": "Rozen M. — 'Fixing Race Conditions in React with useEffect' (maxrozen.com, 2021)",
+            "pyramid": 4,
+            "year": 2021,
+            "quote": "A race condition in React occurs when two slightly different requests have been made, and the application displays a different result depending on which request completes first. [...] Two solutions: ignore flag (simple) vs AbortController (frees network resources).",
+            "note": "Article pratique comparant les deux solutions (ignore flag vs AbortController) avec exemples de code. Directement endossé par react.dev dans sa documentation officielle. Niveau 4 — article expert endossé par la source de niveau 3. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : React docs (ignore flag dans useEffect Reference + Synchronizing with Effects + use() React 19 + Error Boundaries + useTransition) + MDN AbortController (standard W3C) + TanStack Query + Rozen 2021 (endossé react.dev) convergent sans contradiction sur les patterns anti-race-condition — 8 sources indépendantes de 3 catégories (documentation framework, standard W3C, expert pratique endorsé)",
+            "effet important : race conditions produisent des données incorrectes affichées à l'utilisateur (bug fonctionnel visible) ; memory leaks documentés sur composants démontés (avertissement React en dev, comportement indéfini en prod) ; absence de cleanup = classe de bugs systématique dans tout composant fetching des données avec dépendances changeantes"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "React docs 'Synchronizing with Effects' 2024 — source primaire officielle définissant le pattern ignore flag comme solution recommandée (niveau 3, documentation framework)",
+          "MDN AbortController 2024 — définit le standard W3C d'annulation native fetch, base technique de la Solution 2 (niveau 3, standard normatif)",
+          "Rozen M. 2021 — comparaison pratique ignore flag vs AbortController endorsée par react.dev, validation empirique de l'approche à deux solutions (niveau 4)"
+        ],
+        "etd_balance": {
+          "benefices": "Élimination des race conditions de données (affichage garanti cohérent avec la dernière requête intentionnelle). Prévention des memory leaks et mises à jour orphelines sur composants démontés. Amélioration de l'expérience utilisateur via useTransition (pas de blocage UI pendant les transitions async). Deux niveaux de solution adaptés à la complexité : ignore flag pour le cas simple, TanStack Query pour les cas avancés. Pattern supporté nativement par React sans dépendance externe pour les cas simples.",
+          "risques": "AbortController : nécessite la gestion explicite de l'AbortError dans le catch — oubli = erreur silencieuse masquée. use() React 19 : Promises Client Component recréées à chaque render → boucle infinie si mal utilisé. Error Boundaries : confusion fréquente sur ce qu'elles capturent — les erreurs async ordinaires (setTimeout, fetch .catch()) leur échappent. TanStack Query : surcharge de dépendance externe et de concepts pour des cas simples.",
+          "balance": "Bénéfices >> Risques pour tout composant fetching des données avec dépendances. Les risques sont mitigés par : capture explicite AbortError (pattern documenté), mémoïsation des Promises use() (useMemo), tests unitaires des states d'erreur. Le coût d'un ignore flag correct est < 5 lignes. Le coût d'une race condition non gérée est des données incorrectes affichées à l'utilisateur.",
+          "faisabilite": "Haute — ignore flag : pattern de 3 lignes, aucune dépendance externe, supporté React 16.8+. AbortController : natif navigateurs modernes et Node.js 18+, pas de polyfill requis. useTransition : React 18+. use() hook : React 19+. TanStack Query : npm install @tanstack/react-query, configuration QueryClient standard. Tous les patterns sont testables avec React Testing Library via act() et des mocks fetch."
+        },
+        "prisma_ref": "verification/prisma/react-async-patterns.md",
+        "sensitivity_ref": "verification/extractions/react-async-patterns.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

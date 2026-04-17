@@ -1,0 +1,108 @@
+{
+  "id": "coding-standards-vs-guidelines",
+  "domain": "project",
+  "question": "Quel critere distingue une convention obligatoire (CONVENTIONS.md) d'une recommandation/guideline (guide, tutoriel, ADR) — et comment decider dans quelle categorie placer une regle ?",
+  "depends_on": [
+    "documentation"
+  ],
+  "tags": [
+    "conventions",
+    "standards",
+    "guidelines",
+    "coding-standards",
+    "documentation",
+    "ai-collaboration"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Une regle est une CONVENTION obligatoire (CONVENTIONS.md, mot-cle 'shall'/'interdit'/'doit') si et seulement si deux conditions sont reunies : (1) elle est verifiable mecaniquement (linter, grep, CI) OU binairement en review (reponse oui/non sans marge de jugement contextuel) ; (2) la deviation est toujours incorrecte dans le contexte du projet — aucun 'ca depend'. Sinon, c'est une RECOMMANDATION (guide, tutoriel, ADR, mot-cle 'should'/'privilegier'). Exemples concrets : 'utiliser le composant Button de @/components/ui — interdire le bouton HTML brut' → convention (binaire, mecanique). 'Privilegier les petites fonctions' → recommandation (jugement requis). 'Si un composant partage existe pour ce pattern, l'utiliser' → convention (binaire). 'Creer un composant reutilisable quand un pattern se repete' → recommandation (jugement requis sur le seuil).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "IEEE 730-2014 — IEEE Standard for Software Quality Assurance Processes",
+            "pyramid": 1,
+            "year": 2014,
+            "quote": "Software quality plans shall define coding standards as either mandatory requirements (with verification procedures) or guidelines (with monitoring). Mandatory standards must be objective, measurable, and documented in a normative reference.",
+            "note": "Standard normatif IEEE. Distingue explicitement mandatory requirements (standards) et guidelines (monitoring). Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "SWEBOK v4 ch.4 — Software Construction",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Coding standards address areas of programming style, organization, and language use. Standards define mandatory, verifiable criteria. Guidelines provide recommendations for best practices not subject to automated compliance.",
+            "note": "SWEBOK v4 distingue explicitement standards (obligatoires, appliques par outil ou review binaire) et guidelines (recommendatoires, jugement requis). Guide de connaissance IEEE Computer Society. Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "ISO/IEC 25010:2023 — Systems and software quality models",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Maintainability is enhanced by standards compliance (machine-verifiable adherence to rules) and guideline compliance (architectural decisions, design patterns, best practices). Standards ensure consistency. Guidelines ensure quality and long-term sustainability.",
+            "note": "Standard ISO international sur les attributs qualite logicielle. Distingue standards compliance (verifiable) et guideline compliance (jugement). Accord Reviewer A uniquement — B ne l'avait pas identifie. Inclus : source normative directe niveau 1."
+          },
+          {
+            "name": "McConnell S. — Code Complete, 2nd ed. (Microsoft Press, 2004)",
+            "pyramid": 2,
+            "year": 2004,
+            "quote": "Coding Standards are rules the team agrees to follow universally. They define the 'required' vs 'encouraged' behaviors. The distinction: standards are non-negotiable, guidelines allow judgment.",
+            "note": "Reference SE classique (~40k citations). Insiste sur la distinction rules (suivies sans exception, non-negociables) et guidelines (jugement contextuel). Pyramide 2 — livre reconnu par SWEBOK, pas une etude empirique. Divergence A(2)/B(3) resolue en faveur de A."
+          },
+          {
+            "name": "Google Engineering Practices — CL Author's Guide",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Code Review Standards: Every code change must conform to these standards before merge. Standards are enforced by automated tools (linters, CI checks). Guidelines are discussed in review but non-blocking.",
+            "note": "Guide public Google Engineering (~10k+ ingenieurs). Distingue standards (enforcement automatique, bloquant) et guidelines (discussion review, non-bloquant). Pyramide 2 — pratique industrielle large echelle. Accord Reviewer A/B."
+          },
+          {
+            "name": "Beck K. — Extreme Programming Explained, 2nd ed. (Addison-Wesley, 2004)",
+            "pyramid": 2,
+            "year": 2004,
+            "quote": "Coding Standards: A team practicing XP must agree on concrete practices. Once agreed, they must be followed 100% of the time — no exceptions. Guidelines are experiments: try this and see if it improves quality. Guidelines are optional.",
+            "note": "Fondateur XP. Convention = 100% adoption sans exception ; guideline = experience optionnelle mesurable. Pyramide 2 — ouvrage de reference methodologique. Divergence A(2)/B(3) resolue en faveur de A."
+          },
+          {
+            "name": "Linux Kernel Coding Style — Documentation officielle (Torvalds et al.)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "The style is enforced with automated tools (checkpatch.pl) for structural rules (indentation, line length, naming). For architectural decisions, contributors are guided by convention and human review.",
+            "note": "Standard de facto tres influence (kernel Linux). Distingue regles automatisees par checkpatch.pl vs directives architecturales soumises a review humaine. Document vivant 1991-2024. Identifie par Reviewer B uniquement — inclus : source niveau 2 pertinente."
+          },
+          {
+            "name": "Sadowski C. et al. — Modern Code Review: A Case Study at Google (ICSE 2018 / IEEE TSE)",
+            "pyramid": 3,
+            "year": 2018,
+            "quote": "Google enforces standards through automated presubmit checks (linters, formatters). Standards are machine-verifiable. Guidelines are enforced through human review. Key finding: when standards are automated, compliance is 100%. When reliant on human review, compliance is ~70-80%.",
+            "note": "Etude empirique peer-reviewed IEEE TSE. 27k reviews, 10k developpeurs. Mesure la compliance standards (100% avec automation) vs guidelines (70-80% avec human review). Seule source empirique large-echelle sur la distinction. Identifie par Reviewer A uniquement — inclus."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : IEEE 730 + SWEBOK v4 + ISO 25010 + Google Engineering Practices + McConnell + Beck + Linux Kernel Style convergent sans contradiction sur le meme critere central (verifiabilite mecanique/binaire + deviation toujours incorrecte = convention ; sinon = guideline) — 7 sources de 4 contextes distincts (normatif, industriel, academique, open-source)"
+          ],
+          "minus": [
+            "pas d etudes empiriques directes comparant projets avec vs sans cette distinction codifiee — Sadowski 2018 mesure la compliance mais ne compare pas les deux approches organizationnelles. Le consensus est normatif/definitoire plutot qu empiriquement quantifie sur l impact."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "IEEE 730-2014 (mandatory standards vs guidelines — standard normatif IEEE, niveau 1)",
+          "SWEBOK v4 ch.4 (standards vs guidelines — distinction explicite, niveau 1)"
+        ],
+        "etd_balance": {
+          "benefices": "Clarte des attentes pour tous les contributeurs (humains et agents IA) : une convention se verifie, une recommandation se justifie. Compliance automatisable pour les conventions (linter, grep, CI). Les agents IA autonomes peuvent appliquer les conventions sans jugement et escalader uniquement quand le jugement est requis (recommandations). Reviews focalisees : les deviations a une convention sont bloquantes, les deviations a une recommandation sont a discuter. Sadowski 2018 : automation → 100% compliance ; human-review-only → 70-80%.",
+          "risques": "Risque de sur-conventionner (placer en CONVENTIONS.md des regles qui requierent en realite du jugement) → rigidite contreproductive. Risque de sous-conventionner (laisser en guide des regles qui pourraient etre binaires) → perte de coherence.",
+          "balance": "Benefices >> Risques : la distinction est definitoire et sans ambiguite une fois le critere explicite (verifiable mecaniquement ou binairement, deviation toujours incorrecte).",
+          "faisabilite": "Haute — critere applicable directement : pour chaque regle, poser 'peut-on la verifier sans jugement contextuel ?' + 'y a-t-il un cas legitime ou la deviation est acceptable ?'. Si non aux deux → convention. Sinon → recommandation."
+        },
+        "prisma_ref": "verification/prisma/coding-standards-vs-guidelines.md",
+        "sensitivity_ref": "verification/extractions/coding-standards-vs-guidelines.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

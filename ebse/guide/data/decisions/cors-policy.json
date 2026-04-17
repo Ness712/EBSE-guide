@@ -1,0 +1,92 @@
+{
+  "id": "cors-policy",
+  "domain": "security",
+  "question": "Comment configurer une politique CORS securisee sur le serveur pour permettre les requetes cross-origin legitimes sans exposer l'application aux attaques par origines malveillantes ?",
+  "depends_on": ["http-headers"],
+  "tags": ["cors", "cross-origin", "security", "http-headers", "api", "csrf", "same-origin-policy"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Regle absolue : NE JAMAIS utiliser 'Access-Control-Allow-Origin: *' pour des APIs authentifiees ou exposant des donnees sensibles. Le wildcard desactive la protection Same-Origin Policy pour toutes les origines simultanement. La specification WHATWG Fetch definit explicitement que 'Access-Control-Allow-Credentials: true' est INCOMPATIBLE avec le wildcard — le navigateur rejettera la reponse. Whitelist explicite obligatoire : valider l'header 'Origin' entrant contre une liste blanche cote serveur, puis retourner dynamiquement l'origine autorisee ou omettre le header. Ne jamais refleter l'Origin sans validation — c'est une vulnerabilite documentee (Kettle 2016 : reflection d'origine non-validee = vol de session cross-origin). Origines 'null' a interdire explicitement : certains contextes (fichiers locaux, redirections, iframes sandboxees) envoient Origin: null — l'accepter ouvre une faille depuis n'importe quelle page locale. Configuration preflight obligatoire : definir 'Access-Control-Allow-Methods' et 'Access-Control-Allow-Headers' au strict minimum necessaire ; 'Access-Control-Max-Age' pour reduire les requetes OPTIONS repetees. Origines dynamiques : si les origines autorisees varient selon l'environnement (dev/staging/prod), utiliser un callback de validation cote serveur plutot qu'une liste statique avec wildcards partiels (ex : *.example.com est un vecteur d'attaque si un sous-domaine est compromis). Distinction CORS vs CSRF : CORS controle l'acces depuis d'autres origines au niveau navigateur ; il ne remplace pas la protection CSRF pour les requetes utilisant des cookies (SameSite=Strict/Lax + token CSRF reste necessaire). Profil de risque : OWASP WSTG CLNT-07 classe les mauvaises configurations CORS comme vecteur d'attaque de premiere classe, permettant vol de tokens, lecture de donnees privees et CSRF avance depuis des origines non autorisees. NestJS : configurer 'CorsOptions' avec un callback 'origin' pour valider dynamiquement contre une liste d'origines autorisees ; ne pas utiliser 'origin: true' (reflecte tout) ni 'origin: *' pour les routes authentifiees.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "WHATWG Fetch Living Standard — Fetch specification, CORS section (WHATWG/W3C, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "If the credentials flag is set and the 'Access-Control-Allow-Origin' header value is '*', return a network error. [...] The header field value must be the literal string '*' or an ASCII serialization of an origin. If it is '*', then any origin may include the response in its cross-origin sharing response.",
+            "note": "Standard fondateur qui DEFINIT le comportement CORS. Incompatibilite wildcard+credentials est une contrainte de specification, pas une recommandation. Niveau 1 — standard normatif WHATWG/W3C. Accord A/B."
+          },
+          {
+            "name": "OWASP Testing Guide (WSTG) CLNT-07 — Testing for Cross Origin Resource Sharing (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Weak CORS policies include: wildcard (*) for sensitive resources, reflecting the Origin header without validation, allowing the null origin. [...] CORS misconfiguration can lead to cross-origin data leakage, credential theft, and CSRF-like attacks from malicious origins.",
+            "note": "Guide de test OWASP documentant exhaustivement les vecteurs d'attaque CORS. Classe les mauvaises configurations comme vulnerabilite de premiere classe. Niveau 2 — OWASP guide reconnu. Accord A/B."
+          },
+          {
+            "name": "OWASP HTML5 Security Cheat Sheet — CORS section (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Validate the Origin header against an allowlist of permitted origins. Never trust the Origin header blindly. Do not use wildcard (*) when credentials are included. Reject the null origin. Explicitly specify allowed methods and headers — do not use wildcards for these with credentials.",
+            "note": "Guide prescriptif OWASP donnant les regles de configuration positives (whitelist, rejet null, credentials). Complement direct de WSTG CLNT-07. Niveau 2 — OWASP reference. Accord A/B."
+          },
+          {
+            "name": "MDN Web Docs — Cross-Origin Resource Sharing (CORS) (Mozilla, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "For requests with credentials, servers must not specify the '*' wildcard for the Access-Control-Allow-Origin header. [...] The server must specify an explicit origin. [...] Preflight requests are sent as OPTIONS requests and must be responded to with the correct Access-Control-Allow-Methods and Access-Control-Allow-Headers headers.",
+            "note": "Documentation de reference developpeur la plus consultee sur CORS. Synthetise le standard WHATWG en termes operationnels avec exemples. Niveau 3 — documentation de reference. Accord A/B."
+          },
+          {
+            "name": "NestJS CORS documentation — CorsOptions (NestJS, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "You can pass a custom origin function to the origin option. The function will be called for each request with the origin of the request and a callback to call with the allowed origin or an error. This allows you to implement dynamic whitelisting.",
+            "note": "Documentation officielle NestJS sur la configuration CORS via CorsOptions. Directement applicable pour l'implementation. Niveau 3 — documentation framework. Source B uniquement, incluse car directement actionnable pour NestJS."
+          },
+          {
+            "name": "PortSwigger Web Security Academy — CORS vulnerabilities (PortSwigger, 2024)",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "Many sites use whitelisting of permitted origins. Flaws in CORS origin whitelisting include: reflected origins (trusting any supplied origin), null origin (granted by sandboxed iframes), exploiting trusted subdomains with XSS.",
+            "note": "Reference de securite offensive documentant les patterns d'exploitation reels. Complement empirique aux recommandations defensives OWASP. Niveau 5 — expert securite reconnu (PortSwigger/Burp). Accord A/B."
+          },
+          {
+            "name": "Kettle J. — Exploiting CORS misconfigurations for Bitcoins and bounties (AppSecUSA, 2016)",
+            "pyramid": 5,
+            "year": 2016,
+            "quote": "Sites that trust all subdomains, or reflect any supplied Origin header, are vulnerable to attackers who can compromise any subdomain or simply supply their own Origin. The null origin is also frequently trusted, allowing attacks from sandboxed iframes. These vulnerabilities exist in a significant proportion of major websites.",
+            "note": "Recherche fondatrice documentant l'exploitation reelle de mauvaises configurations CORS sur des cibles publiques majeures. Demontre l'impact concret (vol de tokens, acces donnees privees). Niveau 5 — expert securite (James Kettle, PortSwigger). Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : WHATWG Fetch Standard (niveau 1, specification fondatrice) + OWASP WSTG CLNT-07 + OWASP HTML5 Cheat Sheet + MDN + PortSwigger WSA + Kettle 2016 convergent sans contradiction sur les memes regles : interdiction wildcard avec credentials, whitelist obligatoire, rejet null origin — 7 sources independantes de 3 categories (normatif, securite applicative, exploitation reelle)",
+            "effet important : Kettle 2016 demontre l'impact reel sur des cibles publiques majeures (vol de tokens, acces donnees privees) ; OWASP WSTG classe CORS comme vecteur de premiere classe ; la regle wildcard+credentials est une contrainte de specification absolue (pas de degradation graduelle — c'est une erreur binaire avec impact immediat sur la securite)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "WHATWG Fetch Living Standard 2024 — definit la contrainte wildcard+credentials au niveau de la specification (niveau 1, contrainte absolue)",
+          "OWASP WSTG CLNT-07 — documente les vecteurs d'attaque et classe CORS comme vulnerabilite de premiere classe (niveau 2)",
+          "Kettle J. 2016 — demontre l'impact reel sur des systemes publics majeurs, valide le risque theorique OWASP par l'exploitation concrete (niveau 5)"
+        ],
+        "etd_balance": {
+          "benefices": "Protection contre le vol de tokens et de donnees cross-origin depuis des origines non autorisees. Conformite a la specification WHATWG (comportement previsible et standardise). Reduction de la surface d'attaque CSRF avancee exploitant les cookies cross-origin. Facilite l'audit securite (whitelist explicite = politique declarative lisible). La configuration correcte n'a aucun impact sur les requetes legitimes si la whitelist est bien maintenue.",
+          "risques": "Whitelist mal maintenue lors de l'ajout de nouveaux domaines (frontend staging, CDN, etc.) → blocage des requetes legitimes. Regex trop permissive sur les sous-domaines (ex : /\\.example\\.com$/ autorisant evil.example.com). Erreurs de configuration preflight (methods/headers non alignes) generant des erreurs CORS intermittentes difficiles a debugger.",
+          "balance": "Benefices >> Risques. Les risques operationnels (whitelist mal maintenue) sont gerees par processus (centraliser la liste d'origines dans la config d'environnement). Le risque de securite d'une mauvaise configuration est documentalement grave (Kettle 2016). La configuration correcte est simple et les frameworks (NestJS, Spring Security) la supportent nativement avec callback.",
+          "faisabilite": "Haute — NestJS : 'CorsOptions.origin' accepte un callback de validation ; Spring Security : 'CorsConfigurationSource' avec 'setAllowedOrigins()' ; les deux patterns sont documentes et testables par tests d'integration. Centraliser la liste dans les variables d'environnement (CORS_ALLOWED_ORIGINS=https://app.example.com,https://staging.example.com) pour maintenir la coherence entre environnements."
+        },
+        "prisma_ref": "verification/prisma/cors-policy.md",
+        "sensitivity_ref": "verification/extractions/cors-policy.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

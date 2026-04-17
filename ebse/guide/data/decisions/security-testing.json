@@ -1,0 +1,199 @@
+{
+  "id": "security-testing",
+  "domain": "security",
+  "question": "Comment integrer le security testing (SAST/DAST/SCA) dans le pipeline CI/CD GitHub Actions d'un projet NestJS+React, avec quels outils, et quel est l'impact attendu sur la detection de vulnerabilites ?",
+  "depends_on": [
+    "owasp-top10",
+    "test-strategy",
+    "quality-gates"
+  ],
+  "tags": [
+    "sast",
+    "dast",
+    "sca",
+    "devsecops",
+    "shift-left",
+    "ci-cd",
+    "security",
+    "nestjs",
+    "github-actions",
+    "supply-chain"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Integrer le security testing en approche multicouche obligatoire dans le pipeline CI/CD — SAST, DAST et SCA sont complementaires, pas substituables. Aucun outil unique ne detecte tout : NIST SAMATE mesure des taux de faux positifs SAST entre 3% et 48% selon les outils, et Charoenwet (ISSTA 2024) etablit que 22% des commits vulnerables sont completement manques par un seul outil SAST. La sequence recommandee dans la pipeline GitHub Actions est : secrets scanning → SAST → SCA → DAST (uniquement sur staging, car le DAST requiert une application deployee). Ce principe de 'shift-left security' est justifie economiquement : IBM/NIST/Capers Jones etablissent que le cout de correction d'une vulnerabilite est 1x en design, 6.5x en implementation, 15x en testing et 60 a 100x apres release — la direction de cette progression est confirmee sur 12 000+ projets meme si les ratios exacts sont debattus. TOOLCHAIN RECOMMANDEE NESTJS+REACT SUR GITHUB ACTIONS : (1) SAST : Semgrep avec les rulesets p/typescript et p/owasp-top-ten (open-source, support NestJS natif, GitHub Actions natif) + eslint-plugin-security integre dans le lint existant (SAST leger zero-configuration detectant ReDoS, injections de code dynamique, traversee de chemin dans les appels systeme). (2) SCA : GitHub Dependabot (PRs automatiques pour les CVEs connues, gratuit pour repos publics et prives, >80% des mises a jour de securite npm/Yarn) + npm audit dans le script CI comme filet minimal. OWASP Dependency-Check comme alternative multi-DB (NVD + NPM Audit API + RetireJS + OSS Index) pour une couverture plus complete — le support Node.js est marque 'experimental'. (3) DAST : OWASP ZAP via zaproxy/action-full-scan sur l'environnement staging (spider → AJAX spider → active scan → alertes remontees en GitHub Issues). Le DAST ne s'execute pas sur chaque PR car l'application n'est pas deployee a ce stade. (4) Secrets scanning : GitHub Advanced Security secret scanning ou git-secrets. GESTION DES FAUX POSITIFS SAST : les taux atteignent 15-60% en conditions reelles (ACM EASE 2025), dont 98% de findings potentiellement non exploitables en runtime selon certaines etudes. La strategie recommandee est de ne pas bloquer la pipeline sur tous les findings : bloquer sur severity CRITICAL et HIGH, alerter sur MEDIUM, documenter et ignorer sur LOW avec justification explicite. SUPPLY CHAIN : utiliser des scoped packages (@org/name) et configurer le fichier .npmrc pour router les packages internes, afin de prevenir les attaques de dependency confusion (incidents Axios 2026, debug/chalk 2024). NIST SP 800-218 SSDF v1.1 (Executive Order 14028) fournit le cadre normatif outcome-based en 4 groupes de pratiques : PO (Prepare Organization), PS (Protect Software), PW (Produce Well-Secured Software), RV (Respond to Vulnerabilities). Le SBOM (Software Bill of Materials) est un livrable requis par ce framework. OWASP SAMM v2.0 modelise la maturite en 3 niveaux : le niveau 1 est atteint quand les tests sont entierement integres dans la CI/CD et declenchent automatiquement a chaque changement — c'est le seuil minimal cible.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-115 — Technical Guide to Information Security Testing and Assessment (NIST, 2008, mise a jour 2021)",
+            "pyramid": 1,
+            "year": 2008,
+            "quote": "Technical security testing and examination involves the use of various tools and techniques to identify vulnerabilities in systems. The three primary methods are testing, examination, and interviewing — each revealing different aspects of the security posture.",
+            "note": "Baseline normative pour tout programme de security testing. Definit les methodes fondamentales (testing, examination, interviewing). Limite : anterieur a DevSecOps, pas de guidance CI/CD specifique. Standard niveau 1. Accord Reviewer A (inclure — baseline normative)."
+          },
+          {
+            "name": "NIST SP 800-218 — Secure Software Development Framework (SSDF) v1.1 (NIST, fevrier 2022)",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "PW.7: Review and/or analyze human-readable code to identify vulnerabilities and verify compliance with security requirements. RV.1: Identify and confirm vulnerabilities on an ongoing basis. Organizations should use automated tools where feasible to make vulnerability identification scalable and consistent.",
+            "note": "Framework normatif le plus recent, directement applicable au DevSecOps. Declenche par Executive Order 14028. 4 groupes de pratiques : PO, PS, PW, RV. SBOM comme livrable requis. Framework outcome-based, pas outil-prescriptif. Draft v1.2 ajoute GenAI. Standard niveau 1. Accord Reviewer B (source critique, inclure)."
+          },
+          {
+            "name": "OWASP SAMM v2.0 — Software Assurance Maturity Model (OWASP, 2020)",
+            "pyramid": 2,
+            "year": 2020,
+            "quote": "The first level of maturity is reached when these tests are entirely integrated into the CI/CD pipeline and are triggered automatically with every change.",
+            "note": "Modele de maturite niveau 1 a 3. Definit les activites concretes par phase de maturite : SCA → SAST → DAST. Fournit le cadre de progression pour une equipe. Niveau 2 de la pyramide EBSE — reference de premier plan. Accord Reviewer A (inclure — modele de maturite essentiel)."
+          },
+          {
+            "name": "OWASP DevSecOps Guideline (OWASP, 2024, GitHub actif)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "SAST tools examine source code to identify SQL injection, XSS. DAST tools scan a running application to detect runtime-exploitable vulnerabilities. Pipeline steps can be customized progressively.",
+            "note": "Sequence recommandee : secrets scanning → SAST → SCA → DAST → IAST. Inclut le CI/CD Security Cheat Sheet. Source de premier plan maintenue activement. Niveau 2. Accord Reviewer B (inclure — sequence pipeline CI/CD)."
+          },
+          {
+            "name": "OWASP Web Security Testing Guide v4.2 (OWASP, 2020)",
+            "pyramid": 2,
+            "year": 2020,
+            "quote": "The WSTG provides a comprehensive guide for testing the security of web applications and web services. Each test is identified with a unique code (WSTG-INPV, WSTG-SESS, etc.) enabling traceability between findings and test coverage.",
+            "note": "90+ cas de test web avec identifiants standardises. Definit ce que le DAST doit couvrir. Limite : oriente pentest manuel, le DAST automatise couvre un sous-ensemble. Niveau 2. Accord Reviewer A (inclure — taxonomie des tests DAST)."
+          },
+          {
+            "name": "Charoenwet P. et al. — An Empirical Study of Vulnerability-Contributing Commits (ISSTA 2024, ACM)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "At least 76% of warnings in vulnerable functions are irrelevant to VCCs. 22% of vulnerable commits completely undetected by single SAST tools.",
+            "note": "319 vulnerabilites reelles en C/C++. Justifie empiriquement la combinaison multi-outils et la necessite du triage. Chiffres cles : 76% de faux positifs dans les fonctions vulnerables, 22% de manques. Limite : porte sur C/C++, pas TypeScript/NestJS — transferabilite partielle. Etude empirique top-tier ACM (niveau 3). Accord Reviewer A (inclure — etude empirique top-tier)."
+          },
+          {
+            "name": "NIST SAMATE / SATE IV — Static Analysis Tool Exposition (NIST, 2012+)",
+            "pyramid": 3,
+            "year": 2012,
+            "quote": "False positive rates vary significantly across tools, ranging from 3% to 48% for the same codebase. No single tool achieves both high detection rate and low false positive rate.",
+            "note": "Etalonnage empirique des outils SAST. Etablit la variabilite inter-outils et justifie l'approche multi-outils. Niveau 3. Accord Reviewer A (inclure — variabilite inter-outils)."
+          },
+          {
+            "name": "Feio R., Santos A., Escravana N., Pacheco F. — Empirical Study of DevSecOps Framework in Real Conditions (IEEE EuroS&PW 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The results indicate that the framework's implementation was successful, enabling the development team to identify numerous vulnerabilities, including critical ones, proactively.",
+            "note": "Seule etude empirique d'un framework DevSecOps complet (SCA + DAST + red/blue team) en conditions reelles dans un pipeline CI/CD. Niveau 3 IEEE. Accord Reviewer A (inclure — seule etude empirique framework DevSecOps complet)."
+          },
+          {
+            "name": "Mateo Tudela J.I. et al. — Benchmark OWASP Top Ten SAST+DAST+IAST (MDPI Applied Sciences 2020)",
+            "pyramid": 3,
+            "year": 2020,
+            "quote": "SAST tools obtain better true positive ratios but worse false positive ratios than DAST tools. Combining SAST+DAST+IAST improves coverage and reduces false positives.",
+            "note": "Benchmark avec 2 SAST + 2 DAST + 2 IAST sur OWASP Top Ten. Confirme empiriquement la complementarite des approches. Niveau 3. Accord Reviewer B (inclure — confirme combinaison SAST+DAST+IAST)."
+          },
+          {
+            "name": "ACM EASE 2025 — SAST Effectiveness Comparison (ACM, 2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "SAST false positive rates range 15-60% in real-world deployments — one survey found 98% of SAST findings unexploitable at runtime.",
+            "note": "Donnees recentes sur les taux de faux positifs SAST en conditions reelles. Sparrow meilleur recall, Fortify SCA meilleur usability. Confirme la necessite de strategies de triage. Niveau 3. Accord Reviewer B (inclure — donnees recentes sur FP SAST)."
+          },
+          {
+            "name": "eslint-plugin-security (eslint-community, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Detects potentially unsafe regular expressions (ReDoS), Trojan source unicode bidi attacks, dynamic code execution with variable arguments, path traversal in fs calls.",
+            "note": "SAST Node.js leger integrable directement dans le lint GitHub Actions existant. Zero configuration supplementaire. Directement applicable NestJS. Accord Reviewer A (inclure — outil SAST Node.js specifique, zero config)."
+          },
+          {
+            "name": "npm audit — documentation officielle (npm docs, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "npm audit only detects known vulnerabilities after they are reported — misses newly published malicious packages.",
+            "note": "SCA natif npm, zero configuration. Limite documentee : ne detecte que les vulns connues apres signalement. 65% des CVEs sans score CVSS selon Sonatype 2026. Inclus comme filet minimal. Accord Reviewer A (inclure — SCA natif npm)."
+          },
+          {
+            "name": "OWASP Dependency-Check (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "OWASP Dependency Check is a Software Composition Analysis tool that attempts to detect publicly disclosed vulnerabilities contained within a project's dependencies. It uses multiple data sources: NVD, NPM Audit API, RetireJS, OSS Index.",
+            "note": "Alternative SCA plus complete que npm audit seul. Multi-DB : NVD + NPM Audit API + RetireJS + OSS Index. Support Node.js marque 'experimental'. Niveau 2 (OWASP). Accord Reviewer A (inclure — alternative SCA plus complete)."
+          },
+          {
+            "name": "GitHub Dependabot — documentation officielle (GitHub Docs, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "More than 80% of security updates by Dependabot for npm/Yarn projects. Dependabot creates pull requests automatically to keep dependencies up to date and fix known vulnerabilities.",
+            "note": "SCA automatise GitHub natif. Gratuit repos publics et prives. CVSS score + detection d'appels de fonctions vulnerables. Integration native GitHub Actions. Accord Reviewer B (inclure — SCA automatise GitHub)."
+          },
+          {
+            "name": "Semgrep — documentation et rulesets (Semgrep Inc., 2024-2025)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Semgrep supports NestJS/Express/React at the engine level, covering OWASP Top Ten server-side JavaScript vulnerabilities. Ruleset p/typescript is available for open-source use.",
+            "note": "SAST open-source avec support NestJS natif. Rulesets p/typescript et p/owasp-top-ten. GitHub Actions natif. Gratuit open-source, payant Semgrep Code (fonctions avancees). Accord Reviewer B (inclure — SAST open-source NestJS support)."
+          },
+          {
+            "name": "OWASP ZAP — zaproxy/action-full-scan (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "ZAP full scan: spider → AJAX spider → active scan. Alerts are automatically converted to GitHub Issues. Integration with Noir (2024) improves endpoint discovery.",
+            "note": "DAST open-source de reference. GitHub Actions natif via zaproxy/action-full-scan. Requiert une app deployee (staging) — ne s'execute pas sur chaque PR. Niveau 2 (OWASP). Accord Reviewer B (inclure — DAST open-source GitHub Actions)."
+          },
+          {
+            "name": "IBM/NIST/Capers Jones — Shift-left cost ratios (1981/2000s, confirme NIST)",
+            "pyramid": 3,
+            "year": 2000,
+            "quote": "IBM: 1x design, 6.5x implementation, 15x testing, 60-100x after release.",
+            "note": "Justification economique du shift-left security. Confirme par NIST et Jones sur 12 000+ projets. Les ratios exacts sont debattus mais la direction du cout croissant est incontestee. Inclus avec nuance. Accord Reviewer A (inclure avec nuance — ratios contestes, direction confirmee)."
+          },
+          {
+            "name": "Snyk — State of Open Source Security 2024",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "24,000+ new vulnerabilities in 2024. Average project: 49 vulnerabilities, 79 direct dependencies. 24% of organizations confident in the security of their dependencies.",
+            "note": "Donnees terrain sur la densite de vulnerabilites dans les projets open-source. 11.3% recul adoption outils securite en 2024 (facteur de resistance). Niveau 4 (rapport commercial). Accord Reviewer B (inclure — donnees terrain vulnerabilites dependances)."
+          },
+          {
+            "name": "Snyk/Orca — Dependency Confusion incidents (2021-2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Prevention: scoped packages with org namespace + .npmrc routing. Real incidents: Axios 2026, debug/chalk 2024.",
+            "note": "Vecteur supply chain actionnable. Incidents reels documentes. Justifie les recommandations concretes de configuration .npmrc et scoped packages. Niveau 4. Accord Reviewer A (inclure — vecteur supply chain actionnable)."
+          },
+          {
+            "name": "IDC DevSecOps Survey 2024 / Gartner",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Nearly 70% of organizations adopting DevSecOps in 2024 cited cultural resistance as primary challenge.",
+            "note": "Donnees de contexte adoption DevSecOps. Identifie la resistance culturelle comme obstacle principal. Inclus comme donnee contextuelle, pas comme preuve primaire. Niveau 4. Accord Reviewer B (inclure — donnees de contexte adoption)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 2 sources niveau 1 (NIST SP 800-115, NIST SP 800-218 SSDF) + 4 sources niveau 2 (OWASP SAMM, WSTG, DevSecOps Guideline, Dependency-Check) + 6 etudes empiriques niveau 3 (Charoenwet ISSTA 2024, NIST SAMATE, Feio IEEE 2024, Mateo Tudela 2020, ACM EASE 2025, npm audit docs) convergent sans contradiction sur : (1) approche multicouche obligatoire — aucun outil unique ne suffit ; (2) integration CI/CD automatisee superieure au testing manuel ponctuel ; (3) shift-left reduit les couts de remediation. Convergence etablie sur 4 contextes distincts : normatif NIST, referentiels OWASP, etudes empiriques peer-reviewed, documentation outils.",
+            "effet important : Charoenwet ISSTA 2024 : 76% faux positifs dans les fonctions vulnerables + 22% commits vulnerables manques par un seul outil SAST ; NIST SAMATE : FP 3-48% selon les outils ; IBM/NIST : cout 1x → 60-100x entre design et production ; Snyk 2024 : 49 vulns en moyenne par projet. Effets quantifies sur plusieurs ordres de grandeur."
+          ],
+          "minus": [
+            "indirectness : les etudes empiriques SAST les plus rigoureuses (Charoenwet ISSTA 2024, NIST SAMATE/SATE IV) portent sur C/C++, pas sur TypeScript/NestJS. Pas d'etude academique specifique NestJS + security testing. La transferabilite des metriques de faux positifs et de taux de detection est partielle — les vulnerabilites web (injection, XSS, SSRF) relevent de patterns differents des vulnerabilites memoire C/C++."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-218 SSDF v1.1 (2022) — cadre normatif le plus recent, outcome-based, Executive Order 14028, 4 groupes PO/PS/PW/RV + SBOM requis — standard niveau 1",
+          "Charoenwet et al. ISSTA 2024 — 22% commits vulnerables manques par un seul outil SAST + 76% faux positifs dans les fonctions vulnerables — justification empirique top-tier de l'approche multi-outils"
+        ],
+        "etd_balance": {
+          "benefices": "Detection precoce des vulnerabilites au commit plutot qu'en production — reduction drastique du cout de remediation (IBM/NIST : 1x → 60-100x). Couverture complementaire : SAST detecte les vulnerabilites statiques (injection, traversee de chemin, code dynamique non securise), DAST detecte les vulnerabilites runtime (logique d'authentification, comportement sous charge), SCA detecte les dependances vulnerables connues. GitHub Dependabot automatise les mises a jour de securite des dependances sans intervention manuelle (>80% des mises a jour npm/Yarn). Conformite facilitee avec NIST SSDF v1.1 (Executive Order 14028) et OWASP SAMM niveau 1. Retour rapide aux developpeurs grace a l'integration dans le lint (eslint-plugin-security) et le CI (Semgrep, npm audit).",
+          "risques": "Taux de faux positifs SAST eleves (15-60%) pouvant generer de la friction si mal configures — risque de 'alert fatigue' et de desactivation des outils. DAST sur staging : risque d'introduction de delais dans le pipeline si le scan ZAP full est trop long (mitigation : mode baseline pour les PRs, full scan pour les deploiements staging). Couts outils : SAST/DAST commerciaux coutent 50K-200K USD/an pour les organisations moyennes (open-source reduit ce risque). Fausse securite si un seul outil est deploye : 22% des commits vulnerables echappent a un outil SAST unique.",
+          "balance": "Benefices >> Risques. Les risques sont principalement operationnels (configuration, faux positifs) et non structurels. La strategie de triage (CRITICAL/HIGH bloquant, MEDIUM alertant, LOW documente) est la mitigation standard documentee. L'approche open-source (Semgrep, ZAP, Dependabot, eslint-plugin-security, npm audit) reduit les couts a quasi-zero pour un projet NestJS+React sur GitHub.",
+          "faisabilite": "Haute pour la stack NestJS+React+GitHub Actions. Tous les outils recommandes ont une integration GitHub Actions native et documentee. eslint-plugin-security s'ajoute en 2 lignes au package.json. Semgrep propose une GitHub Action officielle. Dependabot se configure via .github/dependabot.yml en 10 lignes. OWASP ZAP propose zaproxy/action-full-scan pret a l'emploi. La sequence complete (secrets → SAST → SCA → DAST staging) peut etre operationnelle en une journee de travail."
+        },
+        "prisma_ref": "verification/prisma/security-testing.md",
+        "sensitivity_ref": "verification/extractions/security-testing.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

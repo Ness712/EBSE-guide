@@ -1,0 +1,85 @@
+{
+  "id": "defensive-programming",
+  "domain": "design",
+  "question": "Comment appliquer la programmation défensive — préconditions, postconditions, assertions — pour détecter les violations d'invariants au plus tôt et protéger les routines contre les entrées invalides ?",
+  "depends_on": [],
+  "tags": ["defensive-programming", "design-by-contract", "assertions", "preconditions", "postconditions", "validation", "fail-fast", "guard-clauses", "nestjs", "class-validator"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Deux approches complémentaires — ne pas les confondre : Design by Contract (Meyer) et programmation défensive (McConnell). DbC est un modèle de contrats formels : la précondition est une obligation du client (la routine a le droit de supposer qu'elle est vraie à l'entrée) ; la postcondition est une garantie de la routine envers ses clients (vraie à la sortie si la précondition était satisfaite) ; l'invariant de classe doit être satisfait par toute instance à chaque point d'accès externe. Dans ce modèle, la routine ne vérifie PAS les préconditions au runtime — c'est la responsabilité de l'appelant. La programmation défensive adopte la posture inverse : la routine se protège elle-même contre les entrées invalides même si ce sont des erreurs de l'appelant. En pratique, les deux sont complémentaires — DbC définit les contrats au niveau de la conception, la programmation défensive les applique à l'exécution aux frontières où la confiance n'est pas garantie.\n\nFail-fast : le principe fondamental est de détecter les erreurs au plus tôt, à la frontière du système — là où des données externes entrent dans la logique interne (entrée utilisateur, appel API externe, lecture base de données, message de queue). Propager des données invalides dans la logique métier amplifie les erreurs : elles se manifestent loin de leur source, produisent des états silencieusement corrompus, et génèrent des bugs difficiles à tracer. La validation doit court-circuiter l'exécution immédiatement sur données invalides, avant toute transformation.\n\nGuard clauses : McConnell préconise le retour anticipé sur les cas invalides plutôt que l'imbrication de conditions. Au lieu de imbriquer tout le corps de la routine dans un bloc `if (valid)`, écrire une série de gardes en début de fonction qui retournent ou lèvent une exception immédiatement. Cela réduit le nesting, explicite les invariants attendus, et rend la lecture du chemin nominal plus directe.\n\nAssertions TypeScript (`asserts condition`) : TypeScript 3.7 introduit les fonctions d'assertion avec le type de retour `asserts condition`. Une fonction annotée `asserts x is T` garantit au compilateur que si elle retourne normalement (sans lever), `x` est de type `T` dans toute la portée suivante. Cela permet un narrowing de type intégré — la vérification d'invariant interne et le raffinement de type se produisent simultanément, sans cast manuel. Utiliser pour les vérifications d'invariants internes entre modules qui se font confiance, et pour documenter les hypothèses implicites en préconditions vérifiables.\n\nNestJS ValidationPipe + class-validator : l'implémentation canonique des préconditions sur les DTOs en NestJS est le `ValidationPipe` global avec `class-validator`. Les décorateurs `@IsString()`, `@MinLength(n)`, `@IsEmail()`, `@IsNotEmpty()`, etc. définissent les préconditions directement sur la classe DTO — les annotations sont la spécification du contrat. `ValidationPipe` avec `whitelist: true` rejette automatiquement toutes les propriétés non décorées, empêchant l'injection de champs inattendus. `forbidNonWhitelisted: true` lève une erreur explicite plutôt que de les ignorer silencieusement. Cette configuration transforme le DTO en vérification de préconditions automatique avant que le handler du contrôleur ne soit invoqué.\n\nOWASP — validation côté serveur obligatoire : la validation côté client (navigateur, formulaire React) peut être contournée par un attaquant modifiant la requête HTTP directement. Elle a sa place pour le retour d'erreur immédiat à l'utilisateur (UX), mais n'a aucune valeur de sécurité. La validation côté serveur est non négociable. Pour le type de validation, l'allowlist (définir exactement ce qui est autorisé) est préférable à la denylist (interdire des patterns connus) — une denylist peut toujours être contournée par des encodages, variations de casse ou caractères de contrôle non anticipés. La validation n'est pas le seul rempart contre XSS ou SQL injection — paramétrer les requêtes SQL et échapper l'output HTML sont des défenses complémentaires — mais la validation aux frontières contribue significativement à la réduction de la surface d'attaque.\n\nNuance McConnell : trop de programmation défensive génère un code lent, gonflé, difficile à maintenir. La règle : valider aux frontières de confiance, pas entre modules internes qui se font mutuellement confiance. À l'intérieur d'un sous-système cohérent, ajouter des vérifications défensives redondantes est du bruit — utiliser des assertions (qui peuvent être désactivées en production) plutôt que des vérifications défensives actives. Réserver la validation active aux points d'entrée du système : contrôleurs HTTP, consommateurs de messages, adaptateurs d'infrastructure.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Meyer B. — Object-Oriented Software Construction, 2e éd. (Prentice Hall, 1997)",
+            "pyramid": 5,
+            "year": 1997,
+            "quote": "A precondition is an obligation for the client [...]. The postcondition guarantees to its clients for calls satisfying the precondition. A class invariant must be satisfied by every instance whenever externally accessible.",
+            "note": "Ouvrage fondateur de Design by Contract — Meyer en est l'inventeur. Définit les préconditions, postconditions et invariants de classe comme contrats formels. Niveau 5 — expert reconnu, ouvrage de référence en génie logiciel. Accord A/B."
+          },
+          {
+            "name": "McConnell S. — Code Complete, 2e éd. (Microsoft Press, 2004), ch. 8",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "Defensive programming doesn't mean being defensive about your programming. [...] if a routine is passed bad data, it won't be hurt, even if the bad data is another routine's fault. Guard clauses are the runtime equivalent of assertions; precondition checks that make sure values are safe to be processed. Too much defensive programming creates problems of its own.",
+            "note": "Référence fondatrice sur la programmation défensive. Chapitre 8 traite en détail les guard clauses, assertions, et la distinction entre validation aux frontières et entre modules internes. La nuance 'too much' est essentielle. Niveau 5 — expert reconnu. Accord A/B."
+          },
+          {
+            "name": "SWEBOK v4 — KA Software Construction (IEEE Computer Society, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Defensive programming means to protect a routine from being broken by invalid inputs. Design by Contract is a development approach in which preconditions and postconditions are included for each routine.",
+            "note": "Standard normatif IEEE consolidant l'état de l'art en génie logiciel. Valide explicitement les deux approches (défensive + DbC) dans le KA Software Construction. Niveau 1 — standard IEEE. Accord A/B."
+          },
+          {
+            "name": "TypeScript 3.7 — Assertion Functions (typescriptlang.org, 2019)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "asserts condition — whatever gets passed into the condition parameter must be true if the assert returns. That means for the rest of the scope, that condition must be truthy.",
+            "note": "Documentation officielle TypeScript décrivant les fonctions d'assertion avec narrowing de types intégré. Directement applicable pour l'implémentation des préconditions internes avec garantie de type. Niveau 3 — documentation officielle du langage. Accord A/B."
+          },
+          {
+            "name": "NestJS — Pipes & Validation (docs.nestjs.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "ValidationPipe with class-validator decorators provides a canonical implementation of fail-fast validation before business logic. Use whitelist: true to strip non-whitelisted properties, forbidNonWhitelisted: true to throw on unexpected properties.",
+            "note": "Documentation officielle NestJS sur ValidationPipe + class-validator. Implémentation canonique des préconditions sur les DTOs — directement actionnable. Niveau 3 — documentation framework officielle. Accord A/B."
+          },
+          {
+            "name": "OWASP — Input Validation Cheat Sheet (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Allowlist validation involves defining exactly what IS authorized. [...] Client-side validation can be circumvented by an attacker — implement both client-side (UX) and server-side (security). [...] Input validation should not be used as the primary method of preventing XSS/SQLi but can significantly contribute.",
+            "note": "Guide prescriptif OWASP sur la validation des entrées. Définit la hiérarchie allowlist > denylist et l'obligation de la validation côté serveur. Nuance sur le périmètre (XSS/SQLi nécessitent des défenses complémentaires). Niveau 2 — OWASP référence. Source B uniquement, incluse car directement pertinente pour la frontière sécurité."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : SWEBOK v4 (niveau 1) + Meyer (niveau 5) + McConnell (niveau 5) + OWASP (niveau 2) + NestJS ValidationPipe (niveau 3) convergent sans contradiction sur les mêmes principes centraux : validation aux frontières, fail-fast, guard clauses, distinction DbC vs défensif. 5 sources indépendantes de 4 catégories distinctes (normatif, fondateurs, sécurité applicative, documentation framework).",
+            "effet important : la programmation défensive prévient les crashes, les états silencieusement corrompus et les injections aux frontières du système. OWASP documente l'impact sécurité de la validation manquante (XSS, SQLi). McConnell documente l'impact maintenance (bugs propagés loin de leur source). L'effet est multi-dimensionnel (fiabilité + sécurité + maintenabilité)."
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "SWEBOK v4 2024 — valide les deux approches (DbC + défensive) dans le standard normatif IEEE (niveau 1, contrainte de référence)",
+          "McConnell Code Complete ch. 8 — source la plus complète sur la programmation défensive, guard clauses, nuance 'too much' (niveau 5, fondateur)",
+          "OWASP Input Validation Cheat Sheet 2024 — ancre la validation côté serveur dans le contexte sécurité et définit la hiérarchie allowlist > denylist (niveau 2)"
+        ],
+        "etd_balance": {
+          "benefices": "Détection précoce des violations d'invariants — erreur levée au point d'entrée plutôt que propagée dans la logique métier. Réduction des états silencieusement corrompus. Protection contre les injections aux frontières système (XSS, SQLi, données malformées). Contrats explicites sur les DTOs (class-validator) — la spécification est dans le code, lisible et vérifiable. Assertion functions TypeScript — narrowing de type et vérification d'invariant simultanés, sans cast manuel. Guard clauses — code plus lisible, nesting réduit, chemin nominal évident.",
+          "risques": "Validation excessive entre modules internes — code lent, gonflé, difficile à maintenir (McConnell : 'too much defensive programming creates problems of its own'). Fausse confiance dans la validation côté client — contournable par modification directe de requête HTTP. Allowlist trop stricte — peut rejeter des entrées légitimes si les règles ne couvrent pas tous les cas valides. Duplication des règles de validation entre client et serveur si non factorisée (schémas partagés Zod ou similaire).",
+          "balance": "Bénéfices >> Risques si appliqué aux frontières de confiance uniquement. Le risque principal (validation excessive entre modules internes) est géré par la règle de portée : valider aux points d'entrée du système (contrôleurs HTTP, consommateurs de messages, adaptateurs d'infrastructure), utiliser des assertions désactivables entre modules internes qui se font confiance.",
+          "faisabilite": "Haute — NestJS : ValidationPipe global avec class-validator, configuration en 5 lignes dans main.ts (whitelist: true, forbidNonWhitelisted: true, transform: true) ; TypeScript : assertion functions natives depuis 3.7, sans dépendance externe ; React : validation Zod ou class-validator partagée avec le backend si DTOs typés. La configuration canonique NestJS est documentée et testable par tests d'intégration (supertest + DTOs invalides)."
+        },
+        "prisma_ref": "verification/prisma/defensive-programming.md",
+        "sensitivity_ref": "verification/extractions/defensive-programming.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

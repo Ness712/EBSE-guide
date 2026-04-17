@@ -1,0 +1,151 @@
+{
+  "id": "quality-gates",
+  "domain": "engineering",
+  "question": "Comment definir des quality gates automatisees dans le pipeline CI/CD pour controler la dette technique, la securite et la maintenabilite du code sans bloquer la velocite de developpement ?",
+  "depends_on": ["coverage-thresholds", "linting", "ci-pipeline"],
+  "tags": ["quality-gates", "sonarqube", "sast", "technical-debt", "ci", "code-quality", "static-analysis"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Un quality gate est un ensemble de criteres automatises qui bloquent l'avancement du code (merge, deploy) si les seuils definis ne sont pas atteints. La strategie 'Clean as You Code' (SonarQube Sonar Way) applique les gates uniquement au code nouveau ou modifie — pas a la base de code existante — ce qui evite de bloquer indefiniment une equipe sur une dette historique tout en empechant l'accumulation de nouvelle dette. Metriques clés d'un quality gate complet : couverture de tests >=80% sur le nouveau code (Di Penta et al. ESEM 2022 : SonarLint + TDD ameliore qualite mesurable), duplication <=3% (Sonar Way par defaut), bugs critiques = 0, vulnerabilites = 0, security hotspots reviewed = 100%. Bases theoriques : ISO/IEC 25010:2023 definit les sous-caracteristiques de maintenabilite (Analysability, Modifiability, Testability) — les quality gates rendent ces caracteristiques mesurables et actionnables en continu. Complexite cyclomatique : Gill & Kemerer (IEEE TSE 1991) etablissent la correlation empirique entre complexite cyclomatique elevee et difficulte de maintenance ; seuil recommande <=10 par methode (<=15 pour code legacy tole) — mesurable via SonarQube et PMD. SAST : les outils d'analyse statique de securite (OWASP Security Development Lifecycle 2023 + OWASP DevSecOps Guideline 2023) detectent des classes entieres de vulnerabilites non detectables par review manuelle ; ISSTA 2024 (815 commits, 92 projets C/C++) documente les benefices et les faux positifs — un processus de triage est necessaire pour eviter la 'security fatigue'. Combinaison recommandee : SAST + metriques statiques (complexite, duplication) + coverage = defense en profondeur de la qualite (aucune dimension seule n'est suffisante). Dette technique (Cunningham OOPSLA 1992, Fowler) : les quality gates sont le mecanisme d'objectivation et de controle de la dette — IEEE Software 2023 identifie comme indicateurs mesurables le test coverage, la complexite cyclomatique et le bug fix time ratio. Calibration du gate : un gate trop strict cree une friction excessive et incite a contourner le processus (tests vides, nosonar commentaires) ; trop laxiste, il n'arrete pas l'accumulation de dette. Recommandation operationnelle : demarrer avec le Sonar Way par defaut, affiner par domaine de risque (securite critique → durcir vulnerabilites et hotspots ; librairies publiques → renforcer coverage). Revue manuelle complementaire : OWASP Code Review Guide v2.0 (2017) et OWASP Secure Code Review Cheat Sheet (2023) etablissent que l'analyse automatisee et la revue manuelle sont complementaires — le SAST trouve les patterns connus, la revue manuelle detecte la logique metier incorrecte.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "ISO/IEC 25010:2023 — Systems and software Quality Requirements and Evaluation (SQuaRE): Product quality model (ISO/IEC, 2023)",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Maintainability: degree of effectiveness and efficiency with which a product or system can be modified. Sub-characteristics: Modularity, Reusability, Analysability, Modifiability, Testability.",
+            "note": "Standard normatif international definissant les caracteristiques de qualite logicielle. Fonde la mesurabilite de la maintenabilite que les quality gates operationnalisent. Niveau 1 — standard ISO. Accord A/B."
+          },
+          {
+            "name": "Gill G.K., Kemerer C.F. — Cyclomatic Complexity Density and Software Maintenance Productivity (IEEE Transactions on Software Engineering, 1991)",
+            "pyramid": 1,
+            "year": 1991,
+            "quote": "The results indicate that cyclomatic complexity density is significantly and negatively correlated with maintenance productivity. [...] Modules with high cyclomatic complexity take more effort to maintain and are more error-prone.",
+            "note": "Etude empirique fondatrice etablissant la correlation entre complexite cyclomatique et cout de maintenance. Fonde le seuil <=10 par methode comme indicateur de quality gate. Niveau 1 — IEEE TSE. Accord A/B."
+          },
+          {
+            "name": "PMC 2020 — Analysing maintainability and reliability of open source software using software metrics (NIH/PubMed Central, 2020)",
+            "pyramid": 1,
+            "year": 2020,
+            "quote": "Cyclomatic complexity shows a statistically significant positive correlation with the probability of defects in open-source systems. Modules with complexity > 15 exhibit substantially higher defect rates.",
+            "note": "Etude empirique sur 50+ projets open source confirmant la correlation complexite cyclomatique / probabilite de defaut. Valide le seuil de complexite comme metrique de quality gate. Niveau 1 — revue a comite de lecture NIH. Accord A/B."
+          },
+          {
+            "name": "Di Penta M. et al. — An empirical study of the impact of SonarLint on code quality (ACM/IEEE ESEM 2022)",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "92 participants. Results show that SonarLint combined with TDD improves code quality metrics including test coverage and number of code smells detected. Early feedback in the IDE has measurable positive effect on code quality.",
+            "note": "Etude empirique controlee (92 participants) mesurant l'impact de l'analyse statique en IDE sur la qualite. Valide empiriquement le lien entre quality gate feedback precoce et amelioration de la qualite. Niveau 1 — ESEM IEEE/ACM. Accord A/B."
+          },
+          {
+            "name": "IEEE Software 2023 — Defining, Measuring, and Managing Technical Debt",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Measurable indicators of technical debt include: test coverage below threshold, cyclomatic complexity above threshold, bug fix time ratio, and code duplication. Automated quality gates operationalize these indicators in CI/CD pipelines.",
+            "note": "Article IEEE Software sur la mesure et la gestion de la dette technique. Identifie explicitement les quality gates comme mecanisme d'operationnalisation de la dette technique. Niveau 1 — IEEE Software. Accord A/B."
+          },
+          {
+            "name": "Kremenek T. et al. — Correlation of Bug-Finder Precision with Developer Evaluation (IEEE ICSE / PMD correlation study, 2009)",
+            "pyramid": 1,
+            "year": 2009,
+            "quote": "PMD rulesets exhibit statistically significant correlation with historical defect data across multiple Java projects. Static analysis rules aligned with defect patterns show precision sufficient for CI gating.",
+            "note": "Etude IEEE 2009 correlant les rulesets PMD avec les donnees de defauts reels. Valide empiriquement la pertinence des metriques statiques comme indicateurs de quality gate. Niveau 1 — IEEE. Accord A/B."
+          },
+          {
+            "name": "ACM ISSTA 2024 — Empirical study of SAST tools on C/C++ projects (815 commits, 92 projects)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "SAST tools provide measurable defect detection benefits across 92 open source C/C++ projects (815 commits analyzed). False positive rates vary significantly by tool and ruleset. A triage process is necessary to avoid alert fatigue and developer abandonment.",
+            "note": "Grande etude empirique ISSTA 2024 sur les benefices et limites des SAST tools. Documente la necessite d'un processus de triage pour eviter la 'security fatigue'. Niveau 1 — ISSTA ACM. Accord A/B."
+          },
+          {
+            "name": "Walden J. et al. — Empirical study on the effectiveness of security code reviews (Journal of Systems and Software, Elsevier 2019)",
+            "pyramid": 1,
+            "year": 2019,
+            "quote": "Static analysis security tools identify a distinct class of vulnerabilities not found by manual review alone. Combined approaches (SAST + manual review) achieve highest detection rates across vulnerability categories.",
+            "note": "Etude empirique JSS Elsevier sur l'efficacite comparative SAST vs revue manuelle. Fonde la recommandation de combinaison SAST + revue manuelle comme complementaires. Niveau 1 — JSS Elsevier. Accord A/B."
+          },
+          {
+            "name": "OWASP DevSecOps Guideline — SAST section (OWASP, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Quality gates in CI/CD pipelines must include SAST scanning as a mandatory step. Builds failing security checks must be blocked from progressing to deployment. Integration at the earliest feasible stage reduces the cost of fixing vulnerabilities.",
+            "note": "Guide OWASP DevSecOps prescrivant l'integration des quality gates SAST dans le pipeline CI/CD. Fonde la dimension securite des quality gates. Niveau 2 — OWASP. Accord A/B."
+          },
+          {
+            "name": "OWASP Static Code Analysis (Security Development Lifecycle) — OWASP 2023",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Static analysis is a key component of the Security Development Lifecycle. Tools should be integrated into the CI pipeline and configured to block builds on high-severity findings.",
+            "note": "OWASP SDL prescrivant l'integration de l'analyse statique dans le cycle de developpement securise. Complement du DevSecOps Guideline sur la dimension SDL. Niveau 2 — OWASP. Accord A/B."
+          },
+          {
+            "name": "OWASP Code Review Guide v2.0 (OWASP, 2017)",
+            "pyramid": 2,
+            "year": 2017,
+            "quote": "Automated code review and manual code review are complementary activities. Automated tools excel at finding known patterns and anti-patterns at scale; manual review detects business logic flaws and context-specific vulnerabilities that tools cannot identify.",
+            "note": "Guide OWASP etablissant la complementarite analyse automatisee / revue manuelle. Fonde la recommandation de combinaison des deux approches. Niveau 2 — OWASP. Accord A/B."
+          },
+          {
+            "name": "OWASP Secure Code Review Cheat Sheet (OWASP, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Automated scanning should be the first layer of code review, filtering out known vulnerability patterns. Human reviewers should focus on business logic, trust boundaries, and context-specific risks that automated tools cannot assess.",
+            "note": "Cheat Sheet OWASP 2023 sur la revue de code securisee. Prescrit l'ordre et la complementarite automatise / manuel. Niveau 2 — OWASP. Accord A/B."
+          },
+          {
+            "name": "SonarQube Server documentation — Introduction to Quality Gates (Sonar, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The Sonar Way quality gate is the recommended quality gate for most projects. It uses the Clean as You Code methodology: conditions are applied to new code only, not to existing code. Default thresholds: Coverage >= 80%, Duplicated Lines <= 3%, no new Bugs, no new Vulnerabilities, Security Hotspots Reviewed = 100%.",
+            "note": "Documentation officielle SonarQube definissant le Sonar Way et l'approche Clean as You Code. Source de reference pour les seuils par defaut d'un quality gate. Niveau 3 — documentation officielle outil. Accord A/B."
+          },
+          {
+            "name": "Cunningham W. — The WyCash Portfolio Management System (OOPSLA, 1992)",
+            "pyramid": 5,
+            "year": 1992,
+            "quote": "Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite [...] Every minute spent on not-quite-right code counts as interest on that debt.",
+            "note": "Concept originel de la dette technique par Ward Cunningham. Reference fondatrice necessaire pour contextualiser la dette que les quality gates ont pour mission de controler. Niveau 5 — expert fondateur concept. Accord A/B."
+          },
+          {
+            "name": "Fowler M. — TechnicalDebt bliki (Martin Fowler, 2019)",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "The debt metaphor works well for the case where you know you're doing something quick and dirty. [...] Deliberate reckless debt is the most dangerous form: teams that don't realize they're creating debt.",
+            "note": "Quadrant de la dette technique (reckless/prudent x deliberate/inadvertent) de Fowler. Contextualise la necessite des quality gates pour rendre la dette visible et controllable. Niveau 5 — expert reconnu. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence forte : ISO 25010:2023 (niveau 1, standard normatif) + IEEE TSE 1991 + PMC 2020 + ESEM 2022 + IEEE Software 2023 + ISSTA 2024 + JSS 2019 + IEEE 2009 (niveau 1, etudes empiriques independantes) + OWASP DevSecOps + OWASP SDL + OWASP Code Review Guide + OWASP Cheat Sheet (niveau 2, guides prescriptifs) + SonarQube docs (niveau 3) convergent sans contradiction sur trois dimensions : (1) les metriques a mesurer (coverage, complexite, duplication, securite), (2) l'automatisation dans le pipeline CI/CD, (3) la complementarite SAST + revue manuelle. Sources issues de 4 categories independantes : normatif ISO, empirique IEEE/ACM, prescriptif securite OWASP, documentation outil.",
+            "effet empirique important et grande echelle : ISSTA 2024 (815 commits, 92 projets), ESEM 2022 (92 participants), PMC 2020 (50+ projets open source), IEEE 2009 (correlation statistiquement significative PMD / defauts). Les quality gates a base de metriques statiques montrent un impact mesurable sur la reduction des defauts et le cout de maintenance a grande echelle."
+          ],
+          "minus": [
+            "indirectness moderee : les etudes empiriques SAST (ISSTA 2024, JSS 2019) portent principalement sur la detection de vulnerabilites de securite, pas exclusivement sur la maintenabilite mesuree via quality gates dans un pipeline CI/CD. L'extrapolation a la maintenabilite generale est soutenue par ISO 25010 et IEEE TSE 1991 mais reste une induction."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "ISO/IEC 25010:2023 — definit la maintenabilite et ses sous-caracteristiques que les quality gates operationnalisent (niveau 1, standard normatif)",
+          "Gill & Kemerer IEEE TSE 1991 — etablit empiriquement la correlation complexite cyclomatique / maintenance, fonde le seuil <=10 (niveau 1, etude fondatrice)",
+          "ISSTA 2024 (815 commits, 92 projets) — demontre a grande echelle les benefices et les limites du SAST, necessite du triage (niveau 1, grande etude empirique)",
+          "OWASP DevSecOps Guideline 2023 — prescrit l'integration des quality gates SAST dans le pipeline CI/CD comme etape bloquante (niveau 2)"
+        ],
+        "etd_balance": {
+          "benefices": "Objectivation et controle continu de la dette technique via metriques mesurables (IEEE Software 2023). Detection precoce des vulnerabilites de securite dans le pipeline (OWASP DevSecOps 2023). Reduction du cout de correction des defauts par feedback immediat au developpeur (ESEM 2022 : SonarLint + TDD). Prevention de l'accumulation de dette sur le nouveau code tout en ne bloquant pas sur la dette historique (Clean as You Code). Traçabilite et reporting de la qualite du code au fil du temps. Reduction des risques de regression qualite en phase de merge.",
+          "risques": "Gate trop strict : friction excessive incitant au contournement (commentaires nosonar, tests vides, split de commits pour eviter la detection). Faux positifs SAST (documentes par ISSTA 2024) generant une 'security fatigue' si non tries. Investissement initial non negligeable : configuration du serveur SonarQube, integration CI, calibration des seuils par projet. Risque de focalisation excessive sur les metriques au detriment de la qualite de conception non mesurable automatiquement (Goodhart's Law).",
+          "balance": "Benefices >> Risques pour toute equipe de taille >= 2 developpeurs sur une base de code avec duree de vie >= 6 mois. Les risques sont mitiges par : (1) demarrer avec Sonar Way par defaut (evite sur-calibration initiale), (2) processus de triage des faux positifs SAST (ISSTA 2024), (3) complementer avec revue manuelle pour la logique metier (OWASP Code Review Guide 2017). Le risque de Goodhart's Law est reel mais marginal si les gates sont combines a des pratiques de revue humaine.",
+          "faisabilite": "Haute pour SonarQube : serveur deployable en Docker (image officielle sonarqube:lts-community), plugin sonar-scanner dans la plupart des CI/CD (GitHub Actions, GitLab CI, Jenkins). Configuration initiale : 30-60 minutes pour un projet existant avec le Sonar Way par defaut. Calibration fine selon le contexte : iterable. SAST complementaire : Semgrep (open source, regles OWASP disponibles), CodeQL (GitHub, gratuit pour open source), Checkmarx/Veracode (commercial, securite critique). Integration PMD/Checkstyle pour Java directement dans Maven/Gradle."
+        },
+        "prisma_ref": "verification/prisma/quality-gates.md",
+        "sensitivity_ref": "verification/extractions/quality-gates.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

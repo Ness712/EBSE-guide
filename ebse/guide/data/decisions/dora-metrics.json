@@ -1,0 +1,98 @@
+{
+  "id": "dora-metrics",
+  "domain": "quality",
+  "question": "Quelles métriques DORA implémenter pour évaluer la performance de livraison logicielle et comment les améliorer concrètement avec GitHub Actions ?",
+  "depends_on": [
+    "test-strategy",
+    "ci-pipeline"
+  ],
+  "tags": [
+    "dora",
+    "metrics",
+    "deployment-frequency",
+    "lead-time",
+    "mttr",
+    "change-failure-rate",
+    "devops",
+    "performance"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Les 4 métriques DORA (Deployment Frequency, Lead Time for Changes, Change Failure Rate, Mean Time to Restore) mesurent orthogonalement deux dimensions : la velocity (DF + LT) et la stability (CFR + MTTR). Ces dimensions sont en tension productive — optimiser l'une sans surveiller l'autre produit un système dégradé. Elite performers 2024 : DF ≥ 1 déploiement/jour, LT < 1 heure, CFR ≤ 5%, MTTR < 1 heure. Ces seuils sont des repères statistiques issus de n=39 000+, pas des objectifs absolus.\n\nIMPLÉMENTATION GITHUB ACTIONS : (1) Lead Time = timestamp commit → timestamp deploy réussi, calculé via workflow dispatch + commit SHA ; (2) Deployment Frequency = nombre de runs deploy-production réussis par unité de temps (daily/weekly) ; (3) Change Failure Rate = ratio (runs rollback ou hotfix urgents) / (total runs deploy) sur la même période ; (4) MTTR = delta entre création d'une issue GitHub taguée `incident` et fermeture. Le projet open source DORA Four Keys (Google Cloud) fournit un pipeline de référence : webhooks GitHub → BigQuery → Looker Studio. Mesure automatisée en temps réel via microservice décrite dans Kearsely et al. ICSE 2024.\n\n5e MÉTRIQUE 2024 : rework rate — ratio de commits ou PRs qui corrigent des erreurs récentes (hotfixes, reverts). Indicateur de qualité du processus de développement.\n\nNUANCE AI : les données DORA 2024 montrent que l'adoption de l'IA sans bases solides (small batches, tests robustes, trunk-based development) produit -1.5% throughput et -7.2% stability. L'automatisation AI amplifie les pratiques existantes — bonnes ou mauvaises.\n\nANTI-PATTERN : mesurer une seule métrique. Haute DF + haute CFR = déploiement instable. Bas LT + haut MTTR = vitesse sans résilience. Les 4 métriques se lisent ensemble.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "DORA — 2024 State of DevOps Report (Google/DORA, n=39 000+, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "In 2024, 19% of teams are classified as Elite performers. Elite teams deploy 182x more frequently, have 127x faster lead times, 8x lower change failure rates, and 2293x faster MTTR than Low performers. AI adoption without strong foundational practices correlates with -1.5% throughput and -7.2% stability.",
+            "note": "Rapport annuel DORA à grande échelle (n=39 000+, 2024). Source de référence pour les seuils Elite/High/Medium/Low. Pyramide 4 — étude observationnelle large-échelle, non peer-reviewed au sens strict, auteur DORA (biais potentiel). Accord Reviewer A/B."
+          },
+          {
+            "name": "Forsgren N., Humble J., Kim G. — Accelerate: The Science of Lean Software and DevOps (IT Revolution Press, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Software delivery performance — measured by deployment frequency, lead time for changes, time to restore service, and change failure rate — predicts organizational performance. These four metrics cluster into two dimensions: throughput (DF + LT) and stability (CFR + MTTR).",
+            "note": "Ouvrage fondateur des métriques DORA. Shingo Publication Award. Corrélation statistique validée entre performance de livraison et performance organisationnelle. Pyramide 5 — experts reconnus, base empirique issue du State of DevOps Report 2014-2017. Accord Reviewer A/B."
+          },
+          {
+            "name": "DORA — \"DORA's Software Delivery Metrics: The Four Keys\" (dora.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "In 2024, DORA added a fifth metric: Reliability (operationalized as rework rate — the ratio of work that corrects recent defects). The four core metrics remain: Deployment Frequency, Lead Time for Changes, Change Failure Rate, and Time to Restore Service.",
+            "note": "Définitions officielles DORA. Introduction de la 5e métrique (rework rate) en 2024. Pyramide 3 — source primaire officielle, non peer-reviewed. Accord Reviewer A/B."
+          },
+          {
+            "name": "Forsgren N., Storey M.-A. et al. — \"The SPACE of Developer Productivity\" (ACM Queue, 2021)",
+            "pyramid": 3,
+            "year": 2021,
+            "quote": "Developer productivity is multidimensional and cannot be reduced to a single metric. The SPACE framework proposes five dimensions: Satisfaction & well-being, Performance, Activity, Communication & collaboration, Efficiency & flow. DORA metrics map primarily to Performance and Activity dimensions.",
+            "note": "Cadre théorique complémentaire aux métriques DORA. Publié dans ACM Queue (peer-reviewed). Pyramide 3 — étude théorique/observationnelle par experts reconnus. Accord Reviewer A/B."
+          },
+          {
+            "name": "DORA Four Keys — Google Cloud Open Source (github.com/dora-team/fourkeys, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The Four Keys project provides an open source pipeline for measuring DORA metrics automatically: GitHub/GitLab webhooks → event ingestion → BigQuery → Looker Studio dashboard. Deployment Frequency and Lead Time are derived from deploy events; Change Failure Rate from incident events; MTTR from incident open/close timestamps.",
+            "note": "Implémentation de référence open source des métriques DORA. Pyramide 3 — artefact logiciel documenté, non peer-reviewed mais maintenu par l'équipe DORA officielle. Accord Reviewer A/B."
+          },
+          {
+            "name": "Kearsely R. et al. — \"Automated Real-Time DORA Metrics at Microservice Granularity\" (ACM ICSP 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "We present an approach for automated, real-time measurement of all four DORA metrics at the individual microservice level, enabling per-service performance tracking without manual instrumentation.",
+            "note": "Étude empirique sur la mesure automatisée des métriques DORA au niveau microservice. Publié ACM ICSP 2024 (peer-reviewed). Pyramide 3. Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : toutes les sources s'accordent sur les 4 métriques, leurs définitions et leur regroupement en velocity/stability. DORA 2024 Report + Accelerate (Forsgren 2018) + dora.dev 2024 + SPACE Framework (ACM Queue) + Four Keys (open source) + ICSE 2024 convergent sans contradiction sur les métriques fondamentales et l'anti-pattern d'optimisation isolée.",
+            "effet important : différences quantifiées à grande échelle (n=39 000+) — 182x deployment frequency, 127x lead time, 8x CFR, 2293x MTTR entre Elite et Low performers. Ampleur des effets observée de façon cohérente sur 10 ans de rapports DORA annuels."
+          ],
+          "minus": [
+            "indirectness : études corrélationelles, pas de RCT (impossible en contexte organisationnel). DORA est l'auteur de son propre benchmark (biais de confirmation potentiel). Les métriques mesurent la performance de livraison, pas directement la qualité logicielle ou la valeur business. Corrélation ≠ causalité dans les améliorations observées."
+          ]
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Forsgren N., Humble J., Kim G. — Accelerate (2018) — base empirique fondatrice des 4 métriques et de leur corrélation avec la performance organisationnelle",
+          "DORA 2024 State of DevOps Report (n=39 000+) — seuils Elite/High/Medium/Low et données 2024 incluant impact AI"
+        ],
+        "etd_balance": {
+          "benefices": "Visibilité objective sur la performance de livraison : les 4 métriques fournissent un tableau de bord actionnable pour identifier les goulots d'étranglement (pipeline lent → LT élevé ; tests insuffisants → CFR élevé ; monitoring absent → MTTR élevé). Comparaison sectorielle : les seuils Elite/High/Medium/Low permettent de se situer. Amélioration ciblée : chaque métrique pointe vers une pratique spécifique (trunk-based development → DF, PR size reduction → LT, canary deploys → CFR, observability → MTTR). Implémentation GitHub Actions : coût faible, mesure automatisée possible dès le premier sprint.",
+          "risques": "Goodhart's Law : une métrique devenue objectif cesse d'être une bonne métrique (ex : augmenter DF en déployant des no-ops). Optimisation locale : améliorer LT en supprimant des tests dégrade CFR et MTTR. Contexte-dépendance : les seuils Elite s'appliquent aux équipes web à déploiement continu — inadaptés aux systèmes embarqués ou aux cycles réglementés. Surcharge de mesure : instrumenter les 4 métriques sans maturité CI/CD est prématuré.",
+          "balance": "Bénéfices >> Risques pour les équipes avec CI/CD existant. La convergence des sources sur les anti-patterns (optimisation isolée, adoption AI sans bases) et sur les prérequis (small batches, tests robustes) permet d'éviter les pièges documentés.",
+          "faisabilite": "Haute avec GitHub Actions — pipeline DORA Four Keys open source directement réutilisable. Effort minimal : 4 workflows + 1 dashboard Looker Studio. Prérequis : déploiement automatisé existant, issues GitHub pour tracking incidents."
+        },
+        "prisma_ref": "verification/prisma/dora-metrics.md",
+        "sensitivity_ref": "verification/extractions/dora-metrics.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

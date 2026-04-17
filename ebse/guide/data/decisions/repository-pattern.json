@@ -1,0 +1,106 @@
+{
+  "id": "repository-pattern",
+  "domain": "design",
+  "question": "Quand et comment implementer le Repository pattern pour abstraire l'acces aux donnees, par rapport a l'utilisation directe de l'ORM dans les services ?",
+  "depends_on": ["hexagonal-architecture"],
+  "tags": ["repository", "data-access", "persistence", "ddd", "testability", "orm", "domain-model", "fake-repository"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Le Repository pattern (Fowler PEAA, 2002) definit une couche d'abstraction qui presente la persistance comme une collection in-memory d'objets domaine : le domaine ecrit et lit des objets sans savoir qu'une base de donnees existe. Cette definition est completee par le pattern Data Mapper (Fowler, 2002) qui etablit la notion de persistence ignorance : 'A Data Mapper is a layer of software that separates the in-memory objects from the database. Its responsibility is to transfer data between the two and also to isolate them from each other. With Data Mapper the in-memory objects needn't know even that there's a database present.' Repository et Data Mapper sont complementaires — le Repository definit l'interface de collection, le Mapper gere la traduction objet/BDD.\n\nQuand utiliser le Repository pattern : domaine metier riche avec logique complexe, projets DDD ou similaires, besoin de testabilite unitaire des services sans IO. La regle DDD formulee par le guide .NET Microsoft : 'The only way you should update the database [in DDD] should be through the Repositories' — les invariants du domaine sont garantis car tout acces passe par un point de controle unique. Cette regle d'unicite d'acces empeche les contournements de logique metier par des requetes directes.\n\nQuand NE PAS utiliser le Repository pattern : CRUD simple sans logique metier, applications data-centric sans regle metier complexe. Sur ces cas, le pattern ajoute une couche sans valeur. La discussion Prisma GitHub #10584 'Repository pattern with Prisma' argumente explicitement que 'Prisma unlike traditional ORMs' — Prisma est deja un query builder fortement type qui expose une API proche du domain object ; une abstraction supplementaire sous forme de classe Repository complete est souvent contre-productive. Des wrapper functions autour de PrismaService suffisent pour les projets sans domaine riche, tout en conservant la possibilite de tester via un mock minimal de PrismaService.\n\nPattern de test : c'est le benefice principal documenté. Percival & Gregory ('Architecture Patterns with Python', 2020) formalisent le trio : AbstractRepository (interface/port definissant les operations : add, get, list) + FakeRepository (implementation in-memory pour les tests unitaires, zero IO) + ConcreteRepository (implementation TypeORM ou Prisma pour la prod). Noback (2018) documente la superiorite du fake in-memory sur les mocks ORM : 'By injecting an in-memory implementation, you can test a class without using any IO' — les mocks d'EntityManager ou de PrismaClient sont fragiles car ils exposent des details d'implementation de l'ORM. Le FakeRepository teste le comportement de l'agregat sans coupler les tests a l'ORM.\n\nImplementation NestJS — deux approches selon l'ORM : (1) TypeORM : custom repository wrappant @InjectRepository() — une classe injectable dans les modules qui encapsule le Repository TypeORM et expose des methodes domaine plutot que des methodes query. La documentation NestJS TypeORM Integration documente ce pattern avec @InjectRepository() et les custom repositories ; (2) Prisma : wrapper functions ou classe legere autour de PrismaService — l'injection de PrismaService dans un service NestJS est acceptable pour les cas simples, mais une couche wrapper ameliore la testabilite en rendant le point d'injection explicite (Stemmler, 2019). Dans les deux cas : injecter le Repository (interface) dans les services, pas l'ORM directement — les services deviennent independants de la technologie de persistance.\n\nFrontiere architecturale : Repository est un port (au sens hexagonal architecture) — l'interface appartient au domaine, les implementations appartiennent a l'infrastructure. Cette separation permet de swapper l'ORM, de tester sans BDD, et de maintenir les invariants du domaine de facon centralisee. L'impact est documenté empiriquement par la facilite de test : les services qui injectent un Repository (interface) sont testables avec un FakeRepository in-memory sans configuration de base de donnees.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Repository' catalog entry (martinfowler.com/eaaCatalog/repository.html, 2002)",
+            "pyramid": 5,
+            "year": 2002,
+            "quote": "A Repository mediates between the domain and data mapping layers, acting like an in-memory domain object collection.",
+            "note": "Definition fondatrice du pattern. Reference canonique citee par toute la litterature subsequente. Niveau 5 — expert reconnu, auteur fondateur des patterns d'architecture enterprise. Accord A/B."
+          },
+          {
+            "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Data Mapper' catalog entry (martinfowler.com/eaaCatalog/dataMapper.html, 2002)",
+            "pyramid": 5,
+            "year": 2002,
+            "quote": "A Data Mapper is a layer of software that separates the in-memory objects from the database. Its responsibility is to transfer data between the two and also to isolate them from each other. With Data Mapper the in-memory objects needn't know even that there's a database present.",
+            "note": "Etablit la notion de persistence ignorance, complementaire au Repository. Meme source Fowler PEAA. Niveau 5 — accord A/B."
+          },
+          {
+            "name": "Percival H. & Gregory B. — Architecture Patterns with Python, ch.2 (cosmicpython.com / O'Reilly, 2020)",
+            "pyramid": 3,
+            "year": 2020,
+            "quote": "The Repository pattern is an abstraction over persistent storage. [...] it is easy to fake out for unit tests.",
+            "note": "Formalise le trio AbstractRepository + FakeRepository + ConcreteRepository. Implémentation concrète du pattern de test avec le concept de port/adapter. Niveau 3 — livre expert reconnu, peer-reviewed par O'Reilly. Source A uniquement."
+          },
+          {
+            "name": "Noback M. — Mocking at architectural boundaries: persistence and time (matthiasnoback.nl, 2018)",
+            "pyramid": 3,
+            "year": 2018,
+            "quote": "By injecting an in-memory implementation, you can test a class without using any IO.",
+            "note": "Documente la superiorite du fake in-memory sur les mocks ORM (EntityManager). Notion de boundary architecturale et de test sans IO. Niveau 3 — blog expert reconnu dans la communaute PHP/OOP, argumentaire rigoureux. Source A uniquement."
+          },
+          {
+            "name": "Microsoft .NET Architecture Guide — Designing the infrastructure persistence layer (learn.microsoft.com, 2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "The only way you should update the database [in DDD] should be through the Repositories.",
+            "note": "Angle DDD : regle d'unicite d'acces garantissant les invariants du domaine. Guide d'architecture officiel Microsoft, applicable aux microservices. Niveau 4 — guide institutionnel reconnu. Accord A/B."
+          },
+          {
+            "name": "NestJS Documentation — Database / TypeORM Integration (docs.nestjs.com/techniques/database, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "@InjectRepository(), custom repositories, testability",
+            "note": "Documentation officielle NestJS sur l'integration TypeORM, custom repositories et testabilite. Directement actionnable pour l'implementation NestJS. Niveau 3 — documentation framework officielle. Source B uniquement, incluse car directement actionnable."
+          },
+          {
+            "name": "NestJS Documentation — Prisma Recipe (docs.nestjs.com/recipes/prisma, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "wrapper functions autour de Prisma plutot que classes completes",
+            "note": "Documente l'approche NestJS + Prisma : wrapper functions suffisent vs classe Repository complete. Permet de nuancer la recommandation selon l'ORM utilise. Niveau 3 — documentation framework officielle. Source B uniquement."
+          },
+          {
+            "name": "Prisma GitHub Discussion #10584 — Repository pattern with Prisma (github.com/prisma/prisma/discussions/10584, 2021)",
+            "pyramid": 3,
+            "year": 2021,
+            "quote": "Prisma unlike traditional ORMs, abstraction supplementaire souvent contre-productive — wrapper functions suffisent.",
+            "note": "Discussion communautaire GitHub avec participation de l'equipe Prisma. Argumente que Prisma est deja une abstraction forte, rendant une couche Repository complete souvent superflue. Nuance importante pour les projets sans domaine riche. Niveau 3 — discussion communaute avec input equipe officielle. Source B uniquement."
+          },
+          {
+            "name": "Stemmler K. — Implementing DTOs, Mappers & the Repository Pattern using the Sequelize ORM (khalilstemmler.com, 2019)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "Repositories are facades to persistence technologies, providing a simplified interface to a larger body of code for domain entity persistence and retrieval logic.",
+            "note": "Implementation TypeScript concrete du pattern avec Mapper. Reference communaute TypeScript DDD. Niveau 3 — blog expert reconnu. Source A uniquement. Nuancee : blog personnel mais auteur reconnu dans la communaute TypeScript DDD (fondateur solidbook.io)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 1,
+          "plus": [
+            "convergence : Fowler PEAA + Fowler Data Mapper (niveau 5) + Percival & Gregory + Noback + Microsoft .NET Guide + NestJS docs + Stemmler convergent sans contradiction sur le principe central : Repository isole le domaine de la persistance et facilite les tests unitaires via un fake in-memory. 5 sources independantes de 4 categories (fondateurs patterns, architecture DDD, guide institutionnel, documentation framework, expert communaute TypeScript). Seule nuance Prisma (Discussion #10584) est coherente : elle ne contredit pas le principe mais precise quand la forme complete n'est pas necessaire.",
+            "effet important : la testabilite amelioree par FakeRepository (pattern AbstractRepository + FakeRepository + ConcreteRepository) est un impact concret et documenté sur la qualite — Percival & Gregory et Noback documentent le mecanisme, NestJS docs confirme l'applicabilite, Stemmler montre l'implementation TypeScript. Impact mesurable : services testables sans base de donnees, tests unitaires rapides, isolation des defauts."
+          ],
+          "minus": []
+        },
+        "robustness": "MODEREMENT ROBUSTE",
+        "critical_sources": [
+          "Fowler M. PEAA 2002 (Repository + Data Mapper) — definition canonique du pattern, source la plus haute (niveau 5), reference de toute la litterature subsequente",
+          "Microsoft .NET Architecture Guide 2023 — regle d'unicite d'acces DDD et garantie des invariants domaine (niveau 4)",
+          "Percival & Gregory 2020 — formalisation du trio de test AbstractRepository + FakeRepository + ConcreteRepository, implémentation concrete (niveau 3)"
+        ],
+        "etd_balance": {
+          "benefices": "Isolation du domaine de la technologie de persistance (persistence ignorance). Testabilite unitaire des services sans IO via FakeRepository in-memory. Point de controle unique pour les invariants du domaine (regle DDD). Facilite le remplacement de l'ORM ou de la BDD. Rend les contrats de donnees explicites (interface AbstractRepository). Reduit le couplage entre la logique metier et les specifites de l'ORM (requetes TypeORM, syntaxe Prisma).",
+          "risques": "Sur-ingenierie si la logique metier est triviale — le pattern ajoute une couche sans valeur pour les CRUD simples. Avec Prisma, la couche Repository peut dupliquer ce que Prisma fait deja (wrapper counter-productif). Risque de leaky abstraction si le Repository expose des concepts ORM (Specification pattern mal implemente, pagination specifique a l'ORM). Maintenance d'une interface supplementaire a faire evoluer quand le schema change.",
+          "balance": "Benefices >> Risques pour les domaines riches. Risques >> Benefices pour les CRUD simples. La decision depend directement de la complexite du domaine : si les services contiennent de la logique metier non-triviale (validations, regles, agregats), le Repository est justifie. Si les services ne font que CRUD, Prisma direct ou wrapper functions suffisent. Cette distinction est documentee par Prisma Discussion #10584 et coherente avec la definition originale Fowler (mediation entre domaine et persistance — si le domaine est vide, la mediation est superflue).",
+          "faisabilite": "Haute — NestJS : interface TypeScript AbstractRepository + classe FakeRepository in-memory (Map ou Array) + CustomRepository wrappant @InjectRepository() ou PrismaService. Injection via le module NestJS standard. Pattern bien documente pour TypeORM (NestJS docs) et Prisma (NestJS recipes + khalilstemmler.com). Complexite d'implementation initiale moderee, amortie rapidement des les premiers tests unitaires."
+        },
+        "prisma_ref": "verification/prisma/repository-pattern.md",
+        "sensitivity_ref": "verification/extractions/repository-pattern.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

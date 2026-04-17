@@ -50,6 +50,69 @@
             "year": 2021
           }
         ]
+      },
+      {
+        "text": "Implementation technique du consentement CNIL/GDPR et du droit a l'effacement : transformer les obligations legales en composants techniques concrets.\n\nConsentement valide (Art. 7 RGPD + recommandation CNIL) : le consentement doit etre libre (pas de cookie wall), specifique (par finalite), eclaire (information claire avant acceptation), et univoque (action positive — pas de case pre-cochee). La CNIL exige explicitement que le refus soit aussi simple que l'acceptation : un bouton 'Tout refuser' au meme niveau que 'Tout accepter'. Interdiction du 'dark pattern' : formulation trompeuse, bouton de refus dissimule, hierarchie visuelle biaisee.\n\nCMP (Consent Management Platform) : la banniere conforme doit exposer : (1) finalites par categorie (analytics, marketing, fonctionnel) avec case individuelle ; (2) choix persiste dans un cookie first-party consent ou localStorage (cle JSON avec { analytics: bool, marketing: bool, timestamp: ISO }) ; (3) moyen de modifier le consentement a tout moment (lien dans le footer). Un CMP open-source (ex. klaro, tarteaucitron.js) ou SaaS (Axeptio, Didomi) peut etre utilise — dans tous les cas, le consentement doit etre journalise (proof of consent) avec horodatage et version de la politique.\n\nCookies first-party vs third-party : les cookies analytics first-party (GA4 en server-side tagging via GTM server, Matomo self-hosted) peuvent relever de l'exemption CNIL si anonymises et sans croisement de donnees. Les traceurs third-party (pixels Meta, LinkedIn) necessitent un consentement explicite. Ne charger les scripts third-party qu'apres consentement confirme (injection dynamique dans le DOM).\n\nRight to Erasure (Article 17) : implementer un endpoint DELETE /users/{id} (ou equivalent) avec cascade sur toutes les tables relationnelles (donnees personnelles, historique, messages, preferences). Pour les donnees ne pouvant etre supprimees (logs d'audit, obligations legales de retention), anonymiser : remplacer les PII (nom, email, IP) par un hash non-reversible (SHA-256 prefixe du user ID interne). Propager l'effacement aux services tiers : desabonnement provider email (Brevo, SendGrid API), suppression segment analytics. Delai d'execution : 30 jours maximum selon RGPD.\n\nDroit d'acces (Article 15) : endpoint GET /users/{id}/data-export retournant un export structure (JSON ou CSV) de l'integralite des donnees personnelles de l'utilisateur. Inclure : donnees de profil, historique des actions, preferences, log de consentement. Authentification requise (l'utilisateur ne peut acceder qu'a ses propres donnees).\n\nRetention policy : definir un TTL par categorie de donnee : logs applicatifs = 12 mois (recommandation CNIL), comptes inactifs = 36 mois, donnees de paiement = duree legale comptable (10 ans). Implementer un cronjob d'effacement automatique (ex. cron NestJS avec @nestjs/schedule, tache planifiee en BDD) qui execute la suppression ou anonymisation selon la politique definie. Documenter la politique de retention dans le registre des traitements (Art. 30).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Reglement UE 2016/679 (RGPD) — Article 7 Conditions du consentement, Article 17 Droit a l'effacement (EUR-Lex, 2016)",
+            "pyramid": 1,
+            "year": 2016,
+            "quote": "Article 7(3): The data subject shall have the right to withdraw his or her consent at any time. [...] Article 17(1): The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay and the controller shall have the obligation to erase personal data without undue delay where one of the following grounds applies: (a) the personal data are no longer necessary in relation to the purposes for which they were collected or otherwise processed.",
+            "note": "Texte normatif fondateur definissant les obligations de consentement (Art.7) et d'effacement (Art.17). Niveau 1 — Reglement UE, contrainte juridique absolue. Accord A/B."
+          },
+          {
+            "name": "CNIL — Recommandation relative aux cookies et autres traceurs (CNIL, 2020, mise a jour 2022)",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "Le refus doit etre aussi aise que l'acceptation. [...] Les interfaces de recueil du consentement ne doivent pas comporter d'elements de nature a tromper les utilisateurs ou a les inciter a consentir, notamment en jouant sur la hierarchie visuelle, les couleurs ou les formulations des boutons. [...] Le responsable de traitement doit etre en mesure de prouver le consentement (horodatage, version de la politique).",
+            "note": "Recommandation de l'autorite de controle francaise. Precisement applicable en France. Definit le standard de la banniere conforme et l'interdiction des dark patterns. Niveau 1 — autorite de regulation nationale. Accord A/B."
+          },
+          {
+            "name": "OWASP Privacy Cheat Sheet — Data Retention, Consent Management (OWASP, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Implement a data retention policy that specifies the maximum period for which personal data is held. [...] Provide users with the ability to delete their accounts and associated data. [...] Document the legal basis for each processing activity. Consent management should be granular by purpose.",
+            "note": "Guide prescriptif OWASP sur la mise en oeuvre technique de la vie privee. Complement operationnel des textes RGPD. Niveau 2 — OWASP reference reconnue. Accord A/B."
+          },
+          {
+            "name": "IAB Europe — Transparency and Consent Framework (TCF) v2.2 (IAB Europe, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "A CMP (Consent Management Platform) must provide users with the ability to: give consent for all purposes, refuse consent for all purposes, or set granular purpose-level consent. The UI must present choices in a neutral manner without nudging toward consent. Proof of consent must be stored with timestamp and version of privacy policy.",
+            "note": "Standard d'industrie pour l'implementation des CMP. Definit les specifications techniques de stockage et de signalement du consentement. Niveau 3 — standard d'industrie publicitaire. Source B principalement, incluse car directement actionnable pour l'implementation CMP."
+          },
+          {
+            "name": "CNIL — Recommandation sur la duree de conservation des donnees (CNIL, 2020)",
+            "pyramid": 1,
+            "year": 2020,
+            "quote": "La duree de conservation des donnees a caractere personnel doit etre limitee a ce qui est necessaire au regard des finalites pour lesquelles elles sont traitees. Les fichiers de journalisation (logs) doivent etre conserves 12 mois au maximum. Les donnees relatives aux comptes inactifs peuvent etre conservees 3 ans a compter du dernier contact.",
+            "note": "Recommandation CNIL sur les durees de retention. Valeurs de reference pour les logs (12 mois) et comptes inactifs (3 ans). Niveau 1 — autorite de regulation nationale. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : RGPD Art.7+17 (niveau 1, texte normatif) + CNIL Recommandation cookies (niveau 1, autorite de regulation) + CNIL Recommandation retention (niveau 1, autorite de regulation) + OWASP Privacy Cheat Sheet (niveau 2) + IAB TCF v2.2 (niveau 3) convergent sans contradiction sur : consentement granulaire, refus aussi simple qu'acceptation, effacement cascade, retention definie — 5 sources independantes de 4 organisations (UE/EUR-Lex, CNIL, OWASP, IAB Europe)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "RGPD Art.7 et Art.17 (2016) — texte normatif fondateur definissant les obligations de consentement et d'effacement — niveau 1, contrainte juridique",
+          "CNIL Recommandation cookies 2022 — definit le standard de la banniere conforme et l'interdiction des dark patterns — niveau 1, autorite de controle francaise"
+        ],
+        "etd_balance": {
+          "benefices": "Conformite legale complete evitant les amendes CNIL (jusqu'a 4% CA mondial). Consentement granulaire par finalite = collecte de donnees plus qualifiee (utilisateurs conscients). Right-to-erasure implementee correctement = confiance utilisateur et reducteur de surface de donnees. Cronjob de retention automatique evite l'accumulation indefinie de donnees inutiles.",
+          "risques": "Cascade DELETE mal implementee peut supprimer des donnees necessaires a des obligations legales (comptabilite, obligations fiscales) — prevoir une liste de donnees a anonymiser plutot que supprimer. Proof of consent (logs de consentement) doit lui-meme respecter la minimisation des donnees. CMP SaaS tiers (Axeptio, OneTrust) introduit une dependance externe et un cout.",
+          "balance": "Benefices >> Risques. Le risque de non-conformite (amendes, atteinte a la reputation) est documentellement superieur aux risques d'implementation. Les risques techniques sont maitrisables par des tests d'integration sur les endpoints DELETE/export et une documentation claire des donnees a anonymiser vs supprimer.",
+          "faisabilite": "Haute — NestJS : @nestjs/schedule pour les cronjobs de retention ; TypeORM/Prisma cascade delete configurable via relations ; les endpoints DELETE et GET /data-export sont des CRUD standards. La banniere de consentement peut utiliser une librairie open-source (klaro = ~20KB, zero dependance). Le principal effort est la cartographie initiale des donnees personnelles (registre Art.30)."
+        },
+        "prisma_ref": "verification/prisma/gdpr-consent-implementation.md",
+        "sensitivity_ref": "verification/extractions/gdpr-consent-implementation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
       }
     ]
   },

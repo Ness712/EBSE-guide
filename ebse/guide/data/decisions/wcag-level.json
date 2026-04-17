@@ -44,6 +44,69 @@
           "axe-core Deque — 30-40% detection auto (niv. 3)",
           "WebAIM Million 2024 (niv. 4)"
         ]
+      },
+      {
+        "text": "Implementation technique WCAG 2.1 AA : la conformite n'est pas un audit ponctuel mais un ensemble de pratiques de developpement integrees.\n\nHTML semantique first : utiliser les elements HTML natifs (<button>, <nav>, <main>, <article>, <section>, <header>, <footer>, <label>) plutot que des <div> et <span> avec role. Le HTML semantique fournit gratuitement : role ARIA implicite, focus natif, comportement clavier attendu, annonce par les lecteurs d'ecran. Principe ARIA : 'No ARIA is better than bad ARIA' (W3C APG). N'ajouter un role explicite qu'en dernier recours quand l'element HTML natif n'existe pas (ex. role='dialog', role='tablist').\n\nARIA correctement : aria-label pour les elements sans texte visible (icones, boutons icon-only) ; aria-describedby pour associer une description supplementaire ; aria-live='polite' pour les regions mises a jour dynamiquement (notifications, erreurs de formulaire, resultats de recherche) ; aria-expanded sur les menus et accordeons ; aria-required et aria-invalid sur les champs de formulaire. Ne pas dupliquer avec du texte visible deja announce (double announcement).\n\nNavigation clavier : tout element interactif est atteignable et utilisable au clavier seul. Regles : (1) focus visible obligatoire — CSS :focus-visible avec outline contraste 3:1 minimum (ne pas ecrire outline:none sans alternative) ; (2) skip-to-content link en premier element tabable (permet aux utilisateurs de clavier et lecteurs d'ecran de passer la navigation repetee) ; (3) modales et popups : focus trap — le focus reste dans la modale jusqu'a fermeture (bibliotheques : focus-trap-react, @radix-ui/react-dialog gere ca nativement) ; (4) ordre du tabIndex logique selon l'ordre visuel — eviter tabIndex > 0 qui casse l'ordre naturel.\n\nContrastes : texte normal >= 4.5:1 sur le fond (WCAG 1.4.3 AA) ; grand texte (18pt/14pt bold) >= 3:1 (WCAG 1.4.3 AA) ; composants UI et etats focus >= 3:1 (WCAG 1.4.11 AA). Outils : WebAIM Contrast Checker, DevTools Chrome/Firefox (panneau accessibilite affiche le ratio). En Tailwind CSS 4 : verifier les combinaisons de couleurs personnalisees systematiquement — les tokens de design system doivent avoir des paires valides documentees.\n\nTests automatises : axe-core detecte automatiquement ~57% des problemes WCAG mesurables (etude Deque 2024). Integration : @axe-core/playwright dans la suite Playwright (test E2E + audit axe simultanement), @axe-core/react en dev pour feedback immediat en console. Lighthouse accessibility score > 95 en CI. Les 43% restants (semantique contextuelle, ordre logique, navigation complexe) necessitent un audit manuel et des tests avec lecteurs d'ecran (NVDA + Chrome, VoiceOver + Safari).\n\nReact specifique : utiliser htmlFor sur les <label> (pas 'for' — attribut React) ; aria-* props acceptes directement sur les composants JSX ; ne pas utiliser onClick seul sur <div> ou <span> — ajouter role='button', tabIndex={0}, onKeyDown (touche Enter et Espace doivent declencher l'action). Avec shadcn/ui et Radix UI : les composants sont ARIA-compliant par defaut — ne pas surcharger les attributs ARIA sans raison.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "W3C WAI — ARIA Authoring Practices Guide (APG) 1.2 (W3C, 2023)",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "It is important to understand that the first rule of ARIA use is: If you can use a native HTML element or attribute with the semantics and behavior you require already built in, instead of re-purposing an element and adding an ARIA role, state or property to make it accessible, then do so. [...] No ARIA is better than bad ARIA.",
+            "note": "Guide normatif W3C definissant les pratiques ARIA correctes. Etablit le principe 'HTML semantique d'abord'. Niveau 1 — W3C Working Group Note. Accord A/B."
+          },
+          {
+            "name": "W3C — Web Content Accessibility Guidelines (WCAG) 2.1 — Success Criteria 1.4.3, 1.4.11, 2.1.1, 2.4.7 (W3C, 2018)",
+            "pyramid": 1,
+            "year": 2018,
+            "quote": "1.4.3 Contrast (Minimum): The visual presentation of text and images of text has a contrast ratio of at least 4.5:1. [...] 1.4.11 Non-text Contrast: The visual presentation of the following have a contrast ratio of at least 3:1 against adjacent color(s): User Interface Components. [...] 2.1.1 Keyboard: All functionality of the content is operable through a keyboard interface. [...] 2.4.7 Focus Visible: Any keyboard operable user interface has a mode of operation where the keyboard focus indicator is visible.",
+            "note": "Standard normatif W3C definissant les criteres AA obligatoires : contrastes, navigation clavier, focus visible. Niveau 1 — W3C Recommendation. Accord A/B."
+          },
+          {
+            "name": "MDN Web Docs — Accessibility Guide (Mozilla, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "HTML is the most important part of accessibility. [...] You should always use the correct HTML element for the correct purpose. [...] Many content features built into HTML are accessible by default. Features like buttons, links, and form elements have keyboard interaction built in by default, and they have ARIA semantics built in by default.",
+            "note": "Documentation de reference developpeur sur l'accessibilite HTML et ARIA. Synthese pratique des standards W3C. Niveau 3 — documentation de reference. Accord A/B."
+          },
+          {
+            "name": "Deque Systems — axe-core WCAG Automation Coverage (Deque, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Automated accessibility testing tools can detect approximately 57% of WCAG issues. axe-core tests for all automatically detectable WCAG 2.1 success criteria. The remaining issues require manual testing, including keyboard navigation testing and screen reader testing.",
+            "note": "Documentation officielle Deque sur la couverture de detection axe-core. Chiffre de 57% cite dans la documentation officielle et les guides Deque. Niveau 3 — documentation outil de reference en accessibilite. Accord A/B."
+          },
+          {
+            "name": "React Documentation — DOM Elements accessibility props (React.dev, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "All aria-* HTML attributes are fully supported in JSX. [...] Most DOM properties and attributes are supported in React. If you want to use a custom attribute, it should be all-lowercase. The htmlFor attribute corresponds to the for attribute in HTML, used with label elements.",
+            "note": "Documentation officielle React sur les props d'accessibilite JSX. Directement applicable pour l'implementation React. Niveau 3 — documentation framework. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : W3C WCAG 2.1 (niveau 1, standard normatif) + W3C WAI APG (niveau 1, guide normatif) + MDN Accessibility Guide (niveau 3) + Deque axe-core docs (niveau 3) + React docs (niveau 3) convergent sans contradiction sur les pratiques : HTML semantique d'abord, ARIA en dernier recours, focus visible, contrastes AA — 5 sources independantes de 4 organisations (W3C, Mozilla, Deque, Meta)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "W3C WCAG 2.1 2018 — definit les criteres normatifs AA (1.4.3 contraste, 2.1.1 clavier, 2.4.7 focus) — niveau 1, contrainte legale",
+          "W3C WAI APG 2023 — definit les pratiques ARIA correctes incluant 'No ARIA is better than bad ARIA' — niveau 1"
+        ],
+        "etd_balance": {
+          "benefices": "Accessibilite native ameliore l'experience pour tous les utilisateurs (pas seulement en situation de handicap) : navigation clavier, lecteurs d'ecran, interfaces vocales, TV. HTML semantique reduit la quantite de JavaScript necessaire (comportements natifs du navigateur). Tests axe-core en CI previennent les regressions d'accessibilite a chaque commit. Conformite WCAG AA reduit le risque legal (EU Web Accessibility Directive).",
+          "risques": "Focus trap dans les modales peut bloquer des utilisateurs si mal implementee (cycle de focus incomplet). aria-live='assertive' peut interrompre les lecteurs d'ecran de facon agressive — preferer 'polite'. Surcharge ARIA (ajouter des attributs redondants avec le HTML semantique natif) produit des double announcements confus.",
+          "balance": "Benefices >> Risques. Les risques sont des erreurs d'implementation evitables par les pratiques documentees (Radix UI/shadcn gere le focus trap nativement, preferer aria-live='polite'). L'impact de l'absence d'accessibilite (exclusion d'utilisateurs, risque legal) est systematiquement superieur.",
+          "faisabilite": "Haute — shadcn/ui et Radix UI sont ARIA-compliant par defaut. axe-core et @axe-core/playwright s'integrent en quelques lignes. Les pratiques HTML semantique et htmlFor sont des conventions de code zero-cout. Le principal investissement est la formation de l'equipe aux patterns ARIA et au test clavier."
+        },
+        "prisma_ref": "verification/prisma/wcag-implementation.md",
+        "sensitivity_ref": "verification/extractions/wcag-implementation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
       }
     ]
   },

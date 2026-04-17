@@ -1,0 +1,71 @@
+{
+  "id": "zero-trust",
+  "domain": "security",
+  "question": "Comment implémenter une architecture Zero Trust — never trust always verify, least privilege, assume breach — pour les accès utilisateurs et les communications inter-services ?",
+  "depends_on": ["authorization-patterns", "api-security"],
+  "tags": ["zero-trust", "never-trust-always-verify", "least-privilege", "assume-breach", "mtls", "service-mesh", "identity", "cisa-ztmm", "nist-800-207"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Zero Trust est une stratégie architecturale fondée sur trois principes fondamentaux définis par le NIST SP 800-207 et le CISA ZTMM v2.0 : (1) 'Never trust, always verify' — aucune confiance implicite n'est accordée sur la base de la localisation réseau ou physique. Chaque accès à une ressource est authentifié et autorisé de manière indépendante, sans présupposer la légitimité d'une requête parce qu'elle provient du réseau interne. (2) 'Least privilege' — chaque identité (utilisateur, service, device) reçoit exactement les permissions nécessaires à la tâche en cours, et seulement pour la durée requise. L'accès est per-request : être authentifié ne confère pas de droits permanents étendus. (3) 'Assume breach' (CISA ZTMM v2.0) — l'hypothèse de brèche permanente est intégrée dans la conception : on part du principe qu'une attaque est déjà en cours quelque part. L'objectif n'est plus d'empêcher toute intrusion mais de réduire le rayon d'explosion (blast radius) pour limiter le mouvement latéral d'un attaquant ayant compromis un premier accès.\n\nLe CISA ZTMM v2.0 organise la mise en œuvre autour de cinq piliers. Le pilier Identity est le plus critique : chaque utilisateur, device, application et transaction doit être continuellement vérifié — MFA obligatoire, gestion Just-In-Time (JIT) des accès privilégiés. Le pilier Devices couvre l'attestation de l'état de santé du device avant d'accorder l'accès (conformité, patch level). Le pilier Networks impose la microsegmentation : remplacer la confiance périmétrique (firewall unique) par des segments isolés avec contrôles d'accès entre zones, rendant le mouvement latéral structurellement difficile. Le pilier Applications & Workloads exige une authorization per-request : chaque endpoint, chaque appel d'API est autorisé indépendamment sur la base de claims contextuels (identité, rôle, device, heure, risque). Le pilier Data exige la classification et le chiffrement systématique, en transit et au repos, indépendamment de la confiance réseau.\n\nLa mise en œuvre est progressive. Le CISA ZTMM définit quatre niveaux : Traditional (périmétrique, confiance implicite réseau) → Initial (MFA déployée, premières microsegmentations) → Advanced (authorization contextuelle, surveillance continue, JIT access) → Optimal (automatisation complète, politiques adaptatives en temps réel). La séquence recommandée : commencer par Identity (MFA + politiques d'accès JIT) et Networks (microsegmentation de base entre zones critiques) avant d'aborder le service mesh — le retour sur investissement sécuritaire est maximal sur ces deux piliers en premier.\n\nPour les communications inter-services (service-to-service), Istio (projet CNCF Graduated) implémente l'authentification mutuelle TLS (mTLS) : chaque service dispose d'une identité forte au format SPIFFE (Secure Production Identity Framework For Everyone), émise par SPIRE. Le mTLS garantit que les deux parties d'une communication prouvent leur identité avant tout échange de données — éliminant la confiance implicite entre services sur le réseau interne. Pour les architectures sans service mesh, l'alternative est l'usage de JWT service tokens avec validation stricte de l'audience (claim 'aud') et de l'émetteur (claim 'iss') à chaque endpoint.\n\nDans un contexte NestJS, la mise en œuvre concrète suit ces règles : (a) pas de route publique par défaut — tous les endpoints passent par un Guard JWT ; les routes réellement publiques sont explicitement décorées (@Public()); (b) RBAC ou ABAC pour le least privilege — les Guards évaluent les rôles et attributs contextuels (ex : un utilisateur 'lab-admin' peut accéder à /labs/:id uniquement si il est propriétaire du lab) ; (c) validation des claims contextuels à chaque requête (IP, device fingerprint, timestamp, risk score) pour détecter les anomalies comportementales même avec un token valide ; (d) durées de vie courtes pour les access tokens (15 min) avec rotation sécurisée des refresh tokens.\n\nLa leçon BeyondCorp de Google (Ward & Beyer, 2014) constitue la preuve de faisabilité à grande échelle : Google a supprimé le VPN d'entreprise et déplacé ses applications internes sur Internet, en validant chaque requête individuellement via un Access Proxy. Cette approche, déployée des années avant la formalisation NIST, démontre qu'une architecture Zero Trust n'est pas théorique mais opérationnellement viable à très grande échelle. BeyondCorp précède de six ans le NIST SP 800-207 et en constitue l'une des références empiriques fondatrices.\n\nDémarcation essentielle : Zero Trust est une stratégie architecturale, pas un produit. Aucun outil unique n'implémente ZT — les outils (Istio, SPIFFE/SPIRE, HashiCorp Vault pour la gestion des secrets, OAuth 2.0 / OIDC pour l'identity federation, OPA pour les politiques d'autorisation) sont des implémentations partielles de la stratégie. 'Acheter un produit Zero Trust' sans revoir l'architecture de confiance sous-jacente est une fausse sécurité. L'EO 14028 (Executive Order on Improving the Nation's Cybersecurity, 2021) et le CISA ZTMM mandatent explicitement cette migration architecturale pour les systèmes fédéraux américains — la maturité normative est maximale.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-207 — Zero Trust Architecture (NIST, 2020)",
+            "pyramid": 1,
+            "year": 2020,
+            "quote": "Zero trust assumes there is no implicit trust granted to assets based solely on their physical or network location. Authentication and authorization are discrete functions performed before a session to an enterprise resource is established. [...] Access to resources is determined by dynamic policy. [...] Least privilege principles are applied. [...] All resource authentication and authorization are dynamic and strictly enforced before access is allowed.",
+            "note": "Standard fondateur qui définit l'architecture Zero Trust et ses 7 tenets. Publication officielle NIST — référence normative de premier niveau. Accord A/B sur les 3 principes fondamentaux et les 7 tenets. Niveau 1."
+          },
+          {
+            "name": "CISA Zero Trust Maturity Model v2.0 (CISA, 2023)",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Each user, device, application, and transaction must be continually verified. [...] The path to zero trust is an incremental process that may take years. [...] Shift from a location-centric model to a more data-centric approach for fine-grained security controls.",
+            "note": "Modèle de maturité officiel CISA définissant les 5 piliers et les 4 niveaux de progression. Complément opérationnel direct du NIST SP 800-207. Introduce le principe 'assume breach' et la progression Traditional → Optimal. Accord A/B. Niveau 1."
+          },
+          {
+            "name": "Ward R. & Beyer B. — BeyondCorp: A New Approach to Enterprise Security (Google, USENIX ;login: Vol.39 No.6, 2014)",
+            "pyramid": 3,
+            "year": 2014,
+            "quote": "Google is removing the requirement for a privileged intranet and moving corporate applications to the Internet. [...] BeyondCorp shifts access controls from the perimeter to individual devices and users, allowing employees to work from any network without a traditional VPN.",
+            "note": "Premier déploiement Zero Trust à grande échelle documenté publiquement — précède le NIST SP 800-207 de 6 ans. Preuve empirique de faisabilité en production réelle chez Google. Référence fondatrice citée par NIST SP 800-207. Source A uniquement, incluse car apport empirique unique non couvert par les sources niveau 1. Niveau 3."
+          },
+          {
+            "name": "Istio — Security: Mutual TLS and Zero-Trust Network (CNCF Graduated, istio.io, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Istio provides peer authentication: used for service-to-service authentication via mutual TLS. Provides each service with a strong identity. Secures service-to-service communication. [...] By default, Istio will upgrade all traffic between proxied services to mutual TLS.",
+            "note": "Documentation officielle du projet CNCF Graduated Istio sur l'implémentation mTLS et l'identité de service (SPIFFE). Directement applicable pour le pilier Applications & Workloads en contexte microservices. Accord A/B. Niveau 2."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : NIST SP 800-207 (niveau 1, standard fondateur) + CISA ZTMM v2.0 (niveau 1, modèle de maturité officiel) + BeyondCorp Google (niveau 3, preuve empirique fondatrice) + Istio CNCF Graduated (niveau 2, implémentation de référence) convergent sans contradiction sur les 3 principes fondamentaux et leur mise en œuvre — 4 sources de 3 catégories distinctes (normatif gouvernemental, empirique grande échelle, implémentation technique)",
+            "effet important : EO 14028 (Executive Order 2021) mandate explicitement la migration ZT pour les systèmes fédéraux américains ; les attaques de type SolarWinds (mouvement latéral par confiance implicite réseau) constituent la classe d'attaques exacte que ZT prévient structurellement ; CISA ZTMM v2.0 est directement opposable aux organisations soumises à conformité fédérale"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-207 (2020) — définit les 7 tenets et le modèle ZT au niveau de la spécification normative (niveau 1, référence absolue)",
+          "CISA ZTMM v2.0 (2023) — opérationnalise le NIST en 5 piliers et 4 niveaux de maturité, introduce 'assume breach' et la progression incrémentale (niveau 1)",
+          "BeyondCorp Google (2014) — unique preuve de déploiement ZT à grande échelle précédant la normalisation NIST, valide la faisabilité opérationnelle (niveau 3)"
+        ],
+        "etd_balance": {
+          "benefices": "Réduction structurelle du mouvement latéral post-brèche (blast radius limité par microsegmentation et least privilege per-request). Conformité EO 14028 / CISA ZTMM pour les systèmes soumis à exigences fédérales. Détection plus rapide des compromissions via surveillance continue et anomalies comportementales. Suppression de la dépendance au VPN et au périmètre réseau — modèle compatible cloud-native et télétravail. Identité de service forte (SPIFFE/mTLS) éliminant la confiance implicite entre microservices.",
+          "risques": "Complexité opérationnelle initiale élevée : migration progressive obligatoire (CISA : 'years'), pas de bascule instantanée. Risque de sur-ingénierie si le service mesh est déployé avant Identity et Networks (séquence incorrecte). Latence réseau additionnelle due au mTLS et aux politiques d'autorisation dynamiques (à mesurer et accepter). Gestion des identités de service (rotation certificats SPIFFE, PKI) requiert une infrastructure supplémentaire.",
+          "balance": "Bénéfices >> Risques pour les systèmes distribuant des données sensibles ou soumis à conformité. Les risques opérationnels sont atténués par la progression incrémentale CISA (commencer par Identity + microsegmentation réseau, différer le service mesh). Le surcoût de latence mTLS est typiquement <5ms en environnement LAN/datacenter — négligeable face au gain de posture sécuritaire. Pour les petits systèmes sans données sensibles, le niveau 'Initial' CISA (MFA + quelques segments réseau) est suffisant sans déployer un service mesh complet.",
+          "faisabilite": "Haute pour les niveaux Initial et Advanced — MFA est disponible nativement sur tous les identity providers modernes (Keycloak, Auth0, AWS Cognito) ; la microsegmentation réseau est configurable sans service mesh (NSG, firewall rules) ; les Guards NestJS implémentent le per-request authorization avec quelques centaines de lignes de code. Élevée mais nécessitant une infrastructure dédiée pour le niveau Optimal avec Istio mTLS : installation Istio sur Kubernetes, configuration SPIRE pour l'émission d'identités SVID, politique PeerAuthentication STRICT. Centraliser la politique d'autorisation dans OPA (Open Policy Agent) pour découpler les règles du code applicatif."
+        },
+        "prisma_ref": "verification/prisma/zero-trust.md",
+        "sensitivity_ref": "verification/extractions/zero-trust.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

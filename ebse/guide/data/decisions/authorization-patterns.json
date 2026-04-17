@@ -1,0 +1,113 @@
+{
+  "id": "authorization-patterns",
+  "domain": "security",
+  "question": "Comment choisir et implementer un modele d'autorisation (RBAC, ABAC, ReBAC) pour controler l'acces aux ressources d'une application web multi-utilisateurs ?",
+  "depends_on": ["authentication"],
+  "tags": ["authorization", "rbac", "abac", "rebac", "access-control", "security", "permissions", "roles"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Choisir le modele d'autorisation selon la complexite reelle des regles d'acces — pas le modele le plus expressif disponible. RBAC (Role-Based Access Control) est suffisant pour 80% des applications : on assigne des roles aux utilisateurs (admin, editor, viewer) et des permissions aux roles. Simple a implementer, simple a auditer, simple a expliquer. YAGNI s'applique a l'autorisation : ne pas introduire ABAC ou ReBAC si RBAC couvre le besoin. ABAC (Attribute-Based Access Control) est justifie quand les decisions d'acces dependent d'attributs dynamiques multiples : departement de l'utilisateur, heure de la journee, classification de la ressource, localisation. La complexite est reelle — les politiques ABAC sont plus difficiles a tester et auditer que les roles RBAC. ReBAC (Relationship-Based Access Control, style Google Zanzibar) est justifie uniquement quand les permissions decoulent de relations entre entites (l'acces a un document depend de l'appartenance a un groupe qui lui-meme appartient a une organisation). Cas avancés uniquement. Recommandations d'implementation : (1) preference aux librairies eprouvees (Apache Casbin, CASL pour Node.js/TypeScript, Keycloak Authorization Services pour la gestion centralisee) plutot qu'un systeme custom ; (2) centraliser la logique d'autorisation en un seul endroit — ne jamais disperser les checks dans les couches metier, presentation et donnees simultanement ; (3) appliquer le principe de moindre privilege : chaque role/attribut doit accorder uniquement les droits strictement necessaires. Signaux d'alerte critiques : (a) hard-coding des checks (if userId == 1 → admin) — rend l'autorisation non-auditable et non-maintenable ; (b) God-role (un role 'admin' qui peut tout faire sans granularite) — masque les violations de moindre privilege ; (c) permission sprawl (proliferation de roles ou permissions ad hoc sans gouvernance) — rend l'audit impossible. OWASP Top 10 A01:2021 classe Broken Access Control comme la vulnerabilite la plus critique — defaillance de modelisation pluto que d'implementation technique. Sequence recommandee : modeliser les roles et ressources avant d'ecrire du code d'autorisation, valider avec des tests d'access control explicites (tester les acces refuses autant que les acces accordes).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "ANSI/INCITS 359-2012 — Role Based Access Control (American National Standard for Information Technology)",
+            "pyramid": 1,
+            "year": 2012,
+            "quote": "Role-based access control (RBAC) is a proven technology for large-scale authorization. RBAC policies are expressed in terms of roles, permissions, and role-permission assignments. The principle of least privilege is enforced by granting users only the permissions needed for the tasks they must perform.",
+            "note": "Standard normatif ANSI/INCITS — definition formelle du modele RBAC, principe de moindre privilege, hierarchie de roles. Reference normative de niveau 1. Accord Reviewer A (cite) / Reviewer B (absent — complemente par NIST SP 800-162 qui cite RBAC comme baseline). Inclus : source normative directe sur RBAC."
+          },
+          {
+            "name": "NIST SP 800-162 — Guide to Attribute Based Access Control (ABAC) Definition and Considerations (NIST, 2014)",
+            "pyramid": 1,
+            "year": 2014,
+            "quote": "Attribute Based Access Control (ABAC) is an access control paradigm whereby access rights are granted to users through the use of policies which combine attributes together. ABAC policies specify the conditions under which access is allowed or denied. RBAC can be considered a subset of ABAC.",
+            "note": "Standard normatif NIST — definit ABAC, le distingue de RBAC, etablit les conditions d'usage. Inclus par A et B. Accord complet. Niveau 1 — source normative directe sur ABAC et comparaison RBAC/ABAC."
+          },
+          {
+            "name": "Ferraiolo D.F., Kuhn D.R. — Role-Based Access Controls, NISSC Proceedings (NIST, 1992)",
+            "pyramid": 1,
+            "year": 1992,
+            "quote": "Role-based access controls (RBAC) provide a flexible yet powerful paradigm for specifying and enforcing enterprise-specific access control policies without the complexity of traditional MAC and DAC models. The concept of roles naturally reflects the organizational structure and provides for the principle of least privilege.",
+            "note": "Article fondateur du RBAC par ses auteurs NIST — reference normative d'origine. Publie dans proceedings NISSC gouvernemental. Cite par A, absent chez B (convarge avec ANSI/INCITS 359). Inclus : source primaire fondatrice, auteurs NIST — valeur historique et normative. Niveau 1 par origine institutionnelle NIST."
+          },
+          {
+            "name": "OWASP Top 10 A01:2021 — Broken Access Control (OWASP Foundation, 2021)",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification, or destruction of all data or performing a business function outside the user's limits. Prevention: Deny by default, except for public resources. Implement access control mechanisms once and re-use them throughout the application.",
+            "note": "Reference OWASP — classe Broken Access Control comme vulnerabilite #1 (en hausse depuis #5 en 2017). Citee par A et B. Accord complet. Niveau 2 — reference OWASP non-normative mais universellement adoptee dans l'industrie."
+          },
+          {
+            "name": "OWASP ASVS V4.0 — V4 Access Control Verification Standard (OWASP Foundation, 2019)",
+            "pyramid": 2,
+            "year": 2019,
+            "quote": "V4.1: Verify that the application enforces access control rules on a trusted service layer, especially if client-side access control is present and could be bypassed. V4.2: Verify that all user and data attributes and policy information used by access controls cannot be manipulated by end users unless specifically authorized.",
+            "note": "Standard de verification OWASP (ASVS) — criteres de validation d'un systeme d'autorisation. Cite par B, absent chez A (convarge avec OWASP Top 10 A01). Inclus : complement operationnel au Top 10 — specifie comment verifier l'autorisation. Niveau 2."
+          },
+          {
+            "name": "OWASP Authorization Cheat Sheet (OWASP Foundation, 2021)",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "Centralize your authorization logic. Ensure that all authorization decisions are centralized and enforced consistently. Avoid implementing authorization logic in multiple places throughout the application. Use a single authorization component that is called from all access points. Enforce least privilege.",
+            "note": "Guide pratique OWASP — recommandations d'implementation de l'autorisation. Cite par A, absent chez B (converge avec OWASP Top 10 et ASVS). Inclus : guidance concrete sur la centralisation et le moindre privilege. Niveau 2."
+          },
+          {
+            "name": "Zanzibar: Google's Consistent, Global Authorization System — USENIX ATC 2019",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "Zanzibar provides a uniform data model and configuration language for expressing a wide range of access control policies based on object-object and user-object relations. We describe how relation-based access control (ReBAC) naturally models complex sharing patterns that arise at Google scale, where permissions derive from relationships between objects rather than flat role assignments.",
+            "note": "Publication USENIX ATC par l'equipe Google — reference fondatrice du modele ReBAC a l'echelle. Citee par A et B. Accord complet. Niveau 5 — expert reconnu / systeme de production a milliards d'utilisateurs. Source de reference pour les cas avances de ReBAC (OpenFGA, SpiceDB, Ory Keto s'en inspirent)."
+          },
+          {
+            "name": "Apache Casbin — Authorization library documentation (Apache Software Foundation)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Casbin is a powerful and efficient open-source access control library that supports various access control models, including ACL, RBAC, ABAC, and their combinations. The unified PERM (Policy, Effect, Request, Matchers) model allows teams to switch from RBAC to ABAC without rewriting application code.",
+            "note": "Documentation framework Apache Casbin — librairie d'autorisation multi-modele (RBAC/ABAC). Citee par B, absente chez A. Incluse : valide que des librairies eprouvees existent pour eviter l'implementation custom. Niveau 3."
+          },
+          {
+            "name": "CASL — Isomorphic authorization library for Node.js/TypeScript (CASL maintainers)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "CASL allows you to manage and check user permissions in your application. It is isomorphic (works in Node.js and browser), provides a clean API for defining abilities (what a user can and cannot do), and integrates with popular ORMs.",
+            "note": "Documentation framework CASL — librairie d'autorisation TypeScript/Node.js. Citee par B, absente chez A. Incluse : reference concrete pour l'ecosysteme Node.js/TypeScript (stack OLS-frontend/backend). Niveau 3."
+          },
+          {
+            "name": "Keycloak — Authorization Services Guide (Red Hat / Keycloak maintainers)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Keycloak Authorization Services provides fine-grained authorization policies combining RBAC, ABAC, and resource-based policies. A central policy decision point (PDP) evaluates access requests and enforces them at the resource level, enabling externalized authorization without modifying application code.",
+            "note": "Documentation Keycloak Authorization Services — solution d'autorisation centralisee compatible RBAC/ABAC. Citee par B, absente chez A. Incluse : valide l'approche d'autorisation externalisee comme alternative viable au code applicatif. Niveau 3."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 3 sources niv.1 (ANSI/INCITS 359, NIST SP 800-162, Ferraiolo & Kuhn 1992) + 3 sources niv.2 (OWASP Top 10, OWASP ASVS, OWASP Authorization Cheat Sheet) + 1 source niv.5 (Zanzibar Google) + 3 sources niv.3 (Casbin, CASL, Keycloak) convergent sans contradiction sur la hierarchie RBAC/ABAC/ReBAC, le principe de moindre privilege, la centralisation de la logique d'autorisation, et les signaux d'alerte (hard-coding, God-role, permission sprawl) — 10 sources independantes couvrant standards normatifs, guidance securite industry, framework docs, et systeme de production Google",
+            "effet important : OWASP Top 10 A01:2021 Broken Access Control est classe vulnerabilite #1 sur les applications web — l'impact securite d'une mauvaise autorisation est severe et mesurable (violations de donnees, acces non-autorises en production)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "ANSI/INCITS 359-2012 (standard normatif RBAC — base formelle du modele de roles, niveau 1)",
+          "NIST SP 800-162 (standard normatif ABAC — comparaison RBAC/ABAC, conditions d'usage, niveau 1)",
+          "OWASP Top 10 A01:2021 Broken Access Control (vulnerabilite #1 — justifie l'urgence du sujet, niveau 2)"
+        ],
+        "etd_balance": {
+          "benefices": "Securite : un modele d'autorisation formel elimine les chemins d'acces non-audites (hard-coding, if/else ad hoc) qui creent des vulnerabilites. Maintenabilite : les roles et politiques centralises se modifient en un seul endroit (principe DRY applique a la securite). Auditabilite : RBAC et ABAC permettent de repondre a 'qui peut faire quoi sur quoi' de facon tracable. Testabilite : les tests d'access control sont ecrits sur la logique d'autorisation, pas disperses dans les tests metier. Scalabilite : Keycloak et Casbin permettent d'externaliser l'autorisation et de la faire evoluer sans refactoring applicatif.",
+          "risques": "Complexite initiale : ABAC et ReBAC ont une courbe d'apprentissage significative — sur-ingenierie si RBAC suffit. Latence : evaluation de politiques complexes (ABAC) peut introduire de la latence sur les acces frequents — mitiger par cache. Permission drift : les roles accumulent des permissions au fil du temps si aucune governance — audits reguliers necessaires. Vendor lock-in : Keycloak introduce une dependance infrastructure pour l'autorisation centralisee.",
+          "balance": "Benefices >> Risques pour tout projet avec plusieurs niveaux d'acces utilisateurs. Le seul risque reel est la sur-ingenierie (choisir ABAC ou ReBAC quand RBAC suffit) — couvert par la regle YAGNI appliquee a l'autorisation. Le risque de permission drift est mitige par des tests d'access control exhaustifs et des audits periodiques.",
+          "faisabilite": "Haute — critere applicable directement : (1) lister les ressources et les actions possibles ; (2) identifier si les regles d'acces dependent uniquement de roles statiques (→ RBAC) ou d'attributs dynamiques (→ ABAC) ou de relations entre entites (→ ReBAC) ; (3) choisir une librairie eprouvee selon le stack ; (4) ecrire des tests verifiant explicitement les acces refuses autant que les acces accordes."
+        },
+        "prisma_ref": "verification/prisma/authorization-patterns.md",
+        "sensitivity_ref": "verification/extractions/authorization-patterns.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

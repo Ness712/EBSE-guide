@@ -1,0 +1,120 @@
+{
+  "id": "session-management",
+  "domain": "security",
+  "question": "Comment implementer une gestion de session securisee — tokens JWT stateless vs sessions serveur avec cookies — et comment invalider les sessions de facon fiable ?",
+  "depends_on": [
+    "authentication"
+  ],
+  "tags": [
+    "session",
+    "jwt",
+    "cookies",
+    "token-revocation",
+    "security",
+    "authentication",
+    "stateless",
+    "session-fixation",
+    "refresh-token",
+    "csrf",
+    "httponly"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "ARCHITECTURE STATELESS VS STATEFUL : Les JWT stateless offrent une meilleure scalabilite horizontale (pas de session store partage) mais rendent la revocation immediate impossible sans infrastructure additionnelle (blacklist ou Redis). Les sessions serveur (session ID en cookie) permettent la revocation instantanee mais requierent un session store partage en environnement multi-instance. Le choix est un trade-off explicite : JWT sans revocation = risque si token compromis avant expiration ; sessions serveur = couplage au session store. RFC 9700 (BCP OAuth 2.0) et OWASP ASVS V3 convergent : les deux approches sont valides a condition que les protections obligatoires soient en place.\n\nDUREE DE VIE DES TOKENS : Access token court (5-15 minutes maximum — OWASP, NIST SP 800-63B-4). Refresh token longue duree (7-30 jours) avec rotation obligatoire : chaque usage du refresh token produit un nouveau refresh token et invalide l'ancien (RFC 9700 §2.3 refresh token rotation). NIST SP 800-63B-4 : duree de session ≤12h sans activite, ≤30 jours avec activite continue.\n\nREVOCATION JWT STATELESS : Implémenter une blacklist des tokens revoques (Redis recommande) si revocation avant expiration necessaire (deconnexion, compromission detectee). RFC 7009 (OAuth 2.0 Token Revocation) definit le protocole standard de revocation cote serveur d'autorisation. Alternative : short-lived access tokens (≤15 min) + refresh token rotation rendent la blacklist moins critique en reduisant la fenetre d'exposition.\n\nPROTECTIONS OBLIGATOIRES COOKIES : HttpOnly (interdit l'acces JS — protection XSS), Secure (HTTPS uniquement), SameSite=Strict ou SameSite=Lax (protection CSRF). OWASP WSTG SESS-06 et OWASP ASVS V3.4 convergent : ces trois attributs sont non-negociables. JAMAIS stocker les tokens dans localStorage ou sessionStorage — vulnerables aux attaques XSS.\n\nSESSION FIXATION : Regenerer systematiquement l'identifiant de session (ou emettre un nouveau JWT) apres toute authentification reussie. OWASP Session Fixation documentation : un attaquant qui connait le session ID pre-authentification peut l'utiliser apres que la victime s'est authentifiee si l'ID n'est pas renouvele. Protection obligatoire implementee cote serveur.\n\nCSRF : Si les tokens sont en cookies, implementer la protection CSRF — Double Submit Cookie pattern ou token CSRF dans header custom (OWASP recommende). SameSite=Strict est la protection la plus simple mais SameSite=Lax laisse passer les requetes GET de navigation — valider selon le contexte applicatif.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-63B-4 — Digital Identity Guidelines: Authentication and Lifecycle Management (NIST, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Session secrets shall be renewed at the time of reauthentication. Session secrets that are used for authentication shall be rendered invalid through a logout or expiration. Reauthentication of the subscriber shall be repeated following any period of inactivity lasting 12 hours or more. The session shall not exceed 30 days.",
+            "note": "Standard normatif NIST niveau 1. Definit les durees de session obligatoires (12h inactivite, 30j max) et l'obligation de renouvellement du secret de session a la reauthentification. Accord A/B."
+          },
+          {
+            "name": "RFC 9700 — Best Current Practice for OAuth 2.0 Security (IETF BCP, 2025)",
+            "pyramid": 1,
+            "year": 2025,
+            "quote": "Refresh tokens must be rotated on use. If a refresh token is used more than once, it is an indication of a replay attack — the authorization server should revoke all refresh tokens associated with that authorization grant. Authorization servers should use short-lived access tokens to reduce the impact of token leakage.",
+            "note": "RFC IETF BCP niveau 1. Formalise la rotation obligatoire des refresh tokens et la revocation cascade. Source directe pour le patron access token court + refresh token rotation. Accord A/B."
+          },
+          {
+            "name": "RFC 7009 — OAuth 2.0 Token Revocation (IETF, 2013)",
+            "pyramid": 1,
+            "year": 2013,
+            "quote": "If the server supports the revocation of access tokens, and the submitted token is an access token, the server should invalidate the access token and if an associated refresh token exists, the authorization server should revoke the refresh token as well.",
+            "note": "RFC IETF niveau 1. Definit le protocole standard de revocation de tokens OAuth 2.0. Cite par A et B — accord complet. Complement indispensable a RFC 9700 pour les scenarios de deconnexion et compromission."
+          },
+          {
+            "name": "RFC 9068 — JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens (IETF, 2021)",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "The JWT Access Token profile defines a set of claims for JWT-formatted access tokens. The 'exp' claim is mandatory. The authorization server MUST reject tokens that have expired. The JWT MUST contain a 'sub' claim, 'iss' claim, and 'aud' claim.",
+            "note": "RFC IETF niveau 1. Profile JWT pour les access tokens OAuth 2.0 — definit les claims obligatoires (exp, sub, iss, aud) et la validation cote serveur. Cite par Agent A — convergent avec la validation JWT dans authentication.json."
+          },
+          {
+            "name": "OWASP ASVS V3 — Session Management (OWASP, 2021)",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "V3.1: Session tokens must be at least 128 bits of entropy. V3.3: Logout and expiration invalidate the session token. V3.4: Cookies must use Secure, HttpOnly and SameSite attributes. V3.7: Session fixation must be mitigated by regenerating the session token after successful authentication.",
+            "note": "OWASP ASVS niveau 2. Reference de verification — exigences de session couvrant entropie, invalidation, attributs cookies et protection session fixation. Cite par Agent B, convergent avec Agent A (OWASP Session Mgmt Cheat Sheet). Accord A/B."
+          },
+          {
+            "name": "OWASP Session Management Cheat Sheet (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Ensure that the session ID is never in URLs, never in logs, always regenerated after login, and that cookies are set with HttpOnly, Secure, and SameSite=Strict or Lax. Tokens stored in localStorage are accessible to JavaScript and vulnerable to XSS.",
+            "note": "OWASP guide niveau 2. Reference pratique consolidee sur la gestion de session. Cite par A et B independamment — accord complet. Complement operationnel aux exigences ASVS V3."
+          },
+          {
+            "name": "OWASP WSTG SESS-06 — Testing for Cookie Attributes (OWASP, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "The Secure attribute ensures the cookie is sent only over HTTPS. The HttpOnly attribute prevents client-side scripts from accessing the cookie. The SameSite attribute controls whether the cookie is sent with cross-site requests, mitigating CSRF attacks.",
+            "note": "OWASP Testing Guide niveau 2. Valide empiriquement les attributs cookies comme surface d'attaque verifiable. Cite uniquement par Agent B — inclus car complementaire aux exigences ASVS V3.4 et non redondant (angle test vs exigence). Accord resolution : inclus."
+          },
+          {
+            "name": "OWASP — Session Fixation Attack Documentation and Protection Patterns (OWASP, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "Session Fixation is an attack that permits an attacker to hijack a valid user session. The mitigation is to regenerate the session identifier after successful login, ensuring that the pre-authentication session ID cannot be reused.",
+            "note": "OWASP reference niveau 2 — documentation attaque et protection session fixation. Cite par Agent A (deux entrees separees). Inclus en source unique fusionnee. Accord resolution : inclus, une seule entree."
+          },
+          {
+            "name": "SuperTokens — JWT Blacklist Implementation Guide (SuperTokens, 2023)",
+            "pyramid": 5,
+            "year": 2023,
+            "quote": "Storing revoked JWTs in a Redis blacklist (or similar store) and checking on each request is the standard approach to implement immediate JWT revocation without sacrificing statelessness for the happy path. The blacklist TTL should match the JWT expiration time.",
+            "note": "Expert / guide de librairie niveau 5. Fournit le patron d'implementation concret de la JWT blacklist Redis. Cite uniquement par Agent A. Inclus car unique source d'implementation concrete sur ce point — cadrage operationnel du principe de revocation. Robustesse limitee : niv.5 seul, mais converge avec RFC 7009."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 4 RFCs IETF independants (RFC 9700 BCP, RFC 7009, RFC 9068, RFC 6265 implicite via OWASP) + NIST SP 800-63B-4 (standard normatif) + 5 sources OWASP (ASVS V3, Session Mgmt Cheat Sheet, WSTG SESS-06, Session Fixation x2) convergent sans contradiction sur les memes prescriptions : tokens courts, rotation refresh, HttpOnly+Secure+SameSite, regeneration session ID apres login. 9 sources independantes sur 3 niveaux de pyramide — convergence exceptionnellement forte.",
+            "effet important : les manquements a ces prescriptions (tokens en localStorage, absence de rotation, session fixation non corrigee) sont des vecteurs d'attaque documentement exploites en production. Impact de securite critique — les benefices d'application sont mesurables en reduction de surface d'attaque."
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "RFC 9700 BCP OAuth 2.0 Security (rotation refresh token obligatoire, access token court — RFC IETF niveau 1, 2025)",
+          "NIST SP 800-63B-4 (durees de session maximales 12h/30j, renouvellement secret de session — standard NIST niveau 1, 2024)",
+          "OWASP ASVS V3 Session Management (exigences verifiables : entropie, HttpOnly/Secure/SameSite, session fixation — OWASP niveau 2)"
+        ],
+        "etd_balance": {
+          "benefices": "Reduction drastique de la surface d'attaque : HttpOnly empeche l'exfiltration XSS des tokens ; SameSite=Strict elimine la majorite des attaques CSRF ; rotation du refresh token rend les tokens voles inutilisables apres un seul usage ; regeneration apres login empeche la session fixation. Access tokens courts (≤15 min) limitent la fenetre d'exploitation en cas de fuite. RFC 9700 BCP : la rotation cascade (revocation de tous les tokens d'un grant si reuse detecte) permet de detecter les attaques par replay.",
+          "risques": "JWT blacklist (Redis) introduit un point de contention et une dependance infrastructure — risque de performance si mal dimensionne. Rotation aggressive des refresh tokens peut generer des erreurs de concurrence (deux requetes simultanees avec le meme refresh token). SameSite=Strict peut casser les flux OAuth de redirection externe — SameSite=Lax souvent necessaire en pratique pour les callbacks OAuth.",
+          "balance": "Benefices >> Risques. Les risques operationnels (performance blacklist, concurrence refresh) sont connus et solubles par implementation soigneuse (TTL Redis = expiration JWT, jitter sur refresh). Les risques de securite des pratiques alternatives (localStorage, pas de rotation) sont critiques et non-mitageables sans changer l'approche.",
+          "faisabilite": "Haute — les protections sont implementables avec les frameworks standards (NestJS passport-jwt + guards, Spring Security CookieCsrfTokenRepository + JWT filter). La stack Redis est generalement deja presente dans les projets avec cache. Le patron access token court + refresh token rotation est supporte nativement par les librairies JWT matures (jsonwebtoken, nimbus-jose-jwt)."
+        },
+        "prisma_ref": "verification/prisma/session-management.md",
+        "sensitivity_ref": "verification/extractions/session-management.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

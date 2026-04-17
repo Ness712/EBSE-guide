@@ -1,0 +1,70 @@
+{
+  "id": "legacy-code-comprehension",
+  "domain": "maintenance",
+  "question": "Comment comprendre, tester et modifier du code legacy sans tests existants, de façon sécurisée et incrémentale ?",
+  "depends_on": ["legacy-refactoring", "test-strategy"],
+  "tags": ["legacy-code", "characterization-tests", "seams", "strangler-fig", "refactoring", "working-effectively", "feathers", "technical-debt", "incremental"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Règle préliminaire absolue : NE JAMAIS refactoriser du code legacy sans couverture de tests préalable. La règle de Feathers est sans exception : d'abord les tests, ensuite le refactoring. Refactoriser du code sans filet de sécurité revient à modifier un comportement sans savoir ce qu'on casse — les bugs introduits deviennent invisibles jusqu'en production. Étape 1 — Characterization tests (Feathers) : écrire des tests qui DOCUMENTENT le comportement actuel du code, pas ce qu'il devrait faire, mais ce qu'il FAIT réellement. Un characterization test capture la sortie actuelle d'un morceau de code (même si cette sortie est incorrecte ou surprenante) et la fixe comme référence. Ces tests constituent le filet de sécurité pour tout changement ultérieur : ils détectent immédiatement toute régression comportementale. La stratégie est : exécuter le code, observer la sortie, écrire le test qui affirme cette sortie. Si le comportement est erroné, le test le documente quand même — on corrige le bug séparément, dans un commit distinct, après que le test ait établi la base. Étape 2 — Seams (Feathers) : identifier les points d'injection dans le code qui permettent d'altérer le comportement en test sans modifier le code source en production. Un seam est un lieu dans le code où les dépendances peuvent être substituées pour l'isolation en test : constructeurs (injection par constructeur), factories, interfaces, paramètres de méthode, variables d'environnement. En NestJS/TypeScript, l'injection de dépendances est naturellement un seam — chaque service injecté via @Injectable() peut être remplacé par un mock dans les tests sans modifier le code source. Identifier les seams existants avant de modifier le code : si aucun seam n'existe, en introduire un (extraction d'interface, passage par paramètre) comme première et unique modification, couverte par characterization tests. Étape 3 — Strangler Fig (Fowler) : pattern d'évolution incrémentale pour remplacer le code legacy sans big-bang rewrite. Principe : introduire une facade/proxy au point d'entrée du système qui route les requêtes entre l'ancien code et le nouveau code. Migrer les fonctionnalités feature-by-feature : chaque tranche fonctionnelle est réécrite dans le nouveau code, la facade bascule le trafic vers la nouvelle implémentation, l'ancien code 'étrangle' graduellement jusqu'à disparition complète. Le système reste déployable et fonctionnel à chaque étape — pas de branche de développement longue durée, pas de freeze fonctionnel pendant la migration. Étape 4 — Thin slices (Azure Architecture Center) : découper la migration en tranches indépendantes, suffisamment petites pour être livrables mais suffisamment significatives pour apporter de la valeur métier. Chaque tranche doit être indépendante et auto-contenue : elle peut être livrée, testée et rollbackée sans affecter les autres tranches. Ce découpage évite le syndrome du 'grand rewrite' qui échoue : les rewrites totaux ont un taux d'échec élevé car la valeur n'est livrée qu'à la fin, les risques s'accumulent, et l'organisation perd confiance. Les thin slices maintiennent la livraison continue de valeur pendant la migration. Règle de sécurité — blast radius minimal : ne pas étendre le périmètre d'une modification legacy au-delà du strict nécessaire. Chaque modification doit avoir un scope délimité : un seam introduit à la fois, un characterization test par comportement capturé, une tranche migrée à la fois. L'extension de périmètre non contrôlée est la première cause d'échec des projets de modernisation legacy — les modifications en cascade sans tests de couverture génèrent des bugs invisibles qui émergent en production.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Martin Fowler — StranglerFigApplication (martinfowler.com, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "The pattern begins with small additions, often new features, that are built on top of yet separate from the legacy code base, and then moves bits of behavior from the legacy system into the new code base. A façade (proxy) intercepts requests that go to the back-end legacy system and routes these requests either to the legacy application or to the new services. This approach makes both investment and returns occur gradually and visibly, allowing the organization to evolve its software and business process to better support the current environment.",
+            "note": "Martin Fowler (expert reconnu, ~100k citations) — niv.5. Article fondateur du pattern Strangler Fig pour la modernisation incrémentale de systèmes legacy. Accord A/B."
+          },
+          {
+            "name": "Microsoft Azure Architecture Center — Strangler Fig pattern (learn.microsoft.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Break down the system into manageable parts or 'thin slices,' which are small enough to be replaced incrementally but significant enough to deliver business value — these slices should be independent and self-contained where possible. Changes are made gradually, limiting the blast radius of any issues and avoiding the dangers of a full system rewrite.",
+            "note": "Azure Architecture Center (Microsoft) — niv.3. Reformulation opérationnelle du Strangler Fig avec le concept de thin slices et blast radius minimal. Accord A/B."
+          },
+          {
+            "name": "Michael Feathers — Working Effectively with Legacy Code (Prentice Hall, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "A characterization test is a test that characterizes the actual behavior of a piece of code. A seam is a place where you can alter behavior in your program without editing in that place — a place in your code where you can separate things for testing where maybe none existed before. Refactoring is performed after unit tests cover the targeted code, and is critical to improve the clarity and maintainability of the code.",
+            "note": "Michael Feathers (Prentice Hall, ~15k citations) — niv.5. Référence fondatrice sur les techniques concrètes de modification de code sans tests : characterization tests, seams, refactoring sécurisé. Accord A/B."
+          },
+          {
+            "name": "understandlegacycode.com — The key points of Working Effectively with Legacy Code (2020)",
+            "pyramid": 4,
+            "year": 2020,
+            "quote": "Seams let you accomplish having different behavior in tests vs. production without modifying the source. The three concepts — characterization tests, seams, and refactoring — work together as a cohesive methodology for safely making changes to untested legacy code.",
+            "note": "Synthèse technique de WELC (understandlegacycode.com) — niv.4. Articule la synergie entre les 3 concepts de Feathers comme méthodologie cohérente. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : Fowler (martinfowler.com, niv.5), Feathers (Prentice Hall, niv.5), Azure Architecture Center (Microsoft, niv.3) et understandlegacycode (niv.4) convergent sans contradiction sur la même approche incrémentale — characterization tests + seams + Strangler Fig + thin slices — 4 sources indépendantes de catégories distinctes (praticien reconnu, éditeur académique, documentation architecture cloud, synthèse communautaire)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Michael Feathers — Working Effectively with Legacy Code (Prentice Hall, 2004) — référence fondatrice niv.5, ~15k citations, définit characterization tests et seams comme méthodologie cohérente",
+          "Martin Fowler — StranglerFigApplication (martinfowler.com, 2004) — référence fondatrice niv.5, ~100k citations, pattern fondateur de la migration incrémentale",
+          "Microsoft Azure Architecture Center — Strangler Fig pattern (2024) — niv.3, reformulation opérationnelle avec thin slices et blast radius, valide la pertinence contemporaine du pattern Fowler"
+        ],
+        "etd_balance": {
+          "benefices": "Sécurité comportementale garantie à chaque étape : les characterization tests détectent immédiatement toute régression. Livraison continue de valeur pendant la migration : pas de freeze fonctionnel, pas de branche de développement longue durée. Réduction du risque de rewrite total : les thin slices maintiennent le système déployable en permanence. Compréhension progressive du code legacy : écrire des characterization tests force à explorer et documenter le comportement réel du code, construisant une connaissance que l'équipe ne possédait pas. Blast radius minimal : chaque modification a un scope délimité, les bugs introduits sont détectables immédiatement et facilement rollbackables.",
+          "risques": "Coût initial élevé des characterization tests sur du code très couplé : sans seams, il peut être difficile d'isoler les unités à tester. Risque de sur-documenter des comportements erronés : les characterization tests fixent le comportement actuel, y compris les bugs — nécessite une discipline pour distinguer 'documenter' de 'valider'. Façade Strangler Fig peut devenir un goulot d'étranglement si mal dimensionnée. Thin slices difficiles à définir dans des architectures monolithiques très enchevêtrées : le découpage peut nécessiter une analyse préalable significative.",
+          "balance": "Bénéfices >> Risques. Les risques sont gérables par processus : convention équipe sur la distinction characterization/regression tests, dimensionnement de la facade, atelier de découpage des slices. Le risque principal sans ces techniques — modifier du code legacy sans filet de sécurité — est documentalement bien pire : bugs invisibles, régressions silencieuses, perte de confiance dans le système. La méthodologie Feathers + Strangler Fig est la référence de l'industrie précisément parce qu'elle répond à un problème universel sans solution alternative équivalente.",
+          "faisabilite": "Haute — les characterization tests s'écrivent avec les frameworks de test existants (JUnit, Jest, Vitest) sans outillage supplémentaire. En NestJS/TypeScript, l'injection de dépendances native est un seam par construction — @Injectable(), TestingModule, et jest.mock() fournissent tous les outils nécessaires. Le pattern Strangler Fig s'implémente avec un middleware de routage (NestJS guards/interceptors, ou un reverse proxy niveau infrastructure comme Caddy). Les thin slices se définissent lors des sessions de refinement en identifiant les frontières de domaine (bounded contexts DDD)."
+        },
+        "prisma_ref": "verification/prisma/legacy-code-comprehension.md",
+        "sensitivity_ref": "verification/extractions/legacy-code-comprehension.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

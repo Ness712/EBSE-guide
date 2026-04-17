@@ -1,0 +1,99 @@
+{
+  "id": "exception-hierarchy",
+  "domain": "design",
+  "question": "Comment structurer une hiérarchie d'exceptions NestJS qui distingue les erreurs de domaine (attendues) des erreurs techniques (inattendues), avec les Exception Filters et le format Problem Details ?",
+  "depends_on": [],
+  "tags": ["exceptions", "error-handling", "nestjs", "exception-filters", "domain-errors", "rfc9457", "problem-details", "result-type", "discriminated-unions"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Architecture à deux niveaux (Khorikov 2015) : il existe deux catégories fondamentalement distinctes d'erreurs. (1) Les erreurs de domaine sont attendues — elles font partie du modèle métier (email déjà pris, ressource introuvable, règle métier violée). Elles doivent être modélisées explicitement et retournées avec un code HTTP sémantique précis. (2) Les erreurs techniques sont inattendues — elles signalent une défaillance d'infrastructure (base de données inaccessible, timeout réseau, assertion violée). Elles doivent remonter sans être interceptées côté domaine, et être capturées uniquement par le filtre global qui les mappe sur 500 Internal Server Error. Confondre ces deux catégories produit des APIs imprévisibles et insécurisées.\n\nHiérarchie NestJS : la base de la hiérarchie est HttpException (NestJS built-in). Les exceptions de domaine héritent de HttpException avec le code HTTP approprié : NotFoundException (404), ConflictException (409), UnprocessableEntityException (422), ForbiddenException (403), BadRequestException (400), UnauthorizedException (401). Chaque exception de domaine porte un message client explicatif. Un ExceptionFilter global annoté @Catch() (sans argument) intercepte toutes les exceptions non reconnues (ni HttpException ni sous-classe) et les mappe sur 500 en produisant un message générique. Ce filtre est enregistré globalement via app.useGlobalFilters().\n\nFormat de contrat RFC 9457 Problem Details : toutes les réponses d'erreur HTTP doivent suivre le format Problem Details (RFC 9457, IETF 2023) : { \"type\": \"https://example.com/errors/not-found\", \"title\": \"Resource Not Found\", \"status\": 404, \"detail\": \"User with id 42 was not found\", \"instance\": \"/api/users/42\" }. Ce format est un standard universel permettant aux clients de distinguer, parser et afficher les erreurs de façon uniforme. Le ExceptionFilter global est responsable de produire ce format pour toutes les exceptions, qu'elles soient de domaine (4xx avec detail explicatif) ou techniques (5xx avec title générique uniquement).\n\nSécurité OWASP — jamais de stack trace dans les réponses (CWE-209) : une stack trace dans une réponse HTTP expose la structure interne de l'application, les chemins de fichiers, les versions de bibliothèques — informations exploitables par un attaquant (OWASP Error Handling Cheat Sheet 2024). Règle absolue : pour les erreurs 4xx, retourner un message client explicatif dans le champ 'detail'. Pour les erreurs 5xx, retourner uniquement 'Internal Server Error' dans 'title' — jamais le message d'exception interne. Toujours logger côté serveur le message complet et la stack trace avec un correlation ID (requestId) permettant de relier le log à la réponse client sans exposer l'information.\n\nValidation = Notification, pas exception isolée (Fowler 2014) : lorsqu'une validation doit rapporter plusieurs erreurs simultanément (formulaire avec plusieurs champs invalides), lever une exception par champ masque les erreurs suivantes. Le pattern Notification collecte toutes les erreurs avant de les signaler en une seule fois. En pratique NestJS : utiliser class-validator avec ValidationPipe global — NestJS agrège automatiquement toutes les erreurs de validation dans un BadRequestException(400) avec un tableau d'erreurs dans 'detail'. Ne jamais lever une exception par champ dans une boucle de validation.\n\nResult<T, E> pour les erreurs de domaine fortement typées (neverthrow, Khorikov) : dans la couche service, le type Result<T, E> est préférable aux exceptions pour les erreurs de domaine attendues. Le compilateur TypeScript force la gestion explicite du chemin d'erreur — un Result non géré produit une erreur de compilation, contrairement à une exception qui peut remonter silencieusement. Pattern : le service retourne Result<User, DomainError> ; le controller mappe les variantes d'erreur sur les HttpExceptions appropriées. Ce pattern est optionnel selon la maturité DDD de l'équipe — il n'est pas obligatoire pour des services CRUD simples, mais devient précieux quand la logique métier comporte de nombreux chemins d'erreur nommés.\n\nDiscriminated unions + switch exhaustif (TypeScript) : pour les types d'erreur de domaine, utiliser des discriminated unions TypeScript — chaque variante d'erreur porte un champ 'kind' littéral unique. Le switch sur ce champ avec un cas 'default: const _exhaustive: never = error' garantit qu'ajouter un nouveau type d'erreur sans mettre à jour le switch produit une erreur de compilation. Cette technique assure la complétude statique de la gestion d'erreurs sans dépendre des tests ou du runtime.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "RFC 9457 — Problem Details for HTTP APIs (IETF, 2023)",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "A 'problem detail' is a way to carry machine-readable details of errors in a HTTP response to avoid the need to define new error response formats for HTTP APIs. [...] The 'type' member is a URI reference that identifies the problem type. [...] 'title' is a short, human-readable summary. 'status' mirrors the HTTP status code. 'detail' is a human-readable explanation specific to this occurrence. 'instance' is a URI reference that identifies the specific occurrence.",
+            "note": "RFC IETF normatif définissant le format universel de contrat pour les réponses d'erreur HTTP. Standard de niveau 1 — la source la plus haute de la hiérarchie de preuve. Accord A/B."
+          },
+          {
+            "name": "OWASP Error Handling Cheat Sheet (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "The application should not reveal stack traces, source code paths, or other technical internal information in error messages (CWE-209). Log the full error server-side with a correlation ID. 4xx errors should contain a helpful explanation for the client. 5xx errors should return a generic message only.",
+            "note": "Guide prescriptif OWASP sur la gestion sécurisée des erreurs HTTP. Classe CWE-209 (exposition d'informations via stack trace) comme risque documenté. Niveau 2 — référence OWASP reconnue. Accord A/B."
+          },
+          {
+            "name": "NestJS — Exception Filters documentation (NestJS, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "When creating custom exceptions, it's best practice to establish an exceptions hierarchy where custom exceptions inherit from HttpException. When an exception is unrecognized (neither HttpException nor subclass), the built-in exception filter generates a 500 Internal Server Error. @Catch(HttpException) decorator binds metadata to exception filter. @Catch() can accept comma-separated list to handle multiple types simultaneously.",
+            "note": "Documentation officielle NestJS sur les Exception Filters et la hiérarchie recommandée. Directement actionnable pour l'implémentation. Niveau 3 — documentation framework officielle. Accord A/B."
+          },
+          {
+            "name": "NestJS — Built-in HTTP exceptions (NestJS, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "NestJS provides a set of standard exceptions that inherit from the base HttpException class: BadRequestException (400), UnauthorizedException (401), ForbiddenException (403), NotFoundException (404), ConflictException (409), UnprocessableEntityException (422), InternalServerErrorException (500).",
+            "note": "Documentation officielle NestJS listant les exceptions HTTP built-in. Fournit la palette d'exceptions de domaine disponibles sans code custom. Niveau 3 — documentation framework. Accord A/B."
+          },
+          {
+            "name": "TypeScript — Narrowing: Exhaustiveness Checking (typescriptlang.org, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The never type is assignable to every type; however, no type is assignable to never. You can use narrowing and rely on never turning up to do exhaustive checking in a switch statement — TypeScript will error at compile time if a case is not handled.",
+            "note": "Documentation officielle TypeScript sur l'exhaustivité des switch via le type never. Technique de sécurité statique garantissant la complétude de la gestion d'erreurs à la compilation. Niveau 3 — documentation langage officielle. Source B uniquement, incluse car directement actionnable."
+          },
+          {
+            "name": "neverthrow — NeverThrow: Type-Safe Errors for JS & TypeScript (GitHub/npm, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Throwing and catching is very similar to using goto statements — the flow of execution becomes unpredictable. Encode failure into your program. Result<T, E> makes the error path explicit and typed, forcing the caller to handle it at compile time.",
+            "note": "Bibliothèque npm documentant le pattern Result<T, E> pour TypeScript. Argument pragmatique sur la prévisibilité du flux d'exécution avec exceptions vs Result. Niveau 4 — outil/bibliothèque reconnu avec adoption large. Source B uniquement."
+          },
+          {
+            "name": "Khorikov V. — Exceptions vs Result Object (enterprisecraftsmanship.com, 2015)",
+            "pyramid": 5,
+            "year": 2015,
+            "quote": "There are two types of errors: expected (domain errors, like 'email already taken') and unexpected (infrastructure errors, like 'database is down'). Domain errors are part of the domain model and should be handled explicitly. Infrastructure errors are exceptional and should bubble up as exceptions.",
+            "note": "Article fondateur de l'architecture à deux niveaux d'erreurs (domaine vs technique). Distinction conceptuelle centrale du principe. Niveau 5 — expert DDD reconnu. Accord A/B."
+          },
+          {
+            "name": "Fowler M. — Replacing Throwing Exceptions with Notification in Validations (martinfowler.com, 2014)",
+            "pyramid": 5,
+            "year": 2014,
+            "quote": "If you're validating some data, you usually shouldn't be using exceptions to signal validation failures. Exception-based validation only indicates the first validation error. This refactoring is good to use only when the outcome signaled by the exception isn't really exceptional.",
+            "note": "Article de référence sur le pattern Notification pour la validation multi-erreurs. Justifie l'approche NestJS ValidationPipe avec agrégation. Niveau 5 — Martin Fowler, expert architecture reconnu. Source B uniquement, incluse car apport direct sur le cas validation."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : RFC 9457 (niveau 1, standard normatif IETF) + OWASP Error Handling Cheat Sheet (niveau 2) + NestJS docs (niveau 3) + TypeScript docs (niveau 3) + Khorikov 2015 (niveau 5) + Fowler 2014 (niveau 5) + neverthrow (niveau 4) convergent sans contradiction sur la même architecture à deux niveaux et le même format de réponse — 5 contextes distincts : normatif (RFC 9457), sécurité applicative (OWASP), documentation framework (NestJS), documentation langage (TypeScript), experts design (Khorikov, Fowler)",
+            "effet important : CWE-209 (exposition d'informations via stack trace dans les réponses HTTP) est une vulnérabilité de sécurité documentée par OWASP et répertoriée dans le Common Weakness Enumeration NIST — impact direct sur la sécurité des applications en production"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "RFC 9457 (IETF, 2023) — standard normatif de niveau 1 définissant le format de contrat universel pour les réponses d'erreur HTTP (contrainte de spécification, pas une recommandation)",
+          "OWASP Error Handling Cheat Sheet 2024 — documente CWE-209 et les règles de sécurité non-négociables sur l'exposition d'informations dans les réponses HTTP (niveau 2)",
+          "Khorikov V. 2015 — établit la distinction conceptuelle fondatrice entre erreurs de domaine et erreurs techniques, base de l'architecture à deux niveaux (niveau 5)"
+        ],
+        "etd_balance": {
+          "benefices": "Sécurité : aucune information interne exposée dans les réponses (CWE-209 mitigé). Cohérence : format Problem Details RFC 9457 uniforme sur toutes les APIs. Maintenabilité : la hiérarchie d'exceptions reflète la taxonomie métier — ajouter un nouveau type d'erreur de domaine est localisé. Testabilité : chaque exception est un type distinct, testable unitairement. Sécurité statique : discriminated unions + switch exhaustif garantissent la complétude de la gestion à la compilation, sans dépendre du runtime.",
+          "risques": "Complexité initiale : mettre en place l'ExceptionFilter global, le format Problem Details et les types Result demande un investissement en setup. Surmodélisation pour des APIs CRUD simples où BadRequestException built-in suffit. Risque d'incohérence si le format Problem Details n'est pas centralisé dans un seul ExceptionFilter mais reproduit dans plusieurs filtres.",
+          "balance": "Bénéfices >> Risques pour toute API avec logique métier non-triviale. Le setup initial est une fois pour toutes (ExceptionFilter global + helpers Problem Details). Pour les APIs CRUD pures, les exceptions built-in NestJS suffisent sans Result<T, E> ni discriminated unions. Appliquer progressivement : commencer par l'ExceptionFilter global RFC 9457 + règle OWASP (toujours), ajouter Result<T, E> et discriminated unions quand la complexité métier le justifie.",
+          "faisabilite": "Haute — NestJS supporte nativement les ExceptionFilters globaux (app.useGlobalFilters()), les exceptions built-in héritant de HttpException, et le ValidationPipe avec class-validator pour l'agrégation d'erreurs de validation. Le format Problem Details est produit par le filtre sans dépendance externe. neverthrow est une bibliothèque npm légère si Result<T, E> est choisi. TypeScript natif pour les discriminated unions."
+        },
+        "prisma_ref": "verification/prisma/exception-hierarchy.md",
+        "sensitivity_ref": "verification/extractions/exception-hierarchy.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

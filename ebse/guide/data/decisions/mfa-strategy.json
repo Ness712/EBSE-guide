@@ -1,0 +1,162 @@
+{
+  "id": "mfa-strategy",
+  "domain": "security",
+  "question": "Quelle strategie MFA implementer dans une application web NestJS+React, quels facteurs choisir selon le niveau d'assurance requis, et comment se premunir contre les attaques modernes (phishing, MFA fatigue, SIM swapping) ?",
+  "depends_on": [
+    "session-management",
+    "authorization-patterns"
+  ],
+  "tags": [
+    "mfa",
+    "totp",
+    "webauthn",
+    "passkeys",
+    "fido2",
+    "authentication",
+    "security",
+    "nestjs",
+    "phishing"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Choisir le facteur MFA selon le niveau d'assurance requis (NIST SP 800-63B-4 AAL) et la sensibilite des donnees traitees. Hierarchie des facteurs — du plus au moins resistant : (1) AAL3 (donnees critiques) : FIDO2 hardware token uniquement (YubiKey, cle physique) — resistance phishing garantie par binding hardware, non cloneable ; (2) AAL2 recommande (applications PII, donnees personnelles sensibles) : WebAuthn/passkeys (FIDO2, origin binding structurel — l'authentifieur ne propose que les credentials enregistres sur le meme domaine) > TOTP via otplib (acceptable, AAL2 conforme, mais secret partage stocke serveur = surface d'attaque residuelle) ; (3) SMS OTP : classe RESTRICTED par NIST SP 800-63B-4 pour toute application contenant des PII — ne pas utiliser pour les donnees sensibles. Vecteurs d'attaque modernes et contre-mesures obligatoires : SIM swapping (UK 2024 : +1 055%, FBI IC3 $26M pertes) et attaques SS7 permettent d'intercepter tout OTP SMS sans acces au device — ecarter SMS pour les donnees sensibles est non-optionnel ; MFA fatigue (push notification floods) : implementer le number matching (CISA 2022 : elimine les attaques MFA fatigue en production) + rate limiting 3-5 tentatives max + bascule vers FIDO2 si push non approuve ; phishing : seul WebAuthn/FIDO2 y resiste structurellement (origin binding W3C WebAuthn L2 — Google 2019 : 100% bots et 99% bulk phishing bloques par security keys vs 76% targeted attacks pour SMS). Donnees quantitatives de reference : Microsoft Research 2023 — MFA reduit le risque de compromission de 99,22% ; SMS 40,8% moins efficace que TOTP ; FIDO Passkey Index 2025 — 93% taux de succes passkeys vs 63% authentification traditionnelle, 13,6s vs 27,5s. Nuance AAL3 obligatoire : les passkeys synchronises (iCloud Keychain, Google Password Manager) sont admissibles AAL2 mais PAS AAL3 — pour AAL3, uniquement hardware token non-exportable (NIST SP 800-63B-4 strict). Implementer la reauthentification periodique : AAL2 = 24h max de session, inactivite 1h max (NIST SP 800-63B-4). IMPLEMENTATION NESTJS — TOTP : utiliser otplib v12+ (remplacant maintenu de Speakeasy qui est deprecie) ; pattern TwoFactorStrategy Passport avec routes distinctes : POST /auth/2fa/enable (initiation), POST /auth/2fa/verify (validation), DELETE /auth/2fa/disable ; secret Base32, methode verify() ; ne jamais stocker le secret en clair. IMPLEMENTATION NESTJS — WEBAUTHN : utiliser @simplewebauthn/server (v11+, certifie FIDO Conformance Tests) cote serveur + @simplewebauthn/browser cote client ; integration Passport via @passkeys/passport-simple-webauthn ; maintenir une state machine en session pour les flux registration et verification (challenge a usage unique, expiration, prevention du replay).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-63B-4 — Digital Identity Guidelines: Authentication and Lifecycle Management (NIST, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Verifiers SHALL offer at least one phishing-resistant authentication option. [...] SMS is classified as RESTRICTED for authenticator use with applications that handle PII. Passkeys (synced FIDO2 credentials) are admissible at AAL2 but not AAL3. Reauthentication at AAL2: 24h max session, 1h max inactivity.",
+            "note": "Standard normatif NIST, niveau 1. Reference de reference pour la classification des facteurs MFA par niveau d'assurance (AAL1/2/3). Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "RFC 6238 — TOTP: Time-Based One-Time Password Algorithm (IETF, 2011)",
+            "pyramid": 1,
+            "year": 2011,
+            "quote": "A time-based variant of the OTP algorithm provides short-lived OTP values, which are desirable for enhanced security.",
+            "note": "Standard IETF niveau 1. Algorithme fondateur de TOTP (fenetre 30s, HMAC-SHA-1). Documente la vulnerabilite de la fenetre etendue (> ±30s = risque AuthQuake) et la surface d'attaque du secret partage stocke serveur. Accord Reviewer A/B."
+          },
+          {
+            "name": "RFC 4226 — HOTP: An HMAC-Based One-Time Password Algorithm (IETF, 2005)",
+            "pyramid": 1,
+            "year": 2005,
+            "quote": "The HOTP algorithm is based on an increasing counter value and a static symmetric key known only to the token and the validation service.",
+            "note": "Standard IETF niveau 1. Base algorithmique de TOTP. Pertinent pour comprendre les limites du modele a secret partage (cote serveur = cible d'attaque en cas de breach). Identifie par Agent A."
+          },
+          {
+            "name": "W3C Web Authentication Level 2 — WebAuthn (W3C Recommendation, 2021)",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "The authenticator only offers credentials that were registered on the same website.",
+            "note": "Specification fondatrice de WebAuthn niveau 1. Definit l'origin binding comme mecanisme de resistance structurelle au phishing. Identifie par Agent A."
+          },
+          {
+            "name": "CISA — Implementing Number Matching in MFA Applications (CISA, 2022-2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "When number matching and additional context were enabled, they eliminated MFA fatigue attacks in live customer environments.",
+            "note": "Advisory gouvernemental US (CISA), niveau 2. Reference pour la mitigation des attaques par MFA fatigue. Rate limiting 3-5 tentatives recommande. Identifie par Agent B — specifique et actionnable."
+          },
+          {
+            "name": "FBI/CISA Advisory Salt Typhoon + UK Home Office SIM Swap Data (2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "SIM swapping increased 1,055% in the UK in 2024. Microsoft 2024: 40%+ of account takeovers bypassed an SMS factor. FBI IC3: $26M losses from SIM swap in 2024.",
+            "note": "Advisory gouvernemental US (FBI/CISA) et donnees officielles UK, niveau 2. Justifie empiriquement le classement RESTRICTED du SMS dans NIST SP 800-63B-4 avec des chiffres recents. Accord Reviewer A/B."
+          },
+          {
+            "name": "OWASP Multifactor Authentication Cheat Sheet (OWASP, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "MFA is by far the best defense against the majority of password-related attacks [...] would have stopped 99.9% of account compromises. SMS should not be used to protect applications that hold PII.",
+            "note": "Reference OWASP niveau 2. Convergence sur la hierarchie des facteurs et l'exclusion du SMS pour donnees sensibles. Documente WSTG-AUTHN-11 pour le testing MFA. Accord Reviewer A/B."
+          },
+          {
+            "name": "FIDO Alliance — FIDO2/CTAP2 Specifications (FIDO Alliance, 2018-2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Like legacy U2F, WebAuthn is resistant to phishing attacks as the authenticator only offers credentials that were registered on the same website.",
+            "note": "Specifications techniques du consortium FIDO Alliance, niveau 2. Complementaire a W3C WebAuthn L2. Confirme la resistance phishing par origin binding. Accord Reviewer A/B."
+          },
+          {
+            "name": "Microsoft Research — How effective is MFA at deterring cyberattacks? (Weinert et al., 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "MFA reduces the risk of account compromise by 99.22%. SMS is 40.8% less effective than authenticator apps. 99.99% of accounts with MFA remain secure.",
+            "note": "Etude empirique large echelle, niveau 3. Donnees observationnelles depuis l'infrastructure Microsoft — biais possible (etude interne) mais echelle (millions de comptes) et methodologie documentee. Identifie par Agent A."
+          },
+          {
+            "name": "Google Security Blog — Bursztein et al., Protecting accounts from credential stuffing with password breach alerting (2019)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "100% of automated bots blocked. 99% of bulk phishing blocked. Security keys: 100% across all attack vectors. SMS: 76% targeted attacks blocked.",
+            "note": "Etude empirique de facto dans la litterature MFA, niveau 3-4. Large echelle (Google infrastructure). Reference frequemment citee pour la comparaison quantitative SMS vs security keys. Identifie par Agent B."
+          },
+          {
+            "name": "FIDO Alliance — Passkey Index 2025 (FIDO Alliance, 2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "69% of users have at least one passkey. 93% success rate for passkeys vs 63% for traditional authentication. 13.6s vs 27.5s average authentication time.",
+            "note": "Rapport sectoriel FIDO Alliance, niveau 3. Biais possible (organisation promotrice des passkeys) — chiffres d'adoption et de performance a lire avec ce contexte. 48% des top 100 websites supportent passkeys en 2025. Accord Reviewer A/B."
+          },
+          {
+            "name": "Okta — Navigating Credential and Fraud Risks (2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "FIDO2 WebAuthn: 99.8% phishing resistance. SMS: 70% phishing attack success rate.",
+            "note": "Rapport commercial Okta, niveau 4. Biais commercial notable (Okta vend des solutions MFA). Inclus uniquement pour les donnees terrain complementaires sur la resistance au phishing — a ponderer avec les sources niveaux 1-3. Identifie par Agent A."
+          },
+          {
+            "name": "NestJS Official Documentation — Authentication & 2FA Patterns (2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "TwoFactorStrategy with Passport: routes initiate-tfa-enabling, enable-tfa, disable-tfa. Integration with otplib for TOTP.",
+            "note": "Documentation officielle NestJS, niveau 3. Reference pour le pattern d'integration TOTP dans NestJS avec Passport.js. Accord Reviewer A/B."
+          },
+          {
+            "name": "otplib — npm package documentation (v12.x, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Maintained replacement for Speakeasy (deprecated). Base32 secrets. verify() method. Standard NestJS 2FA.",
+            "note": "Documentation bibliotheque npm, niveau 3. Recommandation concrete pour la stack NestJS : otplib remplace Speakeasy (deprecie). Identifie par Agent B."
+          },
+          {
+            "name": "@simplewebauthn/server + @simplewebauthn/browser — Documentation (v11+, 2024-2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "TypeScript-first WebAuthn library. FIDO Conformance Tests certified. @passkeys/passport-simple-webauthn for Passport.js integration.",
+            "note": "Documentation bibliotheque TypeScript, niveau 3. Reference pour l'implementation WebAuthn NestJS. Certifie FIDO Conformance Tests. Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 4 sources niveau 1 (NIST SP 800-63B-4, RFC 6238, RFC 4226, W3C WebAuthn L2) + 3 sources niveau 2 (CISA, FBI/CISA, OWASP) + Microsoft Research + Google Bursztein + FIDO Passkey Index convergent sans contradiction sur : (1) FIDO2/WebAuthn = standard anti-phishing par origin binding ; (2) TOTP admissible AAL2 malgre les limites du secret partage ; (3) SMS = RESTRICTED/deconseille pour PII — 5 contextes distincts : normatif (NIST, RFC, W3C), gouvernemental (CISA, FBI), communaute securite (OWASP), empirique (Microsoft, Google), industriel (FIDO)",
+            "effet important : Microsoft 99,22% reduction risque compromission ; Google 100% phishing blocke par security keys vs 76% SMS ; FIDO 93% taux succes passkeys vs 63% traditionnel — effet magnitude non ambigue"
+          ],
+          "minus": [
+            "indirectness : les etudes empiriques de reference (Microsoft, Google, Okta) sont des observational studies issues de leurs propres infrastructures (pas des RCT independants), avec biais organisationnel possible ; pas d'etude academique peer-reviewed specifique a NestJS+MFA ; les chiffres Okta (niv.4) sont issus d'un rapport commercial a ponderer"
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-63B-4 (2024) — classification AAL1/2/3, SMS RESTRICTED, passkeys AAL2 only, regles de reauthentification — standard normatif niveau 1 non contestable",
+          "W3C Web Authentication L2 (2021) — specification fondatrice de l'origin binding comme mecanisme de resistance structurelle au phishing — niveau 1"
+        ],
+        "etd_balance": {
+          "benefices": "MFA reduit massivement la surface d'attaque (Microsoft : 99,22% reduction). WebAuthn/FIDO2 est la seule approche resistante structurellement au phishing — caracteristique critique pour les applications PII. TOTP avec otplib reste accessible (pas de hardware requis) tout en etant AAL2 conforme. Le number matching elimine les attaques MFA fatigue (CISA : elimination confirmee en production). La hierarchie AAL fournie par NIST SP 800-63B-4 permet une decision calibree selon le niveau de risque reel — pas de sur-securisation uniforme. Passkeys : UX superieure (93% succes vs 63%, 13,6s vs 27,5s) et securite superieure — le compromis securite/UX traditionnel disparait.",
+          "risques": "Complexite d'implementation WebAuthn (state machine registration/verification, gestion des challenges, stockage des credentials) — mitigue par @simplewebauthn qui absorbe la complexite cryptographique. Dependance a un hardware token pour AAL3 = cout utilisateur + risque de perte du token (necessite des recovery codes). TOTP : le secret partage stocke serveur est une cible en cas de breach — chiffrement obligatoire au repos. Passkeys synchronises non admissibles AAL3 — confusion possible si le niveau d'assurance requis n'est pas clairement determine en amont.",
+          "balance": "Benefices >> Risques pour AAL2 avec WebAuthn ou TOTP. Les risques sont couverts par des mesures documentees (chiffrement secret TOTP, recovery codes, @simplewebauthn pour la complexite WebAuthn). L'inaction (mot de passe seul) est quantitativement plus risquee que tout facteur MFA, y compris SMS.",
+          "faisabilite": "Haute pour TOTP NestJS : otplib + TwoFactorStrategy Passport = pattern documente dans la documentation officielle NestJS. Moyenne pour WebAuthn : @simplewebauthn absorbe la complexite cryptographique mais la state machine session et la gestion des authenticators multiples requierent une implementation soigneuse. Critere de choix : (1) application PII sans contrainte hardware → WebAuthn/passkeys en priorite ; (2) TOTP si WebAuthn non faisable (contexte, ressources) ; (3) SMS uniquement si aucune alternative disponible ET donnees non-PII, avec plan de migration documente."
+        },
+        "prisma_ref": "verification/prisma/mfa-strategy.md",
+        "sensitivity_ref": "verification/extractions/mfa-strategy.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

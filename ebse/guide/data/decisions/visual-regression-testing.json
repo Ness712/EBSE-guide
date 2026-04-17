@@ -1,0 +1,77 @@
+{
+  "id": "visual-regression-testing",
+  "domain": "testing",
+  "question": "Comment implémenter des tests de régression visuelle pour détecter automatiquement les changements involontaires de l'UI ?",
+  "depends_on": ["test-strategy"],
+  "tags": ["visual-regression", "testing", "playwright", "storybook", "chromatic", "percy", "ui-testing", "snapshot", "ci-cd", "frontend"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Deux approches complémentaires : page-level et component-level. Page-level avec Playwright `toHaveScreenshot()` : s'intègre dans les tests E2E existants, capture pleine page ou sélecteur CSS, compare pixel-à-pixel contre une baseline stockée. Component-level avec Storybook + Chromatic ou Percy : chaque story devient automatiquement un test visuel sans fichier de test séparé — le catalogue de composants est la source de vérité. Les deux approches sont complémentaires : Playwright détecte les régressions d'intégration (interactions entre composants, état de page complète) ; Storybook/Chromatic détecte les régressions d'isolement (rendu d'un composant dans tous ses états déclarés). TurboSnap (Chromatic) analyse l'historique Git et le graphe de dépendances pour ne capturer que les stories affectées par les changements — réduction de 40 à 60 % des captures en CI en moyenne. Règle absolue sur les baselines : les fichiers de référence (snapshots Playwright `*.png`, baselines Chromatic/Percy) doivent être committés dans le dépôt Git. Cela garantit que le CI et tous les membres de l'équipe utilisent exactement les mêmes références — un snapshot absent du VCS rend la comparaison non reproductible. Règle d'environnement : les captures doivent être produites et comparées dans un environnement stable et déterministe : même OS, même résolution, même timezone, même version du navigateur. Exécuter les captures uniquement en CI (jamais en local pour mettre à jour les baselines de référence) évite les faux-positifs liés aux différences de rendu de polices ou de sous-pixelisation entre systèmes. Si Playwright est utilisé localement, utiliser un container Docker avec le même rendu que le CI. Gate PR obligatoire : tout changement visuel détecté doit bloquer le merge jusqu'à revue et approbation explicites par un humain. Chromatic et Percy implémentent ce gate nativement via un status check sur la pull request qui reste en attente (`pending`) tant que les diffs visuels n'ont pas été approuvés. Sans ce gate, les régressions visuelles passent en production silencieusement. Gestion des éléments dynamiques : masquer avant capture toute zone variable (horodatages, données aléatoires, animations, contenu chargé asynchronement) via une feuille de style CSS injectée (Playwright : option `stylePath` ou `style` dans `toHaveScreenshot()`) ou via des mocks de données dans Storybook (args/decorators). Sans cette précaution, les éléments dynamiques génèrent des faux-positifs systématiques qui désactivent en pratique la valeur du test visuel. Stratégie de mise à jour des baselines : la mise à jour des références doit être intentionnelle, jamais automatique. Playwright : commande explicite `--update-snapshots` ; Chromatic/Percy : action d'approbation dans l'interface de revue. Les nouvelles baselines doivent être committées comme du code : elles représentent l'état visuel approuvé de l'UI et font partie du contrat de qualité du projet. Ne jamais configurer une mise à jour automatique des baselines en CI — cela supprime le gate de détection.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Playwright — Visual comparisons (playwright.dev/docs/test-snapshots, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Playwright Test includes the ability to produce and visually compare screenshots using `await expect(page).toHaveScreenshot()`. On first execution, Playwright test will generate reference screenshots. Subsequent runs will compare against the reference. You can apply a custom stylesheet to your page while taking screenshot. This allows filtering out dynamic or volatile elements, hence improving the screenshot determinism.",
+            "note": "Documentation officielle Playwright (Microsoft) — source primaire pour l'API de snapshot visuel intégrée. Niveau 3 — documentation framework. Accord A/B."
+          },
+          {
+            "name": "Storybook Docs — Visual tests (storybook.js.org/docs/writing-tests/visual-testing, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "When you enable visual testing, every story is automatically turned into a test. Each screenshot is compared pixel-by-pixel against a stored baseline. Each Storybook story becomes a visual test case automatically — you don't write separate visual test files.",
+            "note": "Documentation officielle Storybook — décrit l'approche composant-first (story = test visuel automatique) pour le VRT. Niveau 3 — documentation framework. Accord A/B."
+          },
+          {
+            "name": "Chromatic — Visual testing for Storybook (chromatic.com/storybook, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Chromatic captures pixel-perfect screenshots of every component state, compares them to your last approved version, and flags visual differences before they reach production. Chromatic's TurboSnap feature analyzes Git history and dependency graphs to identify which components have changed and snapshots only affected stories, reducing consumption by 40-60% on average.",
+            "note": "Documentation Chromatic (équipe Storybook core) — service de référence pour VRT Storybook avec gate PR et TurboSnap. Niveau 4 — documentation éditeur outil. Accord A/B."
+          },
+          {
+            "name": "Percy / BrowserStack — Visual testing basics (docs.percy.io, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Percy renders a screenshot of the page and then visually compares it, pixel by pixel, to a previous screenshot, creating a 'visual diff' or 'perceptual diff' that shows exactly what pixels changed between the images. Percy integrates with your pull request workflow, posting a status check when visual changes are detected, which stays pending until all changes are reviewed, creating a natural gate where visual changes must be explicitly approved before the PR can merge.",
+            "note": "Documentation BrowserStack/Percy — approche alternative à Chromatic avec gate PR explicite. Niveau 4 — documentation éditeur outil. Accord A/B."
+          },
+          {
+            "name": "CSS-Tricks — Automated Visual Regression Testing With Playwright (css-tricks.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Running visual tests in a consistent environment, such as a dedicated test environment or CI, is crucial to avoid false positives caused by device or setup differences. This ensures that screenshots are created and compared under the same conditions, making your Playwright visual testing more reliable. These baseline images should be checked into version control so that your team and CI system all use the same references.",
+            "note": "CSS-Tricks — publication technique peer-reviewed par la communauté frontend. Apporte les bonnes pratiques CI : baselines en VCS, environnement stable, gestion des faux-positifs. Niveau 3 — article technique communauté. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : Playwright (Microsoft, niveau 3), Storybook (open source, niveau 3), CSS-Tricks (communauté, niveau 3), Chromatic (équipe Storybook, niveau 4), Percy/BrowserStack (niveau 4) — 5 sources indépendantes de 3 catégories distinctes (documentation framework, service CI/VRT, publication communauté) convergent sans contradiction sur les mêmes principes : baselines en VCS, comparaison pixel-à-pixel, gate PR, environnement stable, gestion des éléments dynamiques"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Playwright Visual comparisons 2024 — API officielle `toHaveScreenshot()`, masquage éléments dynamiques, recommandation environnement stable (niveau 3, Microsoft)",
+          "CSS-Tricks Playwright VRT 2024 — baselines en VCS, environnement CI déterministe pour éviter les faux-positifs (niveau 3, communauté)",
+          "Chromatic TurboSnap 2024 — gate PR, optimisation CI via graphe de dépendances Git (niveau 4, équipe Storybook)"
+        ],
+        "etd_balance": {
+          "benefices": "Détection automatique des régressions visuelles involontaires avant production — les changements CSS, les migrations de bibliothèques de composants et les effets de bord de refactoring sont capturés sans relecture manuelle exhaustive. Le gate PR transforme la revue visuelle en étape explicite et traçable. TurboSnap réduit le coût CI de 40 à 60 % sur les grandes bases de composants. L'intégration dans les tests E2E Playwright existants minimise le coût d'adoption pour les projets qui utilisent déjà Playwright.",
+          "risques": "Coût de maintenance des baselines : chaque changement visuel intentionnel (redesign, mise à jour thème) nécessite une mise à jour explicite des références — sans discipline d'équipe, le réflexe de forcer la mise à jour (`--update-snapshots`) annule le bénéfice. Faux-positifs persistants si les éléments dynamiques ne sont pas masqués correctement ou si l'environnement de capture est instable (polices système différentes entre OS). Coût de stockage des baselines en VCS pour les projets à nombreux états de composants. Services cloud (Chromatic, Percy) introduisent une dépendance externe et un coût récurrent.",
+          "balance": "Bénéfices > Risques. Les risques sont mitigables par discipline de processus (baselines commitées comme du code, captures uniquement en CI, masquage des éléments dynamiques) et ne remettent pas en cause la valeur fondamentale du test de régression visuelle. TurboSnap neutralise le risque de coût CI sur les grandes bases. L'alternative (revue visuelle manuelle à chaque PR) est moins fiable et plus coûteuse en temps humain.",
+          "faisabilite": "Haute — Playwright `toHaveScreenshot()` est disponible sans dépendance supplémentaire dans les projets qui utilisent déjà Playwright. Storybook + Chromatic : intégration en moins d'une heure pour un projet Storybook existant (GitHub Action officielle fournie). Percy : SDK disponible pour React, Vue, Angular, Playwright, Cypress. Les deux approches ont des tiers gratuits adaptés aux projets open source ou petites équipes."
+        },
+        "prisma_ref": "verification/prisma/visual-regression-testing.md",
+        "sensitivity_ref": "verification/extractions/visual-regression-testing.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

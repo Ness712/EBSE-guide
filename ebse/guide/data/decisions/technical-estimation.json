@@ -1,0 +1,70 @@
+{
+  "id": "technical-estimation",
+  "domain": "project",
+  "question": "Comment estimer le coût et la durée d'un développement logiciel de façon fiable, en intégrant l'incertitude inhérente aux phases précoces ?",
+  "depends_on": [],
+  "tags": ["estimation", "planning", "cone-of-uncertainty", "wideband-delphi", "planning-poker", "story-points", "agile", "uncertainty", "calibration"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Règle fondamentale — cône d'incertitude (McConnell 2006) : ne jamais donner une estimation ponctuelle en phase initiale sans indiquer la plage d'incertitude associée. En début de projet (avant la définition des exigences), les estimations peuvent être décalées d'un facteur 4x dans chaque direction (×0,25 à ×4 par rapport à la réalité). Ce facteur se réduit progressivement à mesure que l'information augmente : ±50 % après les exigences initiales, ±25 % après la conception, ±10 % à la livraison. Communiquer l'incertitude est une obligation professionnelle, pas une faiblesse — présenter une estimation initiale comme un point fixe est une garantie de déception. La forme correcte d'une estimation initiale est une fourchette explicite (ex : « entre 6 et 14 semaines »), pas un chiffre unique. Les études empiriques (IEEE Software 2015) confirment que les projets logiciels sont systématiquement sous-estimés, précisément parce que les équipes confondent estimation et engagement. Distinction estimation / engagement : une estimation est une prédiction probabiliste de ce qui risque de se produire ; un engagement est une promesse de livraison à une date donnée, qui suppose que les incertitudes ont été suffisamment résolues. Prendre un engagement sur une estimation en cône d'incertitude large crée une pression artificielle sans améliorer la précision réelle — cela déplace le risque sans le réduire. Les estimations initiales sont des ordres de grandeur (OOM) qui servent à la planification stratégique (budgets, arbitrages) ; elles ne constituent pas des engagements contractuels tant que les exigences ne sont pas stabilisées. Décomposition obligatoire : l'estimation d'une fonctionnalité ou d'une tâche supérieure à 3 jours DOIT être décomposée en tâches de moins d'un jour avant d'être considérée fiable. La décomposition est le mécanisme principal de réduction du cône d'incertitude au niveau tâche : elle force l'explicitation des inconnues cachées, révèle les dépendances implicites et transforme des estimations de complexité diffuse en estimations d'effort mesurable. Une tâche non décomposable est un signal d'alerte — soit les exigences sont insuffisantes, soit la tâche masque un problème de conception non résolu. Méthodes de groupe anti-biais — Wideband Delphi (Boehm & Farquhar) : technique d'estimation en groupe dans laquelle les estimations individuelles sont produites indépendamment, partagées anonymement avec le groupe, puis discutées — en particulier les écarts importants — avant une nouvelle ronde d'estimation. L'anonymat initial prévient le biais d'ancrage (influence de la première estimation entendue) et la pression sociale (déférence à l'expert ou au manager). Les rondes multiples avec discussion sur les écarts convergent systématiquement vers des estimations plus précises que les estimations individuelles isolées. Wideband Delphi est adapté aux grands projets, aux estimations de phase ou aux fonctionnalités complexes pour lesquelles l'incertitude est élevée. Planning Poker (Cohn 2005) : variante agile de Wideband Delphi, optimisée pour les équipes de 3 à 10 personnes estimant des user stories. Chaque estimateur choisit une carte représentant son estimation ; toutes les cartes sont révélées simultanément, empêchant l'ancrage. Les divergences significatives déclenchent une discussion qui met en lumière les hypothèses implicites et les incompréhensions fonctionnelles — ces discussions ont une valeur intrinsèque au-delà de l'estimation elle-même. Estimation relative (story points) vs absolue (jours-hommes) : les story points mesurent la complexité relative d'une user story par rapport à une story de référence calibrée — ils sont indépendants de la vélocité individuelle et de la capacité journalière, ce qui les rend plus stables dans le temps et plus comparables entre équipes. L'estimation en jours-hommes souffre du problème de la granularité humaine (ancrage sur des multiples de journées, biais d'optimisme sur la productivité individuelle) et de la confusion entre temps calendaire et effort réel. Les story points sont calibrés par des user stories de référence connues de l'équipe (« cette story vaut 2 points, celle-là en vaut 5 ») — la calibration initiale requiert 2 à 3 sprints pour être stable. Recalibration régulière : comparer systématiquement les estimations aux réalisations (vélocité réelle par sprint) et ajuster les estimations futures en conséquence. Sans calibration empirique continue, les biais systématiques persistent : les équipes maintiennent leurs estimations optimistes indépendamment des écarts observés. La vélocité réelle est le seul indicateur fiable pour les prévisions de release — utiliser la vélocité des 3 derniers sprints comme base de projection, pas la vélocité idéale.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "McConnell S. — Software Estimation: Demystifying the Black Art (Microsoft Press, 2006)",
+            "pyramid": 5,
+            "year": 2006,
+            "quote": "The Cone of Uncertainty describes the evolution of the amount of uncertainty during a project. At the beginning of a project, the cone is wide — estimates can be off by a factor of 4x too high or 4x too low. As the project progresses and we learn more, the cone narrows. The implication is clear: the earlier an estimate is made, the wider the range of possible outcomes, and the less reliable the point estimate.",
+            "note": "Steve McConnell (Microsoft Press, ~20k citations) — niv.5. Référence canonique sur la pratique d'estimation logicielle, auteur du concept formalisé du cône d'incertitude. Fournit les facteurs quantitatifs (4x en début, narrowing progressif) et la distinction estimation/engagement. Accord A/B."
+          },
+          {
+            "name": "IEEE Software — Software Estimation: The Juggling Act (IEEE Software, 2015)",
+            "pyramid": 3,
+            "year": 2015,
+            "quote": "Empirical studies consistently show that software projects are systematically underestimated. The cone of uncertainty represents the range of estimation error possible at different stages of a project. At the beginning, estimates can be off by a factor of 4x or more. As the project progresses and uncertainty resolves, estimates improve. The key insight is that estimation accuracy is fundamentally tied to the amount of information available at estimation time.",
+            "note": "Article IEEE Software sur les pratiques d'estimation empiriques — niv.3. Apporte la validation empirique du cône d'incertitude avec données sur les biais systématiques d'estimation. Confirme indépendamment les facteurs McConnell sur la base d'études empiriques. Accord A/B."
+          },
+          {
+            "name": "Boehm B. & Farquhar J. — Wideband Delphi (Rand Corporation, formalisé dans COCOMO II)",
+            "pyramid": 5,
+            "year": 2000,
+            "quote": "The Wideband Delphi technique is a group estimation method in which individual estimates are made, shared anonymously with the group, discussed, and iterated until consensus is reached. The anonymity of the initial estimates prevents anchoring bias and social pressure from distorting the estimates. Multiple rounds of estimation with group discussion consistently produce more accurate estimates than individual estimates alone.",
+            "note": "Boehm & Farquhar (Wideband Delphi, niv.5 — experts reconnus, fondateurs de COCOMO). Méthode d'estimation de groupe anti-biais : anonymat initial + multi-rounds + discussion sur les écarts. Accord A/B."
+          },
+          {
+            "name": "Cohn M. — Agile Estimating and Planning (Prentice Hall, 2005)",
+            "pyramid": 5,
+            "year": 2005,
+            "quote": "Planning poker is a consensus-based technique for estimating, generally used to estimate effort or relative size of development goals in software development. Each estimator is given a deck of cards with values. The estimator selects the card that represents their estimate and places it face down. All cards are then revealed simultaneously. If all estimators select the same value, that becomes the estimate. Significant differences trigger discussion, which brings hidden assumptions to light and often improves the quality of estimates.",
+            "note": "Mike Cohn (Prentice Hall, fondateur de Mountain Goat Software, ~15k citations) — niv.5. Auteur du Planning Poker, méthode d'estimation relative agile anti-ancrage. Formalise la révélation simultanée et la valeur des discussions sur les divergences. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : IEEE Software 2015 (niv.3), McConnell 2006 (niv.5), Boehm/Farquhar COCOMO II (niv.5), Mike Cohn 2005 (niv.5) — 4 sources indépendantes convergent sans contradiction sur deux principes centraux : (1) l'incertitude inhérente aux phases précoces est quantifiable et non contournable (cône d'incertitude), (2) les méthodes de groupe avec révélation simultanée réduisent les biais d'ancrage et améliorent la précision (Wideband Delphi, Planning Poker). Catégories distinctes : article empirique peer-reviewed (IEEE), livre de référence praticien (McConnell), modèle formel académique (Boehm/COCOMO), guide méthodologique agile (Cohn)."
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "McConnell S. 2006 — fournit les facteurs quantitatifs du cône d'incertitude et la formalisation de la distinction estimation/engagement (niv.5, ~20k citations)",
+          "IEEE Software 2015 — valide empiriquement le biais systématique de sous-estimation et les facteurs du cône sur la base d'études de terrain (niv.3)",
+          "Boehm & Farquhar / Cohn 2005 — convergent indépendamment sur la révélation simultanée comme mécanisme anti-ancrage, dans des contextes différents (grands projets vs sprints agiles)"
+        ],
+        "etd_balance": {
+          "benefices": "Réduction des surprises de planning en fin de projet grâce à une communication honnête de l'incertitude dès la phase initiale. Amélioration de la précision collective via les méthodes de groupe (Wideband Delphi, Planning Poker) qui mettent en lumière les hypothèses divergentes et les inconnues cachées. Stabilité des prévisions de release grâce aux story points calibrés sur la vélocité réelle. La décomposition systématique des tâches >3 jours révèle les problèmes de conception avant qu'ils ne deviennent des retards. La distinction estimation/engagement protège les équipes de la pression pour tenir des dates basées sur des informations insuffisantes.",
+          "risques": "Résistance culturelle à communiquer des fourchettes d'incertitude larges (les parties prenantes peuvent interpréter l'incertitude comme un manque de compétence). Calibration initiale des story points nécessite 2 à 3 sprints — les premières projections de release restent peu fiables. Planning Poker peut allonger les sessions de planification si les discussions sur les divergences ne sont pas bien animées. Wideband Delphi requiert un facilitateur expérimenté pour maintenir l'anonymat initial et structurer les rondes efficacement.",
+          "balance": "Bénéfices >> Risques. Le risque principal (résistance culturelle) est un problème de communication managériale, pas de méthode — il se gère en éduquant les parties prenantes sur le cône d'incertitude dès le début du projet. Les coûts de mise en oeuvre (sessions Planning Poker, calibration story points) sont faibles comparés aux coûts de replanning en fin de projet dus à des estimations initiales présentées comme des engagements. Les méthodes sont complémentaires : Planning Poker pour les sprints, Wideband Delphi pour les phases ou les releases.",
+          "faisabilite": "Haute — Planning Poker est supporté nativement par Jira, Linear, et la majorité des outils agiles ; des cartes physiques ou des outils en ligne (PlanningPoker.com, Scrum Poker Online) suffisent pour des équipes distribuées. La mise en place d'un suivi de vélocité est incluse dans tous les outils de gestion de sprints. Wideband Delphi ne requiert aucun outil spécifique — une feuille de calcul partagée ou un formulaire anonyme suffit pour les rondes d'estimation."
+        },
+        "prisma_ref": "verification/prisma/technical-estimation.md",
+        "sensitivity_ref": "verification/extractions/technical-estimation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

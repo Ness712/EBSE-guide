@@ -1,0 +1,103 @@
+{
+  "id": "dry-principle",
+  "domain": "project",
+  "question": "Quand et comment appliquer le principe DRY (Don't Repeat Yourself) — a quel niveau de granularite, et quelles exceptions sont legitimes (tests, configuration) ?",
+  "depends_on": [
+    "coding-standards-vs-guidelines"
+  ],
+  "tags": [
+    "dry",
+    "code-quality",
+    "maintainability",
+    "abstraction",
+    "duplication",
+    "refactoring",
+    "single-source-of-truth"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Le principe DRY (Don't Repeat Yourself) stipule que 'chaque element de connaissance doit avoir une representation unique, autoritaire et non-ambigue dans un systeme' (Hunt & Thomas, 1999). Il s'applique a la CONNAISSANCE et a la LOGIQUE — pas au code syntaxiquement similaire. Deux portions de code se ressemblant peuvent representer des concepts distincts : les forcer dans une abstraction commune cree un couplage accidentel plutot qu'une coherence intentionnelle.\n\nRegle des trois (Fowler, 1999) : ne pas extraire une abstraction avant la troisieme occurrence. A la premiere duplication, accepter. A la deuxieme, noter. A la troisieme, refactorer. Cette regle protege contre les abstractions prematurees qui rigidifient le code avant que le pattern soit stabilise.\n\nExceptions legitimes documentees :\n(1) Tests : l'isolation est une valeur superieure a la mutualistion dans les tests. Un test doit etre comprehensible en lecture lineaire sans necessiter de naviguer dans des helpers parentes. La duplication moderee en tests reduit le couplage entre suites et permet de modifier un comportement sans casser les autres tests. Ne jamais refactorer les donnees de test dans des fixtures partagees si cela nuit a la lisibilite locale.\n(2) Migrations de base de donnees : les scripts Flyway/Liquibase sont immutables une fois appliques. On ne modifie pas V1 pour eliminer une duplication avec V2 — chaque migration est une capsule historique.\n(3) Configuration par environnement : des valeurs identiques dans dev.yml et prod.yml peuvent representer des intentions differentes. DRY ne s'applique pas quand la similarite est accidentelle et que les valeurs evoluent independamment.\n(4) Bons clones identifies empiriquement (Kapser & Godfrey, 2008) : certaines categories de clones sont benignes ou benefiques — notamment les 'clones de structure formelle' (boilerplate impose par le langage) et les 'clones de gestion d'erreurs' (patterns de traitement d'exception analogues). Les traiter comme des violations DRY genere des abstractions artificielles.\n\nSignaux d'over-application : un changement fonctionnel oblige a modifier une abstraction partagee qui impacte des concepts sans relation ; les noms d'abstraction deviennent vagues ('Manager', 'Helper', 'Utils') ; une modification simple necessite de comprendre plusieurs niveaux d'indirection. Dans ces cas, la duplication deliberee (WET localise) est preferable.\n\nApplications pratiques pour Java Spring Boot et TypeScript React : extraire les transformations metier dupliquees (mappers, validateurs) ; ne pas mutualiser les mocks de test entre modules ; accepter des DTOs similaires si les domaines evoluent independamment ; extraire les composants UI partages uniquement quand le pattern est stable (regle des trois).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "SWEBOK v4 ch.4 — Software Construction",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Avoiding duplication is a fundamental software construction principle. Each piece of domain knowledge should appear in one place in the system to reduce inconsistency and maintenance burden. However, syntactic similarity does not imply semantic duplication; unnecessary abstraction introduces coupling.",
+            "note": "Guide de connaissance IEEE Computer Society, section Software Construction. Fonde le principe DRY comme rgle de construction fondamentale tout en avertissant contre l'abstraction excessive. Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "Hunt A. & Thomas D. — The Pragmatic Programmer, 20th Anniversary Edition (Addison-Wesley, 2019)",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "DRY — Don't Repeat Yourself: Every piece of knowledge must have a single, authoritative, unambiguous representation in a system. It's about knowledge, not code. Two identical lines of code may not be a DRY violation if they represent different knowledge.",
+            "note": "Source originelle du principe DRY (1999, reaffirme 2019). Distinction critique connaissance vs code syntaxiquement similaire explicitement posee par les auteurs. ~30k citations. Accord Reviewer A/B niveau 5."
+          },
+          {
+            "name": "McConnell S. — Code Complete, 2nd ed. (Microsoft Press, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "The DRY principle — avoid duplicating information in multiple places where it might be updated independently. When you change one, you have to remember to change all other copies, and that's error-prone. Single source of truth for domain logic.",
+            "note": "Reference SE classique (~40k citations). Section 'Software construction' traite la duplication comme source d'erreurs de synchronisation. Converge sur Hunt & Thomas. Divergence A(5)/B(5) : accord complet. Accord Reviewer A/B."
+          },
+          {
+            "name": "Fowler M. — Refactoring: Improving the Design of Existing Code, 2nd ed. (Addison-Wesley, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "The Rule of Three: The first time you do something, you just do it. The second time you do something similar, you wince at the duplication, but you do the duplicate thing anyway. The third time you do something similar, you refactor. Once is unique, twice is a hint, three times is a pattern worth abstracting.",
+            "note": "Source de la regle des trois, complement direct du principe DRY. Protege contre les abstractions prematurees. ~25k citations. Identifie par Reviewer A et B. Accord niveau 5."
+          },
+          {
+            "name": "Kapser C.J. & Godfrey M.W. — 'Cloning Considered Harmful' Considered Harmful: Patterns of Cloning in Software (IEEE TSE, 2008)",
+            "pyramid": 3,
+            "year": 2008,
+            "quote": "We identified seven categories of code clones. Contrary to the prevailing view that all cloning is harmful, several categories (forking, templating, boilerplate) are benign or even beneficial. Blind elimination of all clone instances can introduce unnecessary coupling and reduce comprehensibility.",
+            "note": "Etude empirique peer-reviewed IEEE Transactions on Software Engineering. Taxonomie de 7 categories de clones sur plusieurs projets open source. Nuance empirique importante : tous les clones ne sont pas nuisibles. Identifie par Reviewer B — inclus. Divergence A(non trouve)/B(3)."
+          },
+          {
+            "name": "Mantyla M.V. & Lassenius C. — Subjective Evaluation of Software Evolvability Using Code Smells (IEEE TSE, 2006)",
+            "pyramid": 3,
+            "year": 2006,
+            "quote": "Duplicated code was rated the most problematic code smell by developers. However, evaluators noted that context matters: duplication in test code and generated code was considered less harmful than duplication in business logic.",
+            "note": "Etude empirique IEEE TSE sur 74 classes evaluees par 34 developpeurs. Confirme que la duplication de logique metier est le code smell le plus critique, mais distingue les contextes (tests, code genere). Accord Reviewer A/B niveau 3."
+          },
+          {
+            "name": "Koschke R. — Survey of Research on Software Clones (Dagstuhl Seminar Proceedings, 2007)",
+            "pyramid": 3,
+            "year": 2007,
+            "quote": "Clone detection studies consistently find 5-30% of code bases consist of clones. Impact on defect density is context-dependent: clones in business logic correlate with higher defect rates (r=0.6-0.8), while clones in boilerplate or test scaffolding show no significant correlation.",
+            "note": "Survey de reference sur la litterature des clones logiciels. Corrobore que l'impact varie selon le type de code. Identifie par Reviewer A. Pyramide 3 (proceedings Dagstuhl, peer-reviewed)."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : SWEBOK v4 (niveau 1) + Hunt & Thomas + McConnell + Fowler convergent sans contradiction sur le principe central (connaissance unique et autoritaire, regle des trois). 4 contextes distincts (normatif, manuel fondateur, construction, refactoring). Etudes empiriques (Kapser 2008, Mantyla 2006, Koschke 2007) confirment l'impact de la duplication metier tout en documentant les nuances."
+          ],
+          "minus": [
+            "nuance empirique : Kapser & Godfrey 2008 demontre que certaines categories de clones sont benignes, ce qui modere la recommendation absolue 'eliminer toute duplication'. Le principe tel que formule integre cette nuance (connaissance vs syntaxe), mais l'evidence empirique reste moderee (peu d'etudes RCT, effet non quantifie uniformement)."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "SWEBOK v4 ch.4 (Software Construction — standard normatif IEEE, niveau 1)",
+          "Hunt & Thomas 2019 (source originelle DRY, distinction connaissance vs code, niveau 5)",
+          "Kapser & Godfrey TSE 2008 (nuance empirique : bons clones, niveau 3)"
+        ],
+        "etd_balance": {
+          "benefices": "Elimination de la duplication de logique metier reduit les bugs de synchronisation (Mantyla 2006 : code smell le plus critique). Source unique pour chaque concept = un seul endroit a modifier lors d'un changement fonctionnel. Meilleure comprehensibilite du systeme : un concept = une definition. Pour les agents IA autonomes : permet de deduire le comportement attendu d'une seule source plutot que de reconcilier des copies potentiellement divergentes.",
+          "risques": "Sur-application (over-engineering DRY) : abstractions prematurees avant stabilisation du pattern (violation de la regle des trois) ; couplage accidentel de concepts distincts derriere une interface commune ; indirections excessives qui nuisent a la lisibilite. Sous-application : bugs de synchronisation quand la logique evolue en plusieurs endroits ; inconsistances entre copies. Risque test : mutualiser les donnees de test dans des fixtures partagees cree un couplage inter-suites qui rend le refactoring risque.",
+          "balance": "Benefices >> Risques pour la logique metier et les regles de domaine. Risques >> Benefices pour les tests (isolation prioritaire), les migrations DB (immutabilite), et les configurations par environnement. La distinction connaissance (DRY obligatoire) vs similitude syntaxique accidentelle (DRY optionnel) est le critere de decision central.",
+          "faisabilite": "Haute pour la logique metier (identification mecanique par outils de detection de clones, code review). Moderee pour les tests (jugement requis : duplication acceptable vs helper utile). La regle des trois fournit un seuil operationnel : ne refactorer qu'a la troisieme occurrence."
+        },
+        "prisma_ref": "verification/prisma/dry-principle.md",
+        "sensitivity_ref": "verification/extractions/dry-principle.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

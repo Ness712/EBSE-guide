@@ -1,0 +1,85 @@
+{
+  "id": "runbooks",
+  "domain": "operations",
+  "question": "Comment créer des runbooks opérationnels efficaces — structure minimale, critères de qualité, lien avec les SLOs et les postmortems, automatisation progressive ?",
+  "depends_on": ["sla-management", "observability-opentelemetry"],
+  "tags": ["runbooks", "sre", "incident-response", "toil", "on-call", "postmortem", "escalation", "automation"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Un runbook est la procédure écrite qui rend un incident gérable sans connaissance tribale. Son rôle est de permettre à tout ingénieur d'astreinte — y compris un nouveau venu — de diagnostiquer, mitiger et résoudre un incident connu à 3h du matin, sans dépendre d'une personne spécifique. L'absence de runbooks transforme chaque incident en héroïsme individuel : MTTR élevé, stress, toil, et perte de connaissance à chaque rotation d'équipe.\n\n**Critères de qualité (SRE Book ch.11)** : quatre critères rendent un runbook fiable. Actionable : chaque étape est une commande exécutable ou une action précise — aucune étape floue du type 'vérifier le service'. Tested : testé en conditions réelles (fire drill, staging), pas seulement écrit. Owned : un propriétaire clair est désigné, responsable des mises à jour après chaque changement d'infra. Versioned : versionné dans git, avec historique des modifications — un runbook non versionné est un runbook qui dérive silencieusement.\n\n**Structure minimale (Atlassian Incident Management)** : chaque runbook doit contenir les sections suivantes. (1) Titre et propriétaire : nom de l'alerte déclenchante et ingénieur/équipe responsable. (2) Déclencheur : alerte SLO/SLI spécifique qui active ce runbook — libellé exact de l'alerte, seuil, fenêtre de burn rate. (3) Diagnostic : commandes de vérification à exécuter en premier — logs, métriques, statut des dépendances ; chaque commande est copiable directement. (4) Mitigation : actions de remédiation ordonnées par priorité — restart, rollback, bascule de trafic ; commandes exactes avec paramètres. (5) Escalade : si non résolu en N minutes, qui appeler, par quel canal, avec quelles informations à préparer. (6) Rollback : procédure de retour à l'état stable précédent si la mitigation échoue. (7) Lien postmortem : référence au(x) postmortem(s) ayant généré ou enrichi ce runbook.\n\n**Déclencheur SLO (SRE Workbook ch.5)** : chaque runbook est lié à une alerte SLO/SLI spécifique — pas de runbook générique 'problème de performance'. Une alerte de burn rate élevé sur le SLI de latence p99 déclenche un runbook distinct d'une alerte de burn rate sur le SLI de disponibilité. Ce couplage alerte→runbook garantit que l'ingénieur d'astreinte sait immédiatement quelle procédure appliquer, sans décision à prendre sous pression. Un runbook sans alerte associée ne sera jamais trouvé au moment où on en a besoin.\n\n**Postmortem → runbook (SRE Book ch.15)** : toute follow-up action d'un postmortem qui implique une procédure manuelle doit devenir ou enrichir un runbook existant. C'est le mécanisme central d'amélioration continue : chaque incident résolu sans runbook génère un nouveau runbook ; chaque incident résolu avec un runbook imparfait génère une mise à jour. La culture postmortem blameless est le moteur de cette boucle — les ingénieurs documentent honnêtement ce qui a fonctionné et ce qui n'a pas fonctionné, sans crainte de représailles. Un postmortem sans runbook résultant est un postmortem incomplet.\n\n**Automatisation progressive — élimination du toil (SRE Book ch.5)** : l'objectif à long terme est de rendre le runbook progressivement exécutable par un script ou une automation. Le toil est défini comme le travail manuel, répétitif, automatable, tactique et sans valeur durable — gérer une alerte pager en suivant à la main les mêmes étapes à chaque fois est du toil par définition. Trois niveaux d'évolution : Niveau 1 (documentation) — runbook écrit, testé, versionné, lié à une alerte SLO ; Niveau 2 (script) — les commandes de diagnostic et mitigation sont encapsulées dans un script exécutable par l'ingénieur d'astreinte d'une seule commande ; Niveau 3 (automation) — le script est déclenché automatiquement par l'alerte elle-même, avec notification humaine uniquement pour validation ou escalade. Chaque runbook fréquemment utilisé est un candidat à l'automatisation : si une procédure est manuelle et se répète plus d'une fois par semaine, l'automatiser est un investissement engineering justifiable.\n\n**Anti-patterns à éviter** : runbook impossible à exécuter à 3h du matin (trop long, trop complexe, étapes ambiguës) ; runbook non testé en conditions réelles (écrit mais jamais exécuté) ; runbook non lié à une alerte spécifique (noyé dans un wiki général, introuvable sous pression) ; runbook non mis à jour après changement d'infra ou de stack (dérive silencieuse entre la procédure et la réalité) ; runbook sans propriétaire désigné (tout le monde est responsable = personne ne l'est).",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Beyer B. et al. — Site Reliability Engineering ch.11 'Being On-Call' (O'Reilly / Google, 2016)",
+            "pyramid": 3,
+            "year": 2016,
+            "quote": "Clear escalation paths — Well-defined incident-management procedures — A blameless postmortem culture. [...] This protocol is supported by a tool that automates most incident management actions.",
+            "note": "Référence SRE fondatrice sur la gestion des astreintes. Définit les propriétés d'une bonne procédure d'incident (claire, actionnable, supportée par des outils). Niveau 3 — livre d'experts reconnus (Google SRE). Accord A/B."
+          },
+          {
+            "name": "Beyer B. et al. — Site Reliability Engineering ch.15 'Postmortem Culture: Learning from Failure' (Lunney & Lueder, O'Reilly / Google, 2016)",
+            "pyramid": 3,
+            "year": 2016,
+            "quote": "A postmortem is a written record of an incident, its impact, the actions taken to mitigate, the root causes, and follow-up actions to prevent recurrence. Blameless postmortems focus on systematic reasons.",
+            "note": "Chapitre de référence sur la culture postmortem blameless. Documente le lien entre follow-up actions et amélioration des procédures. Niveau 3 — livre d'experts Google SRE. Agent B uniquement, inclus car complémentaire au ch.11 et directement pertinent pour le lien postmortem→runbook."
+          },
+          {
+            "name": "Beyer B. et al. — Site Reliability Engineering ch.5 'Eliminating Toil' (Rau, O'Reilly / Google, 2016)",
+            "pyramid": 3,
+            "year": 2016,
+            "quote": "'If a human operator needs to touch your system during normal operations, you have a bug.' Toil is manual, repetitive, automatable, tactical, devoid of enduring value. Tactical — Toil is interrupt-driven and reactive. Handling pager alerts is toil.",
+            "note": "Définition canonique du toil et du principe d'automatisation progressive. Fonde le niveau 3 d'évolution des runbooks. Niveau 3 — Google SRE Book. Accord A/B."
+          },
+          {
+            "name": "Cook R. et al. — The Site Reliability Workbook ch.8 'On-Call' (O'Reilly / Google, 2018)",
+            "pyramid": 3,
+            "year": 2018,
+            "quote": "Being on-call means being ready to respond to production incidents with appropriate urgency. SREs diagnose, mitigate, fix, or escalate incidents.",
+            "note": "Workbook SRE complémentaire au SRE Book — perspective plus prescriptive sur la gestion des astreintes. Niveau 3 — Google SRE Workbook. Accord A/B."
+          },
+          {
+            "name": "Beyer B. et al. — The Site Reliability Workbook ch.5 'Alerting on SLOs' (O'Reilly / Google, 2018)",
+            "pyramid": 3,
+            "year": 2018,
+            "quote": "Having good SLOs that measure reliability provides the highest-quality indication for when an on-call engineer should respond.",
+            "note": "Établit le lien alerte SLO → déclencheur de procédure d'incident. Fonde la règle 'un runbook par symptôme SLO observable'. Niveau 3 — Google SRE Workbook. Agent A uniquement, inclus car seule source établissant explicitement le couplage SLO→runbook."
+          },
+          {
+            "name": "Atlassian — 'What is a runbook?' (Atlassian Incident Management, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "A runbook is a set of standardized written procedures for completing repetitive IT processes. [...] Recommended structure: title, owner, triggers, step-by-step procedure, rollback, resource links.",
+            "note": "Guide praticien sur la structure minimale d'un runbook. Niveau 4 — éditeur de logiciel ITSM reconnu (Jira, Confluence, Opsgenie). Convergent avec SRE Book sur la structure. Agent B uniquement, inclus car seule source apportant la structure minimale prescriptive de façon explicite."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : SRE Book (ch.11, ch.15, ch.5) + SRE Workbook (ch.8, ch.5) + Atlassian convergent sans contradiction sur les mêmes principes : runbooks actionnables et testés, couplage alerte SLO → procédure, postmortem comme moteur d'amélioration, automatisation progressive du toil. Deux corpus distincts (Google SRE académico-pratique + Atlassian praticien) arrivent aux mêmes conclusions structurelles.",
+            "effet documenté : SRE Book documente la réduction du MTTR par des procédures claires (ch.11), la réduction du toil par l'automatisation (ch.5), et l'amélioration continue via postmortem (ch.15). Atlassian documente la réduction du temps de résolution par standardisation des procédures. Effets multiples convergents sur MTTR, toil et onboarding."
+          ],
+          "minus": []
+        },
+        "robustness": "MODEREMENT_ROBUSTE",
+        "critical_sources": [
+          "Beyer et al. SRE Book ch.11 2016 — définit les propriétés d'une procédure d'incident efficace et le contexte organisationnel (niveau 3, référence fondatrice SRE)",
+          "Beyer et al. SRE Book ch.5 2016 — définition canonique du toil et fondement de l'automatisation progressive (niveau 3)",
+          "Atlassian Incident Management 2024 — seule source apportant la structure minimale prescriptive explicite (niveau 4)"
+        ],
+        "etd_balance": {
+          "benefices": "Réduction du MTTR : l'ingénieur d'astreinte suit une procédure testée plutôt que d'improviser. Réduction du toil : les procédures répétitives sont documentées puis automatisées. Onboarding facilité : un nouvel ingénieur peut prendre l'astreinte sans être la seule personne connaissant chaque système. Amélioration continue : chaque postmortem enrichit les runbooks existants ou en crée de nouveaux — la base de connaissance opérationnelle croît à chaque incident. Réduction du bus factor : la connaissance tribale est externalisée dans des documents versionnés.",
+          "risques": "Runbooks qui dérivent (infra change, runbook non mis à jour) → procédure incorrecte plus dangereuse qu'une absence de procédure car elle donne une fausse confiance. Coût de maintenance non négligeable : chaque changement d'infra doit déclencher une mise à jour des runbooks concernés. Sur-documentation : créer des runbooks pour des incidents rares et complexes que personne ne testera jamais. Fausse sécurité : un runbook existant mais non testé donne l'impression d'être préparé sans l'être réellement.",
+          "balance": "Bénéfices >> Risques pour les incidents récurrents et les alertes SLO instrumentées. Les risques sont gérables par processus : propriétaire désigné par runbook, révision obligatoire lors des changements d'infra (inclure dans la checklist PR), fire drills périodiques pour tester les procédures. Le risque de dérive est réel mais connu et addressable. Pour les incidents très rares ou uniques, le coût de création et maintenance peut dépasser le bénéfice — ne pas créer de runbooks exhaustifs pour tous les scénarios imaginables.",
+          "faisabilite": "Haute pour les équipes avec alertes SLO instrumentées (monitoring en place). Moderate pour les équipes en phase initiale (nécessite d'abord d'instrumenter les SLOs). Point de départ recommandé : identifier les 3-5 alertes déclenchées le plus fréquemment et créer les runbooks correspondants. Outil : n'importe quel wiki versionné (Notion, Confluence, fichiers Markdown dans git) — la structure importe plus que l'outil. Le format Markdown dans le repo git est préférable car le runbook vit avec le code qu'il décrit."
+        },
+        "prisma_ref": "verification/prisma/runbooks.md",
+        "sensitivity_ref": "verification/extractions/runbooks.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

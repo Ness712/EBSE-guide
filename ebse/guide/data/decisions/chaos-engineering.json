@@ -1,0 +1,71 @@
+{
+  "id": "chaos-engineering",
+  "domain": "reliability",
+  "question": "Comment utiliser le chaos engineering pour tester proactivement la resilience d'un systeme distribue en conditions reelles ?",
+  "depends_on": ["fault-tolerance-patterns", "observability-opentelemetry"],
+  "tags": ["chaos-engineering", "resilience", "sre", "fault-injection", "litmus", "steady-state", "hypothesis", "reliability"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Condition prealable stricte : le chaos engineering ne remplace pas les fault tolerance patterns — il valide leur efficacite. Avant d'injecter des fautes, le systeme DOIT deja implementer retry avec backoff exponentiel, circuit breaker, timeout explicite, et bulkhead. Injecter du chaos sur un systeme sans ces mecanismes en place produit uniquement des pannes non instructives. Le chaos engineering repond a la question 'nos protections resistent-elles en conditions reelles ?' — pas 'quelles protections nous faut-il ?'. Methodologie en 5 etapes (principlesofchaos.org) : (1) Definir le steady state — des metriques mesurables caracterisant le comportement normal du systeme : latence p99 (ex : < 200 ms), taux d'erreur HTTP (ex : < 0,1 %), throughput (ex : > 500 req/s), disponibilite des services critiques. Le steady state doit etre quantifie, pas qualitatif. (2) Formuler l'hypothese — 'le steady state se maintiendra dans le groupe experimental comme dans le groupe de controle malgre l'introduction de la perturbation X'. (3) Introduire des variables representant des evenements du monde reel : panne reseau (latence injectee, perte de paquets, partition de reseau), crash de pod ou de processus, saturation CPU ou memoire, latence de base de donnees, indisponibilite d'un service tiers. (4) Mesurer la difference entre groupe de controle et groupe experimental — si le steady state diverge, la resilience est insuffisante et les fault tolerance patterns doivent etre corriges. (5) Iterer — chaque experience revele une faiblesse ou confirme une robustesse ; augmenter progressivement le scope et la severite des perturbations. Regle de securite absolue : commencer systematiquement en staging ou pre-production avec un blast radius minimal (un seul pod, un seul service). Ne jamais lancer une experience chaos en production sans avoir execute le meme scenario en staging et sans avoir un runbook de rollback pret et teste. L'objectif est de decouvrir des faiblesses avant qu'elles se manifestent en incident — pas de creer un incident. Outils CNCF recommandes : LitmusChaos (projet CNCF, natif Kubernetes — scenarios ChaosEngine declaratifs, integration CI/CD native) et Chaos Mesh (CNCF, Kubernetes, UI graphique). Pour les environnements non-Kubernetes : Gremlin (SaaS multi-cible) ou AWS Fault Injection Simulator (FIS) pour les workloads AWS. Integration CI/CD : 'bake chaos into daily workflows' comme recommande par la CNCF — les tests de chaos automatises s'executent en staging a chaque deploiement, sur des scenarios a faible blast radius et duree courte. Les scenarios destabilisants (panne multi-services, saturation totale) restent manuels et planifies. Dependance observabilite : sans les trois piliers d'observabilite (metriques, traces distribuees, logs structures) le chaos engineering est aveugle — il est impossible de mesurer la deviation du steady state ni d'identifier la cause racine d'une degradation. La qualite des experiences de chaos est directement proportionnelle a la qualite de l'instrumentation (voir depends_on : observability-opentelemetry). Indicateur de maturite DORA : les equipes elites testent proactivement la resilience, elles ne se contentent pas de repondre aux incidents. Le DORA Report 2023 documente que les equipes elites deploient plus souvent et tombent moins souvent en panne — la validation proactive de la resilience est une caracteristique des pratiques d'ingenierie matures. Le chaos engineering structure et automatise cette validation.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Principles of Chaos Engineering — principlesofchaos.org (Rosenthal, Jones et al., Netflix, 2019)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "Chaos Engineering is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production. Start by defining 'steady state' as some measurable output of a system that indicates normal behavior. Hypothesize that this steady state will continue in both the control group and the experimental group. Introduce variables that reflect real world events. Try to disprove the hypothesis by looking for a difference in steady state between the control group and the experimental group.",
+            "note": "Document fondateur du chaos engineering, co-auteurs Netflix (Rosenthal, Jones et al.) — niv.3. Definit la methodologie en 5 principes, source primaire universellement citee par les praticiens SRE et la communaute CNCF. Accord A/B."
+          },
+          {
+            "name": "CNCF — Building resilience with Chaos Engineering and Litmus (cncf.io, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "LitmusChaos is an open source chaos engineering platform for Kubernetes that enables developers to perform tests on many environments, including the Kubernetes platform, Kubernetes apps, cloud platforms, bare metal, legacy applications and virtual machines. Litmus integrates cleanly with CI/CD pipelines and is well suited to teams that want to bake chaos into their daily workflows.",
+            "note": "Blog officiel CNCF sur LitmusChaos (CNCF Sandbox project) — niv.2. Presente l'integration chaos engineering en CI/CD comme pratique CNCF recommandee, avec references aux environnements Kubernetes et non-Kubernetes. Accord A/B."
+          },
+          {
+            "name": "AWS Well-Architected Framework — REL12-BP04 Test resiliency using chaos engineering (docs.aws.amazon.com, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Chaos engineering or chaos testing is a Site Reliability Engineering (SRE) technique that simulates unexpected system failures to test a system's behavior and recovery plan. Site Reliability Engineering (SRE) embraces reliability as a measurable goal. Chaos engineering provides a path to quantify resilience.",
+            "note": "AWS Well-Architected Framework Reliability Pillar — niv.2 (framework officiel AWS reconnu industrie). Classe le chaos engineering comme bonne pratique de resilience mesurable dans le contexte SRE. Accord A/B."
+          },
+          {
+            "name": "DORA / Google — Accelerate State of DevOps Report (dora.dev, 2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "Elite performers are twice as likely to meet organizational performance targets. Higher deployment frequency does not trade against stability — teams that deploy more often fail less often and recover faster. Elite teams can restore service in less than an hour.",
+            "note": "DORA Report 2023 (Google) — niv.4 (etude empirique grande echelle). Correlele les pratiques de fiabilite (dont le test proactif de resilience) avec les performances des equipes elites. Fournit le contexte empirique justifiant le chaos engineering comme marqueur de maturite. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : principlesofchaos.org (Netflix/communaute SRE), CNCF (LitmusChaos), AWS Well-Architected Reliability Pillar = 3 organisations independantes convergent sur la meme methodologie (steady-state hypothesis, injection de fautes reelles, mesure de resilience) sans contradiction",
+            "effet mesurable : DORA 2023 documente empiriquement que les equipes elites (qui testent proactivement la resilience) deployent plus souvent et tombent moins souvent en panne — correlations quantifiees sur un large echantillon d'organisations"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Principles of Chaos Engineering (principlesofchaos.org, 2019) — definit la methodologie fondatrice (steady state, hypothese, injection, mesure, iteration) universellement adoptee (niveau 3, source primaire communaute)",
+          "CNCF LitmusChaos blog (2023) — recommande l'integration en CI/CD comme pratique courante pour les equipes Kubernetes (niveau 2, organisation de gouvernance cloud-native)",
+          "AWS Well-Architected REL12-BP04 (2024) — classe le chaos engineering comme bonne pratique de resilience mesurable dans un framework reconnu par l'industrie (niveau 2)"
+        ],
+        "etd_balance": {
+          "benefices": "Detection proactive des faiblesses de resilience avant qu'elles se manifestent en incidents de production. Validation concrete de l'efficacite des fault tolerance patterns en place (retry, circuit breaker, timeout, bulkhead). Augmentation de la confiance de l'equipe lors des deploiements. Construction d'une culture de resilience mesuree et iterative. Integration possible en CI/CD pour une validation continue. Alignement avec les pratiques des equipes elites DORA (moins de pannes, recuperation plus rapide).",
+          "risques": "Risque de degradation si une experience est lancee sans blast radius minimal ou sans runbook de rollback pret — mitigation : commencer systematiquement en staging, scenarios en production limites et planifies. Risque de fausse confiance si le steady state est mal defini (metriques insuffisantes) — mitigation : investir dans l'observabilite avant de commencer. Overhead operationnel pour definir et maintenir les scenarios : acceptable au regard du benefice preventif pour les systemes distribues critiques. Condition prealable non satisfaite (absence de fault tolerance patterns) : le chaos engineering est sans valeur si les mecanismes de protection ne sont pas en place — les resultats seraient predictibles et non informatifs.",
+          "balance": "Benefices >> Risques pour les systemes distribues avec fault tolerance patterns en place et observabilite suffisante. Grade RECOMMANDE (non STANDARD) car la condition prealable (fault-tolerance-patterns + observabilite) est stricte et non toujours satisfaite. Les risques operationnels sont geres par la methodologie elle-meme (blast radius minimal, staging avant prod, runbook de rollback). Le cout d'un incident non anticipe en production depasse largement le cout d'un programme de chaos engineering.",
+          "faisabilite": "Moyenne a haute selon le contexte. Kubernetes : LitmusChaos ou Chaos Mesh s'installent via Helm, scenarios declaratifs ChaosEngine, integration CI/CD native via GitHub Actions ou GitLab CI. AWS : Fault Injection Simulator disponible nativement sans infrastructure supplementaire. Non-Kubernetes on-prem : Gremlin (SaaS) ou scripts d'injection maison. Prerequis : metriques de steady state dans Prometheus/Grafana, traces dans Jaeger/Tempo, logs structures — investissement initial d'observabilite obligatoire avant de lancer le premier scenario."
+        },
+        "prisma_ref": "verification/prisma/chaos-engineering.md",
+        "sensitivity_ref": "verification/extractions/chaos-engineering.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

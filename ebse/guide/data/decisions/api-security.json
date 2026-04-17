@@ -1,0 +1,163 @@
+{
+  "id": "api-security",
+  "domain": "security",
+  "question": "Comment sécuriser les communications API-to-API dans une architecture NestJS, quel mécanisme d'authentification inter-services choisir (JWT/OAuth2 client_credentials, mTLS, HMAC) et comment l'implémenter en Guards NestJS ?",
+  "depends_on": [
+    "authorization-patterns",
+    "session-management",
+    "cors-policy"
+  ],
+  "tags": [
+    "api-security",
+    "service-to-service",
+    "jwt",
+    "mtls",
+    "oauth2",
+    "zero-trust",
+    "nestjs",
+    "guards",
+    "authentication"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Ne jamais faire confiance au réseau interne comme frontière de sécurité — chaque service doit valider explicitement l'identité de l'appelant sur chaque requête (zero-trust). NIST SP 800-204 est catégorique : 'API access authentication should not be done with API keys alone' ; l'identité de workload (service-to-service) doit être aussi rigoureuse que l'identité utilisateur. MATRICE DE CHOIX selon le contexte : (1) OAuth2 client_credentials (RFC 6749) + JWT signé (RFC 7519 / RFC 9068) — pattern standard pour la majorité des architectures NestJS. Le JWT doit inclure les claims obligatoires iss, sub, aud, exp, iat, jti, client_id (RFC 9068) ; le claim jti est indispensable pour la prévention du replay (blacklist Redis des jti révoqués). Implémenter via un Guard NestJS réutilisable (@nestjs/passport + ExtractJwt.fromAuthHeaderAsBearerToken()) partagé entre modules et microservices ; propager le JWT dans les appels inter-services via ClientProxy. (2) mTLS (RFC 8705 / NIST SP 800-204A + Istio) — couche complémentaire ou alternative pour un zero-trust strict. Transparent via service mesh (Istio PERMISSIVE → STRICT) : aucune modification de code applicatif. RFC 8705 renforce OAuth2 avec des certificate-bound access tokens qui empêchent le rejeu de tokens volés. Complexité PKI réelle à anticiper : provisionnement des clés, révocation des certificats, rotation. Durée de vie des certificats recommandée par NIST 800-204 : de l'ordre de quelques heures. (3) API keys seules — insuffisantes comme unique mécanisme (NIST SP 800-204, niveau 1 normatif). Usage restreint : webhooks entrants avec HMAC request signing (Stripe-style). HMAC est 10 à 100× plus rapide que la cryptographie asymétrique mais impose une gestion de clés partagées complexe à l'échelle — réserver aux webhooks, ne pas généraliser aux appels inter-services. (4) Confiance implicite au réseau interne — pratique explicitement rejetée par NIST 800-204, OWASP API Top 10 2023 (API2:2023 Broken Authentication, #2 depuis 2019) et documentée comme vecteur principal de brèches : Salt Security 2024 rapporte 23 % des organisations breachées via des problèmes d'authentification API, représentant 50 % des records exposés (auth+authz combinés). Incidents concrets : Dropbox 2024 compromis via API keys non protégées ; T-Mobile — 37 M records via authentication failures ; Dell — 49 M records via API vulnerability. ABAC inter-services (NIST SP 800-204B) pour l'autorisation fine-grained une fois l'identité établie : les scopes et claims du JWT permettent une autorisation décentralisée et loosely coupled sans appel synchrone à un service d'autorisation central (Curity 2023). OWASP API10:2023 Unsafe Consumption of APIs avertit contre la confiance implicite aux APIs tierces ou internes — chaque consommation doit valider les données reçues.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-204 — Security Strategies for Microservices-based Application Systems (NIST, 2019)",
+            "pyramid": 1,
+            "year": 2019,
+            "quote": "Two kinds of identity must be assured: end-user identity and microservices (workload) identity. API access authentication should not be done with API keys alone. Tokens should be digitally signed and encrypted. SPIFFE + mTLS for service-to-service identity. Certificate lifetime: preferably on the order of hours.",
+            "note": "Standard normatif NIST (niveau 1). Document fondateur sur la sécurité des microservices — définit explicitement l'identité de workload comme exigence obligatoire, interdit les API keys seules. Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "NIST SP 800-204A — Building Secure Microservices using Service-Mesh (NIST, 2021)",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "Define policy that requires mTLS at multiple levels: global, namespace, workload, port. Kubernetes + Istio as 'security kernel'.",
+            "note": "Extension opérationnelle de NIST 800-204 sur le service mesh. Niveau 1 normatif. Documente les 3 niveaux de politique mTLS (global, namespace, workload) et le rôle d'Istio comme 'security kernel'. Identifié par Reviewer A uniquement — inclus car source normative NIST directement complémentaire."
+          },
+          {
+            "name": "NIST SP 800-204B — Attribute-based Access Control for Microservices using Service Mesh (NIST, 2021)",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "ABAC for fine-grained authorization between microservices after identity is established.",
+            "note": "Extension NIST 800-204 sur l'autorisation fine-grained inter-services (ABAC). Niveau 1 normatif. Complète le triptyque identité → authentification → autorisation. Identifié par Reviewer A uniquement — inclus comme troisième volet de la série NIST 800-204."
+          },
+          {
+            "name": "RFC 6749 — The OAuth 2.0 Authorization Framework, Section 4.4 Client Credentials Grant (IETF, 2012)",
+            "pyramid": 1,
+            "year": 2012,
+            "quote": "The client credentials grant can be used when the client is acting on its own behalf. This grant enables access using the identity of an application, commonly used for server-to-server interactions.",
+            "note": "RFC IETF (niveau 1 normatif). Définit le pattern OAuth2 client_credentials comme mécanisme canonique pour l'authentification service-to-service. Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "RFC 8705 — OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens (IETF, 2020)",
+            "pyramid": 1,
+            "year": 2020,
+            "quote": "Binding an access token to the client's certificate prevents the use of stolen access tokens or replay by unauthorized parties.",
+            "note": "RFC IETF (niveau 1 normatif). Définit deux mécanismes complémentaires : mTLS Client Authentication et Certificate-Bound Access Tokens. Renforce OAuth2 contre le vol et le replay de tokens. Identifié par Reviewer A uniquement — inclus car source normative IETF directement pertinente à la matrice de choix."
+          },
+          {
+            "name": "RFC 7519 — JSON Web Token (IETF, 2015)",
+            "pyramid": 1,
+            "year": 2015,
+            "quote": "JWTs are a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure.",
+            "note": "RFC IETF (niveau 1 normatif). Standard fondateur JWT, définit la structure header.payload.signature et les claims de base. Identifié par Reviewer B uniquement — inclus car c'est le standard de base sans lequel RFC 9068 ne peut être compris."
+          },
+          {
+            "name": "RFC 9068 — JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens (IETF, 2021)",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "The following claims are mandatory: iss, sub, aud, exp, iat, jti, client_id. Media type application/at+jwt for interoperability between services.",
+            "note": "RFC IETF (niveau 1 normatif). Définit le profil JWT spécifique aux access tokens OAuth2 — claims obligatoires incluant jti (prévention replay). Source essentielle pour la matrice de choix inter-services. Identifié par Reviewer B uniquement — inclus car normative et directement actionnable."
+          },
+          {
+            "name": "OWASP API Security Top 10 2023 (OWASP Foundation, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "API2:2023 Broken Authentication remains #2 since 2019. API10:2023 Unsafe Consumption of APIs (implicit trust to third-party or internal APIs = new risk). Don't reinvent the wheel in authentication. Use secure storage for credentials and tokens, encrypted in transit and at rest.",
+            "note": "Référence OWASP (niveau 2). Maintient Broken Authentication en #2 depuis 2019 et introduit API10 Unsafe Consumption of APIs (confiance implicite aux APIs = nouveau vecteur). Accord Reviewer A/B niveau 2."
+          },
+          {
+            "name": "OWASP Microservices Security Cheat Sheet (OWASP Foundation, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "With mTLS, each microservice can legitimately identify who it talks to. Key provisioning, certificate revocation, key rotation [are the main challenges]. JWT offline: revoked tokens may not be detected — limit TTL. JWT online: high latency (tradeoff).",
+            "note": "Référence OWASP (niveau 2). Documente les tradeoffs opérationnels de mTLS vs JWT : challenges de mTLS (PKI, révocation, rotation) et limites de JWT (offline = pas de révocation sans blacklist, online = latence). Accord Reviewer A/B."
+          },
+          {
+            "name": "NestJS Documentation — Guards, Authentication, Microservices (2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "A common JWT authentication guard can be created for use across different microservices. In zero trust APIs, every API or microservice must receive and validate a JWT access token on every request. Guards are executed after all middleware, but before any interceptor or pipe.",
+            "note": "Documentation officielle NestJS (niveau 3). Décrit l'implémentation concrète : Guard JWT réutilisable entre microservices, ExtractJwt.fromAuthHeaderAsBearerToken(), propagation via ClientProxy. Accord Reviewer A/B niveau 3."
+          },
+          {
+            "name": "Istio Documentation — Security / mTLS (Google/CNCF, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "PERMISSIVE mode (default): accepts both plaintext and mTLS. STRICT mode: mTLS only. Three policy levels: service, namespace, mesh. Transparent — no application code change required.",
+            "note": "Documentation officielle Istio/CNCF (niveau 3). Contextualise mTLS comme alternative transparente (sans modification du code NestJS) au JWT applicatif. Les 3 niveaux de politique permettent une migration progressive PERMISSIVE → STRICT. Identifié par Reviewer B uniquement — inclus pour son caractère opérationnel direct."
+          },
+          {
+            "name": "Curity — Implementing Zero Trust APIs (2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "In zero trust APIs, every API or microservice must receive and validate a JWT access token on every request. After JWT validation, authorization uses scopes and claims. Decentralized, Downstream Authorization for loosely coupled microservices.",
+            "note": "Guide technique Curity (niveau 3 — vendor reconnu dans l'écosystème OAuth2/OIDC). Fournit le pattern d'implémentation zero-trust avec JWT et autorisation décentralisée via scopes/claims. Identifié par Reviewer A uniquement — inclus pour son opérationnalisation du principe."
+          },
+          {
+            "name": "Salt Security — State of API Security 2024 (Salt Security, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "95% of APIs have security issues. 23% of organizations experienced an API breach. Authorization (135M records, 28%) and authentication (105M records, 22%) are the top breach vectors. 61% of attacks are unauthenticated. API incidents represent >30% of all data breaches.",
+            "note": "Rapport industrie Salt Security (niveau 4 — biais commercial possible). Données quantitatives sur l'ampleur des problèmes d'authentification API. Accord Reviewer A/B niveau 4 — biais atténué par convergence avec sources niveau 1-2 sur les vecteurs d'attaque identifiés."
+          },
+          {
+            "name": "FireTail/Equixly — Top API Breaches 2024 (2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "T-Mobile: 37M records (auth failures). Dropbox 2024: compromised via API keys. Dell: 49M records via API vulnerability. 68% of organizations experienced an API breach costing >$1M.",
+            "note": "Rapport industrie sur les incidents API 2024 (niveau 4). Illustre concrètement les conséquences des failles d'authentification inter-services. Identifié par Reviewer A uniquement — inclus pour l'illustration des conséquences réelles."
+          },
+          {
+            "name": "HMAC Request Signing — Authgear, SSOJet, GitGuardian (2025)",
+            "pyramid": 5,
+            "year": 2025,
+            "quote": "HMAC is 10-100x faster than asymmetric cryptography. Use case: incoming webhooks. Limitation: shared key management is complex at scale. Recommendation: HMAC for webhooks, JWT for inter-services, mTLS for zero-trust.",
+            "note": "Sources comparatives sur HMAC (niveau 3-5 — sources techniques tierces). Positionnement clair de HMAC : webhooks uniquement, pas pour inter-services génériques. Identifié par Reviewer B uniquement — inclus pour délimiter le domaine d'application de HMAC dans la matrice de choix."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : 5 sources niveau 1 (NIST SP 800-204/204A/204B, RFC 6749, RFC 8705, RFC 7519, RFC 9068) + 2 sources niveau 2 OWASP + NestJS Docs + Curity convergent sans contradiction sur : (1) zero-trust comme principe fondateur — jamais de confiance implicite au réseau interne ; (2) OAuth2 client_credentials + JWT = pattern recommandé pour inter-services ; (3) mTLS = couche complémentaire ou alternative pour zero-trust strict ; (4) jti claim obligatoire pour prévenir le replay ; (5) API keys seules insuffisantes — consensus normatif NIST explicite",
+            "effet important : Salt Security 23% breaches via API auth, incidents concrets (Dropbox/T-Mobile/Dell) documentant l'impact des failles d'authentification inter-services ; NIST 800-204 prescrivant explicitement l'identité de workload comme exigence de niveau 1 ; OWASP maintenant Broken Authentication en #2 depuis 4 ans"
+          ],
+          "minus": [
+            "indirectness : absence d'études empiriques RCT comparant JWT vs mTLS vs API keys dans NestJS spécifiquement. Les recommandations sont normatives (NIST, IETF) ou basées sur incidents documentés. Salt Security et FireTail/Equixly ont un biais commercial potentiel. Pas de mesure quantitative du coût de complexité PKI mTLS en contexte NestJS réel."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-204 (2019) — standard normatif niveau 1 : interdit les API keys seules, exige l'identité de workload, prescrit JWT signé et mTLS",
+          "RFC 9068 (2021) — profil JWT pour OAuth2 access tokens : claims obligatoires jti (anti-replay), iss, sub, aud — source normative IETF directement actionnable en NestJS"
+        ],
+        "etd_balance": {
+          "benefices": "Élimination de la confiance implicite au réseau interne — chaque compromission d'un service ne donne pas automatiquement accès à tous les autres services (breach containment). Auditabilité complète des appels inter-services via les claims JWT (iss, sub, jti) persistés dans les logs. Résistance au replay via blacklist Redis des jti révoqués. Pattern OAuth2 client_credentials + JWT : standard interopérable, outillage riche (Passport.js, @nestjs/passport), décentralisé sans dépendance à un service d'autorisation central. mTLS via Istio : zéro modification du code NestJS, migration PERMISSIVE → STRICT progressive, mutual authentication automatique.",
+          "risques": "Complexité opérationnelle accrue : PKI pour mTLS (provisionnement, révocation, rotation des certificats), blacklist Redis pour les jti révoqués. JWT offline : tokens révoqués non détectés si pas de blacklist — TTL court obligatoire. JWT online : appel de validation synchrone = latence additionnelle sur chaque requête inter-service. HMAC mal utilisé hors webhooks = gestion de clés partagées ingérable à l'échelle. Over-engineering si l'architecture est un monolithe modulaire sans vrai réseau inter-services.",
+          "balance": "Bénéfices >> Risques dès qu'il y a une communication réseau réelle entre services distincts. La complexité PKI de mTLS est réelle mais transparente via Istio ; le coût est justifié par l'élimination du risque de propagation latérale en cas de breach. Pour une architecture NestJS sans service mesh, OAuth2 client_credentials + JWT (RFC 9068) offre le meilleur ratio sécurité/complexité.",
+          "faisabilite": "Haute pour JWT : @nestjs/passport + passport-jwt, Guard réutilisable en ~50 lignes. Moyenne pour mTLS applicatif (sans Istio) : gestion PKI manuelle complexe. Haute pour mTLS via Istio : transparent, déclaratif (PeerAuthentication YAML). Redis pour blacklist jti : déjà présent dans la majorité des stacks NestJS. Critère d'application : (1) Y a-t-il une communication réseau entre services distincts ? Si oui → JWT inter-services obligatoire. (2) Le contexte requiert-il un zero-trust strict ou une compliance forte ? Si oui → ajouter mTLS via service mesh. (3) Doit-on valider des webhooks entrants ? Si oui → HMAC uniquement, pas JWT."
+        },
+        "prisma_ref": "verification/prisma/api-security.md",
+        "sensitivity_ref": "verification/extractions/api-security.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

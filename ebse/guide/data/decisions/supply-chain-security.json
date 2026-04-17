@@ -1,0 +1,85 @@
+{
+  "id": "supply-chain-security",
+  "domain": "security",
+  "question": "Comment sécuriser la chaîne d'approvisionnement logicielle — SBOM, signature des artefacts, analyse des dépendances vulnérables, et niveaux SLSA — pour prévenir les compromissions de type SolarWinds ou XZ Utils ?",
+  "depends_on": ["dependency-upgrade-strategy"],
+  "tags": ["supply-chain", "sbom", "spdx", "cyclonedx", "slsa", "cosign", "sigstore", "github-actions", "dependency-audit", "owasp-a06"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "La chaîne d'approvisionnement logicielle est un vecteur d'attaque de première classe, documenté par trois familles d'incidents distinctes : (a) dépendances vulnérables non détectées — OWASP A06:2021 recense 30 457 occurrences documentées avec un taux d'incidence maximal de 27,96% dans les applications auditées ; les équipes qui ne connaissent pas l'exhaustivité de leurs dépendances transitives sont exposées par définition ; (b) dependency confusion et typosquatting — des paquets malveillants publiés sur npm ou PyPI imitent des noms de packages internes ou populaires, déclenchant leur installation automatique dans les pipelines CI sans interception ; (c) compromission de l'outil de build ou du pipeline CI — SolarWinds (2020) : injection malveillante dans le système de build Orion distribué à 18 000 clients ; Codecov (2021) : modification du script bash d'upload exposant les variables d'environnement CI de milliers d'équipes ; XZ Utils (2024) : backdoor introduit progressivement dans un mainteneur open source de confiance sur 2 ans. Ces trois vecteurs partagent un point commun : aucun n'est détectable par les tests fonctionnels habituels.\n\nSBOM (Software Bill of Materials) : un SBOM est une liste formelle et structurée de toutes les dépendances directes et transitives d'un artefact logiciel, avec leurs versions et licences. Mandaté par l'Executive Order 14028 (CISA, 2021) pour tout logiciel vendu ou fourni au gouvernement américain. Formats standardisés : SPDX (ISO/IEC 5962:2021) et CycloneDX (OWASP). Outils : `npm sbom --output-file sbom.json` (Node.js 16+), `cyclonedx-npm`, Syft (Anchore, supporte npm/Maven/Docker). Le SBOM doit être généré à chaque build et archivé avec l'artefact — il permet de répondre en moins d'une heure à la question « avons-nous Log4Shell dans notre stack ? » lors d'une divulgation de CVE critique.\n\nAnalyse de dépendances vulnérables (OWASP A06) : intégrer `npm audit --audit-level=high` dans la CI avec un exit code non-nul sur les CVE high/critical — la build échoue si une vulnérabilité haute sévérité est détectée. Pour Maven : `mvn dependency-check:check` (OWASP Dependency Check, base NVD). Automations de mise à jour : Renovate Bot ou GitHub Dependabot créent automatiquement des PR de mise à jour avec les changelogs et résultats de CI — priorité aux CVE critiques. Ces outils constituent une forme de SBOM dynamique : ils surveillent en permanence si les versions déclarées apparaissent dans les bases CVE.\n\nNiveaux SLSA (Supply-chain Levels for Software Artifacts, OpenSSF/Google) : framework de niveaux de garantie sur l'intégrité du processus de build. Build L1 : la provenance existe — documentation de ce qui a été construit, par quoi, et à partir de quoi. Build L2 : provenance signée par la plateforme CI hébergée (GitHub Actions, Google Cloud Build) — le fournisseur CI atteste cryptographiquement le build. Build L3 : plateforme CI renforcée — permissions minimales sur GITHUB_TOKEN, isolation des workflows, auditabilité complète. Objectif minimal pour les projets produisant des artefacts partagés : atteindre SLSA L2 via GitHub Actions avec attestation de provenance (`actions/attest-build-provenance`).\n\nSignature d'artefacts avec Sigstore/cosign : signer les images Docker et les binaires en CI avec cosign en mode keyless (identité OIDC de GitHub Actions, sans clé privée stockée). La signature est publiée dans le registre de transparence Rekor (append-only, auditable). Commandes CI : `cosign sign --key cosign.key $IMAGE` ou en mode keyless `cosign sign $IMAGE` (avec `COSIGN_EXPERIMENTAL=1`). Vérification avant déploiement : `cosign verify --key cosign.pub $IMAGE`. Intégrer la vérification dans le script de déploiement — un artefact non signé ou à signature invalide ne doit pas être déployé.\n\nGitHub Actions hardening : épingler toutes les actions tierces sur leur SHA de commit complet plutôt que sur un tag (`uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683` plutôt que `@v4`). Un tag peut être réécrit ; un SHA est immuable. Une action compromise a accès à tous les secrets du workflow et au GITHUB_TOKEN — c'est le vecteur Codecov. Permissions minimales : déclarer `permissions: contents: read` au niveau du workflow et élever uniquement sur les jobs qui en ont besoin. Éviter `pull_request_target` sans revue explicite du code de la PR — ce trigger exécute le code de la PR avec les secrets du repo cible.\n\nPriorité d'implémentation recommandée : 1) `npm audit` (ou `mvn dependency-check:check`) en CI avec fail on high/critical — effort < 1 heure, protection immédiate contre CVE connus ; 2) Renovate ou Dependabot activé — automatise les mises à jour et génère un SBOM dynamique implicite ; 3) épinglage SHA sur toutes les actions GitHub tierces — protection contre la compromission d'un fournisseur CI tiers ; 4) cosign pour signer les images de production avant push dans le registre — protège l'intégrité de l'artefact distribué ; 5) SLSA L2 avec attestation de provenance pour les releases publiques ou les artefacts distribués à d'autres équipes.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-218 — Secure Software Development Framework (SSDF) v1.1 (NIST, 2022)",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "This document recommends the SSDF — a core set of high-level secure software development practices that can be integrated into each SDLC implementation. Following these practices should help software producers reduce the number of vulnerabilities in released software.",
+            "note": "Publication spéciale NIST mandatée par l'Executive Order 14028. Niveau 1 — standard normatif gouvernemental américain. Fournit le cadre réglementaire de référence pour la sécurité de la chaîne d'approvisionnement (PO.1 : sécuriser les environnements de développement, PS.3 : archiver et protéger chaque version). Accord A/B."
+          },
+          {
+            "name": "CISA — Software Bill of Materials (SBOM) (CISA, 2023)",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "The Executive Order on Improving the Nation's Cybersecurity (EO 14028) directed CISA and NIST to publish guidance on SBOM. An SBOM is a formal record containing the details and supply chain relationships of the components used in building software.",
+            "note": "Publication CISA (agence fédérale US de cybersécurité) sur le SBOM, mandatée par EO 14028. Niveau 1 — standard normatif gouvernemental. Définit les formats (SPDX, CycloneDX) et les cas d'usage du SBOM. Accord A/B."
+          },
+          {
+            "name": "SLSA — Security Levels v1.0, Build Track (OpenSSF/Google, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "SLSA is organized into a series of levels that provide increasing supply chain security guarantees. Build L1: Provenance exists. Build L2: Signed provenance. Build L3: Hardened build platform. SolarWinds or Codecov attacks exposed supply chain integrity weaknesses that go unnoticed, yet quickly become very public, disruptive, and costly.",
+            "note": "Spécification SLSA publiée par OpenSSF (Linux Foundation) avec contribution Google. Niveau 2 — guide de référence de la communauté open source. Documente les niveaux de garantie sur l'intégrité du build avec incidents SolarWinds et Codecov comme contexte. Accord A/B."
+          },
+          {
+            "name": "OWASP Top 10 2021 — A06: Vulnerable and Outdated Components (OWASP, 2021)",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "You are likely vulnerable if you do not know the versions of all components you use (both client-side and server-side), including nested dependencies. [...] 30,457 occurrences documentées, taux d'incidence max 27.96%. Tools: OWASP Dependency Check, retire.js, npm audit.",
+            "note": "OWASP Top 10 édition 2021. Niveau 2 — référence OWASP sur les vulnérabilités applicatives les plus fréquentes. Quantifie l'ampleur du problème des composants vulnérables (30 457 occurrences, 27.96% d'incidence) et liste les outils de détection. Accord A/B."
+          },
+          {
+            "name": "Sigstore — Signing Containers with Cosign (Linux Foundation, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "cosign sign $IMAGE — Sign containers with ephemeral OIDC keys (GitHub, Google). Signatures are stored in the Rekor transparency log. Keyless signing uses short-lived certificates tied to the OIDC identity of the signer.",
+            "note": "Documentation officielle Sigstore/cosign publiée par la Linux Foundation. Niveau 2 — guide de référence outil soutenu par Linux Foundation, Google, Red Hat, GitHub. Couvre la signature keyless avec identité OIDC GitHub Actions. Accord A/B."
+          },
+          {
+            "name": "GitHub Docs — Security hardening for GitHub Actions (GitHub, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Pin actions to a full-length commit SHA — the only way to use an action as an immutable release. A compromised action has access to all secrets and GITHUB_TOKEN.",
+            "note": "Documentation officielle GitHub sur le hardening des workflows Actions. Niveau 2 — documentation de l'opérateur de la plateforme CI la plus utilisée. Documente les risques concrets (accès secrets, GITHUB_TOKEN) et les contre-mesures (épinglage SHA, permissions minimales). Source B uniquement, incluse car directement actionnable pour NestJS et Spring Boot sur GitHub Actions."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : NIST SP 800-218 (niveau 1, mandaté EO 14028) + CISA SBOM (niveau 1, mandaté EO 14028) + SLSA v1.0 (OpenSSF, niveau 2) + OWASP A06:2021 (niveau 2) + Sigstore (Linux Foundation, niveau 2) + GitHub Docs hardening (niveau 2) convergent sans contradiction sur les 4 pratiques centrales : SBOM obligatoire, audit de dépendances en CI, signature des artefacts, épinglage des actions CI. 4 catégories distinctes (normatif gouvernemental, open source, sécurité applicative, opérateur CI).",
+            "effet important : OWASP A06 quantifie le risque à 30 457 occurrences et 27.96% d'incidence maximale. SLSA documente SolarWinds (18 000 organisations compromises via l'outil de build) et Codecov (exfiltration secrets CI). XZ Utils (2024) démontre la persistance à long terme d'un attaquant dans un projet open source. Ces incidents sont publics, documentés, et illustrent le coût réel de l'absence des pratiques recommandées."
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "NIST SP 800-218 + CISA SBOM (niveau 1) — cadre réglementaire mandaté EO 14028, définissent l'obligation de SBOM et de sécurité du pipeline de build",
+          "SLSA v1.0 (OpenSSF, niveau 2) — framework de niveaux de garantie sur l'intégrité du build, avec incidents SolarWinds et Codecov comme démonstration de l'impact",
+          "OWASP A06:2021 (niveau 2) — quantifie l'exposition aux composants vulnérables (27.96% d'incidence) et liste les outils opérationnels"
+        ],
+        "etd_balance": {
+          "benefices": "Détection des CVE connus avant qu'ils atteignent la production (npm audit en CI). Traçabilité complète de la composition logicielle pour répondre rapidement aux divulgations zero-day (SBOM). Intégrité cryptographique des artefacts déployés — un attaquant ne peut pas substituer une image modifiée sans invalider la signature (cosign). Réduction du risque de compromission via un outil CI tiers malveillant (épinglage SHA GitHub Actions). Conformité réglementaire pour les organisations vendant au secteur public (EO 14028/CISA).",
+          "risques": "Faux positifs npm audit sur des CVE non exploitables dans le contexte applicatif — risque de blocage de CI pour des vulnérabilités sans impact réel (atténué par le seuil --audit-level=high). Overhead opérationnel de la gestion des PR Dependabot/Renovate dans les phases de développement intensif. Complexité initiale de la configuration cosign en CI (gestion des identités OIDC, registre de signatures). Épinglage SHA des actions — les mises à jour de sécurité des actions tierces nécessitent une mise à jour manuelle du SHA (atténué par Dependabot/Renovate qui gèrent aussi les GitHub Actions).",
+          "balance": "Bénéfices >> Risques. Les incidents SolarWinds, Codecov et XZ Utils démontrent que le coût d'une compromission de la chaîne d'approvisionnement est supérieur de plusieurs ordres de grandeur à l'overhead opérationnel des pratiques recommandées. Les risques identifiés sont tous gérables par configuration (seuil d'audit, automatisation des mises à jour SHA). La priorité d'implémentation permet un déploiement incrémental — commencer par npm audit (< 1h, protection immédiate) avant cosign et SLSA L2.",
+          "faisabilite": "Haute pour les pratiques prioritaires : npm audit s'ajoute en une ligne dans le workflow CI existant. Renovate/Dependabot s'activent via un fichier de configuration dans le repo. Épinglage SHA : outil automatique disponible (pin-github-action). Cosign : intégration GitHub Actions documentée avec action officielle (`sigstore/cosign-installer`). SLSA L2 : `actions/attest-build-provenance` disponible en beta publique. Contexte OLS : NestJS (npm) et Spring Boot (Maven) sont tous deux couverts par les outils mentionnés."
+        },
+        "prisma_ref": "verification/prisma/supply-chain-security.md",
+        "sensitivity_ref": "verification/extractions/supply-chain-security.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

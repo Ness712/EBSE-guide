@@ -1,0 +1,113 @@
+{
+  "id": "stress-testing",
+  "domain": "quality",
+  "question": "Comment planifier et executer des tests de charge, stress, spike et soak pour valider les exigences de performance (SLO) et identifier les points de saturation avant la production ?",
+  "depends_on": ["test-strategy"],
+  "tags": ["stress-testing", "load-testing", "spike-testing", "soak-testing", "k6", "performance", "slo", "sla", "thresholds", "capacity"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Les tests de performance se decomposent en quatre types canoniques correspondant a des objectifs distincts. (1) Average-load testing (test de charge normale) : simuler le nombre reel de VUs (virtual users) et le throughput observe en production a partir des metriques APM ou analytics — c'est la baseline sans laquelle les autres tests n'ont pas de reference. (2) Stress testing : depasser la charge normale de 50 % a 100 % pour identifier le point de saturation du systeme — le moment ou les latences s'emballent et le taux d'erreurs monte. L'objectif n'est pas que le systeme tienne ; c'est de savoir exactement ou il cede et comment il se comporte sous pression excessive (degradation gracieuse ou crash brutal). (3) Spike testing : injecter une charge massivement superieure a la normale en un temps de montee tres court (secondes) pour verifier que le systeme survit aux pics soudains — flash sales, evenements viraux, avalanche de connexions apres un email marketing. La question est : est-ce que le systeme recupere seul apres le pic ? (4) Soak testing / endurance testing : maintenir la charge normale sur une duree prolongee (heures a jours) pour detecter les degradations differees — memory leaks progressifs, saturation des pools de connexions, fragmentation de l'espace disque, drift des metriques Redis. Ce que les tests courts ne voient jamais. Ordre d'execution obligatoire : smoke test (1 VU, sanity check) → average-load (baseline) → stress (saturation) → spike (resilience) → soak (endurance). Ne jamais executer stress ou spike sans baseline average-load valide : comparer des resultats sans reference est inutile. Les seuils SLO doivent etre codes comme criteres pass/fail du test, pas evalues apres coup. Avec k6 : thresholds declares dans le script — 'http_req_duration[\"p(95)<200\"]' pour garantir que 95 % des requetes repondent sous 200 ms, 'http_req_failed[\"rate<0.01\"]' pour maintenir le taux d'erreurs sous 1 %. Un threshold depasse = test FAILED = build CI failed. Les metriques a instrumenter pour ISO 25010 Performance Efficiency : throughput (req/s) pour Capacity, response time p50/p95/p99 (ms) pour Time Behaviour, taux d'erreurs HTTP (%) pour Reliability, CPU/RAM/connexions DB pour Resource Utilization. Recueillir les quatre categories — le goulot d'etranglement peut etre dans n'importe laquelle. Outil recommande : k6 (scripts JavaScript, CLI, thresholds natifs, sortie Grafana Cloud ou Prometheus — integration CI directe via 'k6 run --exit-on-running'). Pour NestJS/Node.js : k6 est le choix naturel. Pour Spring Boot/Java : Gatling (DSL Scala, journaux HTML auto, bonne integration Maven/Gradle) ou k6 si l'equipe est deja familiere. JMeter reste valide si l'equipe est Java sans budget pour Gatling Cloud — mais l'UI XML est un frein a la code review et au versionning. Baseline avant test : interroger l'APM (Grafana/Prometheus) ou les analytics prod pour determiner la charge reelle : nombre de VUs simultanes en heure de pointe, throughput moyen (req/s), endpoints les plus sollicites. Ne pas inventer ces valeurs. Profil d'injection : utiliser une rampe progressive (ramp-up) de 5 a 15 % de la duree totale du test pour ne pas fausser les metriques de demarrage — k6 : 'stages' avec rampe initiale ; Gatling : 'rampUsers(n).during(d)'. Intégration CI : les tests average-load s'executent a chaque PR ou nuit via GitHub Actions. Les tests stress, spike et soak sont lances periodiquement (hebdomadaire) ou avant chaque release majeure — leur duree (10-60 min pour stress/spike, plusieurs heures pour soak) les rend inadaptes a chaque push. Les threshold failures bloquent le pipeline comme n'importe quel test fonctionnel. Versionner les scripts de test avec le code source dans le meme repo — un test de performance non versionne n'est pas reproductible.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Grafana Labs k6 — Stress testing (grafana.com/docs/k6, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Stress testing assesses how the system performs when loads are heavier than usual. [...] there's no fixed percentage — some testers use +50% or +100% on average load.",
+            "note": "Documentation officielle du framework k6 (Grafana Labs), outil de reference pour les tests de performance. Definit le stress testing, son objectif (identifier le point de saturation) et les profils de charge recommandes. Niveau 2 — framework officiel reference. Accord A/B."
+          },
+          {
+            "name": "Grafana Labs k6 — Spike testing (grafana.com/docs/k6, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "A spike test verifies whether the system survives and performs under sudden and massive rushes of utilization. Increases to extremely high loads in a very short ramp-up time.",
+            "note": "Documentation officielle k6 definissant le spike testing, ses conditions (montee instantanee, charge massive) et son objectif (survie et recuperation). Complement direct du stress testing. Niveau 2. Accord A/B."
+          },
+          {
+            "name": "Grafana Labs k6 — Soak testing (grafana.com/docs/k6, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Soak testing focuses on extended periods, analyzing: degradation of performance over time, resource leaks, data saturation.",
+            "note": "Documentation officielle k6 definissant le soak/endurance testing et ses trois cibles de detection (degradation temporelle, fuites de ressources, saturation donnees). Niveau 2. Accord A/B."
+          },
+          {
+            "name": "Grafana Labs k6 — Thresholds (grafana.com/docs/k6, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Thresholds are the pass/fail criteria. For example: p(95)<200 — 95% of requests under 200ms.",
+            "note": "Documentation officielle k6 definissant le mecanisme de thresholds comme criteres pass/fail codifies dans le script. Fondement du principe de codification des SLOs. Niveau 2. Accord A/B."
+          },
+          {
+            "name": "Grafana Labs k6 — Average-load testing (grafana.com/docs/k6, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Know the specific number of users and throughput from APMs. Use ramp-up period (5-15% of total duration).",
+            "note": "Documentation officielle k6 definissant la baseline comme prerequis a tous les autres types de tests. Fonde l'ordre d'execution obligatoire. Niveau 2. Accord A/B."
+          },
+          {
+            "name": "ISO/IEC 25010 — Systems and software Quality Requirements and Evaluation: Performance Efficiency (iso25000.com, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Performance efficiency sub-characteristics: Time behaviour (response time and throughput), Resource utilization, Capacity.",
+            "note": "Norme ISO definissant les sous-caracteristiques de la performance efficiency. Fonde le referentiel de metriques a mesurer (throughput, response time, resource utilization, capacity). Niveau 3 — norme internationale. Source B uniquement."
+          },
+          {
+            "name": "ISTQB — Certified Tester Performance Testing CT-PT (ISTQB, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Taxonomie canonique : load testing, stress testing, spike testing, endurance testing — metriques : throughput, response time, error rate.",
+            "note": "Certification ISTQB specialisee performance testing, definissant la taxonomie canonique des 4 types de tests et les metriques standard. Convergence directe avec k6 docs sur la terminologie et les metriques. Niveau 3 — certification professionnelle reconnue. Source B uniquement."
+          },
+          {
+            "name": "Gatling — Injection : Test-as-code concepts (docs.gatling.io, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "rampUsers vs atOnceUsers — profils d'injection progressifs pour simuler montee en charge et saturation.",
+            "note": "Documentation officielle Gatling sur les profils d'injection (rampe vs instantane). Fonde la recommandation de ramp-up progressif et l'alternative Gatling pour Java/Spring Boot. Niveau 3 — documentation framework. Source B uniquement."
+          },
+          {
+            "name": "Google SRE Book ch.17 — Testing for Reliability ; ch.21 — Handling Overload (Google, 2016)",
+            "pyramid": 3,
+            "year": 2016,
+            "quote": "Load tests as part of reliability validation; ch.21 defines observable saturation points.",
+            "note": "Reference fondatrice SRE integrant les tests de charge dans la validation de fiabilite systeme et definissant les points de saturation observables. Convergence sur le principe de detection precoce. Niveau 3 — livre de reference SRE (Google). Source B uniquement."
+          },
+          {
+            "name": "Apache JMeter — User Manual: Best Practices (Apache, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Metriques mesurables : throughput (req/s), latency (ms), error rate (%).",
+            "note": "Manuel officiel JMeter definissant les metriques standard pour les tests de performance. Convergence sur le referentiel de metriques avec ISO 25010 et ISTQB. Niveau 4 — documentation outil. Source B uniquement."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : k6 docs Grafana (niveau 2, 5 pages convergentes sur taxonomie, thresholds, ordre d'execution) + ISO 25010 (niveau 3) + ISTQB CT-PT (niveau 3) + Google SRE Book (niveau 3) + Gatling docs (niveau 3) + JMeter Best Practices (niveau 4) convergent sans contradiction sur les 4 types de tests, les metriques et le principe de codification des SLOs — 5 contextes independants (framework officiel, norme, certification, SRE, outils alternatifs)",
+            "effet important : les tests de performance preventifs identifient les points de saturation avant la production ; l'absence de tests de stress est documentee comme cause directe d'incidents de disponibilite sous charge (Google SRE ch.17). Reduction des incidents de production = impact operationnel mesurable"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Grafana Labs k6 docs 2024 — framework officiel de reference definissant la taxonomie, les thresholds et l'ordre d'execution (niveau 2, 5 documents convergents)",
+          "ISTQB CT-PT 2024 — certification specialisee validant la taxonomie canonique et les metriques standard (niveau 3)",
+          "Google SRE Book ch.17/21 — reference fondatrice integrant les tests de charge dans la validation de fiabilite systeme (niveau 3)"
+        ],
+        "etd_balance": {
+          "benefices": "Identification des points de saturation avant la production, reduction des incidents de disponibilite sous charge. SLOs codes comme criteres pass/fail = feedback automatique et objectif en CI. Detection des memory leaks et degradations differees (soak) qui echappent aux tests fonctionnels. Baseline quantifiee permettant de mesurer l'impact des evolutions de performance. Integration CI/CD native avec k6 = tests reproductibles et versionnables.",
+          "risques": "Cout en temps machine non negligeable (tests soak plusieurs heures). Environnement de test non representatif (dimensionnement different de la prod) = resultats faussement rassurants. Baseline prod incorrecte (trafic sous-estime) = tests stress avec seuil trop bas ou trop haut. Scripts de test non maintenus lors des evolutions d'API = faux positifs/negatifs. Tests spike sur environnement partage = interference avec d'autres suites.",
+          "balance": "Benefices >> Risques. Les risques sont operationnels (environnement, maintenance) et gerees par processus (environnement dedie, scripts versionnnes avec le code). Le risque de ne pas tester sous charge est documente et mesurable (incidents prod). Les outils (k6, Gatling) sont matures, CI-integrables et open-source — cout d'entree faible.",
+          "faisabilite": "Haute pour average-load et stress. Moyenne pour soak (necessite un environnement stable sur la duree). k6 : 'npm install -g k6' ou image Docker, scripts JS versionnes, integration GitHub Actions en <50 lignes de YAML. Gatling : plugin Maven/Gradle, scenarios Scala, rapport HTML auto-genere. Seuils SLO : definir en amont avec le PO les cibles p95 et error rate acceptables, puis les coder dans les thresholds k6 — pas de negociation post-test."
+        },
+        "prisma_ref": "verification/prisma/stress-testing.md",
+        "sensitivity_ref": "verification/extractions/stress-testing.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

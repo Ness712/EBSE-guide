@@ -40,6 +40,69 @@
         ],
         "v3_review": "2026-04-14",
         "robustness": "ROBUSTE"
+      },
+      {
+        "text": "Invalidation de cache : choisir la strategie selon le compromis coherence/performance. Le probleme fondamental est un CAP-like local : coherence parfaite et performance maximale sont mutuellement exclusives — toute strategie est un compromis. Phil Karlton (1996) : 'There are only two hard things in Computer Science: cache invalidation and naming things.' Cette tension reste le defi central de toute architecture de cache.\n\nCache-aside (lazy loading) : l'application verifie le cache ; en cas de miss, charge depuis la source et populate le cache. Simple, resilient a la panne Redis (degradation gracieuse vers la BDD), mais introduit un risque de donnees perimees entre l'invalidation et la prochaine lecture. Invalider via DEL/UNLINK sur les cles concernees lors de chaque ecriture en source. Pattern le plus utilise pour les donnees reference (utilisateurs, catalogues).\n\nWrite-through : l'ecriture est faite simultanement dans le cache et en BDD (atomicite applicative). Coherence forte : un lecteur ne verra jamais une donnee perimee. Cout : latence d'ecriture augmentee (double write synchrone) et risque de polluer le cache avec des donnees rarement lues. Adapter aux donnees ecrites et relues frequemment (profils utilisateur, preferences).\n\nWrite-behind (write-back) : l'ecriture touche d'abord le cache ; la persistance BDD est asynchrone. Performance d'ecriture maximale. Risque : en cas de crash Redis avant la persistance, les donnees non flushees sont perdues. Adapter uniquement aux donnees pouvant etre reconstruites ou aux metriques non critiques. Ne pas utiliser pour les donnees financieres ou les donnees utilisateur critiques.\n\nEvent-driven invalidation : les evenements domaine (ex. UserUpdated, ProductPriced) declenchent une invalidation precise des cles concernees. C'est la strategie la plus appropriee pour les architectures event-driven (CQRS, microservices) : elle garantit que le cache reflète l'etat de la source sans attendre l'expiration TTL. Implementation : handler d'evenement appelle CACHE_MANAGER.del(key) ou Redis DEL/UNLINK sur les cles composites affectees.\n\nTTL comme filet de securite universel : meme avec invalidation explicite (cache-aside, event-driven), un TTL de secours est obligatoire. Sans TTL, une invalidation manquee (bug, restart, race condition) laisse des donnees perimees indefiniment. Valeurs typiques : donnees reference = 30 min, donnees dynamiques = 1-5 min, sessions = duree de session. Le TTL ne remplace pas l'invalidation explicite mais constitue le dernier rempart.\n\nNestJS : @nestjs/cache-manager expose CacheModule.register() et le jeton CACHE_MANAGER. Injecter via @Inject(CACHE_MANAGER) pour les operations manuelles (get, set, del). CacheInterceptor s'applique en lecture ; l'invalidation sur mutation est systematiquement manuelle via cache.del(key). Construire les cles de cache de facon deterministe (ex. 'user:{id}', 'product:{slug}') pour permettre l'invalidation ciblee sans scan de cles (SCAN est couteux sur grand ensemble).",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Redis Documentation — Eviction and Expiration Policies (Redis, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Redis supports multiple eviction policies (noeviction, allkeys-lru, volatile-lru, allkeys-random, volatile-random, volatile-ttl, volatile-lfu, allkeys-lfu). When using Redis as a cache, you typically want to use an eviction policy. The DEL command removes a key and its associated value. The UNLINK command is an asynchronous non-blocking version of DEL that is more efficient for large keys.",
+            "note": "Documentation officielle Redis sur les politiques d'expiration et les commandes d'invalidation. Niveau 3 — documentation framework/outil de reference. Source directement actionnable pour l'implementation. Accord A/B."
+          },
+          {
+            "name": "Microsoft Azure Architecture Center — Cache-Aside Pattern (Microsoft, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Load data on demand into a cache from a data store. This can improve performance and also helps to maintain consistency between data held in the cache and data in the underlying data store. [...] If an application updates information, it should invalidate the cache for the item being modified, and update the data store. When the item is next required, using the cache-aside pattern will cause the updated data to be retrieved from the data store and added back into the cache.",
+            "note": "Guide d'architecture Microsoft documentant le pattern cache-aside avec ses tradeoffs. Niveau 3 — documentation architecture d'un editeur majeur. Accord A/B."
+          },
+          {
+            "name": "Microsoft Azure Architecture Center — Write-Through and Write-Behind Caching (Microsoft, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Write-through caching keeps the cache and the backing store consistent by writing to both simultaneously. Write-behind (write-back) caching improves write performance by writing to the cache immediately and deferring writes to the backing store. The risk is that if the cache fails before data is flushed, the data can be lost.",
+            "note": "Guide Microsoft documentant les patterns write-through et write-behind avec analyse des risques. Complement direct du cache-aside pattern. Niveau 3 — documentation architecture. Accord A/B."
+          },
+          {
+            "name": "NestJS Caching Documentation — @nestjs/cache-manager (NestJS, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The CacheModule provides a unified cache API built on top of cache-manager. Inject the cache manager using the CACHE_MANAGER token. To interact with the cache manager instance, inject it into your class using the @Inject() decorator. The cache.del(key) method removes a key from the cache.",
+            "note": "Documentation officielle NestJS sur le module de cache. Directement applicable pour l'implementation NestJS. Niveau 3 — documentation framework. Accord A/B."
+          },
+          {
+            "name": "Karlton P. — 'There are only two hard things in Computer Science: cache invalidation and naming things' (1996, cite par Fowler)",
+            "pyramid": 5,
+            "year": 1996,
+            "quote": "There are only two hard things in Computer Science: cache invalidation and naming things.",
+            "note": "Citation fondatrice capturant la difficulte fondamentale du probleme de coherence cache. Citee par Martin Fowler sur martinfowler.com/bliki/TwoHardThings.html. Niveau 5 — expert reconnu. Source de contexte fondateur."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : Redis Documentation (niveau 3) + Microsoft Azure Cache-Aside Pattern (niveau 3) + Microsoft Azure Write-Through/Write-Behind (niveau 3) + NestJS Caching docs (niveau 3) convergent sans contradiction sur les strategies d'invalidation, leurs tradeoffs coherence/performance, et les cas d'usage — 4 sources independantes de 3 organisations distinctes (Redis Labs, Microsoft, NestJS/Vercel)"
+          ],
+          "minus": []
+        },
+        "robustness": "ACCEPTABLE",
+        "critical_sources": [
+          "Redis Documentation 2024 — commandes DEL/UNLINK, politiques d'expiration — reference operationnelle directe (niveau 3)",
+          "Microsoft Azure Architecture Center 2023 — Cache-Aside, Write-Through, Write-Behind — guidance prescriptive avec analyse des tradeoffs (niveau 3)"
+        ],
+        "etd_balance": {
+          "benefices": "Choix explicite d'une strategie d'invalidation reduit le risque de donnees perimees indefinies et de cache stampede. TTL de secours universel garantit une borne sur la perennite maximale des donnees perimees. Event-driven invalidation permet une coherence quasi-temps-reel sans overhead de polling. Cache-aside fournit une degradation gracieuse naturelle en cas de defaillance Redis.",
+          "risques": "Write-behind : risque de perte de donnees en cas de crash Redis avant flush — inacceptable pour donnees critiques. Cache stampede (thundering herd) si de nombreuses cles expirent simultanement — mitiger avec jitter sur les TTL (TTL + random(0, TTL*0.1)). Invalidation par cles composites mal construites → invalidation incomplete ou trop large.",
+          "balance": "Benefices >> Risques si la strategie est choisie selon le profil de la donnee. Les risques sont documentables et maitrisables par des conventions de nommage de cles et des choix de strategie conscients. L'absence de strategie explicite (TTL seul) est systematiquement pire que n'importe quelle strategie documentee.",
+          "faisabilite": "Haute — NestJS : @nestjs/cache-manager + CACHE_MANAGER injectable disponibles nativement ; Redis DEL/UNLINK sont des operations O(1) ; la construction de cles deterministiques est une convention d'equipe simple a appliquer. Le pattern cache-aside est implementable sans bibliotheque additionnelle."
+        },
+        "prisma_ref": "verification/prisma/cache-invalidation.md",
+        "sensitivity_ref": "verification/extractions/cache-invalidation.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
       }
     ]
   },

@@ -1,0 +1,77 @@
+{
+  "id": "gitops",
+  "domain": "infrastructure",
+  "question": "Comment adopter GitOps pour synchroniser automatiquement l'état désiré de l'infrastructure et des applications depuis un dépôt Git, garantissant la traçabilité et la reproductibilité des déploiements ?",
+  "depends_on": ["branching", "artifact-management"],
+  "tags": ["gitops", "argo-cd", "flux", "kubernetes", "declarative", "pull-based", "cd", "infrastructure", "drift-detection", "reconciliation"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "GitOps repose sur quatre principes fondamentaux définis par OpenGitOps v1.0.0 (CNCF TAG App Delivery, 2021) : (1) Déclaratif — l'état désiré du système est exprimé déclarativement (manifests Kubernetes YAML, charts Helm) ; le système exécute, pas les scripts impératifs. (2) Versionné et immuable — Git est la source de vérité unique ; tout changement d'état est un commit auditable avec historique complet et possibilité de rollback. (3) Pull automatique — l'agent GitOps (Argo CD, Flux) tire l'état depuis Git en continu ; jamais de push depuis la CI vers le cluster (le cluster n'expose pas d'API externe à la CI, réduisant la surface d'attaque). (4) Réconciliation continue — l'agent observe en permanence l'état réel du cluster, détecte le drift par rapport à l'état désiré Git, et corrige automatiquement. Ces quatre principes forment un socle non négociable ; une implémentation qui en omettrait un (par exemple un push-based CD qui bypasse le pull) n'est pas du GitOps. Séparation des dépôts obligatoire : le repo applicatif (code source + Dockerfile) est distinct du repo de configuration GitOps (manifests Kubernetes, values Helm). Cette séparation évite le couplage entre CI (build + push image) et CD (update tag image + réconciliation). Le flux correct est : CI build → push image vers registry (avec tag immuable, ex. SHA commit) → CI met à jour le tag d'image dans le repo de config GitOps via PR ou commit → l'agent GitOps détecte le changement et réconcilie le cluster. Modèle pull vs push : le modèle pull est supérieur en sécurité (aucun secret CI dans le cluster, aucune API cluster exposée à la CI), en auditabilité (tout déploiement est un commit Git tracé), et en résilience (l'agent réconcilie après une panne réseau sans intervention manuelle). Les études empiriques (IEEE 2022) indiquent une réduction de 50 % des temps de déploiement et de 80 % des incidents de drift de configuration par rapport aux approches push-based. Outils CNCF Graduated : Argo CD (dashboard web, ApplicationSets pour multi-cluster, UI de visualisation des diffs) et Flux (multi-tenancy par scoping de permissions et dépôts par équipe, support natif Kustomize et Helm, modèle push-to-branch). Les deux sont valides et CNCF Graduated ; le choix dépend des besoins : Argo CD est préféré pour les équipes souhaitant une UI centralisée et le multi-cluster, Flux pour les organisations multi-tenants avec équipes autonomes. Promotion d'environnements : le passage staging → production doit être une PR sur le repo de config GitOps, offrant un gate humain explicite avant réconciliation en prod — gate de qualité sans outil externe supplémentaire.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "OpenGitOps — GitOps Principles v1.0.0 (CNCF TAG App Delivery, opengitops.dev, 2021)",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "GitOps is a set of principles for operating and managing software systems. The desired state of a GitOps managed system must be: 1) Declarative — A system managed by GitOps must have its desired state expressed declaratively. 2) Versioned and Immutable — Desired state is stored in a way that enforces immutability, versioning and retains a complete version history. 3) Pulled Automatically — Software agents automatically pull the desired state declarations from the source. 4) Continuously Reconciled — Software agents continuously observe actual system state and attempt to apply the desired state.",
+            "note": "OpenGitOps v1.0.0 (CNCF TAG App Delivery, signataires : Argo CD, Flux, Weaveworks, Codefresh, etc.) — niv.2. Définition normative des 4 principes GitOps, référence canonique universellement citée. Accord A/B."
+          },
+          {
+            "name": "Argo CD — documentation officielle (argo-cd.readthedocs.io, CNCF Graduated project, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes. Application definitions, configurations, and environments should be declarative and version controlled. Application deployment and lifecycle management should be automated, auditable, and easy to understand. Argo CD follows the GitOps pattern of using Git repositories as the source of truth for defining the desired application state.",
+            "note": "Documentation officielle Argo CD (CNCF Graduated project) — niv.2. Implémentation de référence GitOps pull-based pour Kubernetes, l'outil le plus adopté selon CNCF Annual Survey 2023. Accord A/B."
+          },
+          {
+            "name": "Flux — documentation officielle (fluxcd.io, CNCF Graduated project, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Flux is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible. Flux works by detecting changes in Git repositories and automatically reconciling the cluster state to match the desired state defined in Git. Multi-tenancy support: Flux can manage multiple tenants by scoping permissions and repositories per team.",
+            "note": "Documentation officielle Flux (CNCF Graduated project) — niv.2. Deuxième implémentation majeure GitOps, CNCF Graduated. Convergence avec Argo CD sur la réconciliation automatique. Accord A/B."
+          },
+          {
+            "name": "Richardson A. — GitOps: Operations by Pull Request (Weaveworks, weave.works, 2017)",
+            "pyramid": 2,
+            "year": 2017,
+            "quote": "GitOps is a way of implementing Continuous Deployment for cloud native applications. It focuses on a developer-centric experience when operating infrastructure, by using tools developers are already familiar with, including Git and Continuous Deployment tools. The core idea is having a Git repository that always contains declarative descriptions of the infrastructure currently desired in the production environment and an automated process to make the production environment match the described state in the repository.",
+            "note": "Article fondateur de Weaveworks (Alexis Richardson, créateur du terme GitOps) — niv.2 (Weaveworks est organisation fondatrice de Flux). Définit le modèle pull-request-based operations. Accord A/B."
+          },
+          {
+            "name": "GitOps: A Reference Architecture for Cloud-Native Continuous Delivery (IEEE/ResearchGate, 2022)",
+            "pyramid": 3,
+            "year": 2022,
+            "quote": "GitOps provides a declarative model where the entire system state is described in Git, and an operator continuously reconciles the actual state with the desired state. Empirical studies show that GitOps reduces deployment times by 50% and configuration drift incidents by 80% compared to traditional push-based CD approaches.",
+            "note": "Article de recherche IEEE sur l'architecture de référence GitOps — niv.3. Apporte des données empiriques sur les gains de GitOps vs push-based CD. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : OpenGitOps v1.0.0 (CNCF TAG App Delivery, multi-vendor : Argo CD + Flux + Weaveworks + Codefresh), Argo CD docs (CNCF Graduated), Flux docs (CNCF Graduated), Weaveworks (fondateur du terme) — 4 organisations indépendantes convergent sur les mêmes 4 principes (declarative, versioned, pulled, reconciled) sans aucune contradiction ; les principes OpenGitOps sont co-signés par les deux implémentations CNCF Graduated majeures, démontrant un consensus inter-implémentation"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "OpenGitOps v1.0.0 (CNCF TAG App Delivery, 2021) — définition normative des 4 principes, co-signée par Argo CD, Flux, Weaveworks (niv.2, référence canonique)",
+          "Argo CD documentation (CNCF Graduated, 2024) — implémentation de référence pull-based la plus adoptée selon CNCF Annual Survey 2023 (niv.2)",
+          "Flux documentation (CNCF Graduated, 2024) — deuxième implémentation majeure, convergence totale sur réconciliation automatique (niv.2)"
+        ],
+        "etd_balance": {
+          "benefices": "Auditabilité complète : tout changement d'état infrastructure est un commit Git avec auteur, timestamp et message — exploitable pour conformité et post-mortem. Rollback trivial : revenir à un état antérieur = revert Git suivi de réconciliation automatique. Drift detection automatique : l'agent corrige sans intervention humaine les modifications manuelles non voulues (réduction 80 % des incidents drift selon IEEE 2022). Sécurité accrue : modèle pull supprime le besoin d'exposer des credentials cluster dans la CI. Accélération des déploiements : réduction 50 % des temps de déploiement mesurée (IEEE 2022). Cohérence multi-environnements : promotion staging → prod via PR sur le repo de config = gate humain explicite sans outil externe.",
+          "risques": "Complexité initiale : mise en place du repo de config séparé, bootstrap de l'agent (Argo CD / Flux), gestion des secrets dans Git (requiert une solution dédiée : Sealed Secrets, External Secrets Operator, SOPS). Courbe d'apprentissage Kubernetes : GitOps est natif Kubernetes ; applicable à d'autres cibles (VMs, serverless) mais avec support outillage moindre. Prolifération de repos : pour de petits projets, la séparation repo applicatif / repo config peut sembler surdimensionnée. Gestion des secrets : ne jamais committer de secrets en clair dans le repo de config — nécessite une couche de chiffrement ou un vault externe intégré à l'agent.",
+          "balance": "Bénéfices >> Risques pour tout projet avec déploiements fréquents ou exigences d'auditabilité. La complexité initiale est un investissement ponctuel amorti dès les premières semaines d'exploitation ; les risques opérationnels (secrets, prolifération repos) sont adressés par des patterns établis (External Secrets Operator, monorepo de config structuré par environnement). Pour des projets très simples avec déploiements rares, un modèle push-based simple peut être suffisant — GitOps apporte davantage de valeur à partir de 2+ environnements ou 2+ développeurs.",
+          "faisabilite": "Haute pour les environnements Kubernetes — Argo CD et Flux sont CNCF Graduated avec documentation exhaustive, Helm charts de bootstrap, et support par tous les cloud providers (EKS, GKE, AKS). Moyenne pour les environnements non-Kubernetes (VMs, Docker Compose) — des outils comme Ansible + Git ou des pipelines CI/CD déclaratifs peuvent approximer les principes GitOps sans agent dédié. La séparation repo applicatif / repo de config est indépendante de l'outillage et implémentable immédiatement."
+        },
+        "prisma_ref": "verification/prisma/gitops.md",
+        "sensitivity_ref": "verification/extractions/gitops.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

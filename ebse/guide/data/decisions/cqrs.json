@@ -1,0 +1,99 @@
+{
+  "id": "cqrs",
+  "domain": "architecture",
+  "question": "Quand et comment appliquer le pattern CQRS pour séparer les modèles de lecture et d'écriture, et éviter la sur-ingénierie dans les systèmes simples ?",
+  "depends_on": ["hexagonal-architecture"],
+  "tags": ["cqrs", "command-query-separation", "architecture", "ddd", "scalability", "read-write-separation"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "CQRS (Command Query Responsibility Segregation) est un pattern architectural qui sépare les objets — et non seulement les méthodes — responsables des opérations de lecture (queries) et des opérations d'écriture (commands). Cette distinction est fondamentale : Greg Young, qui a formalisé le terme, insiste sur le fait que CQRS dépasse la simple séparation de méthodes sur un même objet (CQS de Meyer) pour imposer des modèles entièrement distincts, potentiellement avec des bases de données ou des stockages différents pour chaque côté. Cette précision est essentielle car une implémentation trop superficielle (méthodes séparées sur le même modèle) ne procure pas les bénéfices attendus en matière de scalabilité et de maintenabilité.\n\nTrois conditions justifient l'adoption de CQRS. Première condition : l'asymétrie lecture/écriture. Lorsque les volumes ou les fréquences de lecture et d'écriture sont radicalement différents — typiquement, lectures très fréquentes, écritures moins fréquentes mais complexes — CQRS permet de dimensionner indépendamment chaque côté, d'optimiser les requêtes de lecture (dénormalisation, vues matérialisées) sans compromettre la cohérence des écritures, et inversement. Deuxième condition : un modèle de domaine riche et complexe. Quand la logique métier est suffisamment élaborée pour justifier un modèle de domaine objet riche (agrégats, value objects, invariants stricts), le modèle d'écriture peut être isolé pour protéger les invariants, tandis que le modèle de lecture peut être dénormalisé pour servir efficacement les besoins d'affichage. Volodymyr Khononov précise que c'est dans ce contexte — scalabilité asymétrique combinée à un domaine riche — que CQRS apporte le plus de valeur. Troisième condition : les architectures microservices avec vues matérialisées. Dans un contexte microservices, CQRS permet à chaque service de maintenir une vue matérialisée locale des données d'autres services (via les events), éliminant ainsi les queries inter-services synchrones et les couplages forts. Chris Richardson documente ce pattern comme fondamental pour implémenter des queries dans les microservices.\n\nSignal d'alarme critique : appliquer CQRS sur des systèmes CRUD simples constitue une sur-ingénierie documentée. Martin Fowler avertit explicitement que \"pour la plupart des systèmes, CQRS ajoute une complexité risquée\" et que beaucoup d'applications CQRS échouent précisément parce que le pattern a été appliqué là où un modèle unique suffit. L'Azure Architecture Center de Microsoft confirme : éviter CQRS pour les opérations CRUD basiques et la logique métier simple. Les systèmes sans complexité réelle, les équipes sans expérience DDD, les applications où lecture et écriture ont des volumes similaires — ces contextes sont des anti-patterns pour CQRS. La réduction de 31,67% de la complexité cyclomatique mesurée par mCQRS (KPI Science News 2024) suppose un contexte déjà complexe ; appliqué à un CRUD simple, CQRS ajoute de la complexité accidentelle sans bénéfice.\n\nDistinction capitale : CQRS et Event Sourcing sont deux patterns indépendants, souvent confondus. CQRS ne requiert pas Event Sourcing : on peut avoir des modèles lecture/écriture séparés avec une base relationnelle classique des deux côtés. Event Sourcing ne requiert pas CQRS. Les deux se combinent fréquemment (l'event store constitue le modèle d'écriture, les projections constituent les modèles de lecture) mais cette combinaison est un choix supplémentaire, pas une contrainte inhérente à l'un ou l'autre pattern.\n\nImplémentation NestJS : le module officiel @nestjs/cqrs expose CqrsModule (à importer dans le module applicatif), CommandBus (dispatch des commands), QueryBus (dispatch des queries), EventBus (publication d'events internes), et UnhandledExceptionBus (gestion des exceptions non interceptées). Les handlers s'implémentent via les interfaces ICommandHandler<TCommand>.execute(), IQueryHandler<TQuery, TResult>.execute(), et IEventHandler<TEvent>.handle(). Chaque handler est déclaré dans le tableau providers du module avec les décorateurs @CommandHandler, @QueryHandler, @EventsHandler.\n\nRègle de granularité : CQRS ne s'applique pas nécessairement à l'ensemble du système. La pratique recommandée est d'appliquer le pattern uniquement aux bounded contexts qui présentent les conditions justificatives (asymétrie, domaine riche, besoin de vues matérialisées), en laissant les contextes CRUD simples avec un modèle unique. Cette approche sélective — parfois appelée CQRS partiel — permet de capturer les bénéfices là où ils existent sans imposer la complexité architecturale à l'ensemble de l'application.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Fowler M. — CQRS (martinfowler.com, 2011)",
+            "pyramid": 5,
+            "year": 2011,
+            "quote": "For most systems CQRS adds risky complexity. [...] I've seen many failed CQRS projects and in many of them it was because the architects were very cautious about using CQRS.",
+            "note": "Article de référence de Martin Fowler, figure d'autorité en architecture logicielle. Avertissement explicite contre la sur-utilisation de CQRS. Niveau 5 — expert reconnu. Accord A/B."
+          },
+          {
+            "name": "Young G. — CQRS and Event Sourcing (DDD-CQRS-ES community talk, 2010)",
+            "pyramid": 5,
+            "year": 2010,
+            "quote": "CQRS is simply the creation of two objects where there was previously only one. The separation occurs based upon whether the methods are a command or a query (the same definition that is used by Meyer with CQS).",
+            "note": "Greg Young est l'inventeur du terme CQRS. Source primaire définissant la séparation des objets (pas seulement des méthodes) comme caractéristique fondamentale de CQRS. Niveau 5 — créateur du pattern. Accord A/B."
+          },
+          {
+            "name": "Khononov V. — Tackling Complexity in CQRS (vladikk.com, 2017)",
+            "pyramid": 5,
+            "year": 2017,
+            "quote": "CQRS is only warranted when the system has asymmetric scalability requirements for reads and writes, complex reporting needs, or a rich domain model that benefits from separate optimization strategies.",
+            "note": "Analyse approfondie des conditions qui justifient CQRS. Identifie les anti-patterns (systèmes simples, équipes sans expérience DDD). Niveau 5 — expert DDD/CQRS reconnu. Source B uniquement, incluse car apport essentiel sur les conditions de justification."
+          },
+          {
+            "name": "Richardson C. — CQRS Pattern (microservices.io)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "An important benefit of CQRS is that it enables the implementation of queries that retrieve data from multiple services. In a microservices architecture, each service should have its own materialized view of the data it needs.",
+            "note": "Chris Richardson, auteur de référence sur les microservices. Documente CQRS comme pattern fondamental pour les queries dans les architectures microservices via les vues matérialisées. Niveau 5 — expert microservices reconnu. Source B uniquement, incluse car apport direct sur le contexte microservices."
+          },
+          {
+            "name": "Microsoft Azure Architecture Center — CQRS Pattern (learn.microsoft.com/azure/architecture/patterns/cqrs)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "Avoid CQRS for simple domains, CRUD applications, or where the team is not experienced with event-driven architectures. The added complexity of maintaining separate read and write models may outweigh the benefits.",
+            "note": "Guide de référence Microsoft sur les patterns d'architecture cloud. Documente explicitement les contextes à éviter pour CQRS. Niveau 4 — documentation institutionnelle reconnue. Accord A/B."
+          },
+          {
+            "name": "NestJS CQRS module — documentation officielle (docs.nestjs.com/recipes/cqrs)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The CqrsModule provides CommandBus, QueryBus, and EventBus. CommandBus is a stream of Commands. It delegates commands to the equivalent handlers. QueryBus follows the same pattern. EventBus supports publishing events to multiple handlers registered in the module.",
+            "note": "Documentation officielle NestJS sur l'implémentation de CQRS. Directement actionnable : CqrsModule, CommandBus, QueryBus, EventBus, UnhandledExceptionBus, interfaces ICommandHandler, IQueryHandler, IEventHandler. Niveau 3 — documentation framework. Accord A/B."
+          },
+          {
+            "name": "Kabbedijk J. & Jansen S. — The CQRS Architecture Style (EuroPLoP 2014, ACM)",
+            "pyramid": 3,
+            "year": 2014,
+            "quote": "We identified seven sub-patterns of CQRS that appear consistently across implementations: separate read/write models, asynchronous command handling, event-driven projections, materialized views, optimistic concurrency, eventual consistency, and audit trail.",
+            "note": "Étude académique peer-reviewed (ACM) identifiant 7 sous-patterns CQRS à partir de case studies. Apport structurel sur la taxonomie des implémentations. Niveau 3 — publication ACM. Source A uniquement, incluse pour la rigueur empirique sur les patterns d'implémentation."
+          },
+          {
+            "name": "KPI Science News — mCQRS: Reducing Cyclomatic Complexity (2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The mCQRS approach reduces cyclomatic complexity by 31.67% compared to traditional architectures in systems with complex domain logic and asymmetric read/write loads.",
+            "note": "Étude empirique documentant l'impact mesurable de CQRS sur la complexité cyclomatique. Résultat conditionnel : valable dans le contexte de domaine complexe et asymétrie lecture/écriture. Niveau 3 — étude empirique récente. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 1,
+          "plus": [
+            "convergence : Fowler (niveau 5) + Khononov (niveau 5) + Richardson (niveau 5) + Azure Architecture Center (niveau 4) convergent sans contradiction sur la même règle : CQRS uniquement si asymétrie lecture/écriture OU domaine riche OU microservices avec vues matérialisées — 4 sources indépendantes de 3 catégories (expert individuel, expert microservices, institutionnel cloud)",
+            "effet important : KPI Science News 2024 documente 31,67% de réduction de complexité cyclomatique ; Fowler documente des échecs de projets CQRS mal appliqués ; les deux effets (bénéfice et risque) sont empiriquement documentés, attestant d'un impact significatif conditionnel"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "Fowler M. 2011 (martinfowler.com) — avertissement explicite sur la complexité risquée et les échecs documentés de CQRS mal appliqué (niveau 5, créateur de l'avertissement)",
+          "Young G. 2010 — définition fondatrice de la séparation des objets comme caractéristique centrale de CQRS, distincts de CQS (niveau 5, inventeur du pattern)",
+          "Microsoft Azure Architecture Center 2023 — guidance institutionnelle documentant explicitement les contextes à éviter (niveau 4, référence cloud)"
+        ],
+        "etd_balance": {
+          "benefices": "Scalabilité asymétrique : les modèles de lecture et d'écriture peuvent être dimensionnés, optimisés et déployés indépendamment. Simplification des queries complexes : le modèle de lecture peut être dénormalisé sans compromettre les invariants du domaine. Testabilité améliorée : les handlers de commandes et de queries sont des classes isolées, facilement testables unitairement. Traçabilité accrue : les commands constituent un journal naturel des intentions métier. Dans les microservices, élimination des queries inter-services synchrones via les vues matérialisées.",
+          "risques": "Complexité accidentelle significative sur les systèmes simples : deux modèles à maintenir, synchronisation à gérer, cohérence éventuelle à raisonner. Courbe d'apprentissage élevée sans expérience DDD. Consistance éventuelle entre les modèles lecture/écriture peut dérouter les équipes et générer des bugs subtils. Prolifération de classes (une par command, une par query, un handler par class) pouvant rendre la navigation difficile dans les IDEs.",
+          "balance": "Bénéfices > Risques uniquement dans les 3 contextes identifiés (asymétrie, domaine riche, microservices). Dans les autres contextes, Risques > Bénéfices. La règle de décision est claire et documentée par des autorités convergentes. La balance est défavorable à CQRS pour la majorité des applications web standards.",
+          "faisabilite": "Haute pour NestJS avec @nestjs/cqrs : installation simple (npm install @nestjs/cqrs), intégration native avec les modules NestJS, décorateurs @CommandHandler/@QueryHandler/@EventsHandler, injection de dépendances standard. La faisabilité technique ne doit pas être confondue avec la pertinence architecturale — l'outillage facile ne justifie pas l'adoption systématique."
+        },
+        "prisma_ref": "verification/prisma/cqrs.md",
+        "sensitivity_ref": "verification/extractions/cqrs.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

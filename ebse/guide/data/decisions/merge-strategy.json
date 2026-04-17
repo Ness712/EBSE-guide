@@ -1,0 +1,77 @@
+{
+  "id": "merge-strategy",
+  "domain": "project",
+  "question": "Comment choisir entre squash merge, rebase et merge commit pour maintenir un historique git lisible et coherent ?",
+  "depends_on": ["branching"],
+  "tags": ["git", "merge", "squash", "rebase", "history", "conventional-commits", "git-bisect", "workflow", "ci-cd"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Regle de choix par contexte : (1) Squash merge pour les PRs de feature vers main/staging — consolide tous les commits de la branche en un seul commit logique portant la convention 'type(scope): description'. Chaque feature = un commit atomique dans l'historique principal. (2) Rebase pour la synchronisation locale — garder la branche de feature a jour avec main sans introduire de merge commits parasites ('Merge branch main into feature/xxx'). Le rebase reecrit l'historique local en rejouant les commits par-dessus la nouvelle base ; ne jamais rebase une branche partagee. (3) Merge commit uniquement pour les integrations necessitant une traçabilite explicite de la branche (ex : merge de staging vers main avec tag de release) — c'est le cas rare, pas le cas par defaut. Convention Commits comme fondation : le commit squashe DOIT respecter la specification Conventional Commits v1.0.0 avec le format 'type(scope): description'. Le type (feat/fix/refactor/docs/test/chore) mappe directement sur les regles SemVer — feat produit un minor bump, fix un patch bump, BREAKING CHANGE un major bump. Cette convention active l'automatisation : generation de CHANGELOG, bump de version semantique, publication de release sans intervention manuelle. Historique lineaire et git bisect : un historique lineaire (squash + rebase) reduit le graph git a une serie de commits atomiques, chacun representant une feature ou un fix valide. Cette structure rend git bisect operationnel en O(log n) : pour 100 commits entre un etat 'bon' et un etat 'mauvais', environ 7 tests suffisent a isoler le commit fautif (2^7 ≈ 128). Condition : chaque commit DOIT passer l'integralite des tests — un commit qui casse les tests invalide la recherche binaire. Regle absolue : NE JAMAIS force-push sur les branches partagees (main, staging). Le force-push reecrit l'historique public, detruit les refs des autres contributeurs et rend git bisect inoperant sur la periode reecrite. Sur les branches de feature avant ouverture de PR : le force-push apres rebase local est acceptable. Configuration GitHub recommandee : activer 'Squash and merge' et 'Rebase and merge' dans les settings du depot ; desactiver 'Create a merge commit' pour les PRs vers main et staging. Cette configuration enforce la strategie au niveau du depot et empeche les merges qui polluent l'historique. Le message du squash merge doit etre edite manuellement pour respecter Conventional Commits — GitHub pre-remplit avec la liste des commits de la branche, il faut remplacer ce texte par un message conforme.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "GitHub Docs — About pull request merges (docs.github.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "When you select the Squash and merge option on a pull request, the pull request's commits are squashed into a single commit. Instead of seeing all of a contributor's individual commits from a topic branch, the commits are combined into one commit and merged into the default branch. [...] When you merge with a rebase, commits from the topic branch are added to the base branch without a merge commit.",
+            "note": "Documentation officielle GitHub sur les 3 strategies de merge disponibles — niv.3. Source de reference praticienne directement actionnable. Accord A/B."
+          },
+          {
+            "name": "Atlassian — Trunk-based Development (atlassian.com/continuous-delivery, 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "High-performing, trunk-based development teams should close out and merge any open and merge-ready branches at least on a daily basis. By implementing smaller changes, you limit the blast radius of any changes that cause a problem in production.",
+            "note": "Documentation Atlassian sur TBD et frequence de merge — niv.4. Etablit le lien entre strategie de merge et performances d'equipe. Accord A/B."
+          },
+          {
+            "name": "Conventional Commits — Conventional Commits v1.0.0 (conventionalcommits.org, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "A specification for adding human and machine readable meaning to commit messages. This convention dovetails with SemVer, by describing the features, fixes, and breaking changes made in commit messages. Conventional Commits enables: automatically generating CHANGELOGs, automatically determining a semantic version bump based on the types of commits landed, communicating the nature of changes to teammates and stakeholders.",
+            "note": "Specification ouverte adoptee par des centaines de projets open-source — niv.3. Fondation de la convention de commit structure (type/scope/description). Accord A/B."
+          },
+          {
+            "name": "SEI CMU Blog — Versioning with Git Tags and Conventional Commits (sei.cmu.edu, 2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "Commit types (feat/fix/major) map to SemVer rules, so release tooling can bump versions automatically, with fix producing a patch release, feat a minor release, and any BREAKING CHANGE a major bump.",
+            "note": "Blog du Software Engineering Institute (Carnegie Mellon) — niv.4. Articule la relation entre strategie de commit et automatisation des releases. Accord A/B."
+          },
+          {
+            "name": "Bits'n'Bites + technical articles — A tidy, linear Git history / git bisect (2022-2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "Having a clean and healthy branch is non-optional if features like git bisect should be used. Keeping all commits green is considered a best practice. Using git bisect is even more effective if your commit increments are small and tested. In a codebase where each commit passes a test suite, it's easier to pinpoint which commit introduced a failing test. If there were 100 commits between the good and bad points, you might only need to test ~7 commits to find the culprit (because 2^7 ≈ 128).",
+            "note": "Articles techniques d'ingenieurs experimentes avec argumentation outillee (git bisect O(log n)) — niv.4. Justification empirique du rebase/squash pour la deboguabilite. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : GitHub Docs (niv.3), Conventional Commits (niv.3, communaute ouverte), SEI CMU Blog (niv.4), Atlassian (niv.4), articles techniques (niv.4) convergent sans contradiction sur le meme principe : historique lineaire + commits structures = prerequis pour l'automatisation et la deboguabilite — 4 organisations independantes, 2 categories (documentation officielle + blog institutionnel)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "GitHub Docs 2024 — definit operationnellement les 3 modes de merge et leurs effets sur l'historique (niv.3, source praticienne de reference)",
+          "Conventional Commits v1.0.0 — specification fondatrice du format type(scope): description, prerequis pour l'automatisation SemVer/CHANGELOG (niv.3)",
+          "Articles techniques git bisect — justification empirique chiffree de la valeur d'un historique lineaire (O(log n), niv.4)"
+        ],
+        "etd_balance": {
+          "benefices": "Historique principal lisible : chaque commit correspond a une feature ou un fix, pas a un brouillon de travail. Automatisation activee : Conventional Commits + squash = CHANGELOG generables, releases automatiques, semver sans intervention manuelle. Debogage efficace : git bisect operationnel sur toute la base de commits si chaque commit est vert. Revue facilitee : le PR contient les commits de travail ; le commit fusionne dans main est le commit 'officiel' propre. Coherence enforced par la configuration GitHub qui empeche les modes non autorises.",
+          "risques": "Perte de granularite sur les branches de feature apres squash — les commits intermediaires de la branche disparaissent de l'historique principal (mitigation : ils restent dans l'historique de la branche PR jusqu'a sa suppression). Message de squash mal redige si l'auteur laisse le texte par defaut de GitHub (mitigation : convention documentee + lint commitlint en CI). Rebase local mal execute sur une branche partagee (mitigation : regle absolue force-push interdit sur main/staging + protection de branche GitHub).",
+          "balance": "Benefices >> Risques. Les risques sont operationnels (discipline d'equipe) et non structurels. La configuration GitHub enforce mecaniquement la strategie ; le risque de perte d'historique est acceptable car les branches PR conservent les commits de travail pendant la duree de vie de la PR.",
+          "faisabilite": "Haute — configuration GitHub : Settings > General > Pull Requests, decocher 'Allow merge commits', cocher 'Allow squash merging' et 'Allow rebase merging'. Lint commits : commitlint avec @commitlint/config-conventional. Automatisation release : release-please (Google) ou semantic-release consomment les commits Conventional Commits directement depuis main."
+        },
+        "prisma_ref": "verification/prisma/merge-strategy.md",
+        "sensitivity_ref": "verification/extractions/merge-strategy.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

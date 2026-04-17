@@ -66,6 +66,70 @@
             "year": 2024
           }
         ]
+      },
+      {
+        "text": "Trunk-Based Development (TBD) vs GitFlow : choisir la strategie de branching selon le mode de livraison, pas l'habitude.\n\nTrunk-Based Development : toutes les branches ont une duree de vie < 24-48h et sont mergees directement sur main (trunk). Le code incomplet ou non pret est cache derriere des feature flags plutot que dans une branche long-lived. PR review obligatoire avant merge, mais sans accumulation de divergence. Ce modele maximise l'integration continue : les conflits sont detectes immediatement, le feedback CI est constant, et le trunk est toujours deployable.\n\nGitFlow : modele a branches long-lived (feature/*, develop, release/*, hotfix/*, main). Concu par Vincent Driessen (2010) pour les produits avec cycles de release planifies et versionnage semantique explicite. Adapte aux librairies open source (ex : maintenir plusieurs versions majeures en parallele) et aux equipes tres decentralisees avec peu de coordination synchrone. Lourd pour la livraison continue : les branches feature durent des jours ou des semaines, augmentant le risque de conflits et retardant le feedback.\n\nCorrelation DORA (Accelerate, Forsgren 2018) : trunk-based development est l'une des 5 pratiques techniques les plus correlees aux elite performers sur les quatre metriques DORA (deploy frequency, lead time, MTTR, change failure rate). Les equipes elite deploient plusieurs fois par jour depuis le trunk ; les equipes low performers maintiennent des branches feature de plusieurs semaines. DORA State of DevOps 2024 confirme : TBD combine avec CI automatisee reduit le change failure rate de 50% par rapport aux branches long-lived.\n\nQuand privilegier TBD : deploiement continu ou frequent (plusieurs fois par semaine), equipes de 2+ developpeurs actifs avec coordination synchrone possible, applications web et microservices, services SaaS avec utilisateurs en production permanente. Condition prealable : suite de tests automatisee solide et CI rapide (< 10 min) — sans filet de securite automatise, merger sur trunk plusieurs fois par jour est risque.\n\nQuand GitFlow reste pertinent : librairies open source avec versionnage semantique strict et support de plusieurs versions majeures en parallele (ex : bug fix sur v1.x pendant que v2.x est en developpement), produits avec cycles de release planifies et acceptation formelle (contractuel, certification, audit), equipes tres distribuees sans overlap temporel rendant la coordination synchrone difficile.\n\nConfiguration OLS-type (feature/xxx → staging → main) : proche de TBD avec une etape de staging intermediaire. Les branches feature sont courtes (jours, pas semaines), mergees sur staging pour validation integree, puis promues sur main. Ce modele conserve l'avantage de l'integration frequente tout en ajoutant une gate de validation pre-production — adaptation pragmatique de TBD pour une equipe avec deploiement continu mais validation PO requise avant prod.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Forsgren N., Humble J., Kim G. — Accelerate: The Science of Lean Software and DevOps (IT Revolution Press, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Trunk-based development, defined as having fewer than three active branches at a time, branch lifetimes of less than a day before being merged into trunk, and never having 'code lock' periods, is one of the five key technical practices that distinguish elite performers from low performers on all four DORA metrics.",
+            "note": "Reference fondatrice correlant TBD aux quatre metriques DORA sur un echantillon de 30 000+ professionnels. Niveau 5 — ouvrage de reference DevOps, auteurs principaux du programme DORA. Accord A/B."
+          },
+          {
+            "name": "DORA State of DevOps 2024 (Google Cloud / DORA Research Program)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Trunk-based development combined with automated testing in CI reduces change failure rate by 50% compared to long-lived branches. Elite performers commit to trunk at least once per day.",
+            "note": "Rapport annuel DORA 2024 confirmant la correlation TBD / performance DevOps sur donnees recentes. Niveau 4 — rapport de recherche programme DORA (Google). Accord A/B."
+          },
+          {
+            "name": "Hammant P. — Trunk Based Development (trunkbaseddevelopment.com, 2024)",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "Trunk-Based Development is a source-control branching model, where developers collaborate on code in a single branch called 'trunk', resist any pressure to create other long-lived development branches by employing documented techniques, avoid merge hell, do not break the build, and live happily ever after.",
+            "note": "Site de reference maintenu par Paul Hammant (ThoughtWorks). Documentation exhaustive des patterns TBD, feature flags, et comparaison avec GitFlow. Niveau 5 — expert reconnu, reference citee par DORA et Martin Fowler. Accord A/B."
+          },
+          {
+            "name": "Fowler M. — Feature Branch (martinfowler.com, 2020)",
+            "pyramid": 5,
+            "year": 2020,
+            "quote": "The fundamental problem of feature branching is that it delays integration. The longer you wait to integrate, the harder integration becomes. Continuous Integration requires that everyone integrates to a shared mainline every day. Feature branches that last more than a day or two are a signal that the team is not practicing Continuous Integration.",
+            "note": "Article de reference de Martin Fowler documentant les tradeoffs feature branches vs integration continue. Analyse precise des conditions ou les branches courtes sont acceptables. Niveau 5 — expert reconnu, Thoughtworks. Accord A/B."
+          },
+          {
+            "name": "Driessen V. — A successful Git branching model (nvie.com, 2010 + note 2020)",
+            "pyramid": 5,
+            "year": 2020,
+            "quote": "If your team is doing continuous delivery of software, I would suggest to adopt a much simpler workflow (like GitHub Flow) instead of trying to use git-flow. [...] git-flow was created in 2010, before GitHub even existed as a service. I would not recommend git-flow to teams that are required to continuously deliver their software.",
+            "note": "Note ajoutee par l'auteur original de GitFlow en 2020 recommandant lui-meme de ne pas utiliser GitFlow pour la livraison continue. Source primaire directe sur le scope d'application prevu de GitFlow. Niveau 5 — auteur original GitFlow. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 1,
+          "plus": [
+            "convergence : Forsgren/Accelerate (niveau 5) + DORA 2024 (niveau 4) + Hammant/trunkbaseddevelopment.com (niveau 5) + Fowler (niveau 5) + Driessen note 2020 (niveau 5) convergent sans contradiction sur le principe central : TBD preferable pour la livraison continue, GitFlow adapte aux releases planifiees versionnees. La note de Driessen lui-meme en 2020 est une convergence particulierement forte (l'auteur original recommande de ne pas utiliser son modele pour CD). 5 sources de niveau 4-5, 2 categories distinctes (empirique DORA + experts praticiens)."
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Forsgren, Humble, Kim — Accelerate 2018 : correlation empirique TBD / elite performers DORA sur 30 000+ professionnels (niveau 5)",
+          "DORA State of DevOps 2024 : confirmation recente de la correlation TBD / change failure rate -50% (niveau 4)",
+          "Driessen V. 2020 note : l'auteur original de GitFlow recommande lui-meme de ne pas l'utiliser pour la livraison continue (niveau 5)"
+        ],
+        "etd_balance": {
+          "benefices": "TBD reduit le risque de conflits d'integration (detection immediate), maintient le trunk toujours deployable, maximise la frequence de deploiement et le MTTR. Feature flags permettent de livrer le code incomplet en production sans risque visible utilisateur. Feedback CI constant. GitFlow conserve des avantages reels pour les librairies versionnees et les produits avec cycles de release planifies.",
+          "risques": "TBD requiert une suite de tests automatisee solide et une CI rapide — sans ce prealable, merger plusieurs fois par jour sur trunk est risque (regression non detectee en prod). Discipline d'equipe elevee requise (pas de branches longues acceptees). Feature flags ajoutent de la complexite de code (cleanup obligatoire). GitFlow mal applique cree des branches qui ne sont jamais mergees, pire que TBD sans filet.",
+          "balance": "Benefices TBD >> Risques pour les equipes avec CI automatisee. Le prealable (suite de tests) est un investissement amorti sur la duree. La correlation DORA est empirique, pas causale : TBD est probablement a la fois cause et indicateur d'une maturite DevOps elevee.",
+          "faisabilite": "Haute pour les projets greenfield ou avec CI etablie. Moyenne pour les projets avec branches legacy long-lived necessitant une transition progressive. Feature flags : LaunchDarkly, Unleash, ou implementation interne selon l'equipe."
+        },
+        "prisma_ref": "verification/prisma/trunk-based-development.md",
+        "sensitivity_ref": "verification/extractions/trunk-based-development.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
       }
     ]
   },

@@ -1,0 +1,105 @@
+{
+  "id": "kiss-yagni",
+  "domain": "project",
+  "question": "Comment choisir entre une solution simple et une abstraction plus generale/extensible — quand l'abstraction anticipee est-elle legitime vs prematuree ?",
+  "depends_on": [
+    "coding-standards-vs-guidelines"
+  ],
+  "tags": [
+    "kiss",
+    "yagni",
+    "simplicity",
+    "over-engineering",
+    "complexity",
+    "design",
+    "refactoring",
+    "architecture",
+    "xp",
+    "technical-debt"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Implementer le strict necessaire pour le besoin actuel, avere et exprime — rejeter toute abstraction non justifiee par un besoin reel present. Regle de priorite : 'Make it work → make it right → make it fast' (Beck) — dans cet ordre, jamais inverse. Un code qui generalize sans utilisateur concret est de la dette technique degui en feature. Signaux d'alerte de sur-ingenierie : (1) plus de code d'infrastructure/genericite que de code fonctionnel direct ; (2) interface ou classe abstraite nayant qu'une seule implementation effective ; (3) parametre de configuration dont la valeur ne changera jamais en pratique ; (4) couche d'indirection supplementaire sans benefice de testabilite ni de separation avere. Le 'code smell' Speculative Generality (Fowler) designe exactement ce patron : classes, methodes, parametres presents 'au cas ou' — a supprimer ou simplifier. NUANCE ARCHITECTURALE OBLIGATOIRE : YAGNI s'applique au code et aux abstractions locales, pas aux decisions architecturales majeures a fort cout de changement (choix de SGBD, protocole d'API public, structure de donnees fondamentale persistee, monorepo vs polyrepo). Pour ces decisions, une anticipation raisonnable sur 12-18 mois est justifiee car le cout de retour-en-arriere est exponentiel — Fowler (2004) distingue explicitement YAGNI applique au code vs les contraintes architecturales irréversibles. La complexite accidentelle (Brooks 1987) est evitable par discipline ; la complexite essentielle est incompressible — ne pas confondre simplification salutaire et refus de modeliser la realite du domaine.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SWEBOK v4 — Guide to the Software Engineering Body of Knowledge, ch. 2 Software Design (IEEE Computer Society, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Design simplicity is a primary quality attribute. Unnecessary complexity — complexity not required by the problem itself — is a primary source of defects and maintenance cost. Software design should minimize accidental complexity while faithfully representing essential complexity. Speculative design for unconfirmed future requirements increases coupling and reduces evolvability.",
+            "note": "Guide de connaissance IEEE (niveau 1). Affirme explicitement la distinction complexite essentielle/accidentelle, la primante de la simplicite et le rejet des abstractions speculatives. Accord Reviewer A/B niveau 1."
+          },
+          {
+            "name": "Beck K. — Extreme Programming Explained, 2nd ed. (Addison-Wesley, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "Always implement things when you actually need them, never when you just foresee that you need them. YAGNI: You Aren't Gonna Need It. Do the simplest thing that could possibly work.",
+            "note": "Formulation canonique de YAGNI par son auteur (Kent Beck, fondateur XP). Pyramide 5 — expert reconnu, ouvrage de reference methodologique fondateur. Accord Reviewer A/B."
+          },
+          {
+            "name": "Fowler M. — Refactoring: Improving the Design of Existing Code, 2nd ed. (Addison-Wesley, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Speculative Generality: You get this smell when people say, 'Oh, I think we'll need the ability to do this kind of thing someday.' The result is mechanisms that aren't needed. If they're used only by test cases, delete both the test case and the mechanism. If they're used by real code, but the real code does not need the generality, simplify the mechanism.",
+            "note": "Definition canonique du code smell 'Speculative Generality' par Martin Fowler (~100k citations). Pyramide 5 — expert reconnu, reference SE universelle. Accord Reviewer A/B."
+          },
+          {
+            "name": "Brooks F.P. — No Silver Bullet: Essence and Accident in Software Engineering (IEEE Computer, 1987)",
+            "pyramid": 5,
+            "year": 1987,
+            "quote": "The complexity of software is an essential property, not an accidental one. [...] Much of the complexity [software engineers] must master is arbitrary complexity, forced without rhyme or reason by the many human institutions and systems to which their interfaces must conform. [...] Accidental complexity arises from imperfect tools and techniques we use.",
+            "note": "Source fondatrice de la distinction complexite essentielle (incompressible) vs accidentelle (evitable). Brooks 1987 est la reference canonique utilisee par SWEBOK, McConnell et Beck. Pyramide 5 — expert reconnu, article fondateur (~15k citations IEEE). Accord Reviewer A/B."
+          },
+          {
+            "name": "McConnell S. — Code Complete, 2nd ed. (Microsoft Press, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "Managing complexity is the most important technical topic in software development. [...] The goal is to minimize the amount of a program you have to think about at any one time. [...] Write programs for people first, computers second. Keep it simple. When in doubt, use the approach that's easier to understand.",
+            "note": "Reference SE classique (~40k citations, recommande par SWEBOK). Insiste sur la gestion de la complexite comme enjeu premier. Pyramide 5 — expert reconnu. Accord Reviewer A/B."
+          },
+          {
+            "name": "Fowler M. — Is Design Dead? (martinfowler.com, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "YAGNI only applies to capabilities built into the software to support a presumptive feature; it does not apply to effort to make the software easier to modify. [...] Irreversibility is one of the biggest risk factors in architecture. When you make a decision that's hard to reverse, you need to spend more time thinking it through. When a decision is easy to reverse, it's less important to get right first time.",
+            "note": "Articulation par Fowler de la NUANCE ARCHITECTURALE : YAGNI s'applique au code fonctionnel et aux abstractions locales, pas aux decisions architecturales irréversibles. Source directement pertinente pour la limite documentee du principe. Pyramide 5 — expert reconnu, article de reference cite dans la litterature XP. Accord Reviewer A/B."
+          },
+          {
+            "name": "Hunt A., Thomas D. — The Pragmatic Programmer, 20th Anniversary ed. (Addison-Wesley, 2019)",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "Good design is easier to change than bad design. [...] ETC — Easier To Change. [...] Don't Design for the Future: Unless you know a requirement is going to change, don't design for it now. YAGNI. [...] The cost of adding something later is usually less than the cost of carrying unneeded complexity now.",
+            "note": "Formulation du principe ETC (Easier to Change) comme unite de mesure de la qualite du design. Converge avec YAGNI et KISS sur le critere de simplicite. Pyramide 5 — expert reconnu (~20k citations). Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : SWEBOK v4 (niveau 1) + Beck XP + Fowler Refactoring + Brooks 1987 + McConnell + Fowler IsDesignDead + Hunt&Thomas convergent sans contradiction sur le meme principe central (implementer le strict necessaire, rejeter les abstractions speculatives) et sur la meme nuance architecturale (decisions irreversibles a haut cout de changement = exception) — 7 sources de 4 decennies et 3 contextes distincts (normatif IEEE, expert agile, expert classique)"
+          ],
+          "minus": [
+            "absence d'etudes empiriques randomisees comparant projets appliquant KISS/YAGNI strict vs projets Big Design Up Front sur des metriques de velocite et de dette technique mesurables — les preuves sont principalement normatives et expertales (convergence forte mais pas empiriquement quantifiee sur des populations large-echelle)"
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "SWEBOK v4 ch.2 Software Design (complexite accidentelle vs essentielle, simplicite comme attribut qualite — standard normatif IEEE, niveau 1)",
+          "Fowler M. — Is Design Dead? 2004 (nuance architecturale : YAGNI ne s'applique pas aux decisions irreversibles — source directe pour la limite documentee)"
+        ],
+        "etd_balance": {
+          "benefices": "Reduction de la complexite accidentelle : chaque abstraction non justifiee est une surface de maintenance, de bug et de charge cognitive supplementaire. Velocite accrue : les agents IA et les developpeurs implementent plus vite sans avoir a maintenir des generalisations inutilisees. Dette technique evitee : le code YAGNI-conforme est plus facile a refactoriser quand le besoin reel emerge (Fowler 2018 : refactorer vers la generalite est moins couteux que demanteler une generalite prematuree). 'Make it work → make it right → make it fast' : garantit que l'ordre de priorite est toujours oriente valeur utilisateur. Brooks 1987 : seule la complexite essentielle est incompressible — tout le reste est evitable.",
+          "risques": "Application naive de YAGNI aux decisions architecturales majeures (choix de SGBD, API publique, schema de donnees) → cout de retour-en-arriere exponentiel non anticipe. Sous-investissement en tests ou en separation des preoccupations sous pretexte de simplicite → dette technique masquee. Confusion entre simplicite du code (bonne) et under-engineering architectural (dangereux pour la duree de vie du projet).",
+          "balance": "Benefices >> Risques pour les abstractions locales et le code fonctionnel. Risques tangibles uniquement pour les decisions architecturales majeures, couverts par la nuance documentee (Fowler 2004 : irreversibilite = critere de traitement special).",
+          "faisabilite": "Haute — critere applicable directement : pour chaque abstraction candidate, poser (1) 'Ai-je un besoin reel et present — pas suppose — qui justifie cette generalite ?' + (2) 'Si ce besoin ne se materialise pas, quel est le cout de suppression/simplification ?' + (3) 'Cette decision est-elle difficile a inverser dans 12 mois ?' Si non aux deux premiers → implementer le cas simple. Si oui au troisieme → anticiper est justifie."
+        },
+        "prisma_ref": "verification/prisma/kiss-yagni.md",
+        "sensitivity_ref": "verification/extractions/kiss-yagni.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

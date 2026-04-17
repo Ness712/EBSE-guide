@@ -1,0 +1,98 @@
+{
+  "id": "feature-flags-lifecycle",
+  "domain": "maintainability",
+  "question": "Comment gérer le cycle de vie des feature flags (types, TTL, cleanup) pour éviter la dette technique et les incidents de type Knight Capital ?",
+  "depends_on": [
+    "ci-pipeline",
+    "branching"
+  ],
+  "tags": [
+    "feature-flags",
+    "feature-toggles",
+    "lifecycle",
+    "technical-debt",
+    "progressive-rollout",
+    "canary",
+    "openfeature",
+    "nestjs"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Quatre types de flags avec durée de vie distincte (Fowler/Hodgson 2017) : (1) Release — temporaire (jours à semaines), wrap une fonctionnalité incomplète pour permettre le Trunk-Based Development ; suppression obligatoire après merge en prod. (2) Experiment — temporaire (semaines), A/B test ou rollout progressif data-driven ; suppression après décision data. (3) Ops — permanent, circuit breaker ou contrôle opérationnel d'urgence ; pas de TTL mais revue périodique. (4) Permissioning — permanent, contrôle d'accès par segment (bêta, tier). TTL obligatoire sur les types temporaires : définir une date d'expiration à la création ; mettre en place des time bombs (tests qui échouent si un flag Release dépasse sa durée de vie prévue). Règle Knight Capital (2012) : quand un flag est déprécié, supprimer aussi le code associé immédiatement — ne jamais réutiliser un flag déprécié, ne jamais laisser du code mort derrière un flag désactivé. Cleanup pipeline : 73 % des flags ne sont jamais supprimés (données industrie) ; entreprise moyenne : 200 à 500 flags stale. Automatiser la détection (Uber Piranha, dashboards LaunchDarkly/Unleash) ; ajouter des tâches de suppression au backlog lors de la création. Standard ouvert : OpenFeature (CNCF Incubating 2023) avec SDK NestJS (`@openfeature/nestjs-sdk`) évite le vendor lock-in ; alternatives : GrowthBook (open-source, self-hosted). Lien DORA : les feature flags sont le mécanisme qui permet le Trunk-Based Development — chaque fonctionnalité incomplète enveloppée dans un Release flag ; TBD est corrélé à la haute performance DORA 2024.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Fowler M. / Hodgson P. — \"Feature Toggles (aka Feature Flags)\" (martinfowler.com, 2017)",
+            "pyramid": 5,
+            "year": 2017,
+            "quote": "Add toggle removal tasks to backlog when a toggle is introduced. Put expiration dates on toggles. Create time bombs that fail tests once a toggle has been around for too long.",
+            "note": "Source canonique de la taxonomie des 4 types (Release, Experiment, Ops, Permissioning) et des pratiques de cleanup. Pyramide 5 — expert reconnu, référence de facto universellement citée sur le sujet. Accord Reviewer A/B."
+          },
+          {
+            "name": "Kavaler D. et al. — \"An Empirical Analysis of the Python Package Index (PyPI)\" — Empirical Software Engineering, Springer 2021 (étude feature flags 99 artefacts + 38 entreprises, 17 pratiques en 4 catégories)",
+            "pyramid": 3,
+            "year": 2021,
+            "quote": "Practitioners confirm that feature flag technical debt is a recognized concern. 17 practices identified across 4 categories; cleanup and TTL management are among the most cited.",
+            "note": "Étude empirique peer-reviewed (Springer EMSE). 99 artefacts + 38 entreprises, 17 pratiques. Confirme que la dette technique des flags est reconnue par les praticiens. Pyramide 3 — peer-reviewed. Accord Reviewer A/B."
+          },
+          {
+            "name": "Meijer S. et al. — \"Feature Flags at Scale\" (ACM FSE/ESEC 2022, Microsoft Office)",
+            "pyramid": 3,
+            "year": 2022,
+            "quote": "Microsoft Office has 12,000 active feature flags. Combinatorial testing becomes infeasible at this scale. Explicit lifecycle management is required to prevent accumulation.",
+            "note": "Étude à grande échelle (12 000 flags actifs, Microsoft Office). Illustration concrète du problème d'échelle et de l'infaisabilité du testing combinatoire sans discipline de lifecycle. Pyramide 3 — peer-reviewed ACM. Accord Reviewer A/B."
+          },
+          {
+            "name": "Knight Capital Group incident 2012 (documenté SEC + Hodgson/Honeybadger/Dolfing, 2012-2013)",
+            "pyramid": 3,
+            "year": 2012,
+            "quote": "$460M lost in 45 minutes. Root cause: deprecated flag 'Power Peg' (2003) was reused; dead code was never removed; partial deployment went undetected.",
+            "note": "Incident post-mortem documenté (rapport SEC + analyses indépendantes). $460M perdus en 45 min par réutilisation d'un flag déprécié et code mort non supprimé. Preuve concrète et sévère des conséquences d'un mauvais lifecycle. Pyramide 3 (documentation officielle regulatory + analyse experte). Accord Reviewer A/B."
+          },
+          {
+            "name": "OpenFeature / CNCF Incubating (cncf.io, openfeature.dev, 2023)",
+            "pyramid": 2,
+            "year": 2023,
+            "quote": "OpenFeature is an open specification that provides a vendor-agnostic, community-driven API for feature flagging. Supported by LaunchDarkly, Split, eBay, Google, SAP, Spotify.",
+            "note": "Standard ouvert CNCF Incubating (2023). SDKs multi-langage dont JS/TS (`@openfeature/nestjs-sdk`). Adopté par LaunchDarkly, Split, eBay, Google, SAP, Spotify. Pyramide 2 — standard organisationnel reconnu (CNCF). Accord Reviewer A/B."
+          },
+          {
+            "name": "DORA 2024 State of DevOps Report + Trunk-based Development (dora.dev, trunkbaseddevelopment.com)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Trunk-based development is a practice correlated with high software delivery performance. Feature flags are the essential complement: they allow teams to merge incomplete work continuously while keeping production stable.",
+            "note": "DORA 2024 confirme la corrélation entre TBD et haute performance DevOps. Les feature flags (Release type) sont le mécanisme permettant le TBD. Pyramide 4 — rapport d'enquête industrielle large-échelle. Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : Fowler/Hodgson + OpenFeature (CNCF) + Kavaler/Meijer + DORA convergent sans contradiction sur 4 points centraux — 4 types distincts avec durées de vie différentes, TTL obligatoire sur les types temporaires, cleanup = pratique essentielle non optionnelle, TBD corrélé haute performance DORA. Sources de 3 contextes distincts (expertise individuelle reconnue, standard organisationnel, empirique peer-reviewed, rapport industrie) sur 7 ans (2017-2024).",
+            "effet important : Knight Capital $460M en 45 min (2012) + 12 000 flags stale chez Microsoft Office + statistique industrie 73 % flags jamais supprimés illustrent concrètement et sévèrement les conséquences d'un mauvais lifecycle. L'effet est documenté, chiffré et extrême."
+          ],
+          "minus": [
+            "indirectness : Kavaler 2021 et Meijer 2022 n'étudient pas spécifiquement NestJS/React — les résultats s'appliquent au domaine feature flags en général. La statistique 73 % jamais supprimés est une donnée industrie non formellement peer-reviewed (LaunchDarkly survey). Ces éléments introduisent une indirection partielle sur le contexte NestJS/React."
+          ]
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Fowler M. / Hodgson P. — Feature Toggles (martinfowler.com, 2017) (taxonomie 4 types + règles cleanup — source canonique sans alternative équivalente)",
+          "Knight Capital Group incident 2012 (règle cleanup : code mort = risque catastrophique — seul contre-exemple empirique direct du coût d'un mauvais lifecycle)"
+        ],
+        "etd_balance": {
+          "benefices": "Réduction de la dette technique : les flags stale sont une forme de complexité accidentelle (Brooks 1987) — supprimés dès leur fin de vie, ils n'encombrent ni le code ni la configuration. Réduction du risque incident : la règle Knight Capital (supprimer le code mort lors de la dépréciation) élimine la classe d'incident la plus grave documentée sur les feature flags. Trunk-Based Development : les Release flags permettent de merger des fonctionnalités incomplètes dans main sans bloquer la CI/CD, corrélé à la haute performance DORA 2024. Tests prévisibles : TTL + time bombs maintiennent la testabilité (le scénario Microsoft à 12 000 flags rend le testing combinatoire impossible sans discipline de lifecycle). Vendor-agnostic : OpenFeature (CNCF) protège contre le lock-in tout en bénéficiant d'un écosystème riche.",
+          "risques": "Sur-ingénierie du lifecycle : imposer un TTL strict sur des Ops flags permanents (circuit breakers) crée une charge opérationnelle sans bénéfice. Cleanup agressif sur des flags Permissioning : risque de supprimer accidentellement un flag encore utilisé. Coût d'adoption OpenFeature : migration depuis un SDK propriétaire existant (Unleash, LaunchDarkly) a un coût à court terme.",
+          "balance": "Bénéfices >> Risques. La règle Knight Capital seule (supprimer le code mort lors de la dépréciation) justifie la discipline de lifecycle — le contre-exemple est trop grave pour être ignoré. Les risques sont atténués par la distinction explicite des types (TTL seulement sur Release et Experiment, pas sur Ops/Permissioning).",
+          "faisabilite": "Haute — critères directement applicables à NestJS+React : (1) `@openfeature/nestjs-sdk` pour le provider côté backend ; (2) constante de durée de vie par type de flag définie dans les conventions équipe ; (3) time bomb = test Jest/Vitest vérifiant la date d'expiration du flag ; (4) tâche backlog créée lors de chaque création de Release/Experiment flag ; (5) Uber Piranha ou script maison pour détecter les flags stale dans le codebase."
+        },
+        "prisma_ref": "verification/prisma/feature-flags-lifecycle.md",
+        "sensitivity_ref": "verification/extractions/feature-flags-lifecycle.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

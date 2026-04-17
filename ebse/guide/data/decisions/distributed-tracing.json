@@ -1,0 +1,301 @@
+{
+  "id": "distributed-tracing",
+  "domain": "operations",
+  "question": "Comment implementer le distributed tracing pour suivre les requetes a travers plusieurs services ?",
+  "depends_on": [
+    "logging",
+    "monitoring",
+    "backend-framework"
+  ],
+  "tags": [
+    "operations",
+    "observability",
+    "tracing",
+    "opentelemetry",
+    "w3c-trace-context",
+    "jaeger",
+    "sampling",
+    "latency"
+  ],
+  "classification": "mixed",
+  "universal": {
+    "principles": [
+      {
+        "text": "Propager le contexte de trace via le header HTTP `traceparent` (W3C Trace Context) : ce standard garantit l'interoperabilite entre tous les services et outils sans lock-in. Format : `00-{traceId 32hex}-{spanId 16hex}-{flags}`. Ne jamais inventer un format proprietaire.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "W3C Trace Context Level 1 Recommendation",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "traceparent header MUST be forwarded by intermediaries; defines traceId + spanId + flags"
+          },
+          {
+            "name": "W3C Trace Context Level 2 Candidate Recommendation",
+            "pyramid": 1,
+            "year": 2023,
+            "quote": "Extends Level 1 with additional flags and clarifications"
+          },
+          {
+            "name": "NIST SP 800-204A — Building Secure Microservices-based Applications",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "Distributed tracing via correlation headers is required for latency metrics in microservice architectures"
+          },
+          {
+            "name": "OpenTelemetry Tracing API Specification (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "W3C Trace Context is the default propagator"
+          },
+          {
+            "name": "Dapper — a Large-Scale Distributed Systems Tracing Infrastructure (Google)",
+            "pyramid": 5,
+            "year": 2010,
+            "quote": "Context propagation across service boundaries is the foundational primitive of distributed tracing"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "ROBUSTE"
+      },
+      {
+        "text": "Utiliser OpenTelemetry comme couche d'instrumentation universelle : traces + spans + propagation de contexte via une API stable et vendor-agnostique. OTel est le standard CNCF pour l'observabilite — evite le lock-in sur Jaeger, Zipkin ou Datadog.",
+        "grade": 6,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OpenTelemetry Tracing API Specification (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Stable API — Tracer, Span, Context, Sampler, SpanProcessor, SpanExporter"
+          },
+          {
+            "name": "OTLP Specification 1.10.0 (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Ports canoniques : 4317 (gRPC), 4318 (HTTP/protobuf)"
+          },
+          {
+            "name": "OpenTelemetry Semantic Conventions (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Standardized attribute naming for http.method, db.system, rpc.service, etc."
+          },
+          {
+            "name": "Jaeger v2 (CNCF Graduated)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Jaeger v2 deprecates proprietary SDKs and adopts OTel Collector — OTel is the canonical instrumentation path"
+          },
+          {
+            "name": "W3C Trace Context Level 1 Recommendation",
+            "pyramid": 1,
+            "year": 2021
+          },
+          {
+            "name": "Dapper — a Large-Scale Distributed Systems Tracing Infrastructure (Google)",
+            "pyramid": 5,
+            "year": 2010,
+            "quote": "Trace/Span/Context model — concepts fondateurs adoptes par OTel"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "ROBUSTE"
+      },
+      {
+        "text": "Transmettre des donnees contextuelles cross-service via le header W3C Baggage (paires cle=valeur) : user-id, tenant-id, request-id. Ne jamais mettre de PII ou de secrets dans Baggage — le header est propagé en clair sur toute la chaine.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "W3C Baggage Candidate Recommendation",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Baggage header propagates key-value context; no PII — visible to all intermediaries"
+          },
+          {
+            "name": "OpenTelemetry Tracing API Specification (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Baggage API is part of the OTel context propagation API"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "MODERE"
+      },
+      {
+        "text": "Choisir la strategie de sampling selon le trafic : head-based (decision a l'entree, simple, 1-10% en prod) pour les volumes eleves ; tail-based (decision apres reception de la trace complete, necessite un OTel Collector avec buffer) pour capturer systematiquement les erreurs et les traces lentes. Ne JAMAIS tracer 100% en production — l'overhead est quantifie.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OpenTelemetry Sampling Concepts (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Head-based vs tail-based sampling — fundamental tradeoff between simplicity and completeness"
+          },
+          {
+            "name": "OTel Collector Architecture (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Tail-based sampling requires the Collector as buffer; head-based works without Collector"
+          },
+          {
+            "name": "Nõu et al. — Overhead of Distributed Tracing in Microservice Architectures (ICPE 2025, ACM/SPEC)",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "Throughput -19% a -80%, latency +175% selon config de sampling — sampling indispensable en production"
+          },
+          {
+            "name": "OTel Performance Benchmark Specification (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Methodologie officielle de mesure overhead : benchmark trace vs no-trace sous charge"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "ROBUSTE"
+      },
+      {
+        "text": "Instrumenter les acces base de donnees dans les traces : chaque requete DB doit generer un span fils avec les attributs `db.system`, `db.statement` (sanitize, sans valeurs), `db.operation`. Sans cela, les goulots DB sont invisibles depuis la trace end-to-end.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "OpenTelemetry Semantic Conventions (CNCF)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "db.system, db.statement, db.operation — semantic conventions for database spans"
+          },
+          {
+            "name": "Liu et al. — Database Performance Analysis via Distributed Tracing (MDPI Applied Sciences)",
+            "pyramid": 3,
+            "year": 2022,
+            "quote": "DB contribution to end-to-end latency is measurable only when DB spans are included in the trace"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "MODERE"
+      },
+      {
+        "text": "En l'absence de tracing : impossible de diagnostiquer les latences P99 cross-service. Un seul service lent noie les logs des autres. Le tracing n'est pas un luxe — c'est l'instrument de diagnostic des architectures multi-services (correlation end-to-end que les logs par service ne peuvent pas fournir seuls).",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NIST SP 800-204A — Building Secure Microservices-based Applications",
+            "pyramid": 1,
+            "year": 2021
+          },
+          {
+            "name": "Sridharan — Distributed Systems Observability (O'Reilly)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Traces are the third pillar of observability — logs and metrics alone cannot answer 'why is this request slow?'"
+          },
+          {
+            "name": "Shkuro — Mastering Distributed Tracing (Packt)",
+            "pyramid": 5,
+            "year": 2019,
+            "quote": "Without end-to-end trace correlation, cross-service latency is undiagnosable"
+          },
+          {
+            "name": "Eaton et al. — Critical Path Tracing at Google (ACM Queue / CACM)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Critical path analysis from production traces — identifies bottlenecks invisible to per-service metrics"
+          },
+          {
+            "name": "Li et al. — Tracing Practices in Industry (Empirical Software Engineering)",
+            "pyramid": 4,
+            "year": 2022,
+            "quote": "Survey de 10 entreprises — le tracing est adopte comme outil principal de diagnostic de latence P99"
+          }
+        ],
+        "v3_review": "2026-04-17",
+        "robustness": "ROBUSTE"
+      }
+    ]
+  },
+  "variants": {
+    "typescript-nestjs": {
+      "recommendation": "Utiliser `@opentelemetry/instrumentation-nestjs-core` (auto-instrumentation officielle OTel pour NestJS) + initialisation SDK OTel AVANT tout import NestJS dans le fichier d'entree (ordre obligatoire — sinon les decorateurs NestJS ne sont pas interceptes). Exporter vers Jaeger ou Tempo via OTLP (port 4317 gRPC ou 4318 HTTP). Packages : `@opentelemetry/sdk-node`, `@opentelemetry/auto-instrumentations-node`, `@opentelemetry/exporter-trace-otlp-grpc`.",
+      "grade": 5,
+      "level": "STANDARD",
+      "sources": [
+        {
+          "name": "@opentelemetry/instrumentation-nestjs-core (npm, OTel officiel)",
+          "pyramid": 3,
+          "year": 2024,
+          "quote": "Official auto-instrumentation for NestJS — instruments guards, interceptors, pipes, controllers"
+        },
+        {
+          "name": "OTel Node.js Getting Started (CNCF)",
+          "pyramid": 3,
+          "year": 2024,
+          "quote": "SDK initialization MUST happen before any NestJS imports — order is critical"
+        },
+        {
+          "name": "OTLP Specification 1.10.0 (CNCF)",
+          "pyramid": 2,
+          "year": 2024,
+          "quote": "Port 4317 (gRPC), 4318 (HTTP/protobuf) — ports canoniques OTLP"
+        },
+        {
+          "name": "Jaeger v2 (CNCF Graduated)",
+          "pyramid": 2,
+          "year": 2024,
+          "quote": "Backend de reference CNCF; accepte OTLP nativement depuis v2"
+        }
+      ]
+    },
+    "java-spring-boot": {
+      "recommendation": "Utiliser Spring Boot Actuator + Micrometer Tracing (bridge OTel) ou l'agent Java OTel (`opentelemetry-javaagent.jar`) en mode zero-code. L'agent instrumente automatiquement JDBC, RestTemplate/WebClient, Spring MVC. Exporter vers Jaeger ou Tempo via OTLP. Le bridge Micrometer Tracing est prefere pour l'integration Spring native ; l'agent Java est prefere si le codebase n'est pas modifiable.",
+      "grade": 5,
+      "level": "STANDARD",
+      "sources": [
+        {
+          "name": "OpenTelemetry Java Agent (CNCF)",
+          "pyramid": 2,
+          "year": 2024,
+          "quote": "Zero-code instrumentation for JVM — instruments Spring MVC, JDBC, HTTP clients automatically"
+        },
+        {
+          "name": "Spring Boot Actuator + Micrometer Tracing docs",
+          "pyramid": 3,
+          "year": 2024,
+          "quote": "Micrometer Tracing bridges OTel SDK — native Spring integration since Spring Boot 3.x"
+        },
+        {
+          "name": "OTLP Specification 1.10.0 (CNCF)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Jaeger v2 (CNCF Graduated)",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    "python-django": {
+      "recommendation": "Utiliser l'auto-instrumentation OTel Python : `opentelemetry-instrument` CLI ou `opentelemetry-instrumentation-django`. Exporter vers Jaeger ou Tempo via OTLP. Packages : `opentelemetry-sdk`, `opentelemetry-instrumentation-django`, `opentelemetry-exporter-otlp`.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "sources": [
+        {
+          "name": "OpenTelemetry Python Instrumentation (CNCF)",
+          "pyramid": 2,
+          "year": 2024,
+          "quote": "opentelemetry-instrumentation-django — auto-instruments Django requests and DB calls"
+        },
+        {
+          "name": "OTLP Specification 1.10.0 (CNCF)",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "id": "legacy-refactoring",
+  "domain": "maintainability",
+  "question": "Comment refactoriser un système legacy de façon incrémentale pour minimiser le risque, en utilisant Strangler Fig et Branch by Abstraction ?",
+  "depends_on": [
+    "design-patterns-gof",
+    "hexagonal-architecture",
+    "test-strategy"
+  ],
+  "tags": [
+    "legacy",
+    "refactoring",
+    "strangler-fig",
+    "branch-by-abstraction",
+    "incremental",
+    "technical-debt",
+    "migration"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Éviter le big-bang rewrite. Spolsky (2000) : \"la pire erreur stratégique qu'une entreprise logicielle puisse commettre\" — le code legacy contient des décennies de corrections de bugs réels qui ne sont pas visibles dans le code source. Le cas Netscape Navigator 4→6 (3 ans de retard, perte de marché au profit d'Internet Explorer) est l'illustration canonique. Les études empiriques sur la dette technique (ICSE, ScienceDirect) confirment : la co-occurrence refactoring + suppression de SATD (Self-Admitted Technical Debt) est moins risquée que le remplacement total.\n\nPATTERN 1 — STRANGLER FIG (Fowler 2004) : créer le nouveau système autour du système existant via une façade proxy HTTP, migrer fonctionnalité par fonctionnalité en redirigeant les routes progressivement, retirer le legacy quand toutes les routes sont migrées. Trois phases : Transform (nouveau composant en parallèle) → Coexist (proxy intercepte et route) → Eliminate (retrait du legacy). Richardson (microservices.io 2023) détaille l'application aux microservices.\n\nPATTERN 2 — BRANCH BY ABSTRACTION (Hammant 2007 / Fowler 2011) : pour les remplacements de couches internes (ex : ORM, couche d'accès aux données), créer une abstraction (interface), basculer progressivement tous les clients vers l'abstraction, implémenter la nouvelle solution derrière l'abstraction, retirer l'ancienne implémentation, optionnellement retirer l'abstraction si elle n'a plus de valeur. Complémentaire au Strangler Fig pour les composants non exposés via HTTP.\n\nPRÉ-REQUIS OBLIGATOIRE (Feathers 2004) : \"legacy code = code without tests\". Avant tout refactoring, écrire des characterization tests qui documentent le comportement actuel (y compris les bugs). Le Legacy Code Change Algorithm : (1) identifier le point de changement, (2) trouver les points de test, (3) briser les dépendances, (4) écrire les tests, (5) faire le changement, (6) refactoriser. Les characterization tests protègent contre les régressions introduites par la migration.\n\nAPPLICATION NESTJS : migration Express → NestJS via proxy. NestJS app avec express-http-proxy intercepte les requêtes ; les modules portés en NestJS sont servis directement, les autres sont proxyfiés vers Express. Migration module par module, chaque module couvert par tests d'intégration avant portage. Pattern documenté par les practitioners (Consolino, Arnab-K) : migration incrémentale recommandée sur plusieurs semaines/mois selon la taille.\n\nTYPOLOGIE ISO 14764:2022 : 4 types de maintenance — corrective (correction de bugs), preventive (réduction de dette technique), adaptive (adaptation à un nouvel environnement), perfective (ajout de nouvelles fonctionnalités). La migration legacy relève principalement des types adaptive et preventive.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "SWEBOK v4 — KA Software Maintenance (IEEE Computer Society, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Software maintenance encompasses four types of activities: corrective (repairing defects), preventive (improving future maintainability and preventing future problems), adaptive (modifying the software to remain usable in changed or changing environments), and perfective (modifying to improve performance or maintainability). Incremental refactoring is the recommended approach for legacy systems to minimize risk.",
+            "note": "Guide de connaissance IEEE (niveau 1). Normatif pour la maintenance logicielle. Définit les 4 types de maintenance et préconise l'approche incrémentale. Accord Reviewer A/B."
+          },
+          {
+            "name": "ISO/IEC/IEEE 14764:2022 — Software Life Cycle Processes — Maintenance (ISO, 2022)",
+            "pyramid": 1,
+            "year": 2022,
+            "quote": "This document establishes four categories of maintenance: corrective, preventive, adaptive, and perfective maintenance. It provides requirements for process activities when planning and executing each type. The standard recommends controlled, incremental approaches to reduce the risk of introducing new defects.",
+            "note": "Standard international ISO pour les processus de maintenance logicielle. Troisième édition 2022. Référence normative internationale. Pyramide 1. Accord Reviewer A/B."
+          },
+          {
+            "name": "Fowler M. — \"StranglerFigApplication\" (martinfowler.com, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "Gradually create a new system around the edges of the old, letting it grow slowly over several years until the old system is strangled. The key benefit is that at every stage of the migration, you have a working system that can be deployed.",
+            "note": "Article fondateur du pattern Strangler Fig. Métaphore tirée du figuier étrangleur australien. Mécanisme : façade proxy → routage progressif → Transform/Coexist/Eliminate. Pyramide 5 — expert reconnu (~50k citations, référence universelle en patterns d'architecture). Accord Reviewer A/B."
+          },
+          {
+            "name": "Feathers M. — Working Effectively with Legacy Code (Prentice Hall, 2004)",
+            "pyramid": 5,
+            "year": 2004,
+            "quote": "To me, legacy code is simply code without tests. [...] Code without tests is bad code. It doesn't matter how well written it is; it doesn't matter how pretty or object-oriented or well-encapsulated it is. With tests, we can change the behavior of our code quickly and verifiably. Without them, we really don't know if our code is getting better or worse.",
+            "note": "Ouvrage de référence sur le travail avec le code legacy. Legacy Code Change Algorithm. Characterization tests comme filet de sécurité avant refactoring. Pyramide 5 — expert reconnu, référence pratique fondatrice. Accord Reviewer A/B."
+          },
+          {
+            "name": "Hammant P. — \"Branch by Abstraction\" (paulhammant.com, 2007) / Fowler M. — martinfowler.com (2011)",
+            "pyramid": 5,
+            "year": 2007,
+            "quote": "Create an abstraction layer over the component you want to replace. Move all clients of the component to use the abstraction layer. Build the new implementation behind the abstraction layer. Switch over clients to use the new implementation. Remove the old implementation. Optionally remove the abstraction layer.",
+            "note": "Pattern Branch by Abstraction, formalisé par Paul Hammant (2007), popularisé par Martin Fowler (2011). Complémentaire au Strangler Fig pour les remplacements de couches internes non exposées via HTTP. Pyramide 5 — experts reconnus. Accord Reviewer A/B."
+          },
+          {
+            "name": "Spolsky J. — \"Things You Should Never Do, Part I\" (Joel on Software, 2000)",
+            "pyramid": 5,
+            "year": 2000,
+            "quote": "It's the single worst strategic mistake that any software company can make: to rewrite the code from scratch. [...] The new code may be cleaner in the eyes of today's developers, but it contains none of the wisdom from the old code — the bug fixes accumulated over years of real-world use.",
+            "note": "Argument fondateur contre le big-bang rewrite. Cas Netscape Navigator 4→6 : 3 ans de développement, perte de marché au profit d'Internet Explorer, quasi-faillite de Netscape. Pyramide 5 — expert reconnu, article fondateur cité universellement dans les discussions de migration. Accord Reviewer A/B."
+          },
+          {
+            "name": "Richardson C. — \"Strangler Fig Pattern for Microservices\" (microservices.io, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "When migrating a monolith to microservices, apply the Strangler Fig pattern: Transform — implement the new microservice; Coexist — route a subset of requests to the new service via an HTTP proxy; Eliminate — retire the legacy code once migration is complete. This approach reduces risk by keeping the system operational at all stages.",
+            "note": "Application du Strangler Fig aux microservices. Étapes concrètes avec proxy HTTP. Source practitioner de référence (microservices.io, maintenu par Chris Richardson, auteur de 'Microservices Patterns'). Pyramide 3. Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence : SWEBOK v4 (niveau 1) + ISO 14764:2022 (niveau 1) + Fowler StranglerFig + Feathers LegacyCode + Hammant/Fowler BranchByAbstraction + Spolsky + Richardson convergent sans contradiction sur incrémental > big-bang. Toutes sources s'accordent sur les prérequis (tests avant refactoring), les patterns (Strangler Fig, Branch by Abstraction) et l'anti-pattern (big-bang rewrite). Deux niveaux normatifs (SWEBOK + ISO) + experts fondateurs + practitioner.",
+            "effet important : Spolsky/Netscape — 3 ans de retard de développement, perte de marché face à IE, quasi-faillite de l'entreprise. Knight Capital Group (2012, flags legacy non nettoyés) : 440M$ de pertes en 45 minutes. Ces cas illustrent le coût réel du big-bang et du code legacy non géré."
+          ],
+          "minus": [
+            "indirectness : pas de RCT Strangler Fig vs Big Bang — impossible à randomiser sur des migrations réelles. Les études empiriques sur la dette technique (ICSE, ScienceDirect) sont indirectes : elles mesurent l'impact de la dette en général, pas spécifiquement l'efficacité comparée du Strangler Fig vs autres stratégies. Les cas Spolsky/Netscape et Knight Capital sont des études de cas uniques, non généralisables statistiquement."
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "SWEBOK v4 KA Software Maintenance (niveau 1) — base normative IEEE pour la maintenance incrémentale",
+          "ISO/IEC/IEEE 14764:2022 (niveau 1) — standard international, 4 types de maintenance, approche contrôlée",
+          "Fowler M. — StranglerFigApplication 2004 — pattern fondateur, mécanisme Transform/Coexist/Eliminate",
+          "Feathers M. — Working Effectively with Legacy Code 2004 — prérequis characterization tests avant tout refactoring"
+        ],
+        "etd_balance": {
+          "benefices": "Risque minimal : le système reste opérationnel à chaque étape de la migration (Fowler 2004 : 'at every stage, you have a working system that can be deployed'). Rollback possible : si la migration d'un module échoue, le proxy peut reroutêr vers le legacy sans impact global. Validation progressive : chaque module migré est testé indépendamment avant la migration suivante. Confiance accrue : les characterization tests (Feathers) documentent le comportement attendu et détectent les régressions. Applicable NestJS : le pattern express-http-proxy est documenté et éprouvé pour les migrations Express→NestJS.",
+          "risques": "Coexistence prolongée : maintenir deux systèmes en parallèle augmente la charge de maintenance pendant la période de migration. Proxy HTTP : point de défaillance unique si mal implémenté (latence, timeouts). Characterization tests : écrire des tests pour du code legacy non testable demande du temps et des techniques spécifiques (Feathers ch.3-9). Tentation big-bang : la migration incrémentale est perçue comme plus lente — risque de basculer vers un big-bang sous pression de délai.",
+          "balance": "Bénéfices >> Risques documentés. Les risques de la migration incrémentale sont gérables ; les risques du big-bang sont documentés comme catastrophiques (Spolsky 2000, Netscape). ISO 14764:2022 et SWEBOK v4 valident l'approche normativement.",
+          "faisabilite": "Haute pour NestJS — bibliothèques disponibles (http-proxy-middleware, express-http-proxy), documentation practitioner (Consolino, Arnab-K). Effort proportionnel à la taille du système : migration module par module sur 4-12 semaines selon la surface. Prérequis non négociable : tests d'intégration existants ou à écrire avant le premier module porté."
+        },
+        "prisma_ref": "verification/prisma/legacy-refactoring.md",
+        "sensitivity_ref": "verification/extractions/legacy-refactoring.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

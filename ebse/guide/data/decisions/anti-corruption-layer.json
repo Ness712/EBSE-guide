@@ -1,0 +1,77 @@
+{
+  "id": "anti-corruption-layer",
+  "domain": "architecture",
+  "question": "Comment implémenter un Anti-Corruption Layer (ACL) pour isoler le modèle de domaine des intégrations externes et des bounded contexts adjacents ?",
+  "depends_on": ["hexagonal-architecture"],
+  "tags": ["anti-corruption-layer", "ddd", "bounded-context", "adapter", "facade", "integration", "domain-isolation", "strangler-fig"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Un Anti-Corruption Layer (ACL) est une couche de traduction interposée entre le modèle de domaine interne d'un bounded context et tout système externe ou bounded context adjacent dont la sémantique est différente. Son rôle est de protéger le modèle de domaine de la corruption sémantique et de la dette technique des systèmes tiers : aucun type, concept ou structure appartenant au modèle externe ne doit pénétrer directement dans le domaine interne. La règle absolue est que la communication entre le domaine interne et l'ACL utilise exclusivement le vocabulaire et les types du modèle interne ; c'est l'ACL qui adapte vers le modèle externe lors des appels sortants. Deux patterns d'implémentation couvrent l'ensemble des cas : (1) Adapter (mono-consommateur) — quand un seul composant interne doit interagir avec un système externe, l'ACL s'implémente directement comme un Adapter au niveau du port secondaire (Driven Port) de l'architecture hexagonale ; (2) Facade partagée (multi-consommateurs) — quand plusieurs composants du même bounded context doivent interagir avec la même portion d'un système externe, créer un service façade commun qui centralise la traduction, évite la duplication et garantit la cohérence des mappings. Dans l'architecture hexagonale, le port secondaire (Driven Port / interface sortante) est le point d'implémentation naturel de l'ACL : le domaine déclare ce dont il a besoin via une interface en termes de son propre modèle, et l'adaptateur concret implémente cette interface en traduisant vers l'API externe. Le système d'injection de dépendances (NestJS DI, Spring DI) câble l'implémentation concrète à l'exécution sans que le domaine connaisse l'existence du système externe. Cas d'usage principaux : (a) intégration d'APIs tierces (paiement, email, stockage, OAuth) où le modèle tiers ne doit pas polluer les entités de domaine ; (b) migration Strangler Fig — lors du découpage d'un monolithe en microservices, les appels depuis les parties non encore migrées vers les parties migrées doivent passer par un ACL qui traduit entre l'ancien et le nouveau modèle, isolant le nouveau système de la dette de l'ancien ; (c) communication entre bounded contexts DDD adjacents — même au sein d'un même système, deux contextes avec des modèles différents d'un même concept (ex : 'Utilisateur' dans le contexte Facturation vs 'Utilisateur' dans le contexte Messagerie) doivent communiquer via un ACL pour éviter le couplage sémantique. Erreur à éviter : exposer directement les DTOs, réponses JSON ou types de l'API externe dans les services de domaine — c'est le vecteur de corruption le plus fréquent. Toute désérialisation d'une réponse externe doit produire un type appartenant au modèle interne avant d'entrer dans la logique métier.",
+        "grade": 2,
+        "level": "BONNE PRATIQUE",
+        "sources": [
+          {
+            "name": "Microsoft Azure Architecture Center — Anti-corruption Layer pattern (Azure Architecture Center, 2025)",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "Implement a façade or adapter layer between different subsystems that don't share the same semantics. This layer translates requests that one subsystem makes to the other subsystem. Use this pattern to ensure that an application's design isn't limited by dependencies on outside subsystems. Communication between subsystem A and the anti-corruption layer always uses the data model and architecture of subsystem A. Calls from the anti-corruption layer to subsystem B conform to that subsystem's data model or methods. The anti-corruption layer contains all of the logic necessary to translate between the two systems.",
+            "note": "Documentation de référence Microsoft Azure Architecture Center — niv.4 (vendor doc reconnu, pattern issu directement d'Evans DDD). Définition canonique de l'ACL avec la règle de traduction directionnelle. Accord A/B."
+          },
+          {
+            "name": "AWS Prescriptive Guidance — Anti-corruption layer pattern (AWS, 2023)",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "The ACL layer is typically made up of well-known design patterns such as Facade and Adapter, which are used to map between foreign domain models and APIs to types and interfaces that are part of the domain model. If you have several consumers from your Bounded Context who need to interact with the same portion of another Bounded Context, it is best to create a shared facade service (API) that acts as an ACL, while for a single consumer, you can implement the ACL at the Adapter level of your Hexagonal Architecture.",
+            "note": "Documentation prescriptive AWS — niv.4. Apporte la distinction critique facade partagée (multi-consommateurs) vs adapter individuel (mono-consommateur) et l'articulation explicite avec l'architecture hexagonale. Accord A/B."
+          },
+          {
+            "name": "DDD Practitioners — Anticorruption Layer (ddd-practitioners.com, communauté DDD)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "An anti-corruption layer is an intermediate standing between the external integration contract and the internal domain model of the consumer bounded context, with the purpose to protect the business logic from outside noise and keep things valid and consistent.",
+            "note": "Glossaire communautaire DDD peer-reviewed par des praticiens — niv.3. Définition canonique orientée protection du modèle de domaine. Accord A/B."
+          },
+          {
+            "name": "AWS Prescriptive Guidance + Fowler — Strangler Fig pattern + ACL (2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "During the migration process, when features within the monolith have to call features that were migrated as microservices, you should implement an anti-corruption layer that routes each call to the appropriate microservice. The ACL acts as a translation layer between a new, modern system and a legacy system. It isolates the new system's clean, domain-specific models from the legacy system's outdated, complex models, preventing the 'corruption' of your new microservices architecture by the technical debt and convoluted logic of the old monolith.",
+            "note": "AWS Prescriptive Guidance reformulant le pattern Strangler Fig de Fowler — niv.4. Contexte migration applicable aux projets évoluant d'un monolithe vers des microservices. Accord A/B."
+          },
+          {
+            "name": "DEV Community / Sairyss — Domain-Driven Hexagon: DDD, Hexagonal architecture, TypeScript and NestJS examples (dev.to, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "There are two main types of ports: Driving Ports (Primary Ports) which are invoked by external actors to drive the application's behavior, and Driven Ports (Secondary Ports) which are implemented by external services and invoked by the application core to perform operations. In NestJS, the DI system handles the wiring — you declare what the domain needs via an interface, register the concrete implementation in a module, and the framework handles wiring at runtime.",
+            "note": "Guide technique NestJS/TypeScript régulièrement cité dans la communauté DDD — niv.3. Articule l'ACL dans le contexte de l'architecture hexagonale avec NestJS, montrant comment le port secondaire est le point d'implémentation naturel. Source B uniquement, incluse car directement actionnable pour NestJS."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 1,
+          "plus": [
+            "convergence : Microsoft Azure Architecture Center (niv.4), AWS Prescriptive Guidance (niv.4, deux documents distincts), DDD Practitioners (niv.3) convergent sans contradiction sur le même principe — l'ACL comme couche de traduction isolant le modèle interne du modèle externe. Trois organisations indépendantes (Microsoft, Amazon, communauté DDD) confirment la même règle fondamentale."
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Microsoft Azure Architecture Center 2025 — définition canonique de l'ACL avec règle de traduction directionnelle (niv.4)",
+          "AWS Prescriptive Guidance 2023 — distinction facade partagée vs adapter individuel, articulation avec hexagonal architecture (niv.4)",
+          "DDD Practitioners 2023 — définition orientée protection du modèle de domaine (niv.3)"
+        ],
+        "etd_balance": {
+          "benefices": "Isolation totale du modèle de domaine des dépendances externes : les changements dans l'API tierce ou le bounded context adjacent ne propagent pas dans le domaine interne. Testabilité améliorée — le port secondaire (interface) peut être mocké sans dépendre du système externe. Clarté sémantique : le domaine utilise son propre vocabulaire partout, sans pollution des types étrangers. Facilitates la migration Strangler Fig : le nouveau système peut évoluer indépendamment de l'ancien tant que l'ACL maintient la traduction.",
+          "risques": "Complexité accrue : chaque intégration externe nécessite un mapping explicite (potentiellement verbeux pour des modèles larges). Sur-ingénierie pour des intégrations simples où les modèles sont quasi-identiques. Maintenance du mapping : si les deux modèles évoluent fréquemment, le code de traduction devient un point de friction. Performance : la couche de traduction ajoute une conversion de type à chaque appel (généralement négligeable mais à mesurer).",
+          "balance": "Bénéfices >> Risques pour toute intégration non-triviale. La complexité du mapping est locale et explicite (meilleure que la corruption implicite du modèle propagée dans tout le domaine). Pour les intégrations simples où les modèles sont vraiment identiques, un ACL léger (simple wrapper) reste recommandé pour maintenir la frontière architecturale.",
+          "faisabilite": "Haute — NestJS : déclarer une interface dans le module domaine (ex: EmailProvider), implémenter l'adaptateur dans un module infrastructure (ex: SendgridEmailAdapter), enregistrer via @Injectable et injection de dépendances dans le module NestJS. Spring Boot : même pattern avec interfaces Java + @Component/@Service dans le package infrastructure. La structure de fichiers est simple et le pattern est supporté nativement par les deux frameworks."
+        },
+        "prisma_ref": "verification/prisma/anti-corruption-layer.md",
+        "sensitivity_ref": "verification/extractions/anti-corruption-layer.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

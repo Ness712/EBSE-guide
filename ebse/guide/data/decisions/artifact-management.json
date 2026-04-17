@@ -1,0 +1,70 @@
+{
+  "id": "artifact-management",
+  "domain": "project",
+  "question": "Comment gérer les artefacts de build (packages npm, images Docker, artefacts CI) pour garantir la reproductibilité, la traçabilité et la sécurité de la chaîne de livraison ?",
+  "depends_on": ["supply-chain-security", "dependency-upgrade-strategy"],
+  "tags": ["artifact-management", "npm", "docker", "ghcr", "provenance", "slsa", "lockfile", "reproducibility", "ci-cd", "supply-chain"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Reproductibilité — lockfile obligatoire : le fichier de verrouillage des dépendances (package-lock.json, yarn.lock, pnpm-lock.yaml) DOIT être commité dans le VCS et JAMAIS ignoré via .gitignore. Il décrit l'arbre de dépendances exact généré, garantissant que des installations successives produisent des builds identiques quelle que soit l'évolution des registres en amont. En CI, utiliser impérativement `npm ci` (ou équivalent) plutôt que `npm install` : `npm ci` impose une adhérence stricte au lockfile et interrompt l'installation si une incohérence est détectée entre package.json et le lockfile — comportement abort-on-inconsistency qui rend les dérives silencieuses impossibles. Provenance SLSA signée cryptographiquement : chaque artefact publié (package npm, image Docker) DOIT être accompagné d'une attestation de provenance signée liant de façon vérifiable le code source → l'environnement CI → l'artefact produit. SLSA Level 2 garantit que le build s'exécute sur une plateforme hébergée qui génère et signe la provenance ; SLSA Level 3 ajoute que l'infrastructure de build est dédiée et que la provenance est liée cryptographiquement à cette infrastructure. Pour les packages npm, utiliser `npm publish --provenance` sur GitHub Actions (support natif via OIDC token) ; cela génère une attestation SLSA vérifiable par tout consommateur du package. Images Docker minimalistes via multi-stage builds : les multi-stage builds sont obligatoires pour séparer l'environnement de compilation (builder) de l'image finale d'exécution — l'image finale ne doit contenir que les fichiers strictement nécessaires au runtime. Dans chaque RUN d'un Dockerfile, les commandes liées doivent être chaînées avec `&&` et les fichiers temporaires supprimés dans la même instruction RUN (pas dans un RUN séparé) pour éviter que les layers intermédiaires ne conservent des données inutiles. Une image plus petite réduit la surface d'attaque et améliore la traçabilité des couches. Registres privés et authentification : utiliser GHCR (GitHub Container Registry) ou un équivalent privé pour stocker les images Docker et artefacts CI. L'authentification doit s'appuyer sur des tokens avec scope minimal (jamais de credentials hardcodés dans Dockerfile, docker-compose.yml ou scripts CI) ; utiliser les secrets GitHub Actions ou l'équivalent pour injecter les tokens au moment du build. Les environnements dev, staging et prod utilisent des tags distincts pour éviter toute ambiguïté sur l'artefact déployé. Politique de tags immuables : le tag `latest` est INTERDIT en production. En production, chaque image est identifiée par un tag immuable : soit le SHA commit court (`sha-abc1234`), soit une version SemVer (`v1.2.3`). Un tag immuable garantit qu'un déploiement ultérieur avec le même tag produit exactement le même artefact. Le tag `latest` est toléré uniquement pour le développement local. Scan de vulnérabilités comme gate CI : les images Docker doivent être scannées pour les vulnérabilités connues (CVE) avant chaque push vers le registre. Outils recommandés : Trivy (open source, Aqua Security), Grype (Anchore), ou Snyk. Ce scan est intégré dans le pipeline CI comme quality gate bloquant : une image présentant des vulnérabilités de sévérité HIGH ou CRITICAL ne doit pas être publiée sans correction ou justification documentée. Cycle de vie et rétention des artefacts : définir une politique de rétention explicite. Les artefacts (images, packages) produits depuis des branches fusionnées ou supprimées sont supprimés après N jours (N = 30 recommandé). Les artefacts correspondant à des tags de version (SemVer, tags de release) sont conservés indéfiniment. Cette politique réduit les coûts de stockage et évite l'accumulation d'artefacts non maintenus potentiellement vulnérables.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "npm Docs — Generating provenance statements (docs.npmjs.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "SLSA provenance is metadata about how a package was built and strongly links an open source package to the build system and source code used to create it. The identity of the CI environment and job (in the form of an OpenID Connect token) can be used to apply a cryptographic signature to the provenance statement — attesting to the validity of the data in a way that can be verified by any consumers of the package.",
+            "note": "Documentation officielle npm — niv.3. Source primaire pour la génération de provenance cryptographique sur les packages npm publiés via `npm publish --provenance`. Accord A/B."
+          },
+          {
+            "name": "SLSA — Supply-chain Levels for Software Artifacts v1.0 (slsa.dev, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "SLSA is a specification for describing and incrementally improving supply chain security. Level 2: Builds run on a hosted platform that generates and signs the provenance. Level 3: Build platform runs on dedicated infrastructure and the provenance is tied to that infrastructure through a digital signature, with downstream verification of provenance including validating the authenticity of the provenance.",
+            "note": "Spécification SLSA v1.0 (Google-initiated, OpenSSF) — niv.3. Définit les niveaux de sécurité des artefacts de build de façon incrémentale. Accord A/B."
+          },
+          {
+            "name": "Docker Docs — Multi-stage builds (docs.docker.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Multi-stage builds reduce the size of your final image by creating a cleaner separation between the building of your image and the final output, ensuring that the resulting output only contains the files needed to run the application. It's generally more efficient to chain related commands together using && and to clean up any temporary files within the same RUN command, which reduces the total number of layers.",
+            "note": "Documentation officielle Docker — niv.3. Bonnes pratiques de build pour images minimalistes et traçables. Accord A/B."
+          },
+          {
+            "name": "npm Docs — package-lock.json (docs.npmjs.com, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "package-lock.json is automatically generated and describes the exact tree that was generated, such that subsequent installs are able to generate identical trees, regardless of intermediate dependency updates. Use npm ci that enforces strict lockfile adherence, ensuring that only the exact versions specified in the lockfile are installed, and abort installation if inconsistencies are detected.",
+            "note": "Documentation officielle npm sur le lockfile — niv.3. Fondation de la reproductibilité des builds Node.js. Accord A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : npm Docs (npmjs.com), SLSA v1.0 (OpenSSF/Google), Docker Docs (Docker Inc.) et npm package-lock.json docs — 4 sources indépendantes de 3 organisations distinctes convergent sans contradiction sur les mêmes principes : reproductibilité via lockfile, provenance signée, images minimalistes via multi-stage builds"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "npm Docs package-lock.json 2024 — définit le mécanisme de reproductibilité par lockfile et le comportement abort-on-inconsistency de `npm ci` (niv.3, source primaire)",
+          "SLSA v1.0 2023 — définit le modèle de provenance signée et les niveaux de sécurité de la chaîne de livraison (niv.3, spécification OpenSSF/Google)",
+          "Docker Docs multi-stage builds 2024 — définit la bonne pratique de séparation builder/runtime et nettoyage des layers (niv.3, documentation officielle)"
+        ],
+        "etd_balance": {
+          "benefices": "Reproductibilité totale des builds : un lockfile committé + `npm ci` garantit que le build CI produit exactement le même artefact que le build local du développeur. Traçabilité cryptographique : la provenance SLSA permet à tout consommateur de vérifier indépendamment qu'un artefact provient bien d'un build CI légitime depuis le code source déclaré — protection contre les attaques de substitution d'artefacts. Images Docker plus petites et plus sûres : les multi-stage builds réduisent la surface d'attaque en excluant les outils de compilation du runtime, et réduisent les coûts de transfert et de stockage. Tags immuables : éliminent les déploiements ambigus (\"quel `latest` est en prod ?\") et facilitent les rollbacks. Scan de vulnérabilités en CI : détection précoce avant déploiement, coût de correction plus faible qu'en production.",
+          "risques": "Lockfile divergences lors de conflits Git (merge de branches parallèles) — nécessite une résolution manuelle attention au lockfile. Provenance SLSA : configuration initiale GitHub Actions OIDC non triviale pour les équipes non familières ; uniquement disponible nativement sur GitHub Actions (autres CI nécessitent des adaptateurs). Multi-stage builds : Dockerfiles plus complexes, temps de build légèrement augmenté lors du premier build (pas de cache). Politique de rétention : implémentation manuelle ou via GitHub Actions scheduled workflow si le registre ne la supporte pas nativement.",
+          "balance": "Bénéfices >> Risques. Les risques sont opérationnels et gérables par convention d'équipe (résolution lockfile) ou par configuration unique (OIDC GitHub Actions). Le coût d'un artefact compromis ou non reproductible en production est largement supérieur au coût de mise en place de ces pratiques. Le lockfile + `npm ci` est le standard de facto de l'industrie Node.js.",
+          "faisabilite": "Haute — `npm ci` : remplacement direct de `npm install` dans les scripts CI, un changement d'une ligne. Lockfile : déjà présent dans tout projet npm, simplement s'assurer qu'il n'est pas dans .gitignore. Provenance SLSA : `npm publish --provenance` sur GitHub Actions avec `permissions: id-token: write` — configuration documentée officiellement. Multi-stage builds : refactoring Dockerfile existant en 2 étapes (FROM ... AS builder, FROM ...). Scan Trivy : action GitHub officielle `aquasecurity/trivy-action@master`, intégration en 10 lignes de YAML."
+        },
+        "prisma_ref": "verification/prisma/artifact-management.md",
+        "sensitivity_ref": "verification/extractions/artifact-management.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

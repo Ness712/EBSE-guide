@@ -1,7 +1,7 @@
 # CLAUDE.md — Scaffold
 
 > **Version** : 1.9
-> **Source** : ebse-scaffold domaine `ai-collaboration` (33 PICOCs, Kitchenham 2007) + audit SWEBOK v4 x ISO 25010:2023 (229 decisions au total)
+> **Source** : ebse-scaffold domaine `ai-collaboration` (33 PICOCs, Kitchenham 2007) + audit SWEBOK v4 x ISO 25010:2023 (230 decisions au total)
 > **Usage** : copier ce fichier a la racine d'un projet, remplir les sections `[CONFIGURER]`, supprimer ce bloc d'en-tete.
 > **Chaque regle a un tag `Source:` traceable** — rien n'est invente.
 > **Principe de mecanisation** : tout ce qui peut etre une regle mecanique (format, lint, gate) doit l'etre. Ce qui reste ecrit dans les CLAUDE.md est uniquement ce qui demande du jugement. Quand tu updates ce scaffold, verifie : est-ce que cette regle pourrait etre un hook, un linter, un git hook ? Si oui, mecanise-la plutot que de l'ecrire.
@@ -740,3 +740,4 @@ exit 0
 | Estimation technique : cone d'incertitude (±4x initial), estimation ≠ engagement, Wideband Delphi, Planning Poker, decomposition <1j | PICOC technical-estimation | GRADE 3 RECOMMANDE — IEEE Software empirique (niv.3) ; McConnell cone + Boehm Wideband Delphi + Mike Cohn Planning Poker (niv.5×3) ; story points = complexite relative ; recalibration sur velocite reelle obligatoire | — |
 | Team topology : loi de Conway, Inverse Conway Maneuver, 4 topologies (stream-aligned/platform/enabling/complicated-subsystem) | PICOC team-topology | GRADE 3 RECOMMANDE — Conway 1968 + Skelton & Pais Team Topologies 2019 (niv.5×2) ; InfoQ Inverse Conway (niv.4) ; teamtopologies.com charge cognitive (niv.3) ; max 6-8 microservices/equipe, 8-12 personnes ; anti-pattern : equipes par couche technique | — |
 | Trunk-based vs GitFlow : TBD par defaut (branches <24-48h, feature flags), GitFlow reserve aux librairies versionnees | PICOC branching (EXTEND) | GRADE 3 RECOMMANDE — Forsgren/Accelerate 2018 : TBD parmi 5 pratiques elite performers + DORA 2024 (niv.4×2) ; Hammant trunkbaseddevelopment.com + Fowler FeatureBranch 2020 (niv.4-5) ; Driessen 2020 : GitFlow non recommande pour CD | — |
+| Java 21 virtual threads : thread-per-request, jamais pooler, synchronized → ReentrantLock (pinning), structured concurrency JEP 453 | PICOC java-concurrency | GRADE 5 STANDARD — JEP 444 Virtual Threads + JEP 453 Structured Concurrency (niv.1×2) ; Spring Boot 3.2+ docs (niv.3) ; Goetz JCIP (niv.5) ; diagnostic pinning via JFR jdk.VirtualThreadPinned ; ScopedValue > ThreadLocal a grande echelle | — |

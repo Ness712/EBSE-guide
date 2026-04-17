@@ -2,7 +2,7 @@
   "id": "documentation",
   "domain": "project",
   "question": "Quels types de documentation maintenir et comment appliquer le principe de single source of truth ?",
-  "depends_on": [],
+  "depends_on": ["coding-standards-vs-guidelines"],
   "tags": [
     "documentation",
     "readme",

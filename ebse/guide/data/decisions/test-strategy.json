@@ -1,0 +1,100 @@
+{
+  "id": "test-strategy",
+  "domain": "testing",
+  "question": "Comment definir et appliquer une strategie de test globale — pyramide, types de tests, ratio optimal — pour maximiser la confiance au deploiement tout en controlant le cout de maintenance des tests ?",
+  "depends_on": ["coverage-thresholds", "integration-tests", "e2e-tests"],
+  "tags": ["testing", "test-pyramid", "test-strategy", "unit-tests", "integration-tests", "e2e", "shift-left", "tdd", "ci"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Adopter une strategie de test structuree en niveaux complementaires — unit, integration, system, acceptance — ou chaque niveau detecte des defauts que les autres ne peuvent pas detecter. Implementer la pyramide des tests comme orientation (base large d'unit tests rapides et isoles, couche intermediaire d'integration sur comportements metier, sommet etroit d'E2E validant les flux utilisateur reels) sans traiter le ratio 70/20/10 comme une regle rigide : le ratio optimal depend du contexte (backend API vs UI frontend). Ajouter les tests statiques (TypeScript, linting) comme couche zero a cout quasi-nul. Principe 'shift-left' : detecter les defauts le plus tot possible dans le cycle de developpement reduit le cout de correction de facon exponentielle. Integrer les tests dans la Definition of Done plutot qu'en phase separee. Fondements : SWEBOK v4 (IEEE) structure formellement les quatre niveaux de test (unit/integration/system/acceptance) comme complementaires et non substituables — chaque niveau a un objectif distinct qui ne peut pas etre couvert par un autre ; ISO/IEC/IEEE 29119-2 definit les processus formels de test a chaque niveau (organization/management/dynamic) ; Cohn (Agile 2009) et Fowler (blogi 2012) posent la pyramide comme heuristique praticien : beaucoup plus d'unit tests que de broadstack tests, inversement a l'antipatern 'ice cream cone' ; Vocke/ThoughtWorks 2018 : plus d'UI tests = plus lents, plus fragiles, plus couteux en maintenance ; Humble & Farley (Continuous Delivery 2010) : deployment pipeline avec tests gradues par vitesse et isolation ; Dodds (Testing Trophy 2018) : variante moderne valorisant l'integration comme meilleur rapport confiance/maintenance, surtout pour le frontend React ; DORA State of DevOps 2023+2024 (N=39 000+ repondants) : CI + automated testing correle empiriquement avec la performance elite — les equipes integrant les tests dans la Definition of Done surpassent celles qui testent en phase separee ; ArXiv 2019 (ROI GUI automation) : ROI moyen ~250% apres 6 mois, valide l'investissement en tests automatises a grande echelle. Limite : le ratio exact 70/20/10 est une heuristique praticien sans etude controlee comparant les ratios — il s'agit d'une orientation, pas d'une prescription normative. La strategie definit l'architecture des tests ; les seuils de couverture et le mutation testing completent en mesurant leur qualite.",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "SWEBOK v4 — Guide to the Software Engineering Body of Knowledge, Chapter 5 Software Testing (IEEE, 2024)",
+            "pyramid": 1,
+            "year": 2024,
+            "quote": "Testing is performed at different levels of granularity. Test levels refer to the testing that is performed relative to the phase of software development: unit, integration, system, and acceptance testing.",
+            "note": "Standard IEEE officiel definissant formellement les quatre niveaux de test et leurs objectifs distincts. Source directe et prescriptive sur la structure de la strategie de test. Niveau 1 pyramide EBSE."
+          },
+          {
+            "name": "ISO/IEC/IEEE 29119-2:2021 — Software and Systems Engineering — Software Testing Part 2: Test Processes",
+            "pyramid": 1,
+            "year": 2021,
+            "quote": "The test process model described in this document defines processes for use within organizations and projects performing software testing.",
+            "note": "Standard international definissant les processus de test a chaque niveau (organization/management/dynamic). Complementaire SWEBOK v4 sur le cadre formel. Niveau 1 pyramide EBSE."
+          },
+          {
+            "name": "DORA State of DevOps Report 2023 + 2024 (Google/DORA, N=39 000+ repondants)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Teams that integrate testing into their Definition of Done outperform teams that treat testing as a separate phase.",
+            "note": "Plus grande enquete empirique sur les pratiques DevOps — N=39 000+ repondants. CI + automated testing correle avec performance elite (elite performers). Effet mesure a grande echelle. Niveau 4 pyramide EBSE. Quote APPROXIMATIVE (substance confirmee, formulation condensee)."
+          },
+          {
+            "name": "Mike Cohn — Succeeding with Agile (Addison-Wesley, 2009)",
+            "pyramid": 5,
+            "year": 2009,
+            "quote": "At the bottom of the pyramid are unit tests, then service-level tests, then user interface tests at the top. The number of tests at each level should match the shape of the pyramid.",
+            "note": "Source fondatrice de la pyramide des tests — inventeur du modele. Ratio oriente 70/20/10 comme heuristique praticien. Niv.5 pyramide EBSE mais source historiquement critique du domaine."
+          },
+          {
+            "name": "Martin Fowler — TestPyramid (martinfowler.com bliki, 2012)",
+            "pyramid": 5,
+            "year": 2012,
+            "quote": "The test pyramid is a way of thinking about how different kinds of automated tests should be used to create a balanced portfolio. Its essential point is that you should have many more low-level unit tests than high level end-to-end tests.",
+            "note": "Definition canonique de la pyramide reprise par toute la litterature testing. Reference incontournable. Niv.5 pyramide EBSE."
+          },
+          {
+            "name": "Ham Vocke (ThoughtWorks) — The Practical Test Pyramid (martinfowler.com, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "The more high-level you get the fewer tests you should have. Having more UI tests makes your test suite slower and more fragile.",
+            "note": "Guide praticien detaille anti-pattern 'ice cream cone'. Documente le cout en maintenance des tests UI. Niv.5 pyramide EBSE."
+          },
+          {
+            "name": "Kent C. Dodds — The Testing Trophy (kentcdodds.com, 2018)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "Write tests. Not too many. Mostly integration.",
+            "note": "Modele concurrent au trophee des tests (static > unit > integration > E2E). Emphase integration comme meilleur rapport confiance/maintenance, notamment pour frontend React. Niv.5 pyramide EBSE. Convergent avec la pyramide sur la structure generale, divergent sur le ratio relatif integration vs unit."
+          },
+          {
+            "name": "ArXiv 2019 — Return on Investment of GUI Test Automation (preprint)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "Average ROI of GUI test automation reaches approximately 250% after approximately 6 months of deployment.",
+            "note": "Validation empirique de l'investissement en tests automatises. ROI quantifie justifiant l'allocation de ressources aux tests. Niv.3 pyramide EBSE. Quote APPROXIMATIVE."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 4,
+          "plus": [
+            "convergence forte : SWEBOK v4 (niv.1) + ISO 29119 (niv.1) + Cohn + Fowler + Vocke + Dodds + DORA + Humble & Farley convergent sur la necessite d'une strategie formelle multi-niveaux et la hierarchie unit → integration → E2E. Accord entre modele pyramide (Cohn/Fowler) et trophee (Dodds) sur la structure generale malgre divergence sur les ratios.",
+            "effet important grande echelle : DORA N=39 000+ repondants mesure empiriquement l'impact sur la performance ; ROI ~250% (ArXiv 2019) quantifie l'investissement ; OWASP classe les defauts detectables par tests integration parmi les vulnerabilites critiques"
+          ],
+          "minus": [
+            "indirectness : le ratio exact 70/20/10 (pyramide) et la priorite integration (trophee) sont des heuristiques praticiens sans etude controlee comparant les ratios dans des contextes standardises — l'evidence est correlationelle (DORA) ou observationnelle (Cohn/Fowler/Dodds), pas experimentale"
+          ]
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "SWEBOK v4 IEEE 2024 (cadre formel quatre niveaux)",
+          "DORA State of DevOps 2023+2024 (validation empirique grande echelle N=39 000+)"
+        ],
+        "etd_balance": {
+          "benefices": "Detection precoce des regressions (shift-left), confiance au deploiement mesurable, feedback rapide sur les changements (unit tests en secondes), documentation vivante du comportement attendu, reduction du cout de correction (defaut detecte en CI vs prod = 10x moins cher), ROI positif apres ~6 mois",
+          "risques": "Investissement initial en temps de mise en place, risque de tests fragiles si ratio mal calibre (trop d'E2E = suite lente et instable), faux sentiment de securite si la strategie est appliquee mecaniquement sans adapter les ratios au contexte, maintenance des tests qui divergent du code",
+          "balance": "Benefices largement superieurs aux risques : DORA demontre empiriquement que les equipes avec testing structure surpassent les equipes sans strategie formelle. Le risque principal (tests fragiles) est mitige par la pyramide elle-meme qui recommande de minimiser les E2E. L'absence de strategie coute plus cher en bugs production et regresssions non detectees.",
+          "faisabilite": "Haute — les outils existent pour chaque niveau (JUnit 5/Vitest pour unit, Testcontainers pour integration, Playwright pour E2E, TypeScript/ESLint pour static). L'adoption peut etre progressive : commencer par unit + CI, ajouter integration, puis E2E en dernier."
+        },
+        "prisma_ref": "verification/prisma/test-strategy.md",
+        "sensitivity_ref": "verification/extractions/test-strategy.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

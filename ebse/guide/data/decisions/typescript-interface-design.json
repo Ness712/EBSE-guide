@@ -1,0 +1,109 @@
+{
+  "id": "typescript-interface-design",
+  "domain": "design",
+  "question": "Quand utiliser interface, type alias ou class en TypeScript pour definir des contrats de types — regles de decision par contexte (API publique, DTO, domaine, union types) ?",
+  "depends_on": [],
+  "tags": ["typescript", "interface", "type-alias", "class", "dto", "declaration-merging", "structural-typing", "nestjs", "class-validator"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Regle generale : preferer interface pour tout ce qu'elle peut modeliser. La recommandation officielle TypeScript Handbook ('default to using interface and only use type when you need to') est renforcee par le Google TypeScript Style Guide et le TypeScript Team Lead lui-meme : 'my take is that it should really just be interfaces for anything that they can model. There is no benefit to type aliases when there are so many issues around display/perf.' En pratique, cela signifie : commencer par interface par defaut, ne passer a type que lorsque l'expressivite de interface est insuffisante.\n\nPerformance compilateur : les relations de types entre interfaces sont mises en cache par le compilateur TypeScript, contrairement aux intersection types (type A = B & C) qui sont recalcules a chaque usage. Le wiki Performance de l'equipe TypeScript (Microsoft, source officielle avec benchmarks) formule explicitement : 'extending types with interfaces/extends is suggested over creating intersection types.' Dans les codebases larges, ce delta de performance compilateur est mesurable.\n\nAPI publiques et librairies : toujours interface. La declaration merging est une fonctionnalite exclusive aux interfaces — si deux declarations portent le meme nom d'interface, TypeScript les fusionne silencieusement. Cela permet aux consommateurs d'une librairie d'etendre les contrats sans fork. Inversement, declarer deux fois le meme type alias produit une erreur 'Duplicate identifier', protegant le code interne contre les merges accidentels. Regle : toute surface exposee publiquement (SDK, API response shape, module exports) utilise interface.\n\nTypes internes — quand type est obligatoire : interface ne peut pas exprimer les unions discriminees (type Result = Success | Failure), les mapped types (type Readonly<T> = { readonly [K in keyof T]: T[K] }), ni les conditional types (type IsArray<T> = T extends any[] ? true : false). Ces constructions exigent type alias. Pour les types de domaine interne sans besoin d'extension ou de merging, type convient egalement — mais la declaration merging accidentelle etant impossible (erreur compile-time), ce choix est une protection supplementaire contre les collisions de noms.\n\nDTOs NestJS — obligation de class : dans un contexte NestJS avec class-validator et class-transformer, les DTOs DOIVENT etre des classes, pas des interfaces ni des type aliases. La raison est fondamentale : TypeScript supprime les interfaces et les types a la compilation — ils n'existent pas au runtime. class-validator (@IsEmail(), @IsNotEmpty(), etc.) et class-transformer (plainToInstance()) s'appuient sur les metadonnees runtime emises par les decorateurs, qui ne fonctionnent que sur des classes. Utiliser une interface ou un type pour un DTO NestJS produit une validation silencieusement inactive ou un crash runtime lors de la transformation.\n\nAbstract class vs interface : choisir abstract class uniquement si une implementation partagee doit etre heritee par les classes concretes. Si le besoin est uniquement de definir un contrat de forme (shape contract), interface est preferable — elle impose moins de couplage, elle est effacee a la compilation (pas d'impact bundle), et elle ne contraint pas la hierarchie d'heritage. Regle de decision : 'If there is no shared implementation needed, prefer interfaces' (Stemmler).\n\nTypage structurel — interchangeabilite technique : TypeScript est structuralement type. Pour la compatibilite de type, interface et type sont techniquement interchangeables — une classe qui satisfait la shape d'une interface l'implemente implicitement, et un type alias definissant la meme shape est compatible. La decision interface vs type n'est donc pas une question de semantique runtime mais de tooling (messages d'erreur plus lisibles avec interface), de performance compilateur (interfaces cachees), et d'expressivite (unions et mapped types = type uniquement).\n\nArbre de decision synthetique :\n- DTO NestJS avec validation decorateurs → class obligatoire\n- Union discriminee, mapped type, conditional type → type obligatoire\n- API publique, surface exportee, librairie → interface (declaration merging voulu)\n- Type de domaine interne sans union → interface par defaut (performance, lisibilite erreurs)\n- Implementation partagee entre classes → abstract class\n- Shape contract sans implementation → interface",
+        "grade": 5,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "TypeScript Team — Performance wiki (Microsoft/TypeScript, github.com/microsoft/TypeScript/wiki/Performance, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Type relationships between interfaces are also cached, as opposed to intersection types as a whole. [...] extending types with interfaces/extends is suggested over creating intersection types.",
+            "note": "Source officielle equipe TypeScript avec benchmarks internes. Justification technique directe de la preference interface pour la performance compilateur. Niveau 2 — documentation officielle avec equipe auteure. Accord A/B."
+          },
+          {
+            "name": "Google TypeScript Style Guide (google.github.io/styleguide/tsguide.html, 2024)",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Do not use a TypeScript interface to model the shape of a class. [...] The TypeScript team lead: 'Honestly, my take is that it should really just be interfaces for anything that they can model. There is no benefit to type aliases when there are so many issues around display/perf.'",
+            "note": "Style guide de Google (codebase TypeScript a grande echelle) citant directement le TypeScript Team Lead. Double autorite : pratique industrielle a grande echelle + position officielle de l'equipe TypeScript. Niveau 2 — guide officiel organisation majeure. Accord A/B."
+          },
+          {
+            "name": "TypeScript Handbook — Everyday Types (typescriptlang.org/docs/handbook/2/everyday-types.html, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "default to using interface and only use type when you need to.",
+            "note": "Documentation officielle TypeScript — prescription explicite pour les developpeurs. Mentionne aussi les meilleurs messages d'erreur des interfaces. Niveau 3 — documentation officielle framework. Accord A/B."
+          },
+          {
+            "name": "TypeScript Handbook — Declaration Merging (typescriptlang.org/docs/handbook/declaration-merging.html, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "declaration merging is interface-only. If you accidentally declare the same type alias twice you get a 'Duplicate identifier' error, while the same interface name merges silently.",
+            "note": "Documentation officielle TypeScript documentant la propriete exclusive de declaration merging aux interfaces. Fondement de la regle API publiques = interface. Niveau 3 — documentation officielle. Accord A/B."
+          },
+          {
+            "name": "TypeScript Handbook — Type Compatibility (typescriptlang.org/docs/handbook/type-compatibility.html, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "TypeScript's structural type system was designed based on how JavaScript code is typically written.",
+            "note": "Fondement du typage structurel TypeScript. Explique pourquoi interface et type sont techniquement interchangeables pour la compatibilite, et que la decision est une question de tooling et d'expressivite. Niveau 3 — documentation officielle. Source A uniquement, incluse car fondatrice du raisonnement structurel.",
+            "note_inclusion": "Source A uniquement — incluse car fondatrice du raisonnement sur l'interchangeabilite structurelle, non redondante avec les autres sources."
+          },
+          {
+            "name": "Vanderkam D. — Effective TypeScript 2nd ed. (O'Reilly, 2021/2023)",
+            "pyramid": 5,
+            "year": 2023,
+            "quote": "Use interfaces for types that will be used in public APIs (so that consumers can augment them via declaration merging) and use type aliases for types that are internal (to prevent accidental declaration merging).",
+            "note": "Reference experte TypeScript large diffusion. Formalise explicitement la distinction API publique/code interne avec declaration merging comme critere de decision. Niveau 5 — expert reconnu. Accord A/B."
+          },
+          {
+            "name": "Pocock M. (Total TypeScript) — Type vs Interface (totaltypescript.com, 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "quote": "Use interface for OOP-style inheritance and when declaration merging is needed. Use type for unions, mapped types, and conditional types — where interface simply cannot express the construct.",
+            "note": "Heuristique complementaire de Matt Pocock, expert TypeScript reconnu dans la communaute (auteur Total TypeScript, ancien core contributor). Articule clairement la partition fonctionnelle interface/type. Niveau 3 — expert communaute reconnu. Accord A/B.",
+            "note_inclusion": "Inclus pour la valeur heuristique complementaire sur les cas d'usage exclusifs a type (unions, mapped types, conditional types)."
+          },
+          {
+            "name": "NestJS — Documentation DTOs et Validation (docs.nestjs.com/pipes, docs.nestjs.com/techniques/validation, 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Classes are part of the JavaScript ES6 standard, and therefore they represent real entities in the compiled JavaScript. On the other hand, since TypeScript interfaces are removed during the transpilation, Nest can't refer to them at runtime.",
+            "note": "Documentation officielle NestJS expliquant pourquoi les DTOs doivent etre des classes — les interfaces sont effacees a la compilation, rendant class-validator/class-transformer inoperants sur elles. Niveau 3 — documentation officielle framework. Accord A/B."
+          },
+          {
+            "name": "Stemmler K. — When to Use TypeScript Abstract Classes (khalilstemmler.com, 2020)",
+            "pyramid": 3,
+            "year": 2020,
+            "quote": "If there's no shared implementation needed, prefer interfaces — they impose less coupling.",
+            "note": "Regle de decision claire abstract class vs interface. Source A uniquement, incluse car apport specifique sur la dimension couplage non couverte par les autres sources. Niveau 3 — expert domaine reconnu.",
+            "note_inclusion": "Source A uniquement — incluse pour la regle de decision abstract class vs interface, non couverte par les autres sources."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "convergence : TypeScript wiki Performance (niveau 2, equipe TypeScript officielle) + Google TypeScript Style Guide (niveau 2) + Vanderkam Effective TypeScript (niveau 5) + TypeScript Handbook Everyday Types (niveau 3) + Total TypeScript Pocock (niveau 3) + NestJS docs (niveau 3) convergent sans contradiction sur les regles de decision — 6 sources independantes couvrant 4 contextes distincts (normatif officiel, industriel grande echelle, expert communaute, framework applicatif)",
+            "effet important : performance compilateur documentee avec benchmarks officiels (interfaces cachees vs intersection types recalcules — TypeScript wiki, niveau 2) ; NestJS DTOs en class obligatoire sous peine de validation silencieusement inactive ou crash runtime (impact direct bugs de validation, documente par la documentation officielle NestJS) ; meilleurs messages d'erreur avec interface (TypeScript Handbook)"
+          ],
+          "minus": []
+        },
+        "robustness": "ROBUSTE",
+        "critical_sources": [
+          "TypeScript Team Performance wiki (Microsoft, niveau 2) — source officielle avec benchmarks justifiant la preference interface pour la performance compilateur",
+          "Google TypeScript Style Guide (niveau 2) — pratique industrielle a grande echelle citant le TypeScript Team Lead, double autorite",
+          "NestJS documentation officielle (niveau 3) — contraint absolument les DTOs a etre des classes sous peine de bugs runtime de validation"
+        ],
+        "etd_balance": {
+          "benefices": "Coherence de codebase : une regle par contexte elimine les debats interface-vs-type ad hoc. Performance compilateur : les interfaces sont mises en cache, avantage mesurable sur les grandes codebases. Extensibilite API : declaration merging permet aux consommateurs d'etendre les contrats sans fork. Securite des types internes : type alias protege contre les merges accidentels. Validation runtime fiable : les classes NestJS avec class-validator garantissent la validation effective au lieu d'une validation silencieusement inactive avec une interface.",
+          "risques": "Courbe d'apprentissage pour les developpeurs habitues a choisir arbitrairement entre interface et type. Risque de sur-application de interface dans des cas ou type est plus expressif (unions). Oubli de la regle class pour les DTOs NestJS si le contexte NestJS n'est pas connu.",
+          "balance": "Benefices >> Risques. Les risques sont mitiges par l'arbre de decision synthetique (regles claires et memorisables) et par les erreurs compile-time qui attrapent les violations (Duplicate identifier pour double type alias, erreur decorateur pour interface avec class-validator). L'impact le plus significatif est la prevention des bugs de validation runtime NestJS, qui sont des bugs silencieux particulierement dangereux.",
+          "faisabilite": "Haute — les regles sont enforceables par ESLint (@typescript-eslint/consistent-type-definitions pour interface vs type, @typescript-eslint/no-extraneous-class pour les classes vides). La regle NestJS est enforced nativement par le framework (class-validator ne fonctionne pas sur les interfaces). Aucun outillage supplementaire requis au-dela des linters TypeScript standards."
+        },
+        "prisma_ref": "verification/prisma/typescript-interface-design.md",
+        "sensitivity_ref": "verification/extractions/typescript-interface-design.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}

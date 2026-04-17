@@ -1,0 +1,92 @@
+{
+  "id": "sla-management",
+  "domain": "reliability",
+  "question": "Comment définir des SLI/SLO et gérer l'error budget avec burn rate alerting dans un projet NestJS+React+Prometheus ?",
+  "depends_on": [
+    "observability-opentelemetry",
+    "monitoring"
+  ],
+  "tags": [
+    "sla",
+    "slo",
+    "sli",
+    "error-budget",
+    "burn-rate",
+    "availability",
+    "prometheus",
+    "grafana",
+    "nestjs"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Hiérarchie SLI → SLO → SLA : SLI = fraction de requêtes réussies mesurée objectivement (ex : disponibilité = requêtes réussies / total requêtes × 100) ; SLO = cible interne (ex : 99,9 % sur 30 jours) ; SLA = engagement contractuel client, toujours inférieur au SLO pour conserver une marge de manœuvre. Error budget = 1 − SLO exprimé en temps indisponible autorisé (99 % = 3,65 j/an ; 99,5 % = 1,83 j ; 99,9 % = 8,77 h ; 99,95 % = 4,38 h ; 99,99 % = 52,6 min). Error budget policy : si le budget est épuisé → gel des nouvelles features, focus fiabilité exclusif ; si intact → innovation autorisée. Multiwindow multi-burn-rate alerting (SRE Workbook) : alertes sur deux fenêtres simultanées (court terme 1 h + moyen terme 6 h) avec deux niveaux de burn rate (critique + avertissement) pour réduire drastiquement les faux positifs d'une fenêtre unique. Implémentation NestJS : `@nestjs/terminus` expose `/health` (HTTP, TypeORM/DB, Memory, Disk) ; Prometheus scrape `/metrics` (prom-client) ; Sloth CLI (github.com/slok/sloth) génère les règles Prometheus SLI/SLO + alertes multiwindow depuis un YAML simple ; Grafana dashboard Sloth (ID 14643). Définir les SLIs à partir des golden signals (latence, traffic, errors, saturation — Google SRE Book ch. 6) dès la phase de design du service, pas après un incident.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Google SRE Book — \"Service Level Objectives\" ch. 4 (Google / O'Reilly, 2016, sre.google/sre-book)",
+            "pyramid": 5,
+            "year": 2016,
+            "quote": "SLI: a carefully defined quantitative measure of some aspect of the level of service that is provided. SLO: a target value or range of values for a service level that is measured by an SLI. SLA: an explicit or implicit contract with your users that includes consequences of meeting (or missing) the SLOs it contains. Error budget: 1 minus the SLO.",
+            "note": "Définitions fondatrices SLI/SLO/SLA/error budget par les équipes SRE de Google. Pyramide 5 — livre d'expert reconnu, référence de facto universelle sur le sujet. Accord Reviewer A/B."
+          },
+          {
+            "name": "Google SRE Workbook — \"Implementing SLOs\" ch. 2 + \"Alerting on SLOs\" ch. 5 (Google / O'Reilly, 2018, sre.google/workbook)",
+            "pyramid": 5,
+            "year": 2018,
+            "quote": "We recommend multiwindow, multi-burn-rate alerts. Alert if you have consumed a significant portion of your error budget in a short window (1h, burn rate 14) AND in a longer window (6h, burn rate 6). This reduces false positives compared to single-window approaches.",
+            "note": "Formulation de la technique multiwindow multi-burn-rate alerting. Recommandation opérationnelle concrète issue des équipes SRE Google. Pyramide 5 — livre d'expert reconnu, compagnon pratique du SRE Book. Accord Reviewer A/B."
+          },
+          {
+            "name": "ITIL 4 — Service Level Management Practice (Axelos/PeopleCert, 2019)",
+            "pyramid": 3,
+            "year": 2019,
+            "quote": "A service level agreement (SLA) is a documented agreement between a service provider and a customer that identifies both services required and the expected level of service. SLA targets should be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.",
+            "note": "Framework ITSM de référence internationale (adopté par des milliers d'organisations). Définit la dimension contractuelle et SMART des SLAs. Introduit les XLA (Experience Level Agreements) comme complément. Pyramide 3 — standard framework organisationnel reconnu. Accord Reviewer A/B."
+          },
+          {
+            "name": "Sloth (github.com/slok/sloth) — SLO generator for Prometheus",
+            "pyramid": 3,
+            "year": 2021,
+            "quote": "Sloth generates Prometheus SLI recording rules, error budget rules, and multiwindow multi-burn-rate alert rules from a simple YAML spec. Includes a Grafana dashboard (ID 14643).",
+            "note": "Outil open-source mature (1 000+ GitHub stars, activement maintenu). Automatise la génération des règles Prometheus conformes aux recommandations du SRE Workbook. Pyramide 3 — documentation outil communautaire bien établi. Accord Reviewer A/B."
+          },
+          {
+            "name": "NestJS Terminus (@nestjs/terminus) — Health checks for NestJS (docs.nestjs.com/recipes/terminus)",
+            "pyramid": 3,
+            "year": 2020,
+            "quote": "Terminus provides health indicators for HTTP, TypeORM (database), memory heap, memory RSS, and disk. The /health endpoint returns status up/down/shutting_down with details per indicator.",
+            "note": "Module officiel NestJS pour les health checks. Base pour mesurer les SLIs d'un service NestJS (disponibilité, saturation mémoire/disque). Pyramide 3 — documentation framework officielle. Accord Reviewer A/B."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 2,
+          "plus": [
+            "convergence : Google SRE Book + SRE Workbook + ITIL 4 + outillage (Sloth, NestJS Terminus) convergent sans contradiction sur la hiérarchie SLI→SLO→SLA, l'error budget, et l'alerting burn rate multiwindow. Contextes distincts : expert Google SRE (pratique interne à grande échelle), standard ITSM international (ITIL 4), outillage open-source communautaire (Sloth), framework NestJS officiel. Unanimité sur les concepts fondamentaux.",
+            "effet important : la technique multiwindow multi-burn-rate alerting réduit significativement les faux positifs par rapport à une alerte sur fenêtre unique (SRE Workbook, ch. 5 avec exemples chiffrés). L'error budget policy lie directement la fiabilité aux décisions produit — mécanisme de gouvernance à fort impact organisationnel."
+          ],
+          "minus": [
+            "indirectness : le Google SRE Book décrit les pratiques internes de Google, pas une étude empirique peer-reviewed contrôlée. Absence d'études RCT comparant des équipes avec SLO formels vs sans SLO sur des métriques de disponibilité mesurées. Les preuves sont principalement normatives et expertales — solides mais pas empiriquement quantifiées sur des populations larges hors Google/GAFAM."
+          ]
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Google SRE Book ch. 4 (2016) (définitions fondatrices SLI/SLO/SLA/error budget — source sans alternative équivalente au niveau de rigueur et d'adoption)",
+          "Google SRE Workbook ch. 5 (2018) (technique multiwindow multi-burn-rate — seule source formulant cette recommandation concrète d'alerting)"
+        ],
+        "etd_balance": {
+          "benefices": "Décisions data-driven : l'error budget objectivise le débat features vs fiabilité — le budget restant autorise ou interdit l'innovation sans jugement subjectif. Alerting actionnable : le multiwindow multi-burn-rate élimine les faux positifs des alertes sur seuil fixe et réduit l'alert fatigue. Alignement business : le SLA (engagement client) dérivé du SLO (cible interne) avec marge explicite évite les surprises contractuelles. Adoption outillage : Sloth + Prometheus + Grafana permettent une implémentation complète en quelques heures sans code custom. Visibilité équipe : les SLIs mesurent ce que l'utilisateur ressent réellement (disponibilité, latence) — pas des métriques systèmes déconnectées de l'expérience.",
+          "risques": "SLO trop ambitieux (99,99 %) : error budget de 52 min/an irréaliste pour une équipe sans on-call 24/7 — mène à un budget toujours épuisé et un gel permanent des features. SLI mal choisi : mesurer la disponibilité du process NestJS (uptime) au lieu de la disponibilité des requêtes utilisateurs (success rate) donne une mesure déconnectée de l'expérience réelle. Overhead organisationnel : l'error budget policy nécessite une adhésion de la direction produit pour être respectée.",
+          "balance": "Bénéfices >> Risques si les SLOs sont calibrés réalistement (commencer à 99 % ou 99,5 % pour un service early-stage, pas directement 99,99 %). Les risques sont des erreurs de calibration, pas des défauts du mécanisme lui-même.",
+          "faisabilite": "Haute pour NestJS+React+Prometheus : (1) `@nestjs/terminus` pour `/health` ; (2) `prom-client` pour `/metrics` ; (3) Sloth YAML pour générer les règles Prometheus SLI + alertes multiwindow ; (4) Grafana dashboard ID 14643 pour la visualisation ; (5) SLO starter réaliste : disponibilité 99,5 % (budget 1,83 j/an), latence P95 < 500 ms, error rate < 0,5 %."
+        },
+        "prisma_ref": "verification/prisma/sla-management.md",
+        "sensitivity_ref": "verification/extractions/sla-management.md#analyse-de-sensibilite",
+        "date_extraction": "2026-04-17"
+      }
+    ]
+  },
+  "variants": {}
+}
