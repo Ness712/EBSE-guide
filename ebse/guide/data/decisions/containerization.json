@@ -85,33 +85,6 @@
             "year": 2025
           }
         ]
-      },
-      {
-        "text": "Valider l'image Docker localement avant chaque push quand le Dockerfile ou docker-compose est modifie : `docker build -t test-local .` verifie la compilation ; `docker run --rm --entrypoint sh test-local -c 'ls /app/dist'` verifie l'artefact runtime. Le CI post-push est trop tardif comme boucle de feedback : chaque iteration d'erreur Dockerfile = pipeline complet (10-20 min). Principe : meme feedback loop que pour le code (typecheck local avant push).",
-        "grade": 2,
-        "level": "BONNE PRATIQUE",
-        "sources": [
-          {
-            "name": "Forsgren et al. DORA 2018 Accelerate — fast feedback loop key predictor of elite performance",
-            "pyramid": 2,
-            "year": 2018
-          },
-          {
-            "name": "Twelve-Factor Factor X — dev/prod parity",
-            "pyramid": 5,
-            "year": 2012
-          },
-          {
-            "name": "Docker docs — docker build local validation before registry push",
-            "pyramid": 3,
-            "year": 2024
-          }
-        ],
-        "grade_factors_applied": {
-          "start": 3,
-          "plus": [],
-          "minus": ["pas d'RCT docker-local-build vs CI-only", "indirectness (DORA mesure deployment frequency, pas specifiquement dockerfile iteration)"]
-        }
       }
     ]
   },
