@@ -116,7 +116,7 @@
 | Plan 1 — Étudier hook gate architecture (signal faible) | ⏳ À FAIRE | Gate "changements d'architecture" — détection dans pre-pr : scanner mots-clés (nouveau service, changement stack, restructuration) dans body PR + fichiers modifiés (docker-compose, infra/**). Signal faible → évaluer faux positifs avant d'activer |
 | Plan 1 — Traiter les 4 Mandatory non-hookables | ⏳ À FAIRE | Pour chaque règle non-hookable (non-invention, non-masquage échec, sous-agent CLAUDE.md en premier, ne pas bypasser gates) : (a) tester le wording actuel sur 5+ reformulations sémantiquement équivalentes (PICOC ai-agent-instruction-compliance — risque -61.8% sur reformulations) ; (b) si compliance < 100% → reformuler et re-tester ; (c) documenter le Deviation Risk résiduel dans compliance-matrix.md ; (d) vérifier que les mécanismes compensatoires sont en place (reviewer indépendant, audit pre-release, audit-tool-use.sh) |
 | Plan 2 — SDMF sur scaffold (6 phases) | ✅ FAIT | `scaffold/sdmf-phase2-gaps-report.md` — 12 convergences inter-phases, 10 hooks Phase A, 6 sections CLAUDE.md Phase B, 3 nouveaux PICOCs prioritaires |
-| Plan 3 — SDMF sur EBSE (domaines manquants) | ⏳ À FAIRE | domaines sans PICOC → nouveaux SLRs |
+| Plan 3 — SDMF sur EBSE (domaines manquants) | ✅ FAIT | `ebse/guide/data/decisions/plan3-sdmf-gaps.md` — 5 SLRs critiques (file upload security, MinIO, backup DR, STOMP auth, enterprise SSO), couverture actuelle 80% |
 | Mettre à jour scaffold-claude.md ligne 724 (GRADE 3 → GRADE 5) | ✅ FAIT | scaffold-claude.md |
 
 ---
