@@ -32,13 +32,13 @@
 
 | Règle | Niveau | Implémentation | Source PICOC | Statut |
 |-------|--------|---------------|--------------|--------|
-| Gate : schema / database migrations | **Mandatory** | NONE | #3 | ⚠️ GAP — aucun hook ne détecte les commandes de migration |
-| Gate : secret rotation / credential management | **Mandatory** | NONE | #3 | ⚠️ GAP — aucun hook ne détecte les rotations de secrets |
+| Gate : schema / database migrations | **Mandatory** | HOOK | #3 | ✅ `pre-commit-quality.sh` — détecte `migrations/*.sql` + `schema.prisma` stagés |
+| Gate : secret rotation / credential management | **Mandatory** | HOOK | #3 | ✅ `pre-commit-quality.sh` — détecte fichiers `.env*` stagés |
 | Gate : production deploys | **Mandatory** | PARTIAL | #3 | ⚠️ GAP PARTIEL — deny `git push --force` mais pas deploy direct |
 | Gate : force-push branches protégées | **Mandatory** | DENY | #3 | ✅ `Bash(git push --force*)` + `Bash(git push -f*)` |
-| Gate : license changes / dépendances restrictives | **Mandatory** | NONE | #3 | ⚠️ GAP — aucun hook ne vérifie les licences |
+| Gate : license changes / dépendances restrictives | **Mandatory** | HOOK | #3 | ✅ `pre-push-quality.sh` — `npx license-checker --failOn GPL;AGPL` |
 | Gate : customer data handling (PII) | **Mandatory** | NONE | #3 | ⚠️ GAP — aucun mécanisme |
-| Gate : changements d'architecture | **Mandatory** | NONE | #3 | ⚠️ GAP — aucune détection automatique |
+| Gate : changements d'architecture | **Mandatory** | NONE | #3 | ⚠️ GAP — signal faible, non hookable fiablement (étude séparée) |
 | Gate : merge vers main ou staging | **Mandatory** | DENY + HOOK | #3 | ✅ deny + pre-push hook |
 | Ne jamais se fier à sa propre confiance pour bypasser | **Mandatory** | CLAUDE.md | NIST AI 600-1 | ⚠️ NON HOOKABLE — comportement LLM |
 | Chaine accountability : principal désigné | Required | CLAUDE.md | #20 | OK |
@@ -77,7 +77,7 @@
 | Typecheck + lint avant de présenter le travail | **Mandatory** | HOOK | #4 | ✅ `post-edit-lint.sh` (soft) + `pre-commit-quality.sh` (hard) |
 | Tests unitaires (zéro régression) | **Mandatory** | HOOK | #4 | ✅ `pre-push-quality.sh` (à configurer par projet) |
 | Build vérifié avant push | **Mandatory** | HOOK | #4 | ✅ `pre-push-quality.sh` (à configurer) |
-| Si Dockerfile modifié : docker build --check avant push | **Mandatory** | HOOK | containerization | ⚠️ GAP — non implémenté dans pre-push |
+| Si Dockerfile modifié : docker build --check avant push | **Mandatory** | HOOK | containerization | ✅ `pre-push-quality.sh` — détecte Dockerfile/docker-compose modifiés |
 | Attente pipeline CI via `gh run watch` (jamais polling) | Required | CLAUDE.md | #4 | OK |
 | Dependency audit (`npm audit --audit-level=high`) | **Mandatory** | HOOK | #4 | ✅ `pre-push-quality.sh` (à configurer) |
 | SAST avant PR | Required | PARTIAL | #13 | ⚠️ GAP PARTIEL — mentionné mais non hookable automatiquement |
@@ -190,7 +190,7 @@
 
 | Règle | Niveau | Implémentation | Source PICOC | Statut |
 |-------|--------|---------------|--------------|--------|
-| CLAUDE.local.md non commité (.gitignore) | **Mandatory** | PARTIAL | Claude Code docs | ⚠️ GAP — non vérifié automatiquement dans pre-commit |
+| CLAUDE.local.md non commité (.gitignore) | **Mandatory** | HOOK | Claude Code docs | ✅ `pre-commit-quality.sh` — détecte CLAUDE.local.md stagé dans repos production |
 | Overrides ajustent les gates, ne les suppriment pas | Required | CLAUDE.md | #3 | OK |
 
 ---
@@ -199,9 +199,11 @@
 
 | Niveau | Total | Hookés / Mécanisés | Gaps critiques |
 |--------|-------|--------------------|----------------|
-| **Mandatory** | 24 | 11 ✅ | 13 ⚠️ |
+| **Mandatory** | 24 | 17 ✅ | 7 ⚠️ |
 | Required | 31 | 3 (hooks partiels) | — |
 | Advisory | 9 | 0 (par définition) | — |
+
+*Mise à jour 2026-04-18 : +6 hooks Mandatory implémentés (migrations DB, secrets .env, CLAUDE.local.md, chemins critiques warning, Docker build --check, license check GPL/AGPL).*
 
 ---
 
