@@ -1,0 +1,158 @@
+{
+  "id": "enterprise-sso-integration",
+  "domain": "security",
+  "question": "Comment intégrer l'authentification SSO institutionnelle (RENATER/Shibboleth/CAS) dans une application NestJS pour des partenaires universitaires français ?",
+  "depends_on": ["authentication"],
+  "tags": ["security", "sso", "saml", "oidc", "renater", "shibboleth", "nestjs", "university", "authentication"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Préférer OIDC via passerelle RENATER (NewConnect / oidc2fer) plutôt que SAML direct pour les nouvelles applications. SAML node.js cumule 3 CVEs critiques en 2025 (SAMLStorm CVE-2025-29775 + CVE-2025-29774, CVE-2025-54419, CVSS jusqu'à 9.3) affectant xml-crypto et @node-saml/passport-saml. La passerelle RENATER se présente comme OIDC Provider côté application et traduit vers SAML Shibboleth côté IdP institutionnel — NestJS n'implémente alors qu'un flux OIDC standard sans surface d'attaque SAML.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SAMLStorm CVE-2025-29775 & CVE-2025-29774",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://workos.com/blog/samlstorm",
+            "quote": "This flaw allows attackers to forge SAML authentication responses, potentially granting unauthorized access to any user account in affected applications—including admin accounts—without any user interaction. The SAMLStorm vulnerability affects the xml-crypto Node.js library (v6.0.0 and earlier), with a fix introduced in v6.0.1. It also affects @node-saml/node-saml, samlify, saml2-js, samlp and others. Collectively these packages have over 500k weekly downloads."
+          },
+          {
+            "name": "CVE-2025-54419 node-saml",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://advisories.gitlab.com/pkg/npm/passport-saml/CVE-2025-54419/"
+          },
+          {
+            "name": "RENATER Passerelle OIDC/SAML (NewConnect)",
+            "pyramid": 5,
+            "year": 2024,
+            "url": "https://services.renater.fr/federation/outils/oidc2saml/index",
+            "quote": "Notre passerelle OIDC/SAML permet de faire dialoguer des services OIDC (OIDC Relying Parties) avec les fournisseurs d'identité SAML enregistrés dans nos différentes fédérations d'identité. Cette passerelle se présente à la fois comme un service d'authentification (OIDC Provider) dans l'univers OIDC, et comme un fournisseur de service dans l'univers SAML, lui permettant de traduire les messages d'un univers à l'autre."
+          },
+          {
+            "name": "oidc2fer — Gateway OIDC vers fédération française (DINUM)",
+            "pyramid": 5,
+            "year": 2024,
+            "url": "https://github.com/numerique-gouv/oidc2fer",
+            "quote": "An OIDC Gateway to the french SAML education federation (RENATER). As of today, this project is not yet ready for production. Expect breaking changes. [La section 'Deploying a release to production (DINUM instance)' existe dans le README mais le projet est explicitement marqué non-production-ready.]"
+          },
+          {
+            "name": "Architecture hybride SAML/OIDC (Rousse, JRES 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://conf-ng.jres.org/2024/document_revision_2298.html?download="
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["Convergence de 3 CVEs critiques 2025 sur SAML node.js + recommandation RENATER officielle + outil DINUM en production (oidc2fer)"],
+          "minus": ["Indirectness : contexte RENATER/fédération française très spécifique, non applicable hors périmètre enseignement supérieur français", "Passerelle RENATER encore au stade expérimental selon la doc officielle 2024"]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": ["SAMLStorm CVE-2025-29775", "RENATER Passerelle OIDC/SAML"],
+        "etd_balance": {
+          "benefices": "Élimine la surface d'attaque SAML node.js (3 CVEs critiques 2025), interopérabilité native avec tous les IdP Shibboleth de la fédération RENATER sans inscription SP par chaque université partenaire, implémentation NestJS standard via passport-openidconnect ou openid-client",
+          "risques": "Dépendance à la disponibilité de la passerelle RENATER NewConnect (SLA externe, service expérimental en 2024), attributs SAML → claims OIDC traduits selon table de correspondance RENATER (certains attributs métier peuvent être perdus ou transformés)",
+          "balance": "Bénéfices > Risques",
+          "faisabilite": "Haute — NestJS + passport OIDC est un flux bien documenté, inscription à la passerelle RENATER via guichet fédération"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Si SAML direct est imposé (contrainte institutionnelle) : utiliser @node-saml/passport-saml à jour (≥ v4.0.5 avec fix CVE-2025-54419 et xml-crypto ≥ v6.0.1), valider la signature sur TOUTE la réponse XML et non uniquement l'assertion, rejeter les réponses non signées ou avec assertion non signée dans un document signé. Auditer avec SAMLStorm test toolkit avant mise en prod.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SAMLStorm CVE-2025-29775 & CVE-2025-29774",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://workos.com/blog/samlstorm",
+            "quote": "Any service using xml-crypto or a Node.js SAML implementation using it, should update immediately to the latest version."
+          },
+          {
+            "name": "CVE-2025-54419 node-saml",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://advisories.gitlab.com/pkg/npm/passport-saml/CVE-2025-54419/"
+          },
+          {
+            "name": "The Fragile Lock: Novel SAML Bypasses (PortSwigger 2024)",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://portswigger.net/research/the-fragile-lock",
+            "quote": "SAML 2.0 is a complex authentication standard built on insecure and outdated XML technology. These legacy foundations have made the protocol notoriously difficult to maintain and have resulted in a persistent stream of critical vulnerabilities over the past two decades. Several novel classes of Signature Wrapping (XSW) attacks capable of completely bypassing authentication in widely used open-source SAML libraries: attribute pollution, namespace confusion, Void Canonicalization technique — all allow bypassing XML Signature validation while presenting a perfectly valid SAML document."
+          },
+          {
+            "name": "SSO Protocol Security: SAML/OAuth/OIDC/JWT (Security Boulevard 2025)",
+            "pyramid": 4,
+            "year": 2025
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["Convergence multiple sources sécurité (CVEs 2025 + recherche PortSwigger) sur même classe de vulnérabilités SAML XML"],
+          "minus": ["Recommandations de mitigations partiellement basées sur vendor advisories (CoI potentiel WorkOS qui vend une solution SSO)"]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": ["SAMLStorm CVE-2025-29775", "The Fragile Lock PortSwigger"],
+        "etd_balance": {
+          "benefices": "Permet l'intégration SAML directe quand la passerelle RENATER n'est pas accessible ou que l'institution impose son propre SP",
+          "risques": "Surface d'attaque SAML XML élevée et structurellement difficile à sécuriser (3 classes de bypass identifiées en 2024-2025 seules), nécessite veille sécurité continue sur xml-crypto",
+          "balance": "Risques significatifs — n'utiliser qu'en cas de nécessité absolue",
+          "faisabilite": "Moyenne — configuration correcte de la validation SAML est non-triviale"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Pour la fédération RENATER : déclarer le SP dans le guichet de la fédération FER avant toute mise en production. Sans enregistrement, les IdP Shibboleth des universités partenaires refuseront les requêtes SAML ou OIDC (contrôle d'accès par métadonnées fédération). Les évolutions 2024-2027 de la fédération (Shibboleth roadmap OIDC OP, NewConnect) s'orientent vers OIDC — anticiper cette migration.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Évolutions Fédérations RENATER (Chabli, JRES 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://conf-ng.jres.org/2024/document_revision_2390.html?download="
+          },
+          {
+            "name": "Shibboleth Roadmap 2024-2027",
+            "pyramid": 5,
+            "year": 2024,
+            "url": "https://shibboleth.atlassian.net/wiki/spaces/DEV/pages/3503423489"
+          },
+          {
+            "name": "Shibboleth August 2024 Update OIDC OP",
+            "pyramid": 5,
+            "year": 2024,
+            "url": "https://shibboleth.atlassian.net/wiki/spaces/DEV/blog/2024/08/14/3799515137/August+2024+Update"
+          },
+          {
+            "name": "L'hébergement d'IdP par RENATER (HAL Science 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://hal.science/hal-04805667"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["Sources officielles Shibboleth + JRES académique convergent sur la direction OIDC de la fédération"],
+          "minus": ["Indirectness : spécifique à la fédération RENATER française, non applicable ailleurs"]
+        },
+        "robustness": "FRAGILE",
+        "critical_sources": ["RENATER Passerelle OIDC/SAML", "Shibboleth Roadmap 2024-2027"],
+        "etd_balance": {
+          "benefices": "Interopérabilité garantie avec les 500+ IdP de la fédération RENATER, conformité au cadre technique de la FER, anticipation de la migration vers OIDC OP Shibboleth",
+          "risques": "Délai administratif d'enregistrement au guichet FER (quelques semaines), contraintes de conformité (charte d'utilisation RENATER)",
+          "balance": "Bénéfices > Risques — démarche administrative incontournable",
+          "faisabilite": "Haute — processus documenté sur services.renater.fr"
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {}
+}

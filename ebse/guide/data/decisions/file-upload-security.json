@@ -1,0 +1,151 @@
+{
+  "id": "file-upload-security",
+  "domain": "security",
+  "question": "Quelles mesures de securite implementer pour les fichiers uploades par les utilisateurs dans une application NestJS avec stockage MinIO ?",
+  "depends_on": ["input-validation", "encryption"],
+  "tags": ["security", "file-upload", "nestjs", "minio", "clamav", "owasp", "CWE-434"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Validation multi-couches obligatoire : whitelist extension + verification magic bytes (jamais Content-Type seul — spoofable) + UUID filename generee cote serveur + stockage hors webroot ou bucket isole sans execution. Le Content-Type HTTP est fourni par le client et ne peut pas etre fiable.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP File Upload Cheat Sheet",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "The Content-Type for uploaded files is provided by the user, and as such cannot be trusted, as it is trivial to spoof. Validating the file's signature can be checked and verified against the expected file that should be received. Creating a random string as a filename, such as generating a UUID/GUID, is essential. Store the files outside the webroot."
+          },
+          {
+            "name": "OWASP Unrestricted File Upload",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "It is possible to bypass this protection by changing this parameter in the request header using a web proxy. The file types allowed to be uploaded should be restricted to only those that are necessary for business functionality. Uploaded directory should not have any 'execute' permission and all the script handlers should be removed from these directories."
+          },
+          {
+            "name": "CWE-434 — Unrestricted Upload of File with Dangerous Type",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "The software allows the attacker to upload or transfer files of dangerous types that can be automatically processed within the product's environment. Mitigation: Generate a new, unique filename for an uploaded file instead of using the user-supplied filename, so that no external input is used at all."
+          },
+          {
+            "name": "CVE-2024-29409 — NestJS MIME Type Bypass",
+            "pyramid": 6,
+            "year": 2024,
+            "quote": "A vulnerability in NestJS file upload handling allows bypass of MIME type validation via content-type header manipulation, enabling upload of arbitrary files. CVSS 7.5 (HIGH). Affected: @nestjs/platform-express FileInterceptor with fileFilter relying solely on mimetype field from multer."
+          },
+          {
+            "name": "(In)Security of File Uploads in Node.js — ACM WWW 2024",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "The majority of analyzed Node.js applications rely exclusively on the Content-Type header for file type validation, which is trivially bypassed. Magic byte verification is absent in over 85% of the studied upload implementations."
+          },
+          {
+            "name": "FileUploadChecker — ARES 2022",
+            "pyramid": 3,
+            "year": 2022,
+            "quote": "Static analysis of 1,000+ open-source Node.js applications reveals that file upload misconfigurations — including missing extension whitelists and absent magic byte checks — are present in 73% of projects handling user-supplied files."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "Convergence forte : OWASP normatif (pyramid 5) + CVE reelle NestJS (pyramid 6) + 2 sources academiques concordantes (pyramid 3)",
+            "Vulnerabilite active documentee dans l'ecosysteme exact (NestJS multer) confirmee par CVE-2024-29409"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["OWASP File Upload Cheat Sheet", "CVE-2024-29409", "CWE-434"],
+        "etd_balance": {
+          "benefices": "Prevention RCE et malware upload (CWE-434 dans MITRE Top 25 2024). Eliminates bypass via Content-Type spoofing documente dans CVE-2024-29409.",
+          "risques": "Overhead lecture magic bytes (~1-5ms par fichier, negligeable). Complexite legere : bibliotheque file-type (npm) + configuration multer FileFilter.",
+          "balance": "Benefices >> Risques",
+          "faisabilite": "Haute — bibliotheque file-type maintenue, pattern bien documente dans l'ecosysteme NestJS"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Scan antivirus obligatoire avant ecriture definitive dans MinIO : ClamAV en sidecar Docker (self-hosted), ecriture dans un bucket quarantaine temporaire, scan via clamscan ou API TCP, puis deplacement vers bucket final uniquement si clean. Les bucket notifications MinIO permettent de declencher le scan sur evenement PUT.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP File Upload Cheat Sheet",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "Run the file through an antivirus or a sandbox if available to validate that it doesn't contain malicious data."
+          },
+          {
+            "name": "ClamAV in Node.js — Transloadit DevTips",
+            "pyramid": 6,
+            "year": 2024,
+            "quote": "Integrate ClamAV as a Node.js service by connecting to the ClamAV daemon (clamd) via TCP socket on port 3310. Stream the uploaded file buffer directly to clamd using the INSTREAM command before persisting to storage. Typical scan latency: 100-500ms for files under 10MB."
+          },
+          {
+            "name": "Virus scan MinIO buckets ClamAV+Kafka — DEV.to",
+            "pyramid": 6,
+            "year": 2023,
+            "quote": "MinIO bucket notifications can be configured to emit events on object creation (s3:ObjectCreated:*). A consumer reads the event, downloads the object from the quarantine bucket, scans it with ClamAV, and moves it to the production bucket only if clean. Infected objects are deleted and the event is logged."
+          },
+          {
+            "name": "File Upload Protection 10 Best Practices — OPSWAT",
+            "pyramid": 6,
+            "year": 2023,
+            "quote": "Scan every uploaded file with at least one antivirus engine before allowing it to reach production storage. For high-risk environments, consider multi-engine scanning. Quarantine-first architecture ensures infected files never reach end users even if processing is asynchronous."
+          },
+          {
+            "name": "OWASP Unrestricted File Upload",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "Upload .exe file into web tree - victims download trojaned executable."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "Convergence forte : OWASP normatif (pyramid 5) + 3 sources operationnelles concordantes sur architecture quarantaine + ClamAV",
+            "Pattern MinIO bucket notifications documente specifiquement pour le contexte OLS (self-hosted VPS)"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["OWASP File Upload Cheat Sheet", "Transloadit ClamAV Node.js", "DEV.to MinIO+ClamAV"],
+        "etd_balance": {
+          "benefices": "Prevention distribution malware aux autres utilisateurs. ClamAV gratuit et disponible en image Docker officielle. Architecture quarantaine-bucket compatible MinIO sans modification infra majeure.",
+          "risques": "Overhead scan 100-500ms par fichier (asynchronisable). RAM ClamAV ~300-500MB sur VPS 8GB. Signature DB a maintenir a jour (freshclam daemon).",
+          "balance": "Benefices > Risques pour plateforme collaborative",
+          "faisabilite": "Haute — image clamav/clamav Docker officielle, bibliotheque clamscan npm, MinIO mc event add supporte les webhooks"
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {
+    "typescript-nestjs-minio": {
+      "recommendation": "FileInterceptor NestJS avec custom FileFilter (magic bytes via file-type) + ClamAV sidecar + bucket quarantaine MinIO",
+      "grade": 4,
+      "level": "STANDARD",
+      "implementation": "1) FileInterceptor avec limits (fileSize, files) + FileFilter verifiant extension whitelist ET magic bytes (npm:file-type). 2) Ecriture dans bucket minio-quarantine. 3) Scan ClamAV via clamscan npm ou TCP clamd:3310. 4) Si clean: mc cp quarantine/ production/. Si infected: mc rm + alert GlitchTip. 5) UUID v4 comme objectName, jamais le filename original.",
+      "sources": [
+        {
+          "name": "NestJS File Upload docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "OWASP File Upload Cheat Sheet",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "CVE-2024-29409",
+          "pyramid": 6,
+          "year": 2024
+        }
+      ]
+    }
+  }
+}

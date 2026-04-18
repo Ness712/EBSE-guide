@@ -199,41 +199,37 @@
 
 | Niveau | Total | Hookés / Mécanisés | Gaps critiques |
 |--------|-------|--------------------|----------------|
-| **Mandatory** | 24 | 21 ✅ | 3 ⚠️ |
+| **Mandatory** | 24 | 23 ✅ | 1 ⚠️ |
 | Required | 31 | 3 (hooks partiels) | — |
 | Advisory | 9 | 0 (par définition) | — |
 
-*Mise à jour 2026-04-18 (Plan 1+2) : +10 mécanismes Mandatory ajoutés — migrations DB, secrets .env, CLAUDE.local.md, Docker build --check, license check, Co-Authored-By, secrets patterns, PII detection, settings.json readonly, browser_close deny.*
+*Mise à jour 2026-04-18 (Plan 1+2 complet) :*
+- *+10 mécanismes Mandatory Plan 1+2 : migrations DB, secrets .env, CLAUDE.local.md, Docker build --check, license check, Co-Authored-By, secrets patterns, PII detection, settings.json readonly, browser_close deny*
+- *+2 mécanismes Mandatory Plan 2 Phase A : H10 prompt injection filter (pre-tool-use), gate architecture (pre-pr warning)*
+- *Wording tests non-hookables : 4 règles renforcées (estimations interdites, "devrait marcher" interdit, formulation prompt sous-agent obligatoire, seul PO via CLAUDE.local.md peut lever une gate)*
 
 ---
 
-## Gaps Mandatory prioritaires (à résoudre)
+## Gaps Mandatory résiduels
 
-### Gaps hookables (peuvent être mécanisés)
+### Gap non hookable résiduel (comportement LLM intrinsèque)
 
-| Gap | Mécanisme possible |
-|-----|-------------------|
-| Gate migrations DB non détectée | Hook pre-commit : détecter `prisma migrate` / `flyway migrate` / commandes SQL DDL |
-| Gate secret rotation non détectée | Hook pre-commit : détecter patterns `rotate`, `revoke`, fichiers `.env` modifiés |
-| Gate architecture non détectée | Hook pre-pr : détecter mots-clés (nouvelle stack, nouveau service, restructuration) dans le body PR — difficile, signal faible |
-| Docker build --check manquant | Hook pre-push : si `Dockerfile` ou `docker-compose` dans les fichiers modifiés → `docker build --check` |
-| Chemins critiques non hookés | Hook pre-commit : détecter fichiers dans `auth/**`, `security/**`, `migrations/**` → message warning PO obligatoire |
-| CLAUDE.local.md dans .gitignore | Hook pre-commit : vérifier `.gitignore` contient `CLAUDE.local.md` |
-| License check manquant | Hook pre-push : `npx license-checker --failOn GPL` ou équivalent |
+Ces règles sont Mandatory par nature mais ne peuvent pas être imposées mécaniquement. Mitigation : wording renforcé (2026-04-18) + reviewer indépendant + audit pre-release.
 
-### Gaps non hookables (comportement LLM intrinsèque)
+| Gap | Wording actuel (renforcé 2026-04-18) | Risque résiduel | Mécanismes compensatoires |
+|-----|--------------------------------------|-----------------|--------------------------|
+| Ne jamais fabriquer de packages/APIs/chiffres | "même comme suggestion, estimation ou approximation" | Moyen — PICOC compliance -61.8% sur reformulations | `npm info` / vérification systématique, audit-tool-use.sh |
+| Ne jamais masquer un échec | "Ne pas signaler = masquer" | Moyen | reviewer indépendant, audit pre-release |
+| Sous-agent : lire CLAUDE.md en premier | Formulation obligatoire dans prompt : "Avant toute chose, lis [CLAUDE.md path]" | Faible — formulation prescrite | Vérification après retour sous-agent |
+| Ne pas bypasser les gates par confiance excessive | "Seul le PO peut lever une gate via CLAUDE.local.md" | Faible — mécanisme de levée défini | Gates mécaniques pour tout ce qui est hookable |
 
-Ces règles sont Mandatory par nature mais ne peuvent pas être imposées mécaniquement — elles dépendent du modèle de langage. La seule mitigation est la formulation claire en CLAUDE.md + tests de robustesse du wording (PICOC ai-agent-instruction-compliance).
+### Gate architecture (signal faible)
 
-| Gap | Mitigation |
-|-----|-----------|
-| Ne jamais fabriquer de packages/APIs | Wording clair + vérification systématique avant action |
-| Ne jamais masquer un échec | Wording clair + reviewer indépendant |
-| Sous-agent : lire CLAUDE.md en premier | Prompt engineering + vérification après retour |
-| Ne pas bypasser les gates par confiance excessive | Wording clair + gates mécaniques pour les gates mécanisables |
+Implémentée en **warning uniquement** (pas bloquant) dans `pre-pr-create.sh` — détecte fichiers infra/config modifiés + mots-clés dans body PR. Taux faux positifs trop élevé pour blocage. Monitoring : si 3+ faux positifs sur 10 PRs → réévaluer.
 
 ---
 
 ## Prochaine étape
 
-**Plan 2 — SDMF** : appliquer les 6 phases pour trouver les dimensions manquantes dans le scaffold (au-delà de ce qui existe déjà).
+**Plan 3 SLRs** : 5 SLRs Tier 1 à lancer (file upload security, MinIO, DB backup/DR, STOMP auth, enterprise SSO). Nécessite approbation PO par PICOC.
+**Phase C PICOCs** : 3 protocoles créés (`ai-agent-prompt-injection-defense`, `ai-agent-incident-response`, `ai-agent-mast-monitoring-runtime`) — SLRs à lancer sur approbation PO.

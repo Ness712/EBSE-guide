@@ -1,0 +1,293 @@
+{
+  "slr_id": "database-backup-disaster-recovery",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "PostgreSQL backup strategy Docker production WAL-G 2023 2024",
+    "PostgreSQL disaster recovery RPO RTO best practices self-hosted",
+    "pg_dump automated backup reliability testing restore verification 2023 2024",
+    "PostgreSQL point-in-time recovery PITR production self-hosted Docker 2024",
+    "PostgreSQL backup 3-2-1 rule offsite encryption pgBackRest Barman comparison 2024",
+    "pgBackRest vs Barman PostgreSQL backup tool comparison Docker VPS 2023 2024 2025",
+    "PostgreSQL WAL archiving S3 MinIO backup Docker Compose production 2024 2025"
+  ],
+  "databases_searched": [
+    "WebSearch (Google)",
+    "Medium",
+    "DEV Community",
+    "Severalnines Blog",
+    "Percona Blog",
+    "pgDash Blog",
+    "PostgreSQL Official Documentation",
+    "GitHub"
+  ],
+  "total_screened": 42,
+  "included": [
+    {
+      "name": "Automating Backups and Disaster Recovery in PostgreSQL at Scale: pgBackRest vs. Barman",
+      "year": 2024,
+      "venue": "Severalnines Blog",
+      "url": "https://severalnines.com/blog/automating-backups-and-disaster-recovery-in-postgresql-at-scale-pgbackrest-vs-barman/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Comparaison directe pgBackRest vs Barman pour PostgreSQL, couvre RPO/RTO, DR à grande échelle, pertinent Docker/VPS self-hosted"
+    },
+    {
+      "name": "PostgreSQL Disaster Recovery Guide: Backup, Restore & RTO Strategies",
+      "year": 2024,
+      "venue": "MyDBOps Blog",
+      "url": "https://www.mydbops.com/blog/master-postgresql-disaster-recovery-backup-restore",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Guide complet DR PostgreSQL avec définition RPO/RTO, stratégies de restauration, bonnes pratiques self-hosted"
+    },
+    {
+      "name": "PostgreSQL Disaster Recovery: Backups and PITR Explained",
+      "year": 2024,
+      "venue": "Stormatics Blog",
+      "url": "https://stormatics.tech/blogs/understanding-disaster-recovery-in-postgresql",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Explication PITR et DR PostgreSQL, applicable environnements self-hosted, < 7 ans"
+    },
+    {
+      "name": "High availability and disaster recovery (HA/DR) for Postgres databases",
+      "year": 2023,
+      "venue": "PostgresPro Blog",
+      "url": "https://postgrespro.com/blog/pgsql/5968057",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Vue d'ensemble HA/DR PostgreSQL couvrant réplication synchrone/asynchrone, Patroni, pgBackRest, Barman"
+    },
+    {
+      "name": "Dockerized PostgreSQL Backup and Recovery Strategies",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://pankajconnect.medium.com/dockerized-postgresql-backup-and-recovery-strategies-92c4ce3d7b91",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Spécifique Docker + PostgreSQL backup, directement applicable stack Docker Compose self-hosted"
+    },
+    {
+      "name": "Periodic Database Backup with WAL-G",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://dhikshith.medium.com/periodic-dadabase-backup-w-wal-g-3a6ef34272dd",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Configuration WAL-G pour backup PostgreSQL périodique avec Docker, cas pratique production"
+    },
+    {
+      "name": "How to Set Up PostgreSQL Backups with Docker",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://medium.com/@john_temperson/how-to-set-up-postgresql-backups-with-docker-be637dc3ce00",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Guide pratique backup PostgreSQL + Docker, couvre pg_dump et WAL archiving dans contexte containerisé"
+    },
+    {
+      "name": "PostgreSQL Backup Strategies for Enterprise-Grade Environments",
+      "year": 2023,
+      "venue": "Percona Blog",
+      "url": "https://www.percona.com/blog/postgresql-backup-strategy-enterprise-grade-environment/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Stratégies backup PostgreSQL complètes (pg_dump, WAL, PITR, pgBackRest), bonnes pratiques production"
+    },
+    {
+      "name": "Automated Testing of PostgreSQL Backups",
+      "year": 2024,
+      "venue": "pgDash Blog",
+      "url": "https://pgdash.io/blog/testing-postgres-backups.html",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Fiabilité des backups PostgreSQL, méthodologie de vérification automatisée des restaurations, impact sur RTO"
+    },
+    {
+      "name": "PostgreSQL backup verification — How to test and validate your PostgreSQL backups",
+      "year": 2024,
+      "venue": "DEV Community",
+      "url": "https://dev.to/piteradyson/postgresql-backup-verification-how-to-test-and-validate-your-postgresql-backups-2al8",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Vérification et validation backups PostgreSQL, niveaux de test (intégrité, restauration partielle/complète)"
+    },
+    {
+      "name": "PostgreSQL backup tools comparison — Databasus, WAL-G, pgBackRest and Barman",
+      "year": 2024,
+      "venue": "DEV Community",
+      "url": "https://dev.to/piteradyson/postgresql-backup-tools-comparison-databasus-wal-g-pgbackrest-and-barman-2kg",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Comparaison 4 outils backup PostgreSQL incluant WAL-G, pgBackRest, Barman, applicable VPS Docker self-hosted"
+    },
+    {
+      "name": "Top 5 PostgreSQL backup tools in 2025",
+      "year": 2025,
+      "venue": "DEV Community",
+      "url": "https://dev.to/rostislav_dugin/top-5-postgresql-backup-tools-in-2025-5801",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Panorama outils backup PostgreSQL 2025, inclut critères choix pour self-hosted VPS"
+    },
+    {
+      "name": "Top Open-Source Postgres Backup Solutions in 2026",
+      "year": 2026,
+      "venue": "Bytebase Blog",
+      "url": "https://www.bytebase.com/blog/top-open-source-postgres-backup-solution/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Revue complète solutions open-source backup PostgreSQL, comparaison pg_dump / WAL-G / pgBackRest / Barman"
+    },
+    {
+      "name": "Point-In-Time Recovery (PITR) in PostgreSQL",
+      "year": 2024,
+      "venue": "pgEdge Blog",
+      "url": "https://www.pgedge.com/blog/point-in-time-recovery-pitr-in-postgresql",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Explication détaillée PITR PostgreSQL, architecture (base backup + WAL), configuration production"
+    },
+    {
+      "name": "Practical PostgreSQL Continuous Archival to S3",
+      "year": 2024,
+      "venue": "Dhimas Learning Notes (Blog)",
+      "url": "https://dhimas.net/posts/pg-wal-archive-s3/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — WAL archiving PostgreSQL vers S3/MinIO compatible, applicable stack self-hosted avec MinIO"
+    },
+    {
+      "name": "Disaster Recovery Options for PostgreSQL Deployed to a Hybrid Cloud",
+      "year": 2023,
+      "venue": "Severalnines Blog",
+      "url": "https://severalnines.com/blog/disaster-recovery-options-postgresql-deployed-hybrid-cloud/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Options DR PostgreSQL multi-environnement, couvre VPS self-hosted et cloud hybride, stratégies RPO/RTO"
+    },
+    {
+      "name": "PostgreSQL pg_dump & pg_restore Guide",
+      "year": 2024,
+      "venue": "SimpleBackups Blog",
+      "url": "https://simplebackups.com/blog/postgresql-pgdump-and-pgrestore-guide-examples",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — Guide référence pg_dump/pg_restore avec exemples production, formats de backup, automatisation"
+    },
+    {
+      "name": "PostgreSQL: Documentation: Continuous Archiving and Point-in-Time Recovery (PITR)",
+      "year": 2024,
+      "venue": "PostgreSQL Official Documentation",
+      "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — Documentation officielle PITR PostgreSQL, référence authoritative pour WAL archiving et recovery"
+    },
+    {
+      "name": "Encrypt Your PostgreSQL Backups with pgBackRest",
+      "year": 2024,
+      "venue": "Percona Blog",
+      "url": "https://www.percona.com/blog/enhancing-postgresql-security-how-to-encrypt-the-pgbackrest-repository/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Chiffrement AES-256 des backups PostgreSQL avec pgBackRest, applicable règle 3-2-1 avec offsite chiffré"
+    },
+    {
+      "name": "WAL-G: Archival and Restoration for PostgreSQL",
+      "year": 2024,
+      "venue": "GitHub / WAL-G Read the Docs",
+      "url": "https://wal-g.readthedocs.io/PostgreSQL/",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — Documentation officielle WAL-G pour PostgreSQL, outil de référence backup S3/MinIO avec PITR"
+    },
+    {
+      "name": "PostgreSQL Backup Showdown: pgBackRest vs Barman in Real-World HA Clusters",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://medium.com/@ukhore/postgresql-backup-showdown-pgbackrest-vs-barman-in-real-world-ha-clusters-e5c827f724a7",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Comparaison pratique pgBackRest vs Barman en cluster HA réel, impact performance/RTO"
+    },
+    {
+      "name": "How to Set Up Point-in-Time Recovery Backups for PostgreSQL 16",
+      "year": 2024,
+      "venue": "Onidel Blog",
+      "url": "https://onidel.com/blog/postgresql-16-backup-tutorial",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Tutoriel PITR PostgreSQL 16 step-by-step, configuration WAL archiving production"
+    },
+    {
+      "name": "Demo PostgreSQL Point-in-time Recovery with Docker",
+      "year": 2023,
+      "venue": "GitHub Gist",
+      "url": "https://gist.github.com/LS80/2cab76adfd93e69641d15ca58e8ca37b",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Démonstration pratique PITR PostgreSQL avec Docker, directement applicable contexte Docker Compose"
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Geo-disaster recovery - Azure Database for PostgreSQL",
+      "year": 2024,
+      "venue": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/en-us/azure/postgresql/backup-restore/concepts-geo-disaster-recovery",
+      "exclusion_criterion": "E1",
+      "reason": "Spécifique Azure Database managé, pas transférable à self-hosted VPS Docker Compose"
+    },
+    {
+      "name": "About disaster recovery (DR) in Cloud SQL | Cloud SQL for PostgreSQL",
+      "year": 2024,
+      "venue": "Google Cloud Documentation",
+      "url": "https://cloud.google.com/sql/docs/postgres/intro-to-cloud-sql-disaster-recovery",
+      "exclusion_criterion": "E1",
+      "reason": "Spécifique Cloud SQL (Google managed), pas transférable à self-hosted VPS"
+    },
+    {
+      "name": "Reliability in Azure Database for PostgreSQL",
+      "year": 2024,
+      "venue": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/en-us/azure/reliability/reliability-postgresql-flexible-server",
+      "exclusion_criterion": "E1",
+      "reason": "Spécifique Azure Flexible Server (managed), non applicable à self-hosted Docker"
+    },
+    {
+      "name": "RTO and RPO in DR planning for Oracle SE",
+      "year": 2023,
+      "venue": "Dbvisit Blog",
+      "url": "https://dbvisit.com/blog/rto-and-rpo-disaster-recovery-planning",
+      "exclusion_criterion": "E1",
+      "reason": "Focalisé Oracle SE, pas PostgreSQL, transfert non direct"
+    },
+    {
+      "name": "Perform point-in-time recovery (PITR) | Cloud SQL for PostgreSQL",
+      "year": 2024,
+      "venue": "Google Cloud Documentation",
+      "url": "https://docs.cloud.google.com/sql/docs/postgres/backup-recovery/pitr",
+      "exclusion_criterion": "E1",
+      "reason": "Spécifique Cloud SQL Google managed, procédures non transférables à self-hosted"
+    },
+    {
+      "name": "Point-in-time recovery - PlanetScale",
+      "year": 2024,
+      "venue": "PlanetScale Documentation",
+      "url": "https://planetscale.com/docs/postgres/backups/point-in-time-recovery",
+      "exclusion_criterion": "E1",
+      "reason": "Spécifique PlanetScale (managed cloud), non applicable à self-hosted PostgreSQL"
+    },
+    {
+      "name": "Set up Production-Grade HA PostgreSQL with CloudNativePG",
+      "year": 2024,
+      "venue": "EzyInfra Blog",
+      "url": "https://ezyinfra.dev/blog/cloudnativepg-ha-setup",
+      "exclusion_criterion": "E1",
+      "reason": "Focalisé Kubernetes/CloudNativePG, contexte cible est Docker Compose VPS (pas K8s)"
+    },
+    {
+      "name": "Disaster Recovery 101: RPO/RTO Explained with Real Examples",
+      "year": 2024,
+      "venue": "WeHaveServers Blog",
+      "url": "https://wehaveservers.com/blog/migration-cost-optimization/disaster-recovery-101-rpo-rto-explained-with-real-examples/",
+      "exclusion_criterion": "E1",
+      "reason": "Générique DR tous systèmes, pas spécifique PostgreSQL — concepts généraux sans application PostgreSQL concrète"
+    },
+    {
+      "name": "Point In Time Recovery (PITR) in PostgreSQL 9.6",
+      "year": 2017,
+      "venue": "GitHub",
+      "url": "https://github.com/MBmousavi/PostgreSQL-Point-In-Time-Recovery",
+      "exclusion_criterion": "E2",
+      "reason": "PostgreSQL 9.6 (2017), > 7 ans, informations potentiellement obsolètes pour PG 15/16"
+    },
+    {
+      "name": "PostgreSQL: Documentation: 8.1: On-line backup and point-in-time recovery (PITR)",
+      "year": 2005,
+      "venue": "PostgreSQL Official Documentation",
+      "url": "https://www.postgresql.org/docs/8.1/backup-online.html",
+      "exclusion_criterion": "E2",
+      "reason": "Documentation PostgreSQL 8.1 (2005), > 7 ans, version très ancienne"
+    }
+  ]
+}

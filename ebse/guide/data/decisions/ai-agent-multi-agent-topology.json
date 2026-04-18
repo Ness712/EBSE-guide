@@ -52,12 +52,19 @@
             "pyramid": 3,
             "year": 2024,
             "quote": "systematic review of recent primary studies to map the current landscape of LMA applications across various stages of the software development lifecycle"
+          },
+          {
+            "name": "Zhang & Svenningsen 2024 — Building Effective Agents (Anthropic Research, 2024-12-19)",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "the most successful implementations weren't using complex frameworks or specialized libraries. Instead, they were building with simple, composable patterns",
+            "note": "Guide prescriptif basé sur l'observation de 'dozens of teams'. Aucune donnée quantifiée — qualitative uniquement. Converge avec Cognition 'Don't Build Multi-Agents' sur la préférence pour les patterns simples. Ajouté par snowballing forward depuis sources existantes. CoI : source Anthropic (vendeur). INCLUSION : I1 ✅ (topologie multi-agents, patterns simples vs complexes), I4 ✅ (2024). Date d'extraction : 2026-04-18."
           }
         ],
         "grade_factors_applied": {
           "start": 3,
           "plus": ["large-scale (Singh 19 LLMs)"],
-          "minus": ["inconsistency (Cognition anti vs Singh/Aider pro)", "CoI (Cognition vendor)"]
+          "minus": ["inconsistency (Cognition anti vs Singh/Aider pro)", "CoI (Cognition vendor + Anthropic)"]
         },
         "robustness": "FRAGILE",
         "critical_sources": ["Aider architect (seule preuve positive)", "Cemri MAST (seul contre-poids empirique)"],

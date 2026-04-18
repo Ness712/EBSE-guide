@@ -1,0 +1,196 @@
+{
+  "id": "websocket-stomp-channel-auth",
+  "domain": "security",
+  "question": "Comment implementer l'authentification au handshake et l'autorisation par canal (subscription filtering) sur des connexions WebSocket avec NestJS et STOMP ?",
+  "depends_on": [
+    "authentication",
+    "realtime"
+  ],
+  "tags": [
+    "security",
+    "websocket",
+    "stomp",
+    "authentication",
+    "authorization",
+    "nestjs",
+    "socket.io",
+    "CSWSH"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Authentifier la connexion WebSocket au handshake via socket.use() middleware (pas via @UseGuards seul — les guards NestJS sont invoques sur les evenements @SubscribeMessage, pas sur l'evenement CONNECT). Verifier le JWT dans le middleware, attacher le user sur le socket, et rejeter la connexion avant etablissement si le token est absent ou invalide.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "NestJS WebSocket Guards docs",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "There is no fundamental difference between web sockets guards and regular HTTP application guards. The only difference is that instead of throwing HttpException, you should use WsException. [Note: guards sont liés via @UseGuards() sur @SubscribeMessage() — la doc officielle ne couvre pas le handshake CONNECT. La recommandation socket.use() pour le handshake est documentée par les sources pyramid 4 ci-dessous.]"
+          },
+          {
+            "name": "OWASP WebSocket Security Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "WebSockets don't have built-in authentication. Perform message-level authorization checks rather than assuming connection equals access."
+          },
+          {
+            "name": "preetmishra.com — The Best Way to Authenticate WebSockets in NestJS",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Guards in NestJS are not invoked on the CONNECT event. The correct approach is to use socket.use() middleware to verify the JWT token before the connection is established."
+          },
+          {
+            "name": "DEV Community — WebSocket Authentication in NestJS: Handling JWT and Guards",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Implement a custom Socket.io middleware via socket.use() to extract and verify the JWT from the Authorization header at connection time."
+          },
+          {
+            "name": "node.kumarchaudhary.com.np — Securing Socket.io in NestJS with JWT and Passport",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Use the handleConnection() hook or the afterInit() hook to register a socket.use() middleware that validates the Bearer token before any event is processed."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "Convergence forte : NestJS docs officiels + 4 implementations independantes + OWASP",
+            "Pattern socket.use() documente explicitement dans NestJS docs et multiple tutorials"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "NestJS WebSocket Guards docs",
+          "OWASP WebSocket Security Cheat Sheet"
+        ],
+        "etd_balance": {
+          "benefices": "Prevention acces non autorise WebSocket, protection CSWSH, isolation claire handshake vs events, rejet precoce des connexions invalides avant allocation de ressources",
+          "risques": "Complexite legierement superieure aux guards REST, token expiry a gerer sur connexions longues (reconnexion ou refresh via evenement dedie)",
+          "balance": "Benefices > Risques",
+          "faisabilite": "Haute — socket.use() est natif Socket.io, supporte nativement par NestJS IoAdapter"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Valider l'en-tete Origin a chaque handshake WebSocket via une allowlist explicite pour prevenir le CSWSH (Cross-Site WebSocket Hijacking). Si cookies de session : appliquer SameSite=Strict ou Lax. Ne pas se fier uniquement au Sec-WebSocket-Key qui n'est pas un mecanisme d'authentification.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "OWASP WebSocket Security Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Validate the Origin header on every handshake. Always use an explicit allowlist of trusted origins. Use an allowlist, not a denylist. Avoid wildcards or substring matching which are error-prone."
+          },
+          {
+            "name": "PortSwigger Web Security Academy — Cross-site WebSocket hijacking",
+            "pyramid": 5,
+            "year": 2023,
+            "quote": "Cross-site WebSocket hijacking involves a CSRF vulnerability on a WebSocket handshake. The attack requires the handshake to rely solely on HTTP cookies for session handling and does not contain any CSRF tokens or other unpredictable values."
+          },
+          {
+            "name": "Praetorian — CSWSH",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "Origin header validation is the primary defense against CSWSH. SameSite cookie attribute provides defense-in-depth."
+          },
+          {
+            "name": "Security Risks in WebSocket — IJNRD",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "WebSocket connections bypass browser same-origin policy restrictions at protocol level; server-side origin validation is mandatory."
+          },
+          {
+            "name": "Attack Surface of WebSocket — arXiv",
+            "pyramid": 2,
+            "year": 2021,
+            "quote": "The absence of origin validation is the most exploited class of WebSocket vulnerabilities in real-world applications."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "Convergence OWASP + PortSwigger (authorite securite) + litterature academique (IJNRD, arXiv)",
+            "Cas reel Gitpod 2023 (account takeover via CSWSH insuffisant) documente par OWASP"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "OWASP WebSocket Security Cheat Sheet",
+          "PortSwigger Web Security Academy — CSWSH"
+        ],
+        "etd_balance": {
+          "benefices": "Prevention CSWSH, prevention session hijacking cross-origin, protection contre attaques web classiques portees sur WebSocket",
+          "risques": "Configuration allowlist a maintenir (overhead operationnel mineur), incompatibilite avec certains proxies qui suppriment Origin",
+          "balance": "Benefices >> Risques",
+          "faisabilite": "Haute — validation Origin faisable en socket.use() ou dans le cors config de l'IoAdapter NestJS"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Implementer le subscription filtering cote serveur : a chaque evenement SUBSCRIBE STOMP, verifier que l'utilisateur authentifie a le droit d'acceder au canal demande (ex. /topic/room/{roomId}). Ne pas faire confiance au client pour restreindre ses propres subscriptions. Rejeter ou ignorer les subscriptions non autorisees.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "blog.softbinator.com — Overcome WebSocket Authentication Issues STOMP",
+            "pyramid": 4,
+            "year": 2023,
+            "quote": "In STOMP over WebSocket, authentication at CONNECT is not sufficient. Each SUBSCRIBE frame must be validated server-side to ensure the user has rights to the requested destination."
+          },
+          {
+            "name": "Spring Framework docs — STOMP Authorization",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "You can authorize message handling methods, subscribe destinations, and message destinations using Spring Security. The authorization is checked on each SUBSCRIBE and MESSAGE frame, not just at connection time."
+          },
+          {
+            "name": "Spring Framework docs — Token-based STOMP Authentication",
+            "pyramid": 5,
+            "year": 2024,
+            "quote": "Token-based authentication for STOMP requires validating credentials on the CONNECT frame and making the resulting user principal available for subsequent authorization decisions on SUBSCRIBE and SEND frames."
+          },
+          {
+            "name": "delightfulengineering.com — Guards and Authorization NestJS WebSockets",
+            "pyramid": 4,
+            "year": 2024,
+            "quote": "Use @UseGuards() on specific @SubscribeMessage() handlers to enforce authorization per event type. For channel-based access control, check the subscription destination against the user's permissions in the guard canActivate() method."
+          },
+          {
+            "name": "OWASP WebSocket Security Cheat Sheet",
+            "pyramid": 2,
+            "year": 2024,
+            "quote": "Perform message-level authorization checks rather than assuming connection equals access. A successfully connected user should not automatically have access to all channels."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": [
+            "Convergence Spring STOMP docs (reference normative) + blog STOMP-specifique + NestJS guards docs + OWASP",
+            "Principe independant du framework : valide pour NestJS/Socket.io et Spring/STOMP"
+          ],
+          "minus": []
+        },
+        "robustness": "MODERE",
+        "critical_sources": [
+          "Spring Framework docs — STOMP Authorization",
+          "blog.softbinator.com — STOMP Authentication"
+        ],
+        "etd_balance": {
+          "benefices": "Prevention acces non autorise aux channels prives, isolation des donnees par room/utilisateur, defense-in-depth complementaire a l'auth handshake",
+          "risques": "Overhead par subscription (verification BDD ou cache), complexite supplementaire dans les guards/handlers",
+          "balance": "Benefices > Risques — l'auth au handshake seul est insuffisante (TOCTOU entre CONNECT et SUBSCRIBE)",
+          "faisabilite": "Haute — implementable via @UseGuards sur @SubscribeMessage, ou via intercepteur Socket.io cote serveur"
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {}
+}

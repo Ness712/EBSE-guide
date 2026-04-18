@@ -1,0 +1,163 @@
+{
+  "slr_id": "ai-agent-mast-monitoring-runtime",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "MAST failure modes detection monitoring LLM agent 2025",
+    "multi-agent system runtime monitoring observability 2024 2025",
+    "LLM agent trace analysis failure detection OpenTelemetry GenAI",
+    "SentinelAgent AgenTracer AgentFixer monitoring agentic systems",
+    "LLM-as-judge failure classification multi-agent production 2024 2025",
+    "OpenTelemetry AI agent observability blog 2025 GenAI semantic conventions",
+    "AgentSight eBPF AI agent observability monitoring 2025 arxiv"
+  ],
+  "databases_searched": [
+    "WebSearch (Google via Claude WebSearch tool)",
+    "arXiv (cs.AI, cs.CL)",
+    "ACM Digital Library (via DOI croisé)",
+    "HuggingFace Papers",
+    "OpenTelemetry official blog",
+    "EmergentMind"
+  ],
+  "total_screened": 28,
+  "included": [
+    {
+      "name": "Why Do Multi-Agent LLM Systems Fail? (MAST)",
+      "year": 2025,
+      "venue": "NeurIPS 2025 Datasets and Benchmarks Track / arXiv:2503.13657",
+      "url": "https://arxiv.org/abs/2503.13657",
+      "pyramid_level": 2,
+      "inclusion_reason": "Papier fondateur du PICOC : définit la taxonomie MAST avec 14 modes de défaillance (specification ambiguë, inter-agent mismatch, vérification inadéquate, context rot), construit un dataset de 1600+ traces annotées sur 7 frameworks MAS, et déploie un pipeline LLM-as-judge (κ=0.77) pour détecter les défaillances à l'échelle — adresse directement I1 (monitoring/détection spécifique agents IA) et répond au PICOC P+I."
+    },
+    {
+      "name": "SentinelAgent: Graph-based Anomaly Detection in Multi-Agent Systems",
+      "year": 2025,
+      "venue": "arXiv:2505.24201",
+      "url": "https://arxiv.org/abs/2505.24201",
+      "pyramid_level": 2,
+      "inclusion_reason": "Propose un système de détection d'anomalies runtime basé sur des graphes d'exécution dynamiques dans des MAS LLM, avec un agent de supervision LLM-powered — répond directement à I (mécanismes de monitoring runtime pour défaillances inter-agent) et à P (systèmes multi-agents en production)."
+    },
+    {
+      "name": "AgenTracer: Who Is Inducing Failure in the LLM Agentic Systems?",
+      "year": 2025,
+      "venue": "arXiv:2509.03312",
+      "url": "https://arxiv.org/abs/2509.03312",
+      "pyramid_level": 2,
+      "inclusion_reason": "Premier framework automatisé d'attribution de défaillance dans les trajectoires multi-agents via rejeu contrefactuel et injection de fautes — adresse directement I (vérification inadéquate, inter-agent mismatch) avec un modèle léger (AgenTracer-8B) surpassant GPT-4/Gemini sur la tâche de traçage de défaillance."
+    },
+    {
+      "name": "AgentFixer: From Failure Detection to Fix Recommendations in LLM Agentic Systems",
+      "year": 2026,
+      "venue": "arXiv:2603.29848",
+      "url": "https://arxiv.org/abs/2603.29848",
+      "pyramid_level": 2,
+      "inclusion_reason": "Framework de validation avec 15 outils de détection de défaillances + 2 modules d'analyse de cause racine couvrant input handling, prompt design et output generation — adresse I (vérification inadéquate) et O (réduction taux d'échec production) avec LLM-as-judge + règles déterministes."
+    },
+    {
+      "name": "AgentSight: System-Level Observability for AI Agents Using eBPF",
+      "year": 2025,
+      "venue": "PACMI 2025 (ACM) / arXiv:2508.02736",
+      "url": "https://arxiv.org/abs/2508.02736",
+      "pyramid_level": 3,
+      "inclusion_reason": "Observabilité système-niveau zero-instrumentation pour agents LLM via eBPF : intercepte le trafic TLS chiffré + événements kernel, corrèle intent sémantique et actions système, détecte injections de prompt / boucles de raisonnement / échecs de coordination multi-agents avec <3% overhead — répond à P+I (monitoring runtime spécifique IA) et distingue explicitement des approches infra génériques (E1)."
+    },
+    {
+      "name": "Beyond Black-Box Benchmarking: Observability, Analytics, and Optimization of Agentic Systems",
+      "year": 2025,
+      "venue": "arXiv:2503.06745",
+      "url": "https://arxiv.org/abs/2503.06745",
+      "pyramid_level": 2,
+      "inclusion_reason": "Propose des frameworks d'observabilité comportementale pour MAS analysant les logs d'exécution runtime (non les métriques agrégées) pour détecter des patterns de défaillance — adresse C (logging générique sans analyse sémantique) et O (précision détection, réduction faux positifs) en contexte agentic coding systems."
+    },
+    {
+      "name": "Sentinel Agents for Secure and Trustworthy Agentic AI in Multi-Agent Systems",
+      "year": 2025,
+      "venue": "arXiv:2509.14956",
+      "url": "https://arxiv.org/abs/2509.14956",
+      "pyramid_level": 2,
+      "inclusion_reason": "Architecture double-couche de Sentinel Agents et Coordinator Agents pour surveiller les communications inter-agents, détecter injections de prompt et exfiltration de données en temps réel — adresse P (orchestration MAS en production) et I (inter-agent mismatch, vérification inadéquate)."
+    },
+    {
+      "name": "AI Agent Observability - Evolving Standards and Best Practices (OpenTelemetry)",
+      "year": 2025,
+      "venue": "OpenTelemetry Official Blog (publi. 2025-03-06)",
+      "url": "https://opentelemetry.io/blog/2025/ai-agent-observability/",
+      "pyramid_level": 4,
+      "inclusion_reason": "Standard industriel émergent définissant les conventions sémantiques GenAI pour traces/spans d'agents IA (agent spans, tool calls, LLM invocations) — adresse I (monitoring runtime spécifique agents IA) et C (contre le logging générique sans sémantique), publié par la fondation OTel en 2025 donc I4 satisfait."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Prometheus / Grafana / standard infrastructure monitoring",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Monitoring infrastructure générique sans intelligence sémantique spécifique aux agents IA — répond à Prometheus/node_exporter, cAdvisor, etc."
+    },
+    {
+      "name": "LangSmith AI Agent & LLM Observability Platform",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Outil commercial de lifecycle management LLM (debugging, testing, evaluation) mais sans mécanisme de détection sémantique de défaillances MAST — monitoring générique applicatif sans classification de modes de défaillance."
+    },
+    {
+      "name": "A Survey on LLM-as-a-Judge (arXiv:2411.15594)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Survey général sur LLM-as-judge comme méthode d'évaluation de qualité de réponse LLM, pas appliqué spécifiquement au monitoring runtime ou à la détection de défaillances MAST dans des systèmes multi-agents."
+    },
+    {
+      "name": "Top 5 AI Agent Frameworks 2026 (Intuz blog)",
+      "year": 2026,
+      "exclusion_criterion": "E1",
+      "reason": "Article de blog commercial comparant des frameworks (LangGraph, CrewAI) sans traiter du monitoring runtime ou de la détection de défaillances."
+    },
+    {
+      "name": "Building Multi-Agent Systems on GCP (Medium)",
+      "year": 2025,
+      "exclusion_criterion": "E1",
+      "reason": "Guide d'architecture pour MAS sur GCP, axé patterns de déploiement cloud — pas de mécanisme de monitoring ou détection de défaillances spécifique aux agents IA."
+    },
+    {
+      "name": "OpenLLMetry (traceloop/openllmetry GitHub)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Instrumentation OpenTelemetry générique pour applications LLM (traces, spans) sans analyse sémantique des patterns de défaillance MAST — proche E1 (infra générique sans IA)."
+    },
+    {
+      "name": "Multi-Agent-as-Judge: Aligning LLM-Agent-Based Automated Evaluation (arXiv:2507.21028)",
+      "year": 2025,
+      "exclusion_criterion": "E1",
+      "reason": "Traite de l'alignement des évaluations automatisées avec jugements humains multi-dimensionnels — hors scope : pas de monitoring runtime de défaillances MAST dans des systèmes en production."
+    },
+    {
+      "name": "9 Key Challenges in Monitoring Multi-Agent Systems at Scale (Galileo blog)",
+      "year": 2025,
+      "exclusion_criterion": "E1",
+      "reason": "Article de blog pratique sans contribution scientifique évaluée par les pairs — grey literature non retenue faute de méthode de détection mesurable."
+    },
+    {
+      "name": "Observability: 5 Metrics to Prevent Failures in Multi-Agent (CloudMatos blog)",
+      "year": 2025,
+      "exclusion_criterion": "E1",
+      "reason": "Article marketing/blog sans apport empirique — métriques génériques (latence, throughput) sans spécificité agents IA ou détection MAST."
+    },
+    {
+      "name": "LLMs for Multi-Agent Cooperation (Xueguang Lyu blog post)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Revue de littérature informelle sur MARL et coopération LLM — pas de monitoring runtime ni de détection de défaillances."
+    },
+    {
+      "name": "When AIs Judge AIs: The Rise of Agent-as-a-Judge (arXiv:2508.02994)",
+      "year": 2025,
+      "exclusion_criterion": "E1",
+      "reason": "Étude du paradigme Agent-as-a-Judge pour l'évaluation de qualité LLM en général — pas focalisé sur monitoring runtime de défaillances MAST dans MAS en production."
+    },
+    {
+      "name": "The Orchestration of Multi-Agent Systems: Architectures (arXiv:2601.13671)",
+      "year": 2026,
+      "exclusion_criterion": "E1",
+      "reason": "Survey sur architectures d'orchestration MAS — traite des topologies et patterns de communication sans proposer de mécanismes de monitoring ou détection de défaillances runtime."
+    }
+  ]
+}

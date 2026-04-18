@@ -1,0 +1,254 @@
+{
+  "id": "database-backup-disaster-recovery",
+  "domain": "reliability",
+  "question": "Quelle strategie de backup et disaster recovery (RPO/RTO) adopter pour PostgreSQL dans une startup en croissance sur VPS Docker Compose ?",
+  "depends_on": ["database"],
+  "tags": [
+    "reliability",
+    "backup",
+    "disaster-recovery",
+    "postgresql",
+    "pitr",
+    "wal-g",
+    "pgbackrest",
+    "rpo",
+    "rto",
+    "minio",
+    "docker",
+    "self-hosted"
+  ],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Strategie a 2 niveaux obligatoire : (1) backup logique quotidien pg_dump -Fc -Z 9 en cron (RPO 24h, RTO previsible), (2) WAL archiving continu vers MinIO via WAL-G ou pgBackRest (RPO <= 1h, PITR). Les deux sont complementaires et non substituables. Configuration PostgreSQL requise : wal_level=replica, archive_mode=on, archive_timeout=60s.",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "PostgreSQL Official Docs — Ch. 26 Continuous Archiving and PITR",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://www.postgresql.org/docs/current/continuous-archiving.html",
+            "quote": "It is possible to restore the database to its state at any time since your base backup was taken. [...] To put a limit on how old unarchived data can be, you can set archive_timeout to force the server to switch to a new WAL segment file at least that often."
+          },
+          {
+            "name": "WAL-G documentation — PostgreSQL",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://wal-g.readthedocs.io/PostgreSQL/"
+          },
+          {
+            "name": "Automating Backups DR PostgreSQL — pgBackRest vs Barman — Severalnines",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://severalnines.com/blog/automating-backups-and-disaster-recovery-in-postgresql-at-scale-pgbackrest-vs-barman/"
+          },
+          {
+            "name": "Practical WAL Archiving to S3/MinIO — Dhimas",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://dhimas.net/posts/pg-wal-archive-s3/"
+          },
+          {
+            "name": "Dockerized PostgreSQL Backup — Medium",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://pankajconnect.medium.com/dockerized-postgresql-backup-and-recovery-strategies-92c4ce3d7b91"
+          },
+          {
+            "name": "PITR in PostgreSQL — pgEdge",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://www.pgedge.com/blog/point-in-time-recovery-pitr-in-postgresql"
+          },
+          {
+            "name": "PostgreSQL Disaster Recovery Guide — MyDBOps",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://www.mydbops.com/blog/master-postgresql-disaster-recovery-backup-restore"
+          },
+          {
+            "name": "Top Open-Source Postgres Backup 2026 — Bytebase",
+            "pyramid": 4,
+            "year": 2026,
+            "url": "https://www.bytebase.com/blog/top-open-source-postgres-backup-solution/"
+          },
+          {
+            "name": "PostgreSQL Backup Tools Comparison 2025 — DEV Community",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://dev.to/rostislav_dugin/top-5-postgresql-backup-tools-in-2025-5801"
+          }
+        ],
+        "grade_factors": {
+          "start": 2,
+          "adjustments": [
+            "+1 convergence tres forte (10+ sources independantes concordantes, dont doc officielle PostgreSQL niveau 3)"
+          ],
+          "final": 3
+        },
+        "robustness": "MODERATE",
+        "etd_balance": {
+          "benefices": "RPO <= 1h atteignable avec archive_timeout=60s, protection contre perte de donnees catastrophique, PITR permet restauration a n'importe quel point dans le temps depuis le dernier base backup",
+          "risques": "Overhead disque WAL archiving (~10-30% volume supplementaire), complexite configuration initiale, necessite monitoring de l'archivage (archive_command qui echoue silencieusement est un risque)",
+          "balance": "Benefices >> Risques pour toute DB en production",
+          "faisabilite": "Haute — WAL-G + MinIO est un setup documente et eprouve pour self-hosted Docker"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Tester les restaurations regulierement (hebdomadaire ou mensuel selon criticite) — un backup non teste n'est pas un backup. Procedure minimale : restaurer dans un conteneur Docker ephemere, verifier l'integrite des donnees, mesurer le RTO reel. Automatiser le test de restauration en CI si possible.",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Automated Testing of PostgreSQL Backups — pgDash",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://pgdash.io/blog/testing-postgres-backups.html"
+          },
+          {
+            "name": "PostgreSQL Backup Tools Comparison 2025 — DEV Community",
+            "pyramid": 4,
+            "year": 2025,
+            "url": "https://dev.to/rostislav_dugin/top-5-postgresql-backup-tools-in-2025-5801"
+          },
+          {
+            "name": "PostgreSQL Disaster Recovery Guide — MyDBOps",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://www.mydbops.com/blog/master-postgresql-disaster-recovery-backup-restore"
+          },
+          {
+            "name": "Google SRE Book — data integrity practices",
+            "pyramid": 5,
+            "year": 2016
+          }
+        ],
+        "grade_factors": {
+          "start": 2,
+          "adjustments": [
+            "+1 convergence forte (consensus industrie sur ce principe, cite dans toutes les sources practitioner)"
+          ],
+          "final": 3
+        },
+        "robustness": "FRAGILE",
+        "etd_balance": {
+          "benefices": "Garantie que le RTO cible (<= 4h) est atteignable en conditions reelles, detection precoce de backups corrompus ou incomplets",
+          "risques": "Temps de test (1-4h selon taille DB), charge additionnelle sur equipe",
+          "balance": "Benefices > Risques",
+          "faisabilite": "Haute — conteneur Docker ephemere suffit pour valider restauration sans impact prod"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Chiffrer les backups offsite (pgBackRest cipher-type=aes-256-cbc ou GPG sur pg_dump) + appliquer la regle 3-2-1 : 3 copies, 2 supports differents, 1 offsite. Pour self-hosted VPS : backup local + MinIO sur autre serveur/region = satisfait 3-2-1 minimum.",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Encrypt PostgreSQL Backups with pgBackRest — Percona",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://www.percona.com/blog/enhancing-postgresql-security-how-to-encrypt-the-pgbackrest-repository/"
+          },
+          {
+            "name": "Top Open-Source Postgres Backup 2026 — Bytebase",
+            "pyramid": 4,
+            "year": 2026,
+            "url": "https://www.bytebase.com/blog/top-open-source-postgres-backup-solution/"
+          },
+          {
+            "name": "Automating Backups DR PostgreSQL — pgBackRest vs Barman — Severalnines",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://severalnines.com/blog/automating-backups-and-disaster-recovery-in-postgresql-at-scale-pgbackrest-vs-barman/"
+          },
+          {
+            "name": "PostgreSQL Official Docs — Ch. 26 Continuous Archiving",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Since the series of WAL files being archived contains effectively everything in your database, you will want to be sure that the archived data is protected from prying eyes; for example, archive into a directory that does not have group or world read access."
+          },
+          {
+            "name": "ISO/IEC 27001 A.8.13 — Information backup",
+            "pyramid": 1,
+            "year": 2022
+          }
+        ],
+        "grade_factors": {
+          "start": 2,
+          "adjustments": [
+            "+1 convergence forte (sources practitioner + norme ISO) + doc officielle PostgreSQL recommande protection acces"
+          ],
+          "final": 3
+        },
+        "robustness": "MODERATE",
+        "etd_balance": {
+          "benefices": "Protection donnees en cas de breach sur le stockage de backup, conformite RGPD (donnees personnelles chiffrees au repos), regle 3-2-1 garantit survie a defaillance VPS principale",
+          "risques": "Complexite gestion cles chiffrement (perte cle = perte backup), overhead CPU chiffrement negligeable pour volumes < 100 GB",
+          "balance": "Benefices >> Risques",
+          "faisabilite": "Haute — pgBackRest integre le chiffrement nativement"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Cibles RPO/RTO a definir et documenter : RPO <= 1h (via WAL archiving avec archive_timeout=60s), RTO <= 4h (pg_restore + WAL replay). Retention 30 jours minimum pour les base backups, 7 jours pour les WAL. Valider ces cibles annuellement ou apres tout incident majeur.",
+        "grade": 3,
+        "level": "BONNE_PRATIQUE",
+        "sources": [
+          {
+            "name": "Google SRE Book — data integrity practices",
+            "pyramid": 5,
+            "year": 2016
+          },
+          {
+            "name": "PostgreSQL Official Docs — Ch. 26 Continuous Archiving",
+            "pyramid": 3,
+            "year": 2024,
+            "quote": "Since you have to keep around all the archived WAL files back to your last base backup, the interval between base backups should usually be chosen based on how much storage you want to expend on archived WAL files."
+          },
+          {
+            "name": "PostgreSQL Disaster Recovery Guide — MyDBOps",
+            "pyramid": 4,
+            "year": 2024,
+            "url": "https://www.mydbops.com/blog/master-postgresql-disaster-recovery-backup-restore"
+          }
+        ],
+        "grade_factors": {
+          "start": 2,
+          "adjustments": [
+            "+1 convergence — cibles RPO/RTO explicites citees dans toutes les sources comme prerequis DR"
+          ],
+          "final": 3
+        },
+        "robustness": "FRAGILE",
+        "etd_balance": {
+          "benefices": "Permet de dimensionner le stockage WAL correctement, fixe des engagements clairs pour la restoration",
+          "risques": "RPO <= 1h necessite archive_timeout faible ce qui augmente le volume WAL archive",
+          "balance": "Benefices > Risques",
+          "faisabilite": "Haute"
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {},
+  "slr_metadata": {
+    "picoc": {
+      "P": "Applications self-hosted PostgreSQL en production (Docker Compose + VPS)",
+      "I": "Strategie backup/DR : pg_dump, WAL archiving (WAL-G/pgBackRest), PITR, regle 3-2-1",
+      "C": "Pas de backup / backup manuel non teste",
+      "O": "RPO <= 1h, RTO <= 4h, backup chiffre offsite",
+      "C2": "VPS Debian + Docker Compose + MinIO comme stockage offsite"
+    },
+    "sources_screened": 23,
+    "sources_retained": 9,
+    "extraction_date": "2026-04-18",
+    "agent_a_screening": true,
+    "agent_b_extraction": true,
+    "overall_grade": 3,
+    "grade_rationale": "Sources principalement pyramid 4-5 (practitioner + officiel PostgreSQL niveau 3). Pas d'etudes empiriques randomisees (pyramid 2). Forte convergence (15+ sources concordantes) justifie GRADE 3. Pas de conflit d'interet identifie. Contexte Docker/self-hosted directement adresse par plusieurs sources."
+  }
+}

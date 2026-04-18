@@ -1,0 +1,239 @@
+{
+  "slr_id": "websocket-stomp-channel-auth",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "WebSocket authentication JWT NestJS security 2023 2024",
+    "STOMP channel authorization subscription filtering security",
+    "CSWSH cross-site WebSocket hijacking prevention",
+    "Socket.IO authentication middleware NestJS guards 2023 2024",
+    "RFC 6455 WebSocket security origin validation",
+    "WebSocket security authentication authorization academic paper 2022 2023 2024",
+    "NestJS WebSocket gateway JWT guard WsException tutorial 2024 2025",
+    "OWASP WebSocket security cheat sheet authentication",
+    "WebSocket STOMP security Spring real-time chat authorization subscription interceptor 2022 2023",
+    "WebSocket authentication site:arxiv.org OR site:ieee.org OR site:acm.org 2021 2022 2023 2024"
+  ],
+  "databases_searched": [
+    "Google (web search)",
+    "DEV Community (dev.to)",
+    "NestJS official docs (docs.nestjs.com)",
+    "OWASP Cheat Sheet Series",
+    "arXiv",
+    "ACM Digital Library",
+    "IEEE Xplore",
+    "IJNRD (International Journal of Novel Research and Development)",
+    "Baeldung",
+    "Spring official docs",
+    "Socket.IO official docs",
+    "PortSwigger Web Security Academy",
+    "WebSocket.org"
+  ],
+  "total_screened": 38,
+  "included": [
+    {
+      "name": "WebSocket Security Cheat Sheet — OWASP Cheat Sheet Series",
+      "year": 2024,
+      "venue": "OWASP (owasp.org)",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/WebSocket_Security_Cheat_Sheet.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — référence normative sur l'auth WebSocket (handshake JWT, Origin validation, CSWSH), maintenue activement, scope WebSocket explicite (pas HTTP générique)"
+    },
+    {
+      "name": "Cross-site WebSocket hijacking — PortSwigger Web Security Academy",
+      "year": 2023,
+      "venue": "PortSwigger Web Security Academy (portswigger.net)",
+      "url": "https://portswigger.net/web-security/websockets/cross-site-websocket-hijacking",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — traite exclusivement CSWSH (attaque sur le handshake WebSocket), couvre prévention (Origin validation, tokens CSRF), très récent et maintenu"
+    },
+    {
+      "name": "Guards - Gateways | NestJS official documentation",
+      "year": 2024,
+      "venue": "NestJS official docs (docs.nestjs.com)",
+      "url": "https://docs.nestjs.com/websockets/guards",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 + C2 — documente l'application des guards sur les gateways WebSocket NestJS, WsException, usage de @UseGuards sur les handlers socket — scope WebSocket/NestJS strict"
+    },
+    {
+      "name": "WebSocket Authentication in NestJS: Handling JWT and Guards",
+      "year": 2024,
+      "venue": "DEV Community (dev.to)",
+      "url": "https://dev.to/mouloud_hasrane_c99b0f49a/websocket-authentication-in-nestjs-handling-jwt-and-guards-4j27",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 + C2 — traite l'auth JWT sur le handshake WebSocket NestJS avec guards, adapter pattern, middleware socket.use() — scope WebSocket et NestJS, < 5 ans"
+    },
+    {
+      "name": "The Best Way to Authenticate WebSockets in NestJS",
+      "year": 2024,
+      "venue": "preetmishra.com / Medium WisdomCircle",
+      "url": "https://preetmishra.com/blog/the-best-way-to-authenticate-websockets-in-nestjs",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 + C2 — analyse comparative des approches (guards seuls vs middleware afterInit), limitations des guards (pas invoqués au CONNECT), recommandation socket.use() — scope WebSocket NestJS"
+    },
+    {
+      "name": "Securing Socket.io in NestJS with JWT and Passport",
+      "year": 2024,
+      "venue": "node.kumarchaudhary.com.np",
+      "url": "https://node.kumarchaudhary.com.np/securing-socketio-in-nestjs-with-jwt-and-passport-a-comprehensive-guide",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 + C2 — guide complet Socket.IO + JWT + Passport + NestJS, authentification au handshake, scope WebSocket/Socket.IO strict, < 5 ans"
+    },
+    {
+      "name": "Overcome WebSocket's Authentication and Authorization Issues (STOMP)",
+      "year": 2023,
+      "venue": "Softbinator Technologies Blog (blog.softbinator.com)",
+      "url": "https://blog.softbinator.com/overcome-websocket-authentication-issues-stomp/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — traite auth + autorisation sur canaux STOMP (subscription filtering, interceptor), distingue bien auth WebSocket de HTTP auth — scope WebSocket/STOMP explicite"
+    },
+    {
+      "name": "Token Authentication :: Spring Framework WebSocket/STOMP",
+      "year": 2024,
+      "venue": "Spring official docs (docs.enterprise.spring.io)",
+      "url": "https://docs.enterprise.spring.io/spring-framework/reference/web/websocket/stomp/authentication-token-based.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — documente l'auth par token sur STOMP (CONNECT frame, intercepteur, priorité sur Spring Security), scope WebSocket/STOMP explicite, < 5 ans"
+    },
+    {
+      "name": "Authorization :: Spring Framework WebSocket/STOMP",
+      "year": 2024,
+      "venue": "Spring official docs (docs.spring.io)",
+      "url": "https://docs.spring.io/spring-framework/reference/web/websocket/stomp/authorization.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — documente l'autorisation des messages STOMP via ChannelInterceptor (filtrage par destination, rôle utilisateur) — scope STOMP channel authorization strict"
+    },
+    {
+      "name": "Security Risks and Best Practices for Securing WebSocket",
+      "year": 2024,
+      "venue": "IJNRD Volume 9 Issue 7 (International Journal of Novel Research and Development)",
+      "url": "https://www.ijnrd.org/papers/IJNRD2407274.pdf",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 — papier académique (IJNRD 2024) sur sécurité WebSocket incluant CSWSH, MitM, auth/autorisation — scope WebSocket security explicite, < 5 ans"
+    },
+    {
+      "name": "Exploring the Attack Surface of WebSocket",
+      "year": 2021,
+      "venue": "arXiv (arxiv.org)",
+      "url": "https://arxiv.org/pdf/2104.05324",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 — analyse de la surface d'attaque WebSocket incluant auth bypass, CSWSH, protocole — scope sécurité WebSocket strict, publié 2021 (< 5 ans depuis 2026)"
+    },
+    {
+      "name": "WebSocket Adoption and the Landscape of the Real-Time Web",
+      "year": 2021,
+      "venue": "ACM Web Conference 2021 (dl.acm.org)",
+      "url": "https://dl.acm.org/doi/10.1145/3442381.3450063",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 partiel — étude empirique large-scale WebSocket usage (71 637 connexions) incluant patterns d'authentification observés en production, < 5 ans"
+    },
+    {
+      "name": "Essential guide to WebSocket authentication",
+      "year": 2024,
+      "venue": "Ably Blog (ably.com)",
+      "url": "https://ably.com/blog/websocket-authentication",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — guide complet auth WebSocket (token query param, cookie, ticket pattern), scope WebSocket auth strict (pas HTTP générique), < 5 ans, source technique de référence"
+    },
+    {
+      "name": "WebSocket Security: Auth, TLS, CSWSH & Rate Limiting",
+      "year": 2024,
+      "venue": "WebSocket.org (websocket.org)",
+      "url": "https://websocket.org/guides/security/",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — couvre auth, CSWSH, TLS, rate limiting dans le contexte WebSocket — scope WebSocket security strict, source de référence du protocole"
+    },
+    {
+      "name": "Cross-site WebSocket hijacking — Praetorian",
+      "year": 2023,
+      "venue": "Praetorian Security Blog (praetorian.com)",
+      "url": "https://www.praetorian.com/blog/cross-site-websocket-hijacking-cswsh/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — analyse CSWSH avec prévention (SameSite cookies, Origin header, JWT), scope WebSocket security/auth strict, < 5 ans"
+    },
+    {
+      "name": "Authentication - websockets library documentation",
+      "year": 2024,
+      "venue": "websockets Python library docs (websockets.readthedocs.io)",
+      "url": "https://websockets.readthedocs.io/en/stable/topics/authentication.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — documentation officielle patterns d'auth WebSocket (token in URL, cookie, ticket/one-time-token), scope WebSocket auth strict — pertinent comme référence de pattern cross-langage"
+    },
+    {
+      "name": "Delightful Engineering: Guards and Authorization for NestJS WebSockets",
+      "year": 2024,
+      "venue": "delightfulengineering.com",
+      "url": "https://www.delightfulengineering.com/blog/nest-websockets/guards-and-authorization",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 + C2 — couvre guards NestJS pour WebSocket + autorisation par canal (subscription filtering), scope WebSocket/NestJS strict, < 5 ans"
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Authentication | NestJS official documentation (HTTP)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Auth HTTP générique (Passport, JWT pour REST) sans spécificité WebSocket — hors scope I1"
+    },
+    {
+      "name": "A Step-by-Step Guide to Implement JWT Authentication in NestJS using Passport (Medium/Camille Fauchier)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "JWT auth pour endpoints HTTP REST NestJS uniquement, pas de WebSocket — hors scope I1"
+    },
+    {
+      "name": "Communicating and Displaying Real-Time Data with WebSocket (IEEE Internet Computing)",
+      "year": 2012,
+      "exclusion_criterion": "E2",
+      "reason": "Publié en 2012, > 5 ans — exclusion I4"
+    },
+    {
+      "name": "WebSocket Security :: Spring Security (docs.spring.io, version 4.1 / 5.0)",
+      "year": 2017,
+      "exclusion_criterion": "E2",
+      "reason": "Documentation ancienne (Spring Security 4.1 / 5.0, ~2017-2018), > 5 ans — exclusion I4"
+    },
+    {
+      "name": "Intro to Security and WebSockets | Baeldung",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Orienté Spring Boot/Java (stack non applicable OLS), pas NestJS/Node.js — pertinence C2 très faible, doublon de couverture avec sources Spring officielles incluses"
+    },
+    {
+      "name": "SoK: Web Authentication in the Age of End-to-End Encryption (arXiv 2024)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Traite WebAuthn/FIDO2/passkeys pour auth HTTP, pas WebSocket spécifiquement — hors scope I1"
+    },
+    {
+      "name": "Asynchronous Authentication (ACM CCS 2024)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Auth asynchrone générale, pas spécifique WebSocket/STOMP — hors scope I1"
+    },
+    {
+      "name": "Who's Breaking the Rules? Studying Conformance to HTTP Specifications (ACM ASIACCS 2024)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Conformance HTTP specs, pas WebSocket auth/autorisation — hors scope I1"
+    },
+    {
+      "name": "Stomp WebSocket Connection with AWS API Gateway and AWS Cognito (Medium)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Orienté infrastructure AWS (API Gateway serverless), pas applicable NestJS standalone — C2 hors scope"
+    },
+    {
+      "name": "Build a Secure App Using Spring Boot and WebSockets (DZone)",
+      "year": 2021,
+      "exclusion_criterion": "E1",
+      "reason": "Stack Spring Boot/Java — non applicable OLS (NestJS). Doublon de couverture avec sources Spring officielles incluses"
+    },
+    {
+      "name": "OWASP WSTG — Testing WebSockets (WSTG 4.11.10)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Guide de test de pénétration, pas de guidance d'implémentation auth — hors I1 (couverture déjà assurée par OWASP Cheat Sheet inclus)"
+    }
+  ]
+}

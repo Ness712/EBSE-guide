@@ -1,0 +1,188 @@
+{
+  "slr_id": "minio-object-storage-architecture",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "MinIO security best practices Docker production 2023 2024",
+    "S3 presigned URL security expiration best practices",
+    "object storage architecture self-hosted security policies 2024",
+    "MinIO CVE vulnerability 2024 service account security",
+    "S3 compatible storage CORS encryption at rest production NestJS 2023 2024",
+    "MinIO CVE-2023-28432 information disclosure environment variables 2023",
+    "NestJS S3 presigned URL secure file upload best practices 2024 Medium",
+    "CVE-2024-24747 MinIO privilege escalation service account details year"
+  ],
+  "databases_searched": [
+    "WebSearch (Google via Claude)",
+    "blog.min.io",
+    "min.io/docs",
+    "docs.aws.amazon.com",
+    "medium.com",
+    "nvd.nist.gov",
+    "github.com/advisories",
+    "aws.amazon.com/blogs",
+    "exploit-db.com",
+    "cvedetails.com"
+  ],
+  "total_screened": 22,
+  "included": [
+    {
+      "name": "MinIO Best Practices - Security and Access Control",
+      "year": 2025,
+      "venue": "blog.min.io (MinIO Official Blog)",
+      "url": "https://blog.min.io/s3-security-access-control/",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Architecture/sécurité stockage objet : couvre IAM policies, encryption at rest/inflight, TLS 1.2/1.3, bucket policies. Source officielle MinIO, directement applicable self-hosted Docker. I4 - 2025 < 5 ans."
+    },
+    {
+      "name": "Security Checklist — MinIO Object Storage for Container",
+      "year": 2024,
+      "venue": "min.io/docs (Documentation officielle MinIO)",
+      "url": "https://min.io/docs/minio/container/operations/checklists/security.html",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Checklist sécurité production pour déploiement container Docker : TLS, credentials fichier, non-root image, network isolation. I4 - documentation maintenue activement, dernière maj 2024."
+    },
+    {
+      "name": "How to Secure MinIO - Part 1",
+      "year": 2023,
+      "venue": "blog.min.io (MinIO Official Blog)",
+      "url": "https://blog.min.io/secure-minio-1/",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Architecture sécurité MinIO : TLS configuration, KES (Key Encryption Service), encryption at rest avec KMS externe (HashiCorp Vault, AWS KMS). I4 - 2023 < 5 ans. Contexte self-hosted explicite."
+    },
+    {
+      "name": "Best Practices to Secure MinIO Object Storage in Production",
+      "year": 2025,
+      "venue": "Medium (@nafiul.hafiz97)",
+      "url": "https://medium.com/@nafiul.hafiz97/best-practices-to-secure-minio-object-storage-in-production-1d6e015a6405",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 - Sécurité stockage objet production : least privilege, TLS, bucket policies, service accounts, monitoring Prometheus/Grafana. I4 - 2025 < 5 ans. Contexte Docker/self-hosted."
+    },
+    {
+      "name": "CVE-2024-24747 — MinIO unsafe default: Access keys inherit admin of root user (privilege escalation)",
+      "year": 2024,
+      "venue": "GitHub Advisory Database / NVD",
+      "url": "https://github.com/advisories/GHSA-xx8w-mq23-29g4",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Vulnérabilité architecture sécurité MinIO : les service accounts héritent des droits admin par défaut, bypass de session policy. Directement pertinent pour la config production self-hosted. I4 - 2024 < 5 ans."
+    },
+    {
+      "name": "CVE-2023-28432 — MinIO Information Disclosure (environment variables)",
+      "year": 2023,
+      "venue": "NVD / SentinelOne Security Blog",
+      "url": "https://www.sentinelone.com/blog/cve-2023-28432/",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Vulnérabilité critique sécurité MinIO cluster : endpoint /minio/health/live expose MINIO_SECRET_KEY et MINIO_ROOT_PASSWORD. Pertinent pour sécuriser déploiement Docker Compose self-hosted. I4 - 2023 < 5 ans."
+    },
+    {
+      "name": "CVE-2024-55949 — MinIO IAM Import API Privilege Escalation",
+      "year": 2024,
+      "venue": "GitHub Advisory Database",
+      "url": "https://advisories.gitlab.com/pkg/golang/github.com/minio/minio/",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Escalade de privilèges via l'API d'import IAM. Pertinent pour la gestion sécurisée des identités et politiques d'accès MinIO en production. I4 - 2024 < 5 ans."
+    },
+    {
+      "name": "Best practices for using presigned requests — AWS Prescriptive Guidance",
+      "year": 2023,
+      "venue": "docs.aws.amazon.com (AWS Prescriptive Guidance)",
+      "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/presigned-url-best-practices/best-practices.html",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Architecture sécurité presigned URLs S3-compatible : least privilege, expiration courte, s3:signatureAge condition key, logging X-Amz-Signature, data perimeters. Applicable à MinIO (S3-compatible). I4 - 2023 < 5 ans."
+    },
+    {
+      "name": "Securing Amazon S3 presigned URLs for serverless applications",
+      "year": 2023,
+      "venue": "aws.amazon.com/blogs/compute (AWS Compute Blog)",
+      "url": "https://aws.amazon.com/blogs/compute/securing-amazon-s3-presigned-urls-for-serverless-applications/",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 - Sécurisation presigned URLs : one-time use token, Content-MD5 checksum, expiration dynamique, network-path restriction policy. Patterns applicables avec MinIO S3-compatible depuis NestJS. I4 - 2023 < 5 ans."
+    },
+    {
+      "name": "Implementing Secure File Download/Upload to AWS S3 with NestJS",
+      "year": 2024,
+      "venue": "Medium (@sam.xzo.developing)",
+      "url": "https://medium.com/@sam.xzo.developing/implementing-secure-file-download-upload-to-aws-s3-with-nestjs-11144b789c75",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 - Architecture stockage objet + NestJS : presigned URLs, AWS SDK v3, env variables pour credentials, CORS configuration. Contexte C2 (NestJS backend) explicite. I4 - 2024 < 5 ans."
+    },
+    {
+      "name": "MinIO Docker Compose TLS Encryption for API and Console Connection",
+      "year": 2024,
+      "venue": "blog.jklug.work (Technical blog)",
+      "url": "https://blog.jklug.work/posts/minio/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 - Configuration TLS MinIO avec Docker Compose self-hosted : certificats Let's Encrypt, structure certs/, MinIO Client configuration. Contexte C2 (Docker Compose VPS) exact. I4 - janvier 2024 < 5 ans."
+    },
+    {
+      "name": "Best Practices for Setting Up S3 Service in a NestJS Codebase",
+      "year": 2024,
+      "venue": "Medium (@khan47.aliraza)",
+      "url": "https://medium.com/@khan47.aliraza/best-practices-for-setting-up-s3-service-in-a-nestjs-codebase-299fb6a8ec80",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 - Architecture S3 dans NestJS : modular AWS SDK v3, IAM roles, env variables, presigned URLs depuis server-side, CORS bucket policy. Contexte C2 (NestJS) direct. I4 - 2024 < 5 ans."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "bitnami/minio Docker Image (Docker Hub)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Installation/packaging Docker uniquement, pas d'architecture sécurité ni de stratégie. Contenu descriptif sur l'image, pas de recommandations architecturales."
+    },
+    {
+      "name": "Step-by-Step Guide: Setting Up Self-Hosting S3 with MinIO and Docker Compose (Medium, Konlan Mikpekoah)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Guide d'installation basique MinIO avec Docker Compose, pas d'architecture sécurité ni de stratégie. Exclure selon critère E1 (installation basique)."
+    },
+    {
+      "name": "Garage — open-source distributed object storage (garagehq.deuxfleurs.fr)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Alternative à MinIO non S3-compatible pour le focus OLS. Hors périmètre PICOC (I = MinIO/S3-compatible spécifiquement)."
+    },
+    {
+      "name": "RustFS GitHub (rustfs/rustfs)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Alternative à MinIO en Rust. Hors périmètre PICOC. Pas d'architecture sécurité applicable au contexte MinIO/NestJS OLS."
+    },
+    {
+      "name": "Troubleshoot expiration of presigned URL for S3 bucket before expiration time (AWS re:Post)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Troubleshooting spécifique, pas de recommandation architecturale/sécurité générale. Contenu purement opérationnel/dépannage."
+    },
+    {
+      "name": "Dynamic Storage Configuration in NestJS: Local and AWS S3 (Danyal Nasir, Medium)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Principalement sur la configuration dynamique locale/S3 sans stratégie sécurité. Pas d'architecture sécurité suffisante pour inclusion."
+    },
+    {
+      "name": "Securing your Amazon AWS S3 presigned URLs, tips and tricks (insecurity.blog)",
+      "year": 2021,
+      "exclusion_criterion": "E2",
+      "reason": "Publication mars 2021 — dans la limite des 5 ans (2021 = 5 ans en 2026). Contenu doublonné par les sources AWS officielles plus récentes retenues."
+    },
+    {
+      "name": "GigaOm 2024: Scality Rated Top Object Storage for Security (scality.com)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Solution enterprise payante Scality, hors périmètre self-hosted MinIO/S3-compatible. Contenu marketing, pas d'architecture technique."
+    },
+    {
+      "name": "Secure Data Storage For S3 Buckets (myota.io)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Produit commercial propriétaire (Myota), hors périmètre self-hosted. Pas d'architecture générale S3-compatible applicable."
+    },
+    {
+      "name": "MinIO Docker Image Changes: What Happened and How to Find a Secure Alternative (minimus.io)",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Contenu marketing pour produit concurrent (Minimus), pas d'architecture sécurité MinIO actionnable."
+    }
+  ]
+}

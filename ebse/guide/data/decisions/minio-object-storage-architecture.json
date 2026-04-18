@@ -1,0 +1,170 @@
+{
+  "id": "minio-object-storage-architecture",
+  "domain": "infrastructure",
+  "question": "Comment configurer MinIO de façon sécurisée dans un contexte self-hosted Docker Compose (IAM, TLS, presigned URLs, bucket isolation) ?",
+  "depends_on": ["encryption", "secrets-management"],
+  "tags": ["infrastructure", "storage", "minio", "s3", "security", "presigned-urls", "tls", "iam"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "MOINDRE PRIVILEGE IAM : créer un service account MinIO par service avec uniquement les permissions S3 strictement nécessaires (ex: s3:GetObject, s3:PutObject sur un bucket ciblé). Ne jamais utiliser les credentials root (MINIO_ROOT_USER/PASSWORD) dans le code applicatif. Les access keys héritent par défaut de admin:* du root user — CVE-2024-24747 montre qu'un service account peut s'octroyer des droits full-admin sans interaction en l'absence de politique de deny explicite sur les actions admin. Attacher une policy IAM explicite à chaque service account avec deny admin:* en base.",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "CVE-2024-24747 — MinIO privilege escalation via service account (GHSA-xx8w-mq23-29g4)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://github.com/advisories/GHSA-xx8w-mq23-29g4",
+            "quote": "When someone creates an access key, it inherits the permissions of the parent key. Not only for s3:* actions, but also admin:* actions. Which means unless somewhere above in the access-key hierarchy, the admin rights are denied, access keys will be able to simply override their own s3 permissions to something more permissive.",
+            "note": "CVSS:3.1 AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H. Corrigé dans RELEASE.2024-01-31T20-20-33Z."
+          },
+          {
+            "name": "CVE-2024-55949 — MinIO IAM Import Privilege Escalation",
+            "pyramid": 3,
+            "year": 2024,
+            "note": "Escalade de privilèges via l'import IAM. Confirme le pattern systémique de mauvaise isolation des permissions MinIO."
+          },
+          {
+            "name": "MinIO Best Practices — Security and Access Control (blog.min.io 2025)",
+            "pyramid": 3,
+            "year": 2025,
+            "url": "https://blog.min.io/s3-security-access-control/",
+            "note": "Documentation vendor : service accounts avec policies IAM explicites, deny admin actions par défaut."
+          },
+          {
+            "name": "MinIO Security Checklist — Container (min.io/docs 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://min.io/docs/minio/container/operations/checklists/security.html",
+            "note": "Checklist officielle : moindre privilège, service accounts isolés, jamais de credentials root en application. ATTENTION : URL redirige vers docs AIStor enterprise (301) en 2026 — site MinIO restructuré. Contenu original archivé ; principes confirmés par blog.min.io/s3-security-access-control/ et CVE-2024-24747."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence de 3 CVEs confirmées (2023, 2024x2) sur le même vecteur IAM/privilege escalation + documentation officielle MinIO"],
+          "minus": ["CoI léger : sources MinIO = vendor (blog.min.io, min.io/docs) — intérêt commercial à promouvoir leurs bonnes pratiques"],
+          "note": "GRADE 3 retenu malgré la convergence forte car les preuves reposent principalement sur des CVE et documentation officielle (pyramide 3-4), sans méta-analyses indépendantes (pyramide 1-2)."
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["CVE-2024-24747 GHSA-xx8w-mq23-29g4", "CVE-2023-28432 SentinelOne"],
+        "etd_balance": {
+          "benefices": "Contient le blast radius en cas de compromission d'un service account : attaquant limité au bucket ciblé, sans accès admin ni aux autres buckets. Conforme au principe de moindre privilège OWASP.",
+          "risques": "Overhead de configuration initiale (création des policies IAM par service), rotation des credentials à gérer manuellement ou via secrets manager.",
+          "balance": "Bénéfices >> Risques : CVE-2024-24747 montre qu'une misconfiguration par défaut donne accès admin complet — le coût de configuration est négligeable face au risque.",
+          "faisabilite": "Haute — MinIO mc CLI et API admin permettent la création de service accounts avec policies JSON en quelques commandes ; intégration NestJS via variables d'environnement par service."
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "TLS OBLIGATOIRE + ISOLATION RÉSEAU : MinIO ne doit jamais être exposé directement sur internet. Configurer TLS sur MinIO (certificats Let's Encrypt ou internes) ou terminer TLS au niveau du reverse proxy (Caddy). L'accès applicatif se fait exclusivement via le backend NestJS sur le réseau Docker interne ; les clients reçoivent des presigned URLs générées server-side. CVE-2023-28432 démontre que l'exposition de l'endpoint MinIO sans TLS ni authentification réseau permet l'exfiltration de MINIO_ROOT_PASSWORD via POST /minio/bootstrap/v1/verify.",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "CVE-2023-28432 — MinIO Information Disclosure (SentinelOne 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "url": "https://www.sentinelone.com/blog/cve-2023-28432/",
+            "quote": "The vulnerability occurs when MinIO returns all environment variables, including MINIO_SECRET_KEY and MINIO_ROOT_PASSWORD, resulting in information disclosure. In an attack scenario, an attacker could exploit this vulnerability by accessing the environment variables from MinIO and obtaining sensitive information such as MINIO_SECRET_KEY and MINIO_ROOT_PASSWORD.",
+            "note": "CVSS 7.5 (High). Endpoint vulnérable : POST /minio/bootstrap/v1/verify. Affecte RELEASE.2019-12-17 à RELEASE.2023-03-20. Corrigé dans RELEASE.2023-03-20T20-16-18Z."
+          },
+          {
+            "name": "MinIO Security Checklist — Container (min.io/docs 2024)",
+            "pyramid": 3,
+            "year": 2024,
+            "url": "https://min.io/docs/minio/container/operations/checklists/security.html",
+            "note": "TLS requis en production, isolation réseau, MinIO non exposé directement. ATTENTION : URL redirige vers docs AIStor enterprise (301) en 2026 — site MinIO restructuré. Principes confirmés par blog.min.io/secure-minio-1/ et CVE-2023-28432."
+          },
+          {
+            "name": "How to Secure MinIO - Part 1 (blog.min.io 2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "url": "https://blog.min.io/secure-minio-1/",
+            "note": "Configuration TLS MinIO, network policies, accès restreint au réseau interne."
+          },
+          {
+            "name": "MinIO Docker Compose TLS Encryption (blog.jklug.work 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "note": "Guide pratique configuration TLS MinIO avec Docker Compose et Caddy."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["CVE-2023-28432 fournit une preuve empirique directe que l'absence d'isolation réseau permet l'exfiltration de credentials root — impact critique documenté"],
+          "minus": ["CoI léger : sources vendor MinIO pour les recommandations de configuration"],
+          "note": "GRADE 3 : preuves CVE solides + documentation officielle convergentes. Pas de méta-analyse indépendante disponible sur la sécurité réseau MinIO spécifiquement."
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["CVE-2023-28432 SentinelOne", "MinIO Security Checklist min.io/docs 2024"],
+        "etd_balance": {
+          "benefices": "Elimination de la surface d'attaque externe (CVE-2023-28432 non exploitable si MinIO non accessible depuis internet). Chiffrement des données en transit entre NestJS et MinIO sur le réseau Docker interne si TLS activé end-to-end.",
+          "risques": "Complexité de configuration TLS (renouvellement certificats, configuration Caddy/MinIO). Presigned URLs nécessitent un domaine public accessible si partagées avec clients externes.",
+          "balance": "Bénéfices > Risques : l'isolation réseau est la mesure la plus simple et la plus efficace contre CVE-2023-28432. Caddy gère TLS automatiquement avec Let's Encrypt.",
+          "faisabilite": "Haute — Docker Compose network isolation native ; Caddy reverse proxy déjà en place dans OLS-infrastructure ; configuration TLS Caddy déclarative."
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "PRESIGNED URLS SERVER-SIDE UNIQUEMENT avec expiration courte : générer les presigned URLs exclusivement côté backend NestJS (jamais exposer les credentials au client). Limiter l'expiration à ≤ 1 heure (recommandation AWS : 15 minutes pour les cas sensibles via s3:signatureAge). Logger les signatures côté serveur en redactant X-Amz-Signature dans les logs. Appliquer le moindre privilège au service account signataire (lecture seule pour download, écriture restreinte au bucket upload).",
+        "grade": 3,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "AWS Prescriptive Guidance — Best practices for presigned requests (2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/presigned-url-best-practices/best-practices.html",
+            "quote": "A presigned URL cannot provide access to resources that weren't granted to the principal that generated the signature for the presigned URL. [...] applying best practices to grant those principals least privilege is an effective guardrail. [...] s3:signatureAge condition key limits presigned requests to 15 minutes of validity.",
+            "note": "AWS Prescriptive Guidance. Applicable directement à MinIO (compatibilité S3 API). Recommande s3:signatureAge ≤ 900000ms (15 min) pour cas sensibles."
+          },
+          {
+            "name": "AWS Prescriptive Guidance — Logging interactions (presigned URLs)",
+            "pyramid": 3,
+            "year": 2023,
+            "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/presigned-url-best-practices/best-practices.html",
+            "quote": "A presigned URL contains a signature and can be used, during the period before expiration, to perform the specific API operation it was signed for. It should be treated as a temporary access credential. [...] URI logging redact the X-Amz-Signature query string parameter.",
+            "note": "Regex de redaction fournie : X-Amz-Signature=[a-f0-9]{64}"
+          },
+          {
+            "name": "Securing S3 presigned URLs for serverless — AWS Compute Blog (2023)",
+            "pyramid": 3,
+            "year": 2023,
+            "url": "https://aws.amazon.com/blogs/compute/securing-amazon-s3-presigned-urls-for-serverless-applications/",
+            "note": "Génération server-side uniquement, validation business logic avant signature, expiration courte."
+          },
+          {
+            "name": "Implementing Secure File Download/Upload to S3 with NestJS (Medium 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "note": "Implémentation NestJS : service presigned URL avec @aws-sdk/client-s3, expiration configurable, jamais exposer credentials au frontend."
+          },
+          {
+            "name": "Best Practices S3 Service in NestJS (Medium 2024)",
+            "pyramid": 4,
+            "year": 2024,
+            "note": "Pattern NestJS recommandé : S3Service injectable, presigned URLs générées dans le controller, expiration ≤ 3600s."
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence AWS Prescriptive Guidance + AWS Compute Blog + 2 sources NestJS pratiques sur le même pattern server-side generation"],
+          "minus": ["CoI potentiel : AWS recommande ses propres patterns (S3) — transposable à MinIO via compatibilité API S3 mais non spécifiquement validé sur MinIO self-hosted"],
+          "note": "GRADE 3 : documentation officielle AWS de qualité (Prescriptive Guidance) + convergence pratiques NestJS. La compatibilité S3 de MinIO garantit l'applicabilité directe des recommandations AWS."
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["AWS Prescriptive Guidance presigned-url-best-practices 2023"],
+        "etd_balance": {
+          "benefices": "Les credentials MinIO ne transitent jamais vers le client. Expiration courte limite la fenêtre d'exploitation en cas de fuite d'URL (logs, cache navigateur, intermédiaires réseau). Logging serveur permet audit et détection d'abus.",
+          "risques": "Overhead de requête API backend pour chaque accès fichier (pas de CDN direct). Gestion des expirations côté frontend (retry si URL expirée). Logging à mettre en place avec redaction.",
+          "balance": "Bénéfices > Risques : le pattern est standard et bien supporté par le SDK MinIO JavaScript. L'overhead est négligeable ; le risque d'exposition credentials est éliminé.",
+          "faisabilite": "Haute — SDK MinIO JS supporte nativement presignedGetObject/presignedPutObject avec TTL configurable. Implémentation NestJS straightforward via service injectable."
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {}
+}

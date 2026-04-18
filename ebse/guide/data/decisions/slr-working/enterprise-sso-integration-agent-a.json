@@ -1,0 +1,233 @@
+{
+  "slr_id": "enterprise-sso-integration",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "SAML 2.0 OIDC university SSO integration NestJS 2023 2024",
+    "Shibboleth OIDC higher education federation 2024",
+    "RENATER federation SAML OIDC interoperabilite 2024",
+    "CAS protocol NestJS Node.js authentication 2022 2023",
+    "node-saml passport-saml CVE vulnerability 2024 2025",
+    "passport-saml node-saml NestJS university authentication higher education 2023 2024 academic paper",
+    "SAML OIDC CAS SSO higher education web application security integration study 2022 2023 2024",
+    "enterprise SSO SAML NestJS Node.js implementation guide best practices 2023 2024",
+    "SAMLStorm CVE-2025-29775 xml-crypto node-saml authentication bypass analysis",
+    "JRES 2024 RENATER federation identite education superieure SAML OIDC"
+  ],
+  "databases_searched": [
+    "WebSearch (Google via Claude MCP)",
+    "GitHub Topics (sso-authentication, sso, openid — TypeScript)",
+    "npm registry (passport-saml, @node-saml/passport-saml)",
+    "NVD (National Vulnerability Database)",
+    "Snyk Security Database",
+    "JRES 2024 conference proceedings (conf-ng.jres.org)",
+    "HAL Science (hal.science)",
+    "arXiv",
+    "WorkOS Security Blog",
+    "PortSwigger Research"
+  ],
+  "total_screened": 28,
+  "included": [
+    {
+      "name": "SAMLStorm: Critical Authentication Bypass in xml-crypto and Node.js SAML Libraries",
+      "year": 2025,
+      "venue": "WorkOS Security Blog (disclosure technique)",
+      "url": "https://workos.com/blog/samlstorm",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Analyse technique de vulnérabilités critiques (CVE-2025-29775 / CVE-2025-29774) affectant xml-crypto et les bibliothèques SAML Node.js (@node-saml, samlify, saml2-js). Directement pertinent pour l'évaluation de sécurité d'une intégration SSO institutionnelle NestJS/SAML. CVSS 9.3. Impact : bypass d'authentification complet sans interaction utilisateur."
+    },
+    {
+      "name": "CVE-2025-54419: Node-SAML SAML Signature Verification Vulnerability",
+      "year": 2025,
+      "venue": "GitLab Advisory Database / NVD",
+      "url": "https://advisories.gitlab.com/pkg/npm/passport-saml/CVE-2025-54419/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Vulnérabilité de vérification de signature dans node-saml : le module charge l'assertion depuis le document de réponse non signé plutôt que depuis le contenu vérifié. Critique pour toute application NestJS utilisant passport-saml pour SSO institutionnel."
+    },
+    {
+      "name": "The Fragile Lock: Novel Bypasses For SAML Authentication",
+      "year": 2024,
+      "venue": "PortSwigger Research",
+      "url": "https://portswigger.net/research/the-fragile-lock",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Recherche sur des vecteurs d'attaque nouveaux contre les implémentations SAML, pertinente pour évaluer la robustesse des bibliothèques Node.js dans un contexte d'authentification institutionnelle."
+    },
+    {
+      "name": "Évolutions du Service Fédérations d'Identité RENATER (JRES 2024 — Chabli)",
+      "year": 2024,
+      "venue": "JRES 2024 — Journées Réseaux de l'Enseignement et de la Recherche, Rennes",
+      "url": "https://conf-ng.jres.org/2024/document_revision_2390.html?download=",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 + C2 — Présentation officielle RENATER sur l'évolution NewConnect : interopérabilité fédération Éducation-Recherche / OIDC et interconnexion AgentConnect. Contexte français enseignement supérieur, protocoles SAML et OIDC. Directement applicable à OLS/RENATER."
+    },
+    {
+      "name": "Évolution du service fédérations d'identité — Architecture hybride SAML/OIDC (JRES 2024 — Rousse)",
+      "year": 2024,
+      "venue": "JRES 2024 — Journées Réseaux de l'Enseignement et de la Recherche, Rennes",
+      "url": "https://conf-ng.jres.org/2024/document_revision_2298.html?download=",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 + C2 — Architecture hybride SAML/OIDC pour coexistence protocolaire dans la fédération Éducation-Recherche. Analyse des contraintes d'interopérabilité RENATER. Contexte C2 (établissements enseignement supérieur français, RENATER)."
+    },
+    {
+      "name": "RENATER — Passerelle OIDC/SAML (documentation officielle service)",
+      "year": 2024,
+      "venue": "RENATER Services — services.renater.fr",
+      "url": "https://services.renater.fr/federation/outils/oidc2saml/index",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 + C2 — Documentation officielle de la passerelle OIDC/SAML RENATER permettant aux applications OIDC (Relying Party) de s'authentifier via des IdP SAML de la fédération Éducation-Recherche. Architecture concrète de déploiement applicable à NestJS."
+    },
+    {
+      "name": "Shibboleth Project Roadmap 2024-2027 — OpenID Connect & Federation Support",
+      "year": 2024,
+      "venue": "Shibboleth Consortium — shibboleth.atlassian.net",
+      "url": "https://shibboleth.atlassian.net/wiki/spaces/DEV/pages/3503423489",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — Roadmap officiel Shibboleth IdP pour support OpenID Federation, PAR, DPoP et harmonisation métadonnées SAML/OIDC. Shibboleth est le standard de facto des IdP universitaires (InCommon, eduGAIN, RENATER). Directement pertinent pour interopérabilité protocoles dans l'enseignement supérieur."
+    },
+    {
+      "name": "Shibboleth August 2024 Update — OIDC OP Plugin Development",
+      "year": 2024,
+      "venue": "Shibboleth Development Blog",
+      "url": "https://shibboleth.atlassian.net/wiki/spaces/DEV/blog/2024/08/14/3799515137/August+2024+Update",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 — Mise à jour du plugin OIDC OP Shibboleth avec PAR et DPoP. Renseigne sur l'état d'avancement réel du support OIDC côté IdP institutionnels, critique pour décider si OIDC est viable avec les IdP RENATER en 2024-2026."
+    },
+    {
+      "name": "NestJS Authentication: Single Sign On with SAML 2.0 (GitHub Gist — Andreacioni)",
+      "year": 2023,
+      "venue": "GitHub Gist",
+      "url": "https://gist.github.com/andreacioni/eb5bad0bcca18cf4fb732c6d7e29e3e8",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1 — Implémentation de référence SAML 2.0 avec NestJS et passport-saml. Exemple technique concret d'intégration SSO enterprise dans le framework cible du projet OLS (NestJS backend)."
+    },
+    {
+      "name": "Setting up a SSO SAML Test Environment with NX Workspace, Express.js, Passport, @node-saml/passport-saml and TypeScript (Wright, 2024)",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://medium.com/@joshuawright_63564/setting-up-a-single-sign-on-sso-saml-test-environment-nx-express-js-and-passportjs-e08e0742c120",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1 — Guide pratique 2024 pour environnement de test SAML avec @node-saml/passport-saml et TypeScript dans un contexte universitaire. Inclut SimpleSAMLphp comme IdP de test, pertinent pour stratégie de développement local."
+    },
+    {
+      "name": "Implement SSO with Keycloak using NestJS — LoginRadius",
+      "year": 2024,
+      "venue": "LoginRadius Engineering Blog",
+      "url": "https://www.loginradius.com/enterprise-sso/keycloak/nestjs",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1 — Intégration SSO enterprise NestJS via Keycloak (IdP open-source supportant SAML 2.0 et OIDC). Pertinent comme alternative à intégration directe Shibboleth, en proxy IdP."
+    },
+    {
+      "name": "SAML SSO with Microsoft Entra ID: A Practical Guide for Node.js and React Developers (Zhbankov, 2024)",
+      "year": 2024,
+      "venue": "Medium",
+      "url": "https://medium.com/@yaroslavzhbankov/saml-sso-with-microsoft-entra-id-a-practical-guide-for-node-js-and-react-developers-8300df860d5f",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1 — Guide pratique SAML SSO Node.js avec IdP enterprise (Entra ID). Patterns d'intégration transposables aux IdP SAML institutionnels (Shibboleth/RENATER)."
+    },
+    {
+      "name": "L'hébergement d'IdP par RENATER",
+      "year": 2024,
+      "venue": "HAL Science (hal.science)",
+      "url": "https://hal.science/hal-04805667",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 + C2 — Article académique sur l'hébergement d'IdP par RENATER pour les établissements d'enseignement supérieur. Contexte institutionnel français, pertinent pour comprendre la chaîne de confiance RENATER et les contraintes d'intégration côté SP (Service Provider)."
+    },
+    {
+      "name": "oidc2fer — Gateway OIDC vers fédération Éducation-Recherche française",
+      "year": 2024,
+      "venue": "GitHub — numerique-gouv/oidc2fer",
+      "url": "https://github.com/numerique-gouv/oidc2fer",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1 + C2 — Implémentation open-source d'une passerelle OIDC vers la fédération SAML française (RENATER). Code de référence gouvernemental pour l'interopérabilité OIDC/SAML dans l'enseignement supérieur français."
+    },
+    {
+      "name": "SSO Protocol Security: Critical Vulnerabilities in SAML, OAuth, OIDC & JWT (2025)",
+      "year": 2025,
+      "venue": "Security Boulevard / Gupta Deepak Blog",
+      "url": "https://guptadeepak.com/security-vulnerabilities-in-saml-oauth-2-0-openid-connect-and-jwt/",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 — Analyse de sécurité comparative des protocoles SSO (SAML, OIDC, OAuth, JWT). Pertinent pour l'évaluation des risques de chaque approche dans un contexte d'authentification institutionnelle NestJS."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Authentication and Authorization in Angular and NestJs with OAuth2 and OpenID Connect (Schempp, Medium)",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "OAuth2 générique / social (Google, GitHub). Pas de contexte institutionnel ni fédération universitaire. Hors scope PICOC I1."
+    },
+    {
+      "name": "Full-Stack TypeScript Apps: Developing a Secure API with NestJS — Auth0 blog",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Auth0 = IdP commercial/social sans contexte institutionnel. Hors scope I1."
+    },
+    {
+      "name": "Next-Nest-Auth: Authentication with NextJS and NestJS using JWT (wesleey)",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Auth locale JWT uniquement. Pas de SSO, pas de protocole institutionnel. Hors scope."
+    },
+    {
+      "name": "Comparative Analysis and Framework Evaluating Web Single Sign-On Systems (arXiv)",
+      "year": 2018,
+      "exclusion_criterion": "E2",
+      "reason": "Antérieur à 7 ans (2018 < 2019). Exclusion critère E2 (> 7 ans)."
+    },
+    {
+      "name": "CAS, SAML and OpenID Connect — LDAPCon 2017 (Oudot)",
+      "year": 2017,
+      "exclusion_criterion": "E2",
+      "reason": "Antérieur à 7 ans (2017 < 2019). Exclusion critère E2."
+    },
+    {
+      "name": "JRES 2013 — International authentication with eduGAIN",
+      "year": 2013,
+      "exclusion_criterion": "E2",
+      "reason": "Antérieur à 7 ans. Exclusion critère E2."
+    },
+    {
+      "name": "CVE-2022-39299 — passport-saml signature wrapping (NVD)",
+      "year": 2022,
+      "exclusion_criterion": "E2",
+      "reason": "Hors fenêtre temporelle : 2022 est dans la fenêtre (< 7 ans) mais CVE déjà corrigée dans node-saml v4+. Conservé en observation, mais supplanté par CVE-2025 plus récentes et critiques. EXCLUSION PARTIELLE — signaler à Agent B pour arbitrage."
+    },
+    {
+      "name": "Enhancing NestJS Security with CASL: AWS-Inspired Authorization",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "CASL = library d'autorisation (RBAC/ABAC), pas d'authentification SSO institutionnelle. Hors scope I1."
+    },
+    {
+      "name": "Authentik OIDC/SSO Complete Integration Guide — ECOSIRE",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Authentik = IdP auto-hébergé générique (pas institutionnel). Contexte B2B/SaaS, pas d'établissement d'enseignement supérieur ni fédération RENATER. Hors scope PICOC P et I1."
+    },
+    {
+      "name": "Single Sign-On (SSO): A Comprehensive Guide with React and ExpressJS — DEV Community",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Guide générique SSO Express.js, contexte web généraliste sans dimension institutionnelle ni universitaire. Hors scope PICOC P."
+    },
+    {
+      "name": "Implementing SSO in Node.js & React Apps — Scalekit Blog",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "SSO B2B SaaS générique, pas contexte enseignement supérieur/RENATER. Hors scope PICOC P."
+    },
+    {
+      "name": "Implement SSO with Microsoft Azure AD using Node JS — SSOJet",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Azure AD = IdP enterprise commercial, pas institutionnel académique. Pas de fédération universitaire. Hors scope I1 (focus RENATER/Shibboleth/CAS)."
+    },
+    {
+      "name": "nestjs-cas-example (fralonra/nestjs-cas-example — GitHub)",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Exemple CAS pertinent sur le protocole mais dépôt sans documentation académique ni contexte d'établissement réel. Valeur technique insuffisante sans article associé. Signaler à Agent B pour arbitrage."
+    }
+  ],
+  "notes": "Pas de publications IEEE Xplore ou ACM Digital Library trouvées via WebSearch sur cette combinaison de termes — une recherche directe sur ces bases (Agent B ou recherche manuelle) est recommandée. La fenêtre 2019-2026 est appliquée pour le critère E2 (7 ans depuis 2026-04-18). CVE-2022-39299 et nestjs-cas-example sont en zone grise : signaler à Agent B."
+}

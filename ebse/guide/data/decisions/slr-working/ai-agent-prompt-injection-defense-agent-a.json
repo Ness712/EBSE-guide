@@ -1,0 +1,182 @@
+{
+  "slr_id": "ai-agent-prompt-injection-defense",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "prompt injection defense agent LLM 2024 2025",
+    "indirect prompt injection mitigation coding assistant",
+    "spotlighting CaMeL StruQ prompt injection defense",
+    "LLM jailbreak defense autonomous agent production",
+    "instruction hierarchy privilege LLM security"
+  ],
+  "databases_searched": ["arXiv", "Google Scholar", "MDPI", "ACL Anthology", "Microsoft Research", "BAIR Blog", "OpenReview", "CEUR-WS"],
+  "total_screened": 30,
+  "included": [
+    {
+      "name": "Wallace et al. 2024 — The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions",
+      "year": 2024,
+      "venue": "arXiv:2404.13208",
+      "url": "https://arxiv.org/abs/2404.13208",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Propose un mécanisme défensif structurel (hiérarchie d'instructions système > utilisateur > tiers) pour résister aux injections et jailbreaks. Publié 2024. OpenAI."
+    },
+    {
+      "name": "Debenedetti et al. 2025 — Defeating Prompt Injections by Design (CaMeL)",
+      "year": 2025,
+      "venue": "arXiv:2503.18813",
+      "url": "https://arxiv.org/abs/2503.18813",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : CaMeL — isolation de contexte par design architectural (séparation données/instructions au niveau système). Mécanisme défensif pur. Publié 2025. DeepMind/Google."
+    },
+    {
+      "name": "Chen et al. 2024 — StruQ: Defending Against Prompt Injection with Structured Queries",
+      "year": 2024,
+      "venue": "USENIX Security 2025 / arXiv:2402.06363",
+      "url": "https://arxiv.org/abs/2402.06363",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Structured queries + fine-tuning (SecAlign) pour séparer prompt et données par tokens spéciaux non-filtrables par l'attaquant. Défense entraînement + input filtering. Publié 2024."
+    },
+    {
+      "name": "Hines et al. 2024 — Defending Against Indirect Prompt Injection Attacks With Spotlighting",
+      "year": 2024,
+      "venue": "arXiv:2403.14720 / Microsoft Research / CEUR-WS Vol-3920",
+      "url": "https://arxiv.org/abs/2403.14720",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Spotlighting — family de techniques (delimiting, datamarking, encoding) pour distinguer sources trusted/untrusted. Réduit ASR de >50% à <2%. Publié 2024. Microsoft."
+    },
+    {
+      "name": "Zeng et al. 2024 — AutoDefense: Multi-Agent LLM Defense against Jailbreak Attacks",
+      "year": 2024,
+      "venue": "arXiv:2403.04783",
+      "url": "https://arxiv.org/abs/2403.04783",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Pipeline multi-agent de filtrage des réponses nuisibles (output validation). Réduit ASR GPT-3.5 de 55.74% à 7.95% avec LLaMA-2-13b. Publié 2024."
+    },
+    {
+      "name": "Hossain et al. 2025 — A Multi-Agent LLM Defense Pipeline Against Prompt Injection Attacks",
+      "year": 2025,
+      "venue": "IEEE WIECON-ECE 2025 / arXiv:2509.14285",
+      "url": "https://arxiv.org/abs/2509.14285",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1 + I4 : Pipeline multi-agent spécialisé pour détection et neutralisation des injections en temps réel (conférence IEEE). Publié 2025."
+    },
+    {
+      "name": "Zhao et al. 2025 — Proactive Defense Against LLM Jailbreak (ProAct)",
+      "year": 2025,
+      "venue": "arXiv:2510.05052",
+      "url": "https://arxiv.org/abs/2510.05052",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : ProAct — défense proactive qui trompe les attaquants avec des fausses réponses (spurious responses), coupant la boucle d'optimisation. Réduction ASR jusqu'à 94%. Columbia University. Publié 2025."
+    },
+    {
+      "name": "Wen et al. 2025 — Defending against Indirect Prompt Injection by Instruction Detection",
+      "year": 2025,
+      "venue": "arXiv:2505.06311",
+      "url": "https://arxiv.org/abs/2505.06311",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : InstructDetector — détection IPI par analyse des états comportementaux du LLM. Input filtering orienté détection d'instructions cachées. Publié mai 2025."
+    },
+    {
+      "name": "Zhang et al. 2026 — Many-Tier Instruction Hierarchy in LLM Agents",
+      "year": 2026,
+      "venue": "arXiv:2604.09443",
+      "url": "https://arxiv.org/abs/2604.09443",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Extension de l'instruction hierarchy à un modèle multi-niveaux adapté aux systèmes agentiques complexes (>5 sources de confiance). Publié avril 2026."
+    },
+    {
+      "name": "Liu et al. 2025 — 'Your AI, My Shell': Demystifying Prompt Injection Attacks on Agentic AI Coding Editors",
+      "year": 2025,
+      "venue": "arXiv:2509.22040",
+      "url": "https://arxiv.org/abs/2509.22040",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Analyse empirique des attaques ET des mécanismes de détection/mitigation sur GitHub Copilot et Cursor (ASR 84%). Contient analyse des défenses existantes. Contexte codage. Publié 2025."
+    },
+    {
+      "name": "Huang et al. 2026 — Are AI-assisted Development Tools Immune to Prompt Injection?",
+      "year": 2026,
+      "venue": "arXiv:2603.21642",
+      "url": "https://arxiv.org/abs/2603.21642",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Évaluation des mécanismes de défense (static validation, parameter visibility, injection detection, sandboxing, audit logging) sur 7 clients MCP dont Claude Code et Cursor. Directement dans le contexte PICOC. Publié mars 2026."
+    },
+    {
+      "name": "Maloyan & Namiot 2025 — Prompt Injection Attacks on Agentic Coding Assistants",
+      "year": 2025,
+      "venue": "arXiv:2601.17548 / INJOIT",
+      "url": "https://arxiv.org/abs/2601.17548",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1 + I4 : Analyse systématique des vulnérabilités ET des mitigations (cryptographic provenance, capability scoping, multi-agent verification, human oversight) dans les coding assistants. Publié 2025."
+    },
+    {
+      "name": "Gulyamov et al. 2026 — Prompt Injection Attacks in Large Language Models and AI Agent Systems: A Comprehensive Review",
+      "year": 2026,
+      "venue": "MDPI Information, Vol. 17, No. 1, Art. 54",
+      "url": "https://www.mdpi.com/2078-2489/17/1/54",
+      "pyramid_level": 4,
+      "inclusion_reason": "I1 + I4 : Revue systématique (45 sources) couvrant taxonomie attaques ET mécanismes défensifs dans les systèmes AI agents. Journal à comité de lecture. Publié janvier 2026."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "OWASP LLM01:2025 Prompt Injection",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Documentation de référence décrivant la menace et bonnes pratiques générales, pas une étude empirique sur les mécanismes défensifs avec mesures de performance."
+    },
+    {
+      "name": "Lakera — Indirect Prompt Injection: The Hidden Threat Breaking Modern AI Systems",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Article de blog commercial décrivant la menace sans contribution défensive originale mesurable."
+    },
+    {
+      "name": "Palo Alto Networks — What Is a Prompt Injection Attack?",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Contenu marketing/éducatif décrivant les attaques, pas une recherche sur les défenses."
+    },
+    {
+      "name": "SentinelOne — What is Indirect Prompt Injection? Risks & Defenses Explained",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Article de vulgarisation sans contribution défensive originale ni évaluation empirique."
+    },
+    {
+      "name": "Nature Communications 2026 — Large reasoning models are autonomous jailbreak agents",
+      "year": 2026,
+      "exclusion_criterion": "E2",
+      "reason": "Porte uniquement sur l'attaque (LRM comme agents de jailbreak autonomes) sans mécanisme de défense proposé."
+    },
+    {
+      "name": "Simon Willison — New prompt injection papers: Agents Rule of Two and The Attacker Moves Second",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Blog post de synthèse journalistique, pas une source primaire de recherche."
+    },
+    {
+      "name": "tldrsec/prompt-injection-defenses (GitHub repo)",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Catalogue de références sans contribution défensive propre ni évaluation empirique originale."
+    },
+    {
+      "name": "Microsoft MSRC Blog — How Microsoft Defends Against Indirect Prompt Injection Attacks",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Article de blog technique décrivant des pratiques, pas une étude peer-reviewed avec métriques de performance."
+    },
+    {
+      "name": "OWASP Cheat Sheet — LLM Prompt Injection Prevention",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Documentation de référence normative sans évaluation empirique des mécanismes défensifs."
+    },
+    {
+      "name": "Obsidian Security — Prompt Injection Attacks: The Most Common AI Exploit in 2025",
+      "year": 2025,
+      "exclusion_criterion": "E2",
+      "reason": "Article marketing/informatif sans contribution défensive mesurable."
+    }
+  ]
+}

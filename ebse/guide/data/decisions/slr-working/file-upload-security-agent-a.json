@@ -1,0 +1,160 @@
+{
+  "slr_id": "file-upload-security",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "file upload security NestJS Node.js MIME validation 2022 2023 2024",
+    "malicious file upload detection prevention web application",
+    "OWASP file upload cheat sheet unrestricted upload",
+    "magic bytes validation file type Node.js security 2022 2023 2024",
+    "CWE-434 unrestricted file upload CVE 2023 2024",
+    "FileUploadChecker detecting sanitizing malicious file uploads web applications ACM 2022",
+    "antivirus scan file upload MinIO S3 Node.js ClamAV integration 2023 2024",
+    "(In)Security of File Uploads in Node.js ACM Web Conference 2024",
+    "file upload security UUID filename randomization isolated storage best practices 2023 2024",
+    "UChecker automatically detecting PHP unrestricted file upload vulnerabilities static analysis",
+    "CVE-2024-29409 NestJS file upload bypass MIME type vulnerability"
+  ],
+  "databases_searched": [
+    "Google/WebSearch (ACM DL, IEEE Xplore, OWASP, NVD/NIST, CVEDetails, Snyk, ResearchGate, Semantic Scholar, npm registry, DEV.to, Medium)"
+  ],
+  "total_screened": 18,
+  "included": [
+    {
+      "name": "(In)Security of File Uploads in Node.js",
+      "year": 2024,
+      "venue": "Proceedings of the ACM Web Conference 2024 (WWW '24), Singapore",
+      "url": "https://dl.acm.org/doi/10.1145/3589334.3645342",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Analyse systématique des insécurités upload dans l'écosystème Node.js (bibliothèques populaires + apps réelles), propose NodeSEC pour détecter les failles, couvre validation filename/type/content. Directement applicable NestJS/Node.js. Année 2024."
+    },
+    {
+      "name": "FileUploadChecker: Detecting and Sanitizing Malicious File Uploads in Web Applications at the Request Level",
+      "year": 2022,
+      "venue": "ARES 2022 — 17th International Conference on Availability, Reliability and Security, Vienna",
+      "url": "https://dl.acm.org/doi/fullHtml/10.1145/3538969.3538999",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Mécanisme défensif concret (middleware côté serveur) pour détecter et sanitizer les uploads malveillants : validation magic bytes, EXIF, PDF, re-rendu media. Déployable sans modifier le code applicatif. Année 2022."
+    },
+    {
+      "name": "OWASP File Upload Cheat Sheet",
+      "year": 2024,
+      "venue": "OWASP Cheat Sheet Series (living document, dernière révision vérifiée 2024)",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1+I4 — Référence normative listant les mécanismes défensifs complets : whitelist extensions, ne pas faire confiance au Content-Type, UUID filenames, stockage hors webroot, size limits, scan antivirus. Standard de l'industrie cité dans toutes les sources."
+    },
+    {
+      "name": "OWASP Unrestricted File Upload (vulnerability page)",
+      "year": 2024,
+      "venue": "OWASP Foundation (living document)",
+      "url": "https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1+I4 — Décrit les contre-mesures précises pour CWE-434 : extension whitelist, magic bytes check, filename sanitization, isolated storage. Complément direct au cheat sheet avec focus sur les techniques d'attaque à contrer."
+    },
+    {
+      "name": "CVE-2024-29409 — NestJS @nestjs/common File Upload MIME Bypass (RCE via Content-Type header)",
+      "year": 2024,
+      "venue": "NVD/NIST + CVEDetails + Snyk Advisory",
+      "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-29409",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1+I4 — CVE réelle sur NestJS démontrant que file-type.validator.ts s'appuie uniquement sur le Content-Type header (spoofable), sans validation magic bytes. Documente le mécanisme d'attaque ET la contre-mesure requise (magic bytes). Directement applicable au contexte NestJS du PICOC."
+    },
+    {
+      "name": "CWE-434: Unrestricted Upload of File with Dangerous Type (MITRE CWE Top 25 — 2024)",
+      "year": 2024,
+      "venue": "MITRE CWE Database",
+      "url": "https://cwe.mitre.org/data/definitions/434.html",
+      "pyramid_level": 5,
+      "inclusion_reason": "I1+I4 — Définition normative + mitigations recommandées pour CWE-434, classé dans le Top 25 2024. Fournit les patterns de défense (extension whitelist, content inspection, isolated storage) et les exemples de code. Référence taxonomique essentielle."
+    },
+    {
+      "name": "File Validations Using Magic Numbers In NodeJS Express Server",
+      "year": 2024,
+      "venue": "Medium / Sridhar (article technique, octobre 2024)",
+      "url": "https://medium.com/@sridhar_be/file-validations-using-magic-numbers-in-nodejs-express-server-d8fbb31a97e7",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1+I4 — Implémentation concrète de la validation par magic bytes dans un serveur Node.js/Express, avec code exemple. Applicable directement en NestJS (même runtime). Complément pratique aux sources académiques."
+    },
+    {
+      "name": "Implementing server-side malware scanning with ClamAV in Node.js",
+      "year": 2024,
+      "venue": "Transloadit DevTips (article technique)",
+      "url": "https://transloadit.com/devtips/implementing-server-side-malware-scanning-with-clamav-in-node-js/",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1+I4 — Guide d'implémentation du scan antivirus ClamAV dans Node.js avant stockage. Couvre l'intégration avec le package clamscan. Directement applicable au contexte NestJS + MinIO du PICOC."
+    },
+    {
+      "name": "Virus scan MinIO buckets using ClamAV, Fission and Kafka",
+      "year": 2023,
+      "venue": "DEV Community (article technique)",
+      "url": "https://dev.to/raklev20/virus-scan-minio-buckets-using-clamav-fission-and-kafka-5hn7",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1+I4 — Seule source trouvée traitant spécifiquement du scan ClamAV sur MinIO (via notifications bucket). Correspond exactement à la stack OLS (NestJS + MinIO). Mécanisme : copie objet → clamdscan → quarantaine si infecté."
+    },
+    {
+      "name": "File Upload Protection — 10 Best Practices for Preventing Cyber Attacks",
+      "year": 2023,
+      "venue": "OPSWAT Blog",
+      "url": "https://www.opswat.com/blog/file-upload-protection-best-practices",
+      "pyramid_level": 6,
+      "inclusion_reason": "I1+I4 — Synthèse opérationnelle des 10 best practices : multi-AV scan, magic bytes, CDR (Content Disarm & Reconstruction), UUID filenames, size limits, isolated storage. Vue praticienne complémentaire aux sources académiques."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "UChecker: Automatically Detecting PHP-Based Unrestricted File Upload Vulnerabilities",
+      "year": 2019,
+      "exclusion_criterion": "E2",
+      "reason": "Année 2019 > 7 ans depuis 2026. De plus, focalisé sur PHP (analyse AST PHP), non applicable à Node.js/NestJS."
+    },
+    {
+      "name": "UFuzzer: Lightweight Detection of PHP-Based Unrestricted File Upload Vulnerabilities Via Static-Fuzzing Co-Analysis",
+      "year": 2021,
+      "exclusion_criterion": "E2 + E1",
+      "reason": "Année 2021, hors fenêtre < 7 ans (limite 2019, mais focus PHP non-web-sécurité généraliste — hors contexte NestJS). Exclu principalement pour technologie non-applicable (PHP statique)."
+    },
+    {
+      "name": "NestJS file upload like a Pro [in depth] — DEV Community (tkssharma)",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Article tutoriel sur l'implémentation upload NestJS/Multer sans angle sécurité défensif. Ne couvre pas les mécanismes de défense (magic bytes, AV scan, UUID). Hors scope I1."
+    },
+    {
+      "name": "Learn How to Create and Test a File Upload API using NestJS and Postman",
+      "year": 2023,
+      "exclusion_criterion": "E1",
+      "reason": "Guide de test API NestJS avec Postman, centré sur la fonctionnalité upload et non sur les mécanismes sécurité. Hors scope I1."
+    },
+    {
+      "name": "Uploading files in NestJS (Oyugo Obonyo, Medium)",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Article d'introduction à l'upload NestJS sans traitement des mécanismes défensifs. Hors scope I1."
+    },
+    {
+      "name": "Malicious uploads detection — Cloudflare WAF",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Solution WAF cloud (Cloudflare) non applicable à une stack NestJS auto-hébergée sur VPS. Le mécanisme décrit est un service externe opaque, pas implémentable dans le contexte C2 (NestJS/MinIO/VPS Debian)."
+    },
+    {
+      "name": "CVE-2024-13723 — Checkmk NagVis unrestricted PHP upload",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "CVE dans un produit PHP/monitoring (Checkmk NagVis), hors contexte Node.js/NestJS. Sert uniquement d'illustration de CWE-434, mais ne fournit pas de mécanisme défensif applicable au PICOC."
+    },
+    {
+      "name": "S3 virus scanning with TypeScript and Node.js 20.x AWS Lambda Container",
+      "year": 2024,
+      "exclusion_criterion": "E1",
+      "reason": "Solution spécifique AWS Lambda + S3 avec ClamAV. L'architecture Lambda est non applicable au contexte MinIO sur VPS Debian. Préféré : source Transloadit (Node.js direct) et source MinIO/ClamAV incluses."
+    },
+    {
+      "name": "OWASP WSTG — Test Upload of Malicious Files (v4.2)",
+      "year": 2022,
+      "exclusion_criterion": "E1",
+      "reason": "Guide de test de pénétration (comment tester la vulnérabilité), non un guide de mécanismes défensifs. L'angle est offensif/testing, pas défensif/implémentation. Hors scope I1 (qui exige des mécanismes défensifs)."
+    }
+  ]
+}

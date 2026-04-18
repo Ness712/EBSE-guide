@@ -47,12 +47,19 @@
             "pyramid": 3,
             "year": 2025,
             "quote": "567 pull requests across 157 open-source projects; 83.77% of agentic-generated PRs were accepted and merged"
+          },
+          {
+            "name": "McCain et al. 2026 — Measuring AI agent autonomy in practice (Anthropic Research, 2026-02-18)",
+            "pyramid": 3,
+            "year": 2026,
+            "quote": "80% of tool calls have at least one safeguard; 73% involve human oversight; only 0.8% are irreversible. User auto-approval rate: ~20% for newer users vs. 40%+ for experienced users (750+ sessions). Interrupt rates: 5% for new users vs. 9% for experienced users.",
+            "note": "Analyse observationnelle de millions d'interactions humain-agent en production (Claude Code + API publique). Données empiriques directement pertinentes pour la calibration de l'autonomie graduée. Ajouté par snowballing forward depuis OpenAI Shavit 2023. CoI : source Anthropic (vendeur). INCLUSION : I1 ✅ (autonomie par type d'action), I4 ✅ (2026, < 5 ans). Date d'extraction : 2026-04-18."
           }
         ],
         "grade_factors_applied": {
           "start": 3,
-          "plus": ["convergence (3 sources)", "important-effect (Faros +242% incidents)"],
-          "minus": ["CoI (vendor Faros)", "indirectness (aggregate, not per-tier)"]
+          "plus": ["convergence (4 sources empiriques)", "important-effect (Faros +242% incidents, Anthropic 0.8% irreversible)"],
+          "minus": ["CoI (vendor Faros + vendor Anthropic)", "indirectness (aggregate, not per-tier)"]
         },
         "robustness": "FRAGILE",
         "critical_sources": ["EU AI Act Art 14", "Parasuraman Sheridan Wickens 2000"],

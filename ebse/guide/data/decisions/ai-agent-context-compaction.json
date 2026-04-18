@@ -46,12 +46,19 @@
             "pyramid": 3,
             "year": 2023,
             "quote": "Performance is often highest when relevant information occurs at the beginning or end of the input context, and significantly degrades when models must access relevant information in the middle of long contexts"
+          },
+          {
+            "name": "Rajasekaran et al. 2025 — Effective context engineering for AI agents (Anthropic Engineering, 2025-09-29)",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "maintain the smallest set of high-signal tokens",
+            "note": "Guide d'ingénierie prescriptif basé sur l'expérience interne Anthropic (Claude Code, Claude playing Pokémon comme exemples). Pas de données quantifiées propres — cite des travaux externes (arXiv:2306.15595 pour position encoding). Converge avec ACON/Context-Folding sur le principe de compaction active. Ajouté par snowballing forward depuis Anthropic Compaction API doc. CoI : source Anthropic (vendeur). INCLUSION : I1 ✅ (gestion contexte sessions longues), I4 ✅ (2025). Date d'extraction : 2026-04-18."
           }
         ],
         "grade_factors_applied": {
           "start": 3,
-          "plus": ["convergence (3 empirical papers same direction)"],
-          "minus": ["CoI (vendor-aligned labs)", "indirectness (academic benchmarks != production dev sessions)"]
+          "plus": ["convergence (3 empirical papers same direction + practitioner guidance Anthropic)"],
+          "minus": ["CoI (vendor-aligned labs + Anthropic)", "indirectness (academic benchmarks != production dev sessions)"]
         },
         "robustness": "FRAGILE",
         "critical_sources": ["Anthropic Compaction doc"],

@@ -1,0 +1,111 @@
+{
+  "id": "ai-agent-mast-monitoring-runtime",
+  "domain": "ai-collaboration",
+  "question": "Comment monitorer les défaillances runtime d'un système multi-agents LLM en production (au-delà du monitoring infra générique) ?",
+  "depends_on": ["ai-agent-autonomy-granularity"],
+  "tags": ["ai-collaboration", "monitoring", "observability", "MAST", "multi-agent", "failure-detection"],
+  "classification": "universal",
+  "universal": {
+    "principles": [
+      {
+        "text": "Instrumenter les traces d'exécution agent avec la taxonomie MAST (14 modes de défaillance, 3 catégories : system design, inter-agent misalignment, task verification) et les conventions sémantiques OpenTelemetry GenAI (spans agent, attributs gen_ai.*), plutôt que de se limiter aux métriques infra (CPU/RAM/latence). Chaque span doit capturer l'intent sémantique (prompt, modèle, rôle agent) et les effets système (tool calls, outputs), de sorte que les échecs soient classifiables et pas seulement détectables.",
+        "grade": 4,
+        "level": "STANDARD",
+        "sources": [
+          {
+            "name": "Umapathi et al. 2025 — Why Do Multi-Agent LLM Systems Fail? (MAST)",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "We introduce MAST (Multi-Agent System Failure Taxonomy), developed through analysis of 150 traces with inter-annotator agreement of kappa = 0.88. The taxonomy identifies 14 unique modes, clustered into 3 categories: system design issues, inter-agent misalignment, and task verification. We release a dataset of 1600+ annotated traces collected across 7 popular MAS frameworks.",
+            "arxiv": "arXiv:2503.13657"
+          },
+          {
+            "name": "Zhao et al. 2025 — AgentSight: eBPF Observability for LLM Agents",
+            "pyramid": 3,
+            "year": 2025,
+            "quote": "This creates a critical semantic gap: existing tools observe either an agent's high-level intent (via LLM prompts) or its low-level actions (e.g., system calls), but cannot correlate these two views. This blindness makes it difficult to distinguish between benign operations, malicious attacks, and costly failures. AgentSight intercepts TLS-encrypted LLM traffic to extract semantic intent, monitors kernel events to observe system-wide effects, and causally correlates these two streams across process boundaries using a real-time engine and secondary LLM analysis. This instrumentation-free technique is framework-agnostic, resilient to rapid API changes, and incurs less than 3% performance overhead.",
+            "arxiv": "arXiv:2508.02736"
+          },
+          {
+            "name": "Hummer et al. 2025 — Beyond Black-Box Benchmarking",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "79% agreement that non-deterministic flow of agentic systems acts as a major challenge. We introduce taxonomies to present expected analytics outcomes and the ways to collect them by extending standard observability frameworks, leveraging agent runtime logs as input, and analytics outcome including discovered flows and issues.",
+            "arxiv": "arXiv:2503.06745"
+          },
+          {
+            "name": "OpenTelemetry 2025 — AI Agent Observability: Evolving Standards and Best Practices",
+            "pyramid": 4,
+            "year": 2025,
+            "quote": "This fragmented landscape underscores the importance of the GenAI observability project and OpenTelemetry's emerging semantic conventions, which aim to unify how telemetry data is collected and reported.",
+            "url": "https://opentelemetry.io/blog/2025/ai-agent-observability/"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence forte : 4 sources indépendantes (MAST arXiv:2503.13657, AgentSight arXiv:2508.02736, Beyond Black-Box arXiv:2503.06745, OpenTelemetry blog 2025) convergent sur la nécessité d'instrumenter la sémantique agent au-delà des métriques infra"],
+          "minus": []
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["MAST — arXiv:2503.13657", "AgentSight — arXiv:2508.02736"],
+        "etd_balance": {
+          "benefices": "Détection précise des 14 modes de défaillance MAST ; corrélation intent/effet permettant de distinguer attaques, bugs et comportements bénins ; overhead < 3% (AgentSight eBPF) ; traces exploitables par des outils standard (Grafana, Jaeger) via conventions gen_ai.*",
+          "risques": "Surcoût de développement initial pour implémenter les attributs sémantiques ; conventions OTel GenAI encore en stabilisation (experimental en 2025) ; volume de traces élevé en MAS dense",
+          "balance": "Bénéfices > Risques",
+          "faisabilite": "Haute — instrumentation eBPF (AgentSight) ou SDK OTel disponibles en open-source"
+        },
+        "date_extraction": "2026-04-18"
+      },
+      {
+        "text": "Déployer un agent superviseur dédié (LLM-as-judge ou graph-based) pour la détection et l'attribution des défaillances inter-agents en temps réel : l'agent superviseur observe les communications inter-agents, modélise les interactions comme un graphe d'exécution dynamique, et intervient (isole, corrige, remonte) lorsqu'une anomalie est détectée. Ne pas déléguer cette responsabilité aux seules métriques passives.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "Shen et al. 2025 — SentinelAgent: Graph-based Anomaly Detection for MAS",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "We present a system-level anomaly detection framework tailored for MAS, integrating structural modeling with runtime behavioral oversight. Our approach consists of two components. First, we propose a graph-based framework that models agent interactions as dynamic execution graphs, enabling semantic anomaly detection at node, edge, and path levels. Second, we introduce a pluggable SentinelAgent, an LLM-powered oversight agent that observes, analyzes, and intervenes in MAS execution based on security policies and contextual reasoning. By bridging abstract detection logic with actionable enforcement, our method detects not only single-point faults and prompt injections but also multi-agent collusion and latent exploit paths.",
+            "arxiv": "arXiv:2505.24201"
+          },
+          {
+            "name": "Chen et al. 2025 — AgenTracer: Who Is Inducing Failure",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Current state-of-the-art reasoning LLMs, however, remain strikingly inadequate for this challenge, with accuracy generally below 10%. To address this gap, we propose AgenTracer, the first automated framework for annotating failed multi-agent trajectories via counterfactual replay and programmed fault injection. AgenTracer-8B outperforms giant proprietary LLMs like Gemini-2.5-Pro and Claude-4-Sonnet by up to 18.18%, setting a new standard in LLM agentic failure attribution. AgenTracer-8B delivers actionable feedback to off-the-shelf multi-agent systems like MetaGPT and MaAS with 4.8-14.2% performance gains, empowering self-correcting and self-evolving agentic AI.",
+            "arxiv": "arXiv:2509.03312"
+          },
+          {
+            "name": "IBM Research 2026 — AgentFixer: From Failure Detection to Fix",
+            "pyramid": 2,
+            "year": 2026,
+            "quote": "We introduce a comprehensive validation framework for LLM-based agentic systems that provides systematic diagnosis and improvement of reliability failures. The framework includes fifteen failure-detection tools and two root-cause analysis modules that jointly uncover weaknesses across input handling, prompt design, and output generation. It integrates lightweight rule-based checks with LLM-as-a-judge assessments to support structured incident detection, classification, and repair. These results show a path toward scalable, quality assurance, and adaptive validation in production agentic systems.",
+            "arxiv": "arXiv:2603.29848"
+          },
+          {
+            "name": "Bergamaschi et al. 2025 — Sentinel Agents for Secure MAS",
+            "pyramid": 2,
+            "year": 2025,
+            "quote": "Sentinel Agents monitor inter-agent communications using semantic analysis via large language models (LLMs), behavioral analytics, retrieval-augmented verification, and cross-agent anomaly detection. The evaluation tested the framework's effectiveness through simulation: 162 synthetic attacks representing three families (prompt injection, hallucination, and data exfiltration) were injected into a conversational environment. The Sentinel Agents successfully detected the attack attempts, confirming the practical feasibility of the proposed monitoring approach.",
+            "arxiv": "arXiv:2509.14956"
+          }
+        ],
+        "grade_factors_applied": {
+          "start": 3,
+          "plus": ["convergence forte : 4 sources indépendantes (SentinelAgent arXiv:2505.24201, AgenTracer arXiv:2509.03312, AgentFixer arXiv:2603.29848, Sentinel Agents arXiv:2509.14956) convergent sur le pattern agent-superviseur dédié pour attribution et intervention"],
+          "minus": []
+        },
+        "robustness": "MODERATE",
+        "critical_sources": ["AgenTracer — arXiv:2509.03312", "SentinelAgent — arXiv:2505.24201"],
+        "etd_balance": {
+          "benefices": "Attribution précise de la défaillance à l'agent/étape responsable (AgenTracer +18.18% vs GPT-4/Claude) ; détection multi-point (collusion, prompt injection, hallucination) inaccessible au monitoring passif ; feedback actionnable → gains 4.8-14.2% sur les systèmes corrigés",
+          "risques": "Coût LLM supplémentaire pour l'agent superviseur (latence + tokens) ; risque de faux positifs si les politiques sémantiques sont mal calibrées ; complexité d'intégration dans des MAS hétérogènes",
+          "balance": "Bénéfices > Risques",
+          "faisabilite": "Haute — patterns disponibles en open-source (SentinelAgent pluggable, AgenTracer-8B poids publics)"
+        },
+        "date_extraction": "2026-04-18"
+      }
+    ]
+  },
+  "variants": {}
+}

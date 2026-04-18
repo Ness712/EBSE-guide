@@ -1,0 +1,341 @@
+{
+  "slr_id": "ai-agent-incident-response",
+  "agent": "A",
+  "date": "2026-04-18",
+  "search_terms_used": [
+    "AI agent incident response autonomous production 2024 2025",
+    "LLM agent rollback transactional recovery SRE",
+    "agentic system emergency protocol blast radius",
+    "STRATUS SagaLLM SHIELDA agent failure recovery",
+    "AI agent irreversible action gate human oversight",
+    "STRATUS multi-agent autonomous reliability engineering cloud 2025 arxiv",
+    "agent incident response playbook autonomous AI escalation human-in-the-loop SRE 2024 2025",
+    "SHIELDA structured handling exceptions LLM agentic workflows arxiv 2025",
+    "2025 AI Agent Index autonomous systems safety features deployed production arxiv",
+    "SagaLLM context management validation transaction VLDB 2025 LLM multi-agent",
+    "IBM undo-and-retry agent cloud incident autonomous recovery 2024 2025",
+    "infrastructure agent autonomous human oversight irreversible gate guardrail 2024 2025 arxiv",
+    "ALAS stateful multi-LLM agent disruption resilience 2025 arxiv",
+    "safety and security framework agentic systems real-world 2025 arxiv escalation irreversible",
+    "resilient LLM agents secure planning rollback recovery production arxiv 2025",
+    "Infosys agent incident response playbook autonomous AI enterprise 2025"
+  ],
+  "databases_searched": [
+    "Google Web Search (via WebSearch tool)",
+    "arXiv (via web search hits)",
+    "ACM DL (via web search hits)",
+    "VLDB Endowment (via web search hits)",
+    "NeurIPS 2025 (via web search hits)",
+    "ResearchGate (via web search hits)",
+    "Semantic Scholar (via web search hits)"
+  ],
+  "total_screened": 34,
+  "included": [
+    {
+      "id": "stratus-2025",
+      "name": "STRATUS: A Multi-agent System for Autonomous Reliability Engineering of Modern Clouds",
+      "authors": "Yinfang Chen et al.",
+      "year": 2025,
+      "venue": "NeurIPS 2025 / arXiv:2506.02009",
+      "url": "https://arxiv.org/abs/2506.02009",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Système multi-agents LLM déployé pour le SRE autonome de clouds en production. Adresse directement : rollback (Transactional Non-Regression / TNR), gate irréversibilité (rejet d'actions destructrices non-annulables), escalade humaine, undo-and-retry, audit trail des actions. Implémentation réelle validée sur AIOpsLab et ITBench."
+    },
+    {
+      "id": "sagallm-2025",
+      "name": "SagaLLM: Context Management, Validation, and Transaction Guarantees for Multi-Agent LLM Planning",
+      "authors": "Chang et al.",
+      "year": 2025,
+      "venue": "Proceedings of the VLDB Endowment, Vol. 18 / arXiv:2503.11951",
+      "url": "https://arxiv.org/abs/2503.11951",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Framework transactionnel (pattern Saga) appliqué aux agents LLM multi-agents. Adresse : compensating transactions, checkpoints, rollback automatique sur échec de validation, recovery sans intervention humaine. Publication VLDB pair-révisée 2025, implémentation concrète."
+    },
+    {
+      "id": "shielda-2025",
+      "name": "SHIELDA: Structured Handling of Exceptions in LLM-Driven Agentic Workflows",
+      "authors": "Zhou, Chen et al.",
+      "year": 2025,
+      "venue": "arXiv:2508.07935",
+      "url": "https://arxiv.org/abs/2508.07935",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Framework modulaire de gestion d'exceptions pour workflows agentiques LLM en production. Taxonomie de 36 types d'exceptions, recovery structuré (diagnose-repair-re-execute), escalade quand recovery initial échoue. Adresse directement le protocole d'urgence agentique. Août 2025."
+    },
+    {
+      "id": "ai-agent-index-2025",
+      "name": "The 2025 AI Agent Index: Documenting Technical and Safety Features of Deployed Agentic AI Systems",
+      "authors": "MIT et al.",
+      "year": 2025,
+      "venue": "arXiv:2602.17753 / aiagentindex.mit.edu",
+      "url": "https://arxiv.org/abs/2602.17753",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1+I4 — Étude empirique de 30 systèmes agentiques déployés en production, dont mécanismes de supervision humaine, emergency stops, monitoring, approval gates. Données observationnelles sur l'état réel du déploiement d'agents autonomes. Février 2025."
+    },
+    {
+      "id": "safety-security-framework-agentic-2025",
+      "name": "A Safety and Security Framework for Real-World Agentic Systems",
+      "authors": "anonymes (NVIDIA AI-Q case study)",
+      "year": 2025,
+      "venue": "arXiv:2511.21990",
+      "url": "https://arxiv.org/abs/2511.21990",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Framework actionnable pour agents IA en entreprise incluant : escalade humaine pour actions irréversibles, fallback agents, rollback, read-only mode, monitoring. Case study sur NVIDIA AI-Q Research Assistant (déploiement réel). Novembre 2025."
+    },
+    {
+      "id": "multi-agent-llm-incident-response-2025",
+      "name": "Multi-Agent LLM Orchestration Achieves Deterministic, High-Quality Decision Support for Incident Response",
+      "authors": "anonymes",
+      "year": 2025,
+      "venue": "arXiv:2511.15755",
+      "url": "https://arxiv.org/html/2511.15755v1",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Orchestre multi-agents LLM pour réponse aux incidents, avec génération de commandes spécifiques type 'rollback auth-service to v2.3.0'. Adresse directement : rollback autonome, décisions déterministes, zéro variance qualité. Novembre 2025."
+    },
+    {
+      "id": "alas-disruption-2025",
+      "name": "ALAS: A Stateful Multi-LLM Agent Framework for Disruption-Aware Planning",
+      "authors": "anonymes",
+      "year": 2025,
+      "venue": "arXiv:2505.12501",
+      "url": "https://arxiv.org/abs/2505.12501",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Framework multi-agents stateful avec restore points, rollback, post-hoc diagnostics, monitoring runtime. Gestion de disruptions (équivalent incidents) en cours d'exécution avec réparation locale sans global replanning. Mai 2025."
+    },
+    {
+      "id": "architecting-resilient-llm-2025",
+      "name": "Architecting Resilient LLM Agents: A Guide to Secure Plan-then-Execute Implementations",
+      "authors": "anonymes",
+      "year": 2025,
+      "venue": "arXiv:2509.08646",
+      "url": "https://arxiv.org/abs/2509.08646",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Guide d'architecture pour agents LLM résilients en production (LangGraph, CrewAI, AutoGen). Adresse : re-planning, sandbox Docker, scoping sécurisé des outils, recovery prédéfini sur graphe de plan. Septembre 2025."
+    },
+    {
+      "id": "guardrail-foundational-2025",
+      "name": "Building a Foundational Guardrail for General Agentic Systems via Synthetic Data",
+      "authors": "anonymes",
+      "year": 2025,
+      "venue": "arXiv:2510.09781",
+      "url": "https://arxiv.org/abs/2510.09781",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Système de guardrail externe (pré-exécution) pour agents autonomes en production. Détecte risques multi-étapes et prévient actions irréversibles avant exécution. Gate d'irréversibilité explicite au stade de planification. Octobre 2025."
+    },
+    {
+      "id": "formalizing-safety-agentic-2025",
+      "name": "Formalizing the Safety, Security, and Functional Properties of Agentic AI Systems",
+      "authors": "anonymes",
+      "year": 2025,
+      "venue": "arXiv:2510.14133",
+      "url": "https://arxiv.org/abs/2510.14133",
+      "pyramid_level": 3,
+      "inclusion_reason": "I1+I4 — Formalisation des propriétés de sécurité et sûreté des systèmes agentiques, incluant contraintes d'irréversibilité, frontières d'autorisation, audit trails. Cadre formel applicable aux protocoles d'urgence. Octobre 2025."
+    },
+    {
+      "id": "aws-devops-agent-2025",
+      "name": "Leverage Agentic AI for Autonomous Incident Response with AWS DevOps Agent",
+      "authors": "AWS",
+      "year": 2025,
+      "venue": "AWS DevOps & Developer Productivity Blog",
+      "url": "https://aws.amazon.com/blogs/devops/leverage-agentic-ai-for-autonomous-incident-response-with-aws-devops-agent/",
+      "pyramid_level": 1,
+      "inclusion_reason": "I1+I4 — Déploiement production réel (public preview). Agent autonome détecte/diagnostique incidents en 4 min, audit journals immuables, recommandations rollback. Rapport practitioner avec métriques réelles. 2025."
+    },
+    {
+      "id": "infosys-playbook-2025",
+      "name": "Agent Incident Response Playbook: Operating Autonomous AI Systems Safely at Enterprise Scale",
+      "authors": "Infosys Emerging Technology Solutions",
+      "year": 2025,
+      "venue": "Infosys Technology Blog",
+      "url": "https://blogs.infosys.com/emerging-technology-solutions/artificial-intelligence/agent-incident-response-playbook-operating-autonomous-ai-systems-safely-at-enterprise-scale.html",
+      "pyramid_level": 1,
+      "inclusion_reason": "I1+I4 — Playbook practitioner dédié à la réponse aux incidents pour agents IA autonomes en entreprise. Adresse : tool abuse, hidden instructions, escalade, explainabilité, accountability décisions. Première source explicitement nommée 'agent incident response' avec focus agents IA (pas SRE purement humain). 2025."
+    },
+    {
+      "id": "ibm-undo-retry-2025",
+      "name": "An 'undo-and-retry' mechanism for agents (IBM Research — STRATUS)",
+      "authors": "IBM Research / University of Illinois at Urbana-Champaign",
+      "year": 2025,
+      "venue": "IBM Research Blog",
+      "url": "https://research.ibm.com/blog/undo-agent-for-cloud",
+      "pyramid_level": 1,
+      "inclusion_reason": "I1+I4 — Blog IBM Research décrivant le mécanisme undo-and-retry de STRATUS avec détails implémentation : write lock, simulation avant exécution, rejet actions non-annulables, escalade humaine si solution safe introuvable. Complète le papier STRATUS avec détails opérationnels. 2025."
+    },
+    {
+      "id": "pagerduty-sre-agent-memory-2025",
+      "name": "We Built an SRE Agent With Memory And It's Transforming Incident Response",
+      "authors": "PagerDuty",
+      "year": 2025,
+      "venue": "PagerDuty Blog",
+      "url": "https://www.pagerduty.com/blog/ai/we-built-an-sre-agent-with-memory-and-its-transforming-incident-response/",
+      "pyramid_level": 1,
+      "inclusion_reason": "I1+I4 — Rapport practitioner déploiement production SRE agent avec mémoire persistante. Métriques réelles : 97% filtrage faux positifs, 3.8% taux escalade humaine, 80% résolution autonome. Adresse supervision humaine et mode dégradé. 2025."
+    },
+    {
+      "id": "ilert-agentic-incident-2025",
+      "name": "Agentic Incident Management Guide",
+      "authors": "iLert",
+      "year": 2025,
+      "venue": "iLert Documentation/Blog",
+      "url": "https://www.ilert.com/agentic-incident-management-guide",
+      "pyramid_level": 1,
+      "inclusion_reason": "I1+I4 — Guide complet gestion d'incidents agentique incluant : guardrails, escalade humaine si auto-résolution impossible, limite de tentatives avant escalade, intégration avec alerting existant. Déploiement production documenté. 2025."
+    },
+    {
+      "id": "feature-flag-rollback-llm-ssrn-2025",
+      "name": "A Simulation-Based Study of LLM-Augmented Feature Flag Resolution and Rollback Orchestration in Distributed Systems",
+      "authors": "Roman Fedytskyi",
+      "year": 2025,
+      "venue": "SSRN",
+      "url": "https://papers.ssrn.com/sol3/Delivery.cfm/5911342.pdf?abstractid=5911342&mirid=1",
+      "pyramid_level": 2,
+      "inclusion_reason": "I1+I4 — Étude simulation sur orchestration LLM de feature flags et rollback en systèmes distribués. Adresse directement le rollback autonome déclenché par agent IA dans contexte infrastructure production. 2025."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Agentic AI and the Future of Major Incident Response in ITSM",
+      "year": 2025,
+      "venue": "ITSM.tools blog",
+      "url": "https://itsm.tools/agentic-ai-major-incident-response-itsm/",
+      "exclusion_criterion": "E3",
+      "reason": "Article de blog éditorial sans implémentation concrète ni données empiriques. Traite des agents IA dans ITSM de façon prospective/théorique."
+    },
+    {
+      "name": "AI Agent Trends of 2025: Entering the Agentic Era of Autonomous Intelligence",
+      "year": 2025,
+      "venue": "genesishumanexperience.com blog",
+      "url": "https://genesishumanexperience.com/2025/10/19/ai-agent-trends-of-2025-entering-the-agentic-era-of-autonomous-intelligence/",
+      "exclusion_criterion": "E3",
+      "reason": "Article de tendances sans implémentation ni données empiriques. Pas spécifique aux protocoles d'incident/urgence."
+    },
+    {
+      "name": "AI Agents Have Entered the Enterprise: What Commercial Companies Need to Deploy Them Safely",
+      "year": 2025,
+      "venue": "marcmansolutions.com blog",
+      "url": "https://www.marcmansolutions.com/insights/enterprise-agentic-ai-deployment-2025/",
+      "exclusion_criterion": "E3",
+      "reason": "Article conseils généraux déploiement entreprise, pas de protocole incident spécifique ni implémentation documentée."
+    },
+    {
+      "name": "Fully Autonomous AI Agents Should Not be Developed",
+      "year": 2025,
+      "venue": "arXiv:2502.02649",
+      "url": "https://arxiv.org/html/2502.02649v3",
+      "exclusion_criterion": "E3",
+      "reason": "Position paper théorique sur l'opportunité de développer des agents IA. Pas d'implémentation de protocoles d'incident, pas de contexte production SRE."
+    },
+    {
+      "name": "Autonomous Agents on Blockchains: Standards, Execution Models, and Trust Boundaries",
+      "year": 2026,
+      "venue": "arXiv:2601.04583",
+      "url": "https://arxiv.org/html/2601.04583v1",
+      "exclusion_criterion": "E3",
+      "reason": "Focalisé sur agents blockchain (contexte on-chain), pas sur infrastructure cloud/SRE. Pas d'implémentation de protocoles d'incident production."
+    },
+    {
+      "name": "A Survey of Agentic AI and Cybersecurity: Challenges, Opportunities and Use-case Prototypes",
+      "year": 2026,
+      "venue": "arXiv:2601.05293",
+      "url": "https://arxiv.org/html/2601.05293v1",
+      "exclusion_criterion": "E3",
+      "reason": "Survey cybersécurité généraliste. Mentionne escalade/audit trails mais dans contexte sécurité défensive, pas protocoles SRE/incident réponse pour agents autonomes en production."
+    },
+    {
+      "name": "AI and Human Oversight: A Risk-Based Framework for Alignment",
+      "year": 2025,
+      "venue": "arXiv:2510.09090",
+      "url": "https://arxiv.org/pdf/2510.09090",
+      "exclusion_criterion": "E3",
+      "reason": "Framework théorique d'alignement IA et supervision humaine, pas spécifique aux protocoles d'incident ni aux agents SRE en production."
+    },
+    {
+      "name": "Infrastructure for AI Agents",
+      "year": 2025,
+      "venue": "arXiv:2501.10114",
+      "url": "https://arxiv.org/html/2501.10114v2",
+      "exclusion_criterion": "E3",
+      "reason": "Traite de l'infrastructure pour agents IA en général (compute, stockage, réseau), pas des protocoles de réponse aux incidents ni des mécanismes de rollback/escalade spécifiques."
+    },
+    {
+      "name": "Position: AI agents should be regulated based on autonomous action sequences",
+      "year": 2025,
+      "venue": "arXiv:2503.04750",
+      "url": "https://arxiv.org/html/2503.04750v1",
+      "exclusion_criterion": "E3",
+      "reason": "Position paper sur régulation des agents IA. Pas d'implémentation technique de protocoles d'incident ou de rollback."
+    },
+    {
+      "name": "Human Society-Inspired Approaches to Agentic AI Security: The 4C Framework",
+      "year": 2025,
+      "venue": "arXiv:2602.01942",
+      "url": "https://www.arxiv.org/pdf/2602.01942",
+      "exclusion_criterion": "E3",
+      "reason": "Framework conceptuel inspiré de la société humaine pour la sécurité agentique. Pas d'implémentation de protocoles d'incident, pas de contexte SRE production."
+    },
+    {
+      "name": "On the Resilience of LLM-Based Multi-Agent Collaboration with Faulty Agents",
+      "year": 2025,
+      "venue": "ICML 2025 / arXiv:2408.00989",
+      "url": "https://arxiv.org/html/2408.00989v4",
+      "exclusion_criterion": "E3",
+      "reason": "Étudie la résilience collaborative face à des agents défaillants (benchmark académique), pas des protocoles d'incident en production infrastructure. Contexte expérimental sans déploiement réel."
+    },
+    {
+      "name": "ShieldAgent: Shielding Agents via Verifiable Safety Policy Reasoning",
+      "year": 2025,
+      "venue": "arXiv:2503.22738",
+      "url": "https://arxiv.org/abs/2503.22738",
+      "exclusion_criterion": "E3",
+      "reason": "Mécanisme de vérification formelle de politiques de sécurité agent. Pas spécifique aux protocoles d'incident en production, pas de contexte SRE."
+    },
+    {
+      "name": "ALAS: Transactional and Dynamic Multi-Agent LLM Planning",
+      "year": 2025,
+      "venue": "arXiv:2511.03094",
+      "url": "https://arxiv.org/abs/2511.03094",
+      "exclusion_criterion": "E3",
+      "reason": "Version antérieure/variante de ALAS 2505.12501 déjà incluse. Redondant — la version incluse (2505) est plus complète et spécifique disruption-aware."
+    },
+    {
+      "name": "The Agency Crisis: Why We Urgently Need a Unified Control Plane for AI",
+      "year": 2026,
+      "venue": "genesishumanexperience.com blog",
+      "url": "https://genesishumanexperience.com/2026/01/09/the-agency-crisis-why-we-urgently-need-a-unified-control-plane-for-ai/",
+      "exclusion_criterion": "E3",
+      "reason": "Article de blog éditorial/opinion sur gouvernance IA. Pas d'implémentation ni données empiriques."
+    },
+    {
+      "name": "Limiting Data Exposure and Blast Radius for AI Agents",
+      "year": 2025,
+      "venue": "loginradius.com blog",
+      "url": "https://www.loginradius.com/blog/engineering/limiting-data-exposure-and-blast-radius-for-ai-agents",
+      "exclusion_criterion": "E3",
+      "reason": "Article technique sur réduction blast radius (principalement IAM/permissions), pas de protocoles d'incident ni de rollback/escalade pour agents autonomes."
+    },
+    {
+      "name": "Agentic AI Safety & Guardrails: 2025 Best Practices for Enterprise",
+      "year": 2025,
+      "venue": "skywork.ai blog",
+      "url": "https://skywork.ai/blog/agentic-ai-safety-best-practices-2025-enterprise/",
+      "exclusion_criterion": "E3",
+      "reason": "Best practices générales de sécurité agentique sans implémentation ni données empiriques. Pas spécifique protocols d'incident."
+    },
+    {
+      "name": "The Blast Radius Problem: Stolen Credentials Are Weaponizing Agentic AI",
+      "year": 2025,
+      "venue": "SecurityWeek",
+      "url": "https://www.securityweek.com/the-blast-radius-problem-stolen-credentials-are-weaponizing-agentic-ai/",
+      "exclusion_criterion": "E3",
+      "reason": "Article sécurité sur vecteur d'attaque credentials volés via agents IA. Pas de protocole d'incident ni mécanismes de rollback/recovery agentique."
+    },
+    {
+      "name": "Automating Complex Document Workflows via Stepwise and Rollback-Enabled",
+      "year": 2024,
+      "venue": "arXiv:2512.04445",
+      "url": "https://arxiv.org/pdf/2512.04445",
+      "exclusion_criterion": "E3",
+      "reason": "Rollback dans contexte de workflows documentaires (ex: AutoDW). Pas d'application SRE/infrastructure production ni protocoles d'incident pour agents autonomes."
+    }
+  ]
+}

@@ -48,7 +48,7 @@ Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta
 - Changements d'architecture (nouveau service, changement de stack, restructuration majeure)
 - Merge vers main ou staging
 
-**Ne te fie JAMAIS a ta propre confiance** pour bypasser ces gates — la confabulation rend l'auto-evaluation non-fiable.
+**Ne te fie JAMAIS a ta propre confiance** pour bypasser ces gates — la confabulation rend l'auto-evaluation non-fiable. Seul le PO peut lever une gate, via un override explicite dans `CLAUDE.local.md`.
 
 `Source: PICOC #3 Human-only gates + NIST AI 600-1 §2.2 Confabulation + EU AI Act Article 14 + Replit catastrophic failure case (Fortune 2025)`
 
@@ -317,7 +317,7 @@ Si une tache intermediaire surge pendant l'execution (avec sa propre methodologi
 - Le sous-agent rapporte son resultat a l'agent principal qui **verifie avant de continuer**
 
 **Les sous-agents demarrent avec un contexte vierge** — ils ne recoivent aucun fichier automatiquement. Le prompt doit toujours inclure explicitement :
-1. `[MANDATORY]` **Le `CLAUDE.md` du repo cible** — toujours en premier, quel que soit le repo ou la tache. C'est lui qui contient les regles, la methodologie, et les pointeurs vers le reste.
+1. `[MANDATORY]` **Le `CLAUDE.md` du repo cible** — toujours en premier, quel que soit le repo ou la tache. C'est lui qui contient les regles, la methodologie, et les pointeurs vers le reste. Formulation obligatoire dans le prompt du sous-agent : "Avant toute chose, lis [CLAUDE.md path]. Suis les regles qu'il contient."
 2. Les fichiers/ressources supplementaires specifiques a la tache si necessaire
 3. L'output attendu avec les livrables concrets (fichiers crees, format, emplacement)
 
@@ -419,9 +419,9 @@ Ne sois jamais silencieux pendant longtemps. Mais ne sois pas verbeux non plus �
 
 ## Verite et non-invention `[MANDATORY]`
 
-- **Ne fabrique JAMAIS** de noms de packages, d'APIs, de fonctions, de quotes, de chiffres
-- **Ne dis JAMAIS "c'est fait"** si ce n'est pas fait — 5/7 vaut mieux qu'un faux "7/7"
-- **Ne masque JAMAIS un echec** — si un test echoue, si un build casse, dis-le immediatement
+- **Ne fabrique JAMAIS** de noms de packages, d'APIs, de fonctions, de quotes, de chiffres — meme comme suggestion, estimation ou approximation. Si tu ne connais pas, dis-le et cherche.
+- **Ne dis JAMAIS "c'est fait"** si ce n'est pas verifie — ni "devrait marcher", ni "probablement fait", ni "ca devrait etre OK". 5/7 verifie vaut mieux qu'un faux "7/7".
+- **Ne masque JAMAIS un echec** — si un test echoue, si un build casse, dis-le immediatement. Ne pas signaler = masquer.
 - **Si tu ne sais pas** : dis "je ne sais pas" et propose de chercher (doc officielle, guide EBSE)
 - **Verifie tes propres claims** : avant d'affirmer qu'un package existe, fais `npm info` / `pip show`. Avant d'affirmer qu'une API a une methode, lis la doc.
 

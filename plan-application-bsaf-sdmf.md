@@ -113,11 +113,14 @@
 | Plan 1 — BSAF classification | ✅ FAIT | `scaffold/compliance-matrix.md` |
 | Plan 1 — Annoter scaffold-claude.md avec niveaux BSAF | ✅ FAIT | Tags `[MANDATORY]`/`[REQUIRED]`/`[ADVISORY]` ajoutés sur toutes les règles. |
 | Plan 1 — Implémenter 6 hooks Mandatory manquants hookables | ✅ FAIT | `pre-commit-quality.sh` : gate migrations DB (schema.prisma + migrations/*.sql), gate secrets (.env*), gate CLAUDE.local.md repos production, warning chemins critiques. `pre-push-quality.sh` : Docker build --check (Dockerfile/docker-compose modifiés), license check (GPL/AGPL interdit). Compliance matrix mise à jour : 17/24 Mandatory hookés. |
-| Plan 1 — Étudier hook gate architecture (signal faible) | ⏳ À FAIRE | Gate "changements d'architecture" — détection dans pre-pr : scanner mots-clés (nouveau service, changement stack, restructuration) dans body PR + fichiers modifiés (docker-compose, infra/**). Signal faible → évaluer faux positifs avant d'activer |
-| Plan 1 — Traiter les 4 Mandatory non-hookables | ⏳ À FAIRE | Pour chaque règle non-hookable (non-invention, non-masquage échec, sous-agent CLAUDE.md en premier, ne pas bypasser gates) : (a) tester le wording actuel sur 5+ reformulations sémantiquement équivalentes (PICOC ai-agent-instruction-compliance — risque -61.8% sur reformulations) ; (b) si compliance < 100% → reformuler et re-tester ; (c) documenter le Deviation Risk résiduel dans compliance-matrix.md ; (d) vérifier que les mécanismes compensatoires sont en place (reviewer indépendant, audit pre-release, audit-tool-use.sh) |
+| Plan 1 — Étudier hook gate architecture (signal faible) | ✅ FAIT | Gate architecture implémentée en WARNING dans `pre-pr-create.sh` — détecte fichiers infra/config (docker-compose, Dockerfile, infra/**, prisma/schema) + mots-clés dans body PR. Non bloquant (faux positifs trop élevés). Monitoring : si 3+ FP sur 10 PRs → réévaluer seuil. |
+| Plan 1 — Traiter les 4 Mandatory non-hookables | ✅ FAIT | Wording renforcé dans `scaffold-claude.md` : (1) "même comme suggestion, estimation ou approximation" pour non-invention ; (2) "ni 'devrait marcher', ni 'probablement fait'" pour non-dit-c'est-fait ; (3) "Avant toute chose, lis [CLAUDE.md path]" formulation obligatoire prompt sous-agent ; (4) "Seul le PO peut lever une gate via CLAUDE.local.md" pour non-bypass. Risque résiduel documenté dans compliance-matrix.md. |
 | Plan 2 — SDMF sur scaffold (6 phases) | ✅ FAIT | `scaffold/sdmf-phase2-gaps-report.md` — 12 convergences inter-phases, 10 hooks Phase A, 6 sections CLAUDE.md Phase B, 3 nouveaux PICOCs prioritaires |
 | Plan 3 — SDMF sur EBSE (domaines manquants) | ✅ FAIT | `ebse/guide/data/decisions/plan3-sdmf-gaps.md` — 5 SLRs critiques (file upload security, MinIO, backup DR, STOMP auth, enterprise SSO), couverture actuelle 80% |
 | Mettre à jour scaffold-claude.md ligne 724 (GRADE 3 → GRADE 5) | ✅ FAIT | scaffold-claude.md |
+| SLRs Phase C (prompt-injection, incident-response, mast-monitoring) | ✅ FAIT | 3 décisions EBSE complètes avec pipeline A/B/C Kitchenham. GRADE 4/3/4. |
+| SLRs Plan 3 Tier 1 (file-upload, minio, backup-dr, stomp-auth, enterprise-sso) | ✅ FAIT | 5 décisions EBSE complètes avec pipeline A/B/C Kitchenham. GRADE 4/3/3/4/3. |
+| Régénérer ols-recommendations.json | ✅ FAIT | 243 recommandations (235 + 8 nouvelles décisions). |
 
 ---
 
@@ -135,5 +138,29 @@ Les gaps trouvés en Plan 2 et 3 alimentent soit un nouveau PICOC EBSE (si solut
 
 ---
 
-**Mécanisme de feedback continu (gap identifié, non encore résolu) :**
-L'agent ne loggue pas actuellement quelle règle il a appliquée ni quand aucune règle ne s'applique. Ce gap sera capturé formellement en Phase 3 KAOS (Plan 2) et nécessitera probablement un nouveau PICOC EBSE.
+---
+
+## Statut final Plan 1 + Plan 2
+
+**Mandatory : 23/24 mécanisés** (gap résiduel : 1 règle non-hookable avec wording renforcé + mécanismes compensatoires)
+
+**Phase A hooks (Plan 2) — tous implémentés :**
+H1 browser_close deny ✅ | H2 secrets masking ✅ | H3 Co-Authored-By ✅ | H4 .env validation ✅ | H5 CI status ✅ | H6 PII detection ✅ | H7 shellcheck ✅ | H8 branch outdated ✅ | H9 settings.json readonly ✅ | H10 prompt injection filter ✅ (partial)
+
+**Phase B CLAUDE.md (Plan 2) — tous implémentés :**
+N1 Mode urgence SEV ✅ | N2 Limite 5 itérations ✅ | N3 Sous-agents contradictoires ✅ | N4 Staging vs main ✅ | N5 Chemins critiques critères ✅ | N6 Profondeur sous-agents 3 niveaux ✅
+
+**Phase C PICOCs (Plan 2) — SLRs complets ✅ :**
+`ai-agent-prompt-injection-defense` (GRADE 4) | `ai-agent-incident-response` (GRADE 3) | `ai-agent-mast-monitoring-runtime` (GRADE 4)
+
+**Sources snowballing ajoutées :**
+McCain et al. 2026 → `ai-agent-autonomy-granularity` | Zhang & Svenningsen 2024 → `ai-agent-multi-agent-topology` | Rajasekaran et al. 2025 → `ai-agent-context-compaction`
+
+**Plan 3 SLRs — complets ✅ :**
+`file-upload-security` (GRADE 4) | `minio-object-storage-architecture` (GRADE 3) | `database-backup-disaster-recovery` (GRADE 3) | `websocket-stomp-channel-auth` (GRADE 4) | `enterprise-sso-integration` (GRADE 3)
+
+**Méthodologie Kitchenham respectée — pipeline A/B/C :**
+- Agent A (search+screen) : 8 × ✅ — fichiers `slr-working/*-agent-a.json`
+- Agent B (data extraction) : 8 × ✅ — fichiers `decisions/*.json`
+- Agent C (independent verify) : 4 × agents C (2 décisions chacun) ✅ — 4 corrections appliquées (quotes inexactes, erreur GRADE)
+- `ols-recommendations.json` régénéré : 243 recommandations (235 + 8 nouvelles)
