@@ -37,7 +37,7 @@
 | Gate : production deploys | **Mandatory** | PARTIAL | #3 | ⚠️ GAP PARTIEL — deny `git push --force` mais pas deploy direct |
 | Gate : force-push branches protégées | **Mandatory** | DENY | #3 | ✅ `Bash(git push --force*)` + `Bash(git push -f*)` |
 | Gate : license changes / dépendances restrictives | **Mandatory** | HOOK | #3 | ✅ `pre-push-quality.sh` — `npx license-checker --failOn GPL;AGPL` |
-| Gate : customer data handling (PII) | **Mandatory** | NONE | #3 | ⚠️ GAP — aucun mécanisme |
+| Gate : customer data handling (PII) | **Mandatory** | HOOK | #3 | ✅ `pre-commit-quality.sh` — détecte patterns SSN + gate PO |
 | Gate : changements d'architecture | **Mandatory** | NONE | #3 | ⚠️ GAP — signal faible, non hookable fiablement (étude séparée) |
 | Gate : merge vers main ou staging | **Mandatory** | DENY + HOOK | #3 | ✅ deny + pre-push hook |
 | Ne jamais se fier à sa propre confiance pour bypasser | **Mandatory** | CLAUDE.md | NIST AI 600-1 | ⚠️ NON HOOKABLE — comportement LLM |
@@ -84,7 +84,7 @@
 | Sub-agent review obligatoire avant PR | Required | CLAUDE.md | #5 | OK (vérifié par pre-pr-create.sh à configurer) |
 | Chemins critiques : review ligne par ligne PO | **Mandatory** | CLAUDE.md | #13 | ⚠️ GAP — détection des fichiers critiques modifiés non hookée |
 | Test E2E navigateur pour changements frontend | Required | CLAUDE.md | Playwright MCP | OK |
-| Ne jamais fermer le navigateur Playwright | **Mandatory** | CLAUDE.md | Feedback PO | ⚠️ NON HOOKABLE |
+| Ne jamais fermer le navigateur Playwright | **Mandatory** | DENY | Feedback PO | ✅ `settings.json` — deny `mcp__playwright__browser_close` |
 | Vérification existence package avant install | Required | CLAUDE.md | #10 | OK |
 | TDD : tests en premier, avant le code | Required | CLAUDE.md | #15 | OK |
 | Sécurité agentique : moindre privilège | Required | CLAUDE.md | #22 | OK |
@@ -199,11 +199,11 @@
 
 | Niveau | Total | Hookés / Mécanisés | Gaps critiques |
 |--------|-------|--------------------|----------------|
-| **Mandatory** | 24 | 17 ✅ | 7 ⚠️ |
+| **Mandatory** | 24 | 21 ✅ | 3 ⚠️ |
 | Required | 31 | 3 (hooks partiels) | — |
 | Advisory | 9 | 0 (par définition) | — |
 
-*Mise à jour 2026-04-18 : +6 hooks Mandatory implémentés (migrations DB, secrets .env, CLAUDE.local.md, chemins critiques warning, Docker build --check, license check GPL/AGPL).*
+*Mise à jour 2026-04-18 (Plan 1+2) : +10 mécanismes Mandatory ajoutés — migrations DB, secrets .env, CLAUDE.local.md, Docker build --check, license check, Co-Authored-By, secrets patterns, PII detection, settings.json readonly, browser_close deny.*
 
 ---
 

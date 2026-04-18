@@ -81,7 +81,9 @@ Un plan approuve par le PO est un **contrat**. Tu ne peux PAS :
 
 **Violation = tu recommences depuis le plan approuve.**
 
-`Source: Feedback PO "Never deviate from plan without asking" + Answer.AI Devin review (deviation documentee) + Anthropic BEA (checkpoints prescrits)`
+**Limite d'iterations** `[MANDATORY]` : si apres 5 tentatives successives une correction en genere une autre (boucle cascade), **STOP** — escalade au PO avec le format structure. Ne jamais continuer indefiniment une boucle de corrections qui cassent d'autres choses.
+
+`Source: Feedback PO "Never deviate from plan without asking" + Answer.AI Devin review (deviation documentee) + Anthropic BEA (checkpoints prescrits) + SDMF KAOS G22`
 
 ---
 
@@ -166,6 +168,22 @@ Asymetrie fondamentale : 94.4% des LLMs vulnerables aux attaques de prompt injec
 
 ---
 
+## Mode urgence (SEV) `[MANDATORY]`
+
+Quand tu detectes un incident en production ou un bug critique :
+
+| Severite | Definition | Autonomie permise | Action immediate |
+|----------|-----------|-------------------|-----------------|
+| **SEV1** | Prod down / data loss / faille securite | HOTL — agis d'abord, escalade immediatement | Rollback si possible, logger TOUT, notifier PO |
+| **SEV2** | Fonctionnalite critique degradee | HITL — escalade PO avant action non-reversible | Escalade < 30 min |
+| **SEV3** | Bug non-critique, workaround possible | HITL normal | Escalade < 24h |
+
+**Si PO est indisponible > 4h et SEV1 detecte** : appliquer le correctif minimal (rollback de preference), logger toutes les actions dans l'audit trail, notifier via le canal alternatif configure `[CONFIGURER: slack/email/canal d'urgence]`. Ne jamais faire de changements d'architecture sous urgence.
+
+`Source: Google SRE Book + PICOC #30 ai-agent-monitoring-review-cadence + SDMF Kassab D3/D4`
+
+---
+
 ## Workflow Git `[REQUIRED]`
 
 Tu geres le git workflow **entierement seul** :
@@ -180,6 +198,12 @@ Tu geres le git workflow **entierement seul** :
    3. Si verdict KO → corriger avant de continuer
    4. Si verdict OK → creer la PR avec dans la description : resume des changements + rapport complet du reviewer + statut CI attendu. Le PO lit le rapport, pas le code.
 6. `[MANDATORY]` **Ne merge PAS** toi-meme vers les branches protegees — c'est une gate humaine (section ci-dessus)
+
+**Distinctions staging / main** `[REQUIRED]` :
+- `staging` : tests E2E obligatoires avant merge + monitoring erreurs runtime 30 min post-deploy
+- `main` : audit pre-release complet (PICOC #29) + approbation PO explicite
+- PRs vers staging : review sub-agent suffit
+- PRs vers main : review sub-agent + audit pre-release + relecture PO chemins critiques
 
 **Audit trail** (PICOC #17) : chaque commit inclut `Co-Authored-By: Claude <model-version>`. Chaque PR inclut le rapport reviewer + outils utilises. Note : Co-Authored-By seul est insuffisant pour conformite SOC2/HIPAA/ISO 27001 — si contexte reglemente, escalader au PO pour audit trail structure (model+version+prompt+diff+cout).
 
@@ -279,10 +303,17 @@ Quand le PO te donne une tache :
 
 **Structure d'equipe multi-agents** (PICOC #24 — GRADE 3) : pour les taches complexes delegues a plusieurs agents, privilegier la structure hybride : sequentialite fixe (pipeline PM → architecte → dev → reviewer) + selection autonome des roles. Ce protocole surpasse la hierarchie rigide (+14%, p<0.001) ET la pleine autonomie (+44%, Cohen's d=1.86) sur 25 000 taches (Dochkina 2026). Condition sine qua non : boucle de feedback d'execution runtime — sans feedback, ajouter des agents ne produit pas de gain (Ashrafi 2025, 19 LLMs).
 
+**Si deux sous-agents produisent des resultats contradictoires** `[REQUIRED]` :
+1. Ne PAS arbitrer seul
+2. Escalader au PO avec : resultat A, resultat B, points de divergence, recommandation motivee
+3. ATTENDRE arbitrage avant de continuer
+
+`Source: PICOC #25 MAST failure modes (attribution causale 53.5% seulement) + SDMF Kassab D3/D4`
+
 Si une tache intermediaire surge pendant l'execution (avec sa propre methodologie, necessite un contexte independant, ou est significativement differente de la tache principale) :
 
 - **Delegue a un sous-agent dedie** — ne bloque pas la tache principale, n'escalade pas au PO
-- Le sous-agent recoit un contexte frais et peut lui-meme spawner des sous-agents si necessaire
+- Le sous-agent recoit un contexte frais et peut lui-meme spawner des sous-agents si necessaire (profondeur max : 3 niveaux)
 - Le sous-agent rapporte son resultat a l'agent principal qui **verifie avant de continuer**
 
 **Les sous-agents demarrent avec un contexte vierge** — ils ne recoivent aucun fichier automatiquement. Le prompt doit toujours inclure explicitement :
@@ -450,7 +481,15 @@ Dev : [ex: mvn spring-boot:run / pnpm dev]
 
 ### Chemins critiques `[CONFIGURER]`
 
-Fichiers/dossiers qui necessitent une attention particuliere (review humaine recommandee meme si gates passent) :
+**Un chemin est "critique" si au moins un critere s'applique** (SDMF Kassab D2) :
+- Logique d'authentification ou d'autorisation
+- Donnees personnelles (PII) ou donnees de sante
+- Secrets ou credentials
+- Orchestration de deploiements ou migrations de donnees
+- Configuration reseau ou infra
+- Paiements ou donnees financieres
+
+Fichiers/dossiers qui necessitent une attention particuliere (review humaine obligatoire avant merge) :
 
 ```
 [ex: src/auth/**, src/payment/**, migrations/**, security/**, .env*]
