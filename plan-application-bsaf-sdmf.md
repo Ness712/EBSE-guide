@@ -111,13 +111,13 @@
 | Étape | Statut | Output produit |
 |-------|--------|----------------|
 | Plan 1 — BSAF classification | ✅ FAIT | `scaffold/compliance-matrix.md` |
-| Plan 1 — Annoter scaffold-claude.md avec niveaux BSAF | ⏳ À FAIRE | Ajouter tag `[MANDATORY]`/`[REQUIRED]`/`[ADVISORY]` sur chaque règle dans scaffold-claude.md (référence : compliance-matrix.md) |
+| Plan 1 — Annoter scaffold-claude.md avec niveaux BSAF | ✅ FAIT | Tags `[MANDATORY]`/`[REQUIRED]`/`[ADVISORY]` ajoutés sur toutes les règles. |
 | Plan 1 — Implémenter 6 hooks Mandatory manquants hookables | ✅ FAIT | `pre-commit-quality.sh` : gate migrations DB (schema.prisma + migrations/*.sql), gate secrets (.env*), gate CLAUDE.local.md repos production, warning chemins critiques. `pre-push-quality.sh` : Docker build --check (Dockerfile/docker-compose modifiés), license check (GPL/AGPL interdit). Compliance matrix mise à jour : 17/24 Mandatory hookés. |
 | Plan 1 — Étudier hook gate architecture (signal faible) | ⏳ À FAIRE | Gate "changements d'architecture" — détection dans pre-pr : scanner mots-clés (nouveau service, changement stack, restructuration) dans body PR + fichiers modifiés (docker-compose, infra/**). Signal faible → évaluer faux positifs avant d'activer |
 | Plan 1 — Traiter les 4 Mandatory non-hookables | ⏳ À FAIRE | Pour chaque règle non-hookable (non-invention, non-masquage échec, sous-agent CLAUDE.md en premier, ne pas bypasser gates) : (a) tester le wording actuel sur 5+ reformulations sémantiquement équivalentes (PICOC ai-agent-instruction-compliance — risque -61.8% sur reformulations) ; (b) si compliance < 100% → reformuler et re-tester ; (c) documenter le Deviation Risk résiduel dans compliance-matrix.md ; (d) vérifier que les mécanismes compensatoires sont en place (reviewer indépendant, audit pre-release, audit-tool-use.sh) |
 | Plan 2 — SDMF sur scaffold (6 phases) | ⏳ À FAIRE | gaps → nouveaux PICOCs ou règles |
 | Plan 3 — SDMF sur EBSE (domaines manquants) | ⏳ À FAIRE | domaines sans PICOC → nouveaux SLRs |
-| Mettre à jour scaffold-claude.md ligne 724 (GRADE 3 → GRADE 5) | ⏳ À FAIRE | scaffold-claude.md |
+| Mettre à jour scaffold-claude.md ligne 724 (GRADE 3 → GRADE 5) | ✅ FAIT | scaffold-claude.md |
 
 ---
 

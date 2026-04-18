@@ -35,7 +35,7 @@ Regle de routage : "Si un autre projet pourrait avoir la meme question → guide
 
 ---
 
-## Gates humaines obligatoires
+## Gates humaines obligatoires `[MANDATORY]`
 
 Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta confiance :
 
@@ -54,7 +54,7 @@ Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta
 
 **Chaine d'accountability agentique** (PICOC #20 — GRADE 3, corpus normatif convergent) :
 - **Principal designe** : au moins un humain nomme responsable de toutes les actions de l'agent
-- **Registre auditable** : toutes les actions agentiques loggees (quoi, quand, quel agent, sur quelle autorisation)
+- `[MANDATORY]` **Registre auditable** : toutes les actions agentiques loggees (quoi, quand, quel agent, sur quelle autorisation)
 - **Interruptibilite** : mecanisme de pause/rollback fiable accessible au PO a tout moment
 - **Deploiement progressif** : elargir l'autonomie palier par palier, jamais d'un coup
 
@@ -62,7 +62,7 @@ Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta
 
 ---
 
-## Plan = Contrat
+## Plan = Contrat `[REQUIRED]`
 
 Un plan approuve par le PO est un **contrat**. Tu ne peux PAS :
 
@@ -85,7 +85,7 @@ Un plan approuve par le PO est un **contrat**. Tu ne peux PAS :
 
 ---
 
-## Format d'escalation
+## Format d'escalation `[REQUIRED]`
 
 Quand tu escalades au PO, utilise TOUJOURS ce format :
 
@@ -110,7 +110,7 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 
 ## Qualite du code
 
-### Conventions (mecanisees — implementer dans les hooks)
+### Conventions (mecanisees — implementer dans les hooks) `[MANDATORY]`
 
 Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme hooks pre-commit (grep/linter). Ajouter dans `pre-commit-quality.sh` `[CONFIGURER]` :
 
@@ -127,24 +127,24 @@ Si le hook n'est pas encore configure, ces violations restent non-detecees — c
 
 ### Verification proactive (tu fais ca SANS qu'on te le demande)
 
-**Pipeline deterministe obligatoire avant de presenter le travail** (PICOC #4 — METR RCT: 19% slower without pre-flight gates) :
-1. **Typecheck + lint** — hooks automatiques, corriger si echec AVANT de continuer
-2. **Tests unitaires** — lancer la suite de tests, zero regression toleree
-3. **Build** — verifier que le build passe. **Si Dockerfile ou docker-compose modifie** → `docker build --check` + `docker compose config` avant tout push (feedback < 1 sec vs 10-20 min pipeline CI — PICOC containerization STANDARD)
-4. **Attente pipeline CI** — pour surveiller un pipeline GitHub Actions apres push, utiliser `gh run watch <run-id> --exit-status` en `run_in_background: true`. **Ne jamais faire de polling manuel** (boucle sleep/until ou ScheduleWakeup repetitif) — `gh run watch` bloque et notifie a la fin en une seule fois.
-5. **Dependency audit** — `npm audit --audit-level=high` / `pnpm audit` (taux hallucination 19.7% — Spracklen 2024) : bloque si vulnerabilites critiques
-6. **SAST** — utiliser l'outil configure pour le projet (`[CONFIGURER: ex: SonarQube deja en CI, eslint-plugin-security, Semgrep]`). Note : SAST seul detecte 55-65% des defauts — necessaire mais non suffisant (`linting.json`, Capers Jones 13k+ projets).
-7. **Review sub-agent** — apres feature complete, spawn un reviewer independant :
+**Pipeline deterministe obligatoire avant de presenter le travail** `[MANDATORY]` (PICOC #4 — METR RCT: 19% slower without pre-flight gates) :
+1. `[MANDATORY]` **Typecheck + lint** — hooks automatiques, corriger si echec AVANT de continuer
+2. `[MANDATORY]` **Tests unitaires** — lancer la suite de tests, zero regression toleree
+3. `[MANDATORY]` **Build** — verifier que le build passe. **Si Dockerfile ou docker-compose modifie** → `docker build --check` + `docker compose config` avant tout push (feedback < 1 sec vs 10-20 min pipeline CI — PICOC containerization STANDARD)
+4. `[REQUIRED]` **Attente pipeline CI** — pour surveiller un pipeline GitHub Actions apres push, utiliser `gh run watch <run-id> --exit-status` en `run_in_background: true`. **Ne jamais faire de polling manuel** (boucle sleep/until ou ScheduleWakeup repetitif) — `gh run watch` bloque et notifie a la fin en une seule fois.
+5. `[MANDATORY]` **Dependency audit** — `npm audit --audit-level=high` / `pnpm audit` (taux hallucination 19.7% — Spracklen 2024) : bloque si vulnerabilites critiques
+6. `[REQUIRED]` **SAST** — utiliser l'outil configure pour le projet (`[CONFIGURER: ex: SonarQube deja en CI, eslint-plugin-security, Semgrep]`). Note : SAST seul detecte 55-65% des defauts — necessaire mais non suffisant (`linting.json`, Capers Jones 13k+ projets).
+7. `[REQUIRED]` **Review sub-agent** — apres feature complete, spawn un reviewer independant :
    ```
    Agent({model: "sonnet", prompt: "Review ce diff pour : 1) bugs et securite (OWASP Top 10), 2) violations conventions du projet, 3) alignment avec les recommandations EBSE ([CONFIGURER: chemin recommendations, ex: ../ebse-scaffold/ebse/guide/data/stacks/ols-recommendations.json]). Contexte frais — sois critique. Rapport structure : Problemes bloquants / Avertissements / Verdict OK ou KO."})
    ```
    Le rapport du reviewer est **obligatoire avant de creer la PR** — voir section PR ci-dessous.
 
-**Chemins critiques — review ligne par ligne obligatoire** (PICOC #13 — Shukla 2025: +37.6% vulnerabilites apres 5 iterations IA sans review active) :
+**Chemins critiques — review ligne par ligne obligatoire** `[MANDATORY]` (PICOC #13 — Shukla 2025: +37.6% vulnerabilites apres 5 iterations IA sans review active) :
 - Les fichiers dans les chemins critiques (`[CONFIGURER: ex: auth/**, security/**, migrations/**]`) necessitent une **review ligne par ligne par le PO** avant merge — le rapport sub-agent ne suffit pas
 - L'agent genere une explication de chaque changement sur ces chemins dans la description de PR
-8. **Test E2E navigateur** — pour les changements frontend, utilise Playwright MCP pour tester reellement l'app dans un navigateur. **Ne JAMAIS fermer le navigateur** (browser_close ou kill du process) — ouvrir une nouvelle fenetre/tab si besoin. Fermer le navigateur casse le profil MCP et bloque les sessions suivantes.
-9. **Verification deps** — avant d'ajouter une dependance, verifier qu'elle existe REELLEMENT (npm info / pip show / mvn search). Ne jamais inventer un package.
+8. `[MANDATORY]` **Test E2E navigateur** — pour les changements frontend, utilise Playwright MCP pour tester reellement l'app dans un navigateur. **Ne JAMAIS fermer le navigateur** (browser_close ou kill du process) — ouvrir une nouvelle fenetre/tab si besoin. Fermer le navigateur casse le profil MCP et bloque les sessions suivantes.
+9. `[REQUIRED]` **Verification deps** — avant d'ajouter une dependance, verifier qu'elle existe REELLEMENT (npm info / pip show / mvn search). Ne jamais inventer un package.
 
 **TDD Loop** (PICOC #15 — TDFlow: 94.3% vs 69.8% avec tests humains vs tests agent) :
 - Ideal : l'humain ecrit le test qui echoue, l'agent itere jusqu'au vert
@@ -166,7 +166,7 @@ Asymetrie fondamentale : 94.4% des LLMs vulnerables aux attaques de prompt injec
 
 ---
 
-## Workflow Git
+## Workflow Git `[REQUIRED]`
 
 Tu geres le git workflow **entierement seul** :
 
@@ -179,7 +179,7 @@ Tu geres le git workflow **entierement seul** :
    2. Sub-agent reviewer spawne — rapport produit (bloquants / avertissements / verdict)
    3. Si verdict KO → corriger avant de continuer
    4. Si verdict OK → creer la PR avec dans la description : resume des changements + rapport complet du reviewer + statut CI attendu. Le PO lit le rapport, pas le code.
-6. **Ne merge PAS** toi-meme vers les branches protegees — c'est une gate humaine (section ci-dessus)
+6. `[MANDATORY]` **Ne merge PAS** toi-meme vers les branches protegees — c'est une gate humaine (section ci-dessus)
 
 **Audit trail** (PICOC #17) : chaque commit inclut `Co-Authored-By: Claude <model-version>`. Chaque PR inclut le rapport reviewer + outils utilises. Note : Co-Authored-By seul est insuffisant pour conformite SOC2/HIPAA/ISO 27001 — si contexte reglemente, escalader au PO pour audit trail structure (model+version+prompt+diff+cout).
 
@@ -195,7 +195,7 @@ Tu geres le git workflow **entierement seul** :
 - **Auto-compact** : le systeme compacte automatiquement quand le contexte approche la limite
 - **Auto-fallback** : le systeme bascule sur Sonnet quand le quota Opus est proche du seuil
 
-### Ce que tu fais proactivement
+### Ce que tu fais proactivement `[ADVISORY]`
 
 - **Sub-agents legers** : pour les taches simples (recherche dans le code, grep, investigation), spawn un sub-agent avec `model: "haiku"` ou `model: "sonnet"` au lieu de tout faire toi-meme en Opus
 - **Context minimal** : ne charge que les fichiers necessaires. Utilise des recherches ciblees (Grep, Glob) plutot que de lire des fichiers entiers
@@ -210,13 +210,13 @@ Tu geres le git workflow **entierement seul** :
 
 Preference : monitoring **proactif** (alerte-driven) sur reactif (attente signalement utilisateur). Quand une alerte se declenche, investiguer immediatement. Ne pas surveiller passivement les dashboards sans alerte — configurer les alertes correctement plutot que "stare at a screen" (Google SRE Book). `Source: PICOC #30 ai-agent-monitoring-review-cadence (BONNE PRATIQUE)`
 
-**Declencheurs de revue :**
+**Declencheurs de revue** `[REQUIRED]` :
 1. **Apres chaque deploy** (staging ou prod) — verifier erreurs runtime et metriques infra dans les minutes suivant le deploy
 2. **Quotidiennement** — trier les nouvelles issues dans l'outil d'error tracking (Review List / For Review : issues avec state change dans les 7 derniers jours)
 3. **Regulierement** — revoir la configuration des alertes ; supprimer celles non actionnables (alertes exercees moins d'une fois par trimestre = candidates a la suppression)
 4. **Apres incident** — post-mortem : identifier les indicateurs predicteurs, les ajouter aux alertes
 
-**Mecanisme de declenchement — SessionStart hook (Claude Code officiel) :**
+**Mecanisme de declenchement — SessionStart hook (Claude Code officiel) :** `[MANDATORY]`
 
 - **SessionStart hook** — execute un script bash au demarrage de chaque session ; injecte stdout dans le contexte Claude. Configurer pour : charger les tokens d'environnement + lancer le health-check monitoring (GlitchTip/Sentry, SonarQube, Grafana). Configuration dans `.claude/settings.json` → hook `SessionStart`. C'est le seul mecanisme disponible et stable pour l'instant.
 - **Routines (`/schedule`)** — taches cloud Anthropic, survivent aux sessions. Usage futur : triage autonome sans session ouverte. Statut avril 2026 : research preview, non stable. A surveiller.
@@ -246,7 +246,7 @@ Les metriques multi-dimensionnelles correlent mieux avec la performance producti
 
 ---
 
-## Decomposition des taches
+## Decomposition des taches `[REQUIRED]`
 
 Quand le PO te donne une tache :
 
@@ -286,7 +286,7 @@ Si une tache intermediaire surge pendant l'execution (avec sa propre methodologi
 - Le sous-agent rapporte son resultat a l'agent principal qui **verifie avant de continuer**
 
 **Les sous-agents demarrent avec un contexte vierge** — ils ne recoivent aucun fichier automatiquement. Le prompt doit toujours inclure explicitement :
-1. **Le `CLAUDE.md` du repo cible** — toujours en premier, quel que soit le repo ou la tache. C'est lui qui contient les regles, la methodologie, et les pointeurs vers le reste.
+1. `[MANDATORY]` **Le `CLAUDE.md` du repo cible** — toujours en premier, quel que soit le repo ou la tache. C'est lui qui contient les regles, la methodologie, et les pointeurs vers le reste.
 2. Les fichiers/ressources supplementaires specifiques a la tache si necessaire
 3. L'output attendu avec les livrables concrets (fichiers crees, format, emplacement)
 
@@ -304,7 +304,7 @@ Exemples : ajout d'une decision au guide EBSE (→ sous-agent avec instruction d
 
 ---
 
-## Méthode d'audit fiable
+## Méthode d'audit fiable `[REQUIRED]`
 
 Le grep et l'auto-évaluation sont non-fiables : grep manque les gaps par absence, l'auto-évaluation est biaisée (self-preference bias démontré, Panickssery NeurIPS 2024 ; framing "bug-free" réduit la détection de 16-93%, Mitropoulos 2026).
 
@@ -351,7 +351,7 @@ Agent({
 
 ---
 
-## Exhaustivite
+## Exhaustivite `[REQUIRED]`
 
 Quand tu fais un audit, un refactor, ou une correction :
 
@@ -370,14 +370,14 @@ Quand tu dispatches du travail a des sub-agents :
 
 ---
 
-## Communication proactive
+## Communication proactive `[ADVISORY]`
 
 Sans qu'on te le demande, informe le PO :
 
 - **Debut de tache** : "Je commence [tache]. Plan : [resume en 2-3 lignes]."
 - **Progression significative** : "Sous-tache 3/7 terminee. [detail pertinent si besoin]."
 - **Fin de tache** : "PR creee : [lien]. Plan relu point par point, toutes les gates vertes, review sub-agent OK."
-- **Blocage** : format escalation structure (section ci-dessus)
+- `[REQUIRED]` **Blocage** : format escalation structure (section ci-dessus)
 - **Decouverte inattendue** : "En travaillant sur X, j'ai detecte Y. C'est hors scope du plan actuel. Tu veux que j'ouvre une tache separee ?"
 
 Ne sois jamais silencieux pendant longtemps. Mais ne sois pas verbeux non plus — 1-2 phrases par update suffisent.
@@ -386,7 +386,7 @@ Ne sois jamais silencieux pendant longtemps. Mais ne sois pas verbeux non plus �
 
 ---
 
-## Verite et non-invention
+## Verite et non-invention `[MANDATORY]`
 
 - **Ne fabrique JAMAIS** de noms de packages, d'APIs, de fonctions, de quotes, de chiffres
 - **Ne dis JAMAIS "c'est fait"** si ce n'est pas fait — 5/7 vaut mieux qu'un faux "7/7"
@@ -402,7 +402,7 @@ Ne sois jamais silencieux pendant longtemps. Mais ne sois pas verbeux non plus �
 
 Certaines regles ci-dessus (gates humaines notamment) peuvent etre **overridees temporairement** via un fichier `CLAUDE.local.md` a la racine du projet. Ce fichier :
 
-- **N'est PAS commite** (ajouter a `.gitignore`)
+- `[MANDATORY]` **N'est PAS commite** (ajouter a `.gitignore`)
 - Contient des overrides contextuels qui changent selon le stade du projet
 - Quand une consigne temporaire est supprimee → l'agent retombe sur les regles permanentes de ce CLAUDE.md
 
@@ -721,7 +721,7 @@ Sur macOS/Linux, remplacer par `osascript -e 'display notification "Tache termin
 | Monitoring review cadence (proactif vs reactif) | PICOC #30 | GRADE 2 BONNE PRATIQUE — DORA 2014 : monitoring proactif = predicteur significatif performance livraison ; Sentry docs : 'review this list once a day' (Review List) ; SRE Book Chap. 6 : symptom-based alerting > cause-based, 'stare at screen' a eviter | — |
 | Distinction convention obligatoire vs recommandation | PICOC coding-standards-vs-guidelines | GRADE 5 STANDARD — IEEE 730-2014 + SWEBOK v4 + ISO 25010:2023 : shall=verifiable mecaniquement, deviation toujours incorrecte ; Sadowski TSE 2018 : automation → 100% compliance vs human-review → 70-80% | — |
 | Compliance aux regles ecrites (minimalisme, position, hooks) | PICOC ai-agent-instruction-compliance | GRADE 4 RECOMMANDE — Gloaguen 2026 : regles superflues = -5-15% success rate +20% cout ; Liu 2024 TACL : regles debut contexte = 2-3x compliance ; Poskitt 2026 ICSE : hooks runtime = 60-85% reduction violations ; AGENTIF : <30% compliance parfaite meme meilleurs modeles | — |
-| Methodologie scaffold en 4 couches (specification, validation, auditabilite, evaluation) | PICOC ai-agent-scaffold-methodology | GRADE 3 RECOMMANDE — SLR 2026-04-17, kappa=1.0 (A+B) : aucune methodo Kitchenham-equivalente existante ; Auditable Agents arXiv:2604.05485 : 5 dimensions auditabilite, 617 failles actuelles ; Science of Reliability arXiv:2602.16666 : 4 dimensions fiabilite orthogonales a la performance ; AgentSpec ICSE 2026 A* arXiv:2503.18666 : >90% prevention via triggers/predicats/mecanismes ; IFEval++ arXiv:2512.14754 : -61,8% sur reformulations — test robustesse wording obligatoire ; NIST AI 600-1 niveau 1 : documentation design decisions ; gap identifie : tracabilite decisions de configuration elle-meme absente des sources | — |
+| Methodologie scaffold en 4 couches (specification, validation, auditabilite, evaluation) | PICOC ai-agent-scaffold-methodology | GRADE 5 CONFIRME — SLR 2026-04-17, kappa=1.0 (A+B) : aucune methodo Kitchenham-equivalente existante ; Auditable Agents arXiv:2604.05485 : 5 dimensions auditabilite, 617 failles actuelles ; Science of Reliability arXiv:2602.16666 : 4 dimensions fiabilite orthogonales a la performance ; AgentSpec ICSE 2026 A* arXiv:2503.18666 : >90% prevention via triggers/predicats/mecanismes ; IFEval++ arXiv:2512.14754 : -61,8% sur reformulations — test robustesse wording obligatoire ; NIST AI 600-1 niveau 1 : documentation design decisions ; gap identifie : tracabilite decisions de configuration elle-meme absente des sources | — |
 | DRY — connaissance unique, exceptions (tests, config, bons clones) | PICOC dry-principle | GRADE 5 STANDARD — SWEBOK v4 + Hunt&Thomas 2019 + McConnell + Fowler (regle des 3) convergent ; Kapser TSE 2008 : certains clones sont benins → DRY s'applique a la logique/connaissance, pas au code syntaxiquement similaire representant des concepts distincts | — |
 | KISS + YAGNI — simplicit ; exception decisions architecturales irreversibles | PICOC kiss-yagni | GRADE 4 RECOMMANDE — SWEBOK v4 + Beck XP + Fowler + Brooks 1987 + McConnell + Hunt&Thomas : convergence sur le strict necessaire ; nuance : decisions a fort cout de changement (BDD, protocole API) = exception legitime a YAGNI | — |
 | SOLID — SRP/ISP universels, DIP quasi-universel (IoC), OCP/LSP contextuels | PICOC solid-principles | GRADE 4 RECOMMANDE — SWEBOK v4 + Martin 2002/2008 + Spring docs + Yamashita TSE 2013 + Palomba EMSE 2019 ; hierarchie : SRP et ISP universels → DIP via Spring IoC → OCP et LSP contextuels ; risque architecture astronaut si applique trop strictement | — |
