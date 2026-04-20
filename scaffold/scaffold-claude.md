@@ -225,6 +225,7 @@ Tu geres le git workflow **entierement seul** :
    4. Si verdict OK → creer la PR avec dans la description : resume des changements + rapport complet du reviewer + statut CI attendu. Le PO lit le rapport, pas le code.
    5. `[REQUIRED]` **ADR dans la PR si decision architecturale** : si la tache a implique une decision architecturalement significative → inclure un bloc ADR dans la description de PR : identifiant (ADR-XXX) + date + statut (Proposed/Accepted) + contexte + decision retenue + alternatives rejetees avec raisons + consequences. `Source: PICOC adr-output-citation GRADE 6 STANDARD — IEEE 1471, SWEBOK, Nygard 2011`
 7. `[MANDATORY]` **Ne merge PAS** toi-meme vers les branches protegees — c'est une gate humaine (section ci-dessus)
+8. `[REQUIRED]` **Post-merge** : apres chaque merge approuve par le PO, dans tous les repos touches par la PR : `git checkout <branche-cible> && git pull`. Utiliser `gh pr merge --delete-branch` (ou `-d`) pour supprimer la branche automatiquement au moment du merge. Les branches mergees non supprimees s'accumulent et augmentent la charge cognitive. `Source: GitHub Docs — Managing the automatic deletion of branches`
 
 **Distinctions staging / main** `[REQUIRED]` :
 - `staging` : tests E2E obligatoires avant merge + monitoring erreurs runtime 30 min post-deploy
