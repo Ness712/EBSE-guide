@@ -118,6 +118,17 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 
 ## Qualite du code
 
+### Principes de conception `[REQUIRED]`
+
+**Use → Extend → Create** : avant toute implementation, appliquer dans l'ordre :
+1. **Use** — si une abstraction existante couvre le besoin, utilise-la. Ne jamais reimplementer ce qui existe.
+2. **Extend** — si l'abstraction ne couvre pas entierement le besoin, etendre sa config/interface (nouveau prop, nouveau slot, nouvelle option). Jamais contourner son output en le wrappant.
+3. **Create** — si rien n'existe, creer quelque chose de generique et reutilisable. Un element qui ne profite qu'a un seul endroit est un signal d'erreur de design.
+
+`Source: PICOC dry-principle GRADE 5 STANDARD (Hunt&Thomas 2019) + PICOC open-closed-principle GRADE 5 STANDARD (Martin 2003)`
+
+---
+
 ### Conventions (mecanisees — implementer dans les hooks) `[MANDATORY]`
 
 Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme hooks pre-commit (grep/linter). Ajouter dans `pre-commit-quality.sh` `[CONFIGURER]` :
