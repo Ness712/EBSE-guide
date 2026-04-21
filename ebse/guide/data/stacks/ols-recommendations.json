@@ -1,6 +1,6 @@
 {
-  "guide_version": "2026.04.6",
-  "generated_at": "2026-04-18T14:43:41.393Z",
+  "guide_version": "2026.04.7",
+  "generated_at": "2026-04-21T00:00:00.000Z",
   "profile_id": "ols",
   "stack": {
     "backend": "typescript-nestjs",
@@ -11,7 +11,14 @@
     "ai_agent": "yes"
   },
   "total": 261,
-  "methodology": "EBSE (Kitchenham 2004), adapted from Evidence-Based Medicine",
+  "methodology": "EBSE (Kitchenham & Charters 2007), adapted from Evidence-Based Medicine",
+  "transverses_applied": {
+    "budget": "open-source",
+    "ai_agent": "yes",
+    "team_size": "ebse-default",
+    "scale": "startup",
+    "data_residency": "ebse-default"
+  },
   "recommendations": [
     {
       "id": "active-states",
@@ -322,7 +329,7 @@
       "id": "data-classification-architecture",
       "domain": "security",
       "question": "Quelles pratiques de classification des données sensibles sont recommandées avant de concevoir une architecture logicielle ?",
-      "recommendation": "Adopter une taxonomie à 4 niveaux (Public / Interne / Confidentiel / Secret) comme grille de référence avant toute décision architecturale. Chaque niveau correspond à un impact croissant sur la triade CIA (Confidentiality, Integrity, Availability) au sens FIPS 199 : Public (impact faible ou nul), Interne (impact faible — diffusion non autorisée acceptable en interne), Confidentiel (impact modéré — données PII standard, financières non critiques), Secret (impact élevé — données de santé, biométriques, secrets d'affaires, credentials). ISO 27001 A.8.2 et les frameworks industriels Microsoft Purview et Google Cloud Data Classification convergent tous sur cette structure en 4 niveaux.",
+      "recommendation": "Adopter une taxonomie à 4 niveaux (Public / Interne / Confidentiel / Secret) comme grille de référence avant toute décision architecturale. Chaque niveau correspond à un impact croissant sur la triade CIA (Confidentiality, Integrity, Availability) au sens FIPS 199 : Public (impact faible ou nul), Interne (impact faible — diffusion non autorisée acceptable en interne), Confidentiel (impact modéré — données PII standard, financières non critiques), Secret (impact élevé — données de santé, biométriques, secrets d'affaires, credentials). ISO 27001 A.8.2 et les frameworks industriels Microsoft Purview et Google Cloud Data Classification convergent tous sur cette structure en 4 niveaux.\n\nAPPLICATION OLS (data_residency=EU + cible scolaires FR) : classifier explicitement les entites du domaine — (a) donnees eleves (noms, email parental, scores, progression, messages) → Confidentiel minimum (mineurs = protection renforcee CNIL) ; (b) logs de messagerie temps-reel → Confidentiel (contenu conversationnel parfois sensible) ; (c) credentials, tokens d'authentification, cles de chiffrement → Secret. Chaque niveau map a des exigences differenciees : Confidentiel → encryption at-rest obligatoire, logs d'audit obligatoires, retention limitee, export RGPD support ; Secret → encryption at-rest + KMS dedie, rotation periodique, acces restreint, pas de log du contenu. Formaliser la classification via decorateur TypeScript (`@Classify(Level.Confidential)`) ou commentaire structuré pour driver les politiques automatiquement.",
       "grade": 6,
       "level": "STANDARD",
       "is_universal": true,
@@ -720,18 +727,18 @@
       "id": "analytics",
       "domain": "project",
       "question": "Quel outil d'analytics choisir et quelles metriques essentielles suivre, en respectant le RGPD ?",
-      "recommendation": "Preferer le self-hosted pour les donnees sensibles (RGPD). PostHog (events, funnels, cohorts) ou Plausible (privacy-first, simple). Consentement explicite requis.",
+      "recommendation": "Avec data_residency=EU (ebse-default), self-hosted EU obligatoire : Plausible self-hosted (EU) OU PostHog self-hosted en region EU-West (Hetzner/Scaleway/OVH Paris). Exclure PostHog Cloud US. Exclure Google Analytics / Mixpanel (transferts US sans DPF solide post-Schrems II). Cookie consent banner CNIL-compliant obligatoire avant toute collecte (Axeptio self-hosted ou maison, pas Cookiebot US). Consentement explicite requis (opt-in, pas pre-coche). Pour OLS (scolaires FR), la conformite RGPD est bloquante : audit regulier du pixel/SDK deploye, pas de tag manager tiers US.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
       "sources": [
         {
-          "name": "PostHog docs",
+          "name": "PostHog docs — self-hosted deployment",
           "pyramid": 5,
           "year": 2024
         },
         {
-          "name": "Plausible docs",
+          "name": "Plausible docs — self-hosted EU",
           "pyramid": 5,
           "year": 2024
         },
@@ -739,6 +746,16 @@
           "name": "CNIL guidelines analytics",
           "pyramid": 5,
           "year": 2024
+        },
+        {
+          "name": "CJEU Schrems II (C-311/18) — invalidation Privacy Shield",
+          "pyramid": 1,
+          "year": 2020
+        },
+        {
+          "name": "EDPB Recommendations 01/2020 on supplementary measures for transfers",
+          "pyramid": 1,
+          "year": 2021
         }
       ]
     },
@@ -932,11 +949,27 @@
       "id": "backup-recovery",
       "domain": "reliability",
       "question": "Quelle strategie de backup et disaster recovery pour la base de donnees ?",
-      "recommendation": "Strategie 2 niveaux : backup logique quotidien (pg_dump, RPO 24h) + WAL archiving continu (RPO < 1h)",
+      "recommendation": "Strategie 2 niveaux : backup logique quotidien (pg_dump, RPO 24h) + WAL archiving continu (RPO < 1h). Avec data_residency=EU (ebse-default), stockage backups obligatoire en region EU : MinIO self-hosted (serveur EU) OU Scaleway Object Storage (fr-par) OU OVH Object Storage. Exclure S3 us-east-1 meme pour backups (donnees PII = residency applicable). Chiffrement AES-256 server-side + chiffrement client-side avec cle locale (double chiffrement pour conformite Schrems II best-effort). Verifier periodiquement la restauration (drill DR trimestriel).",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
-      "sources": []
+      "sources": [
+        {
+          "name": "PostgreSQL Official Docs — Ch. 26 Continuous Archiving and PITR",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "CJEU Schrems II (C-311/18) — EU data residency requirements",
+          "pyramid": 1,
+          "year": 2020
+        },
+        {
+          "name": "EDPB Recommendations 01/2020 — supplementary measures for transfers",
+          "pyramid": 1,
+          "year": 2021
+        }
+      ]
     },
     {
       "id": "branching",
@@ -999,7 +1032,7 @@
       "id": "code-ownership",
       "domain": "project",
       "question": "Comment organiser l'ownership du code pour reduire les defauts tout en diffusant la connaissance ?",
-      "recommendation": "Ownership collectif avec domain experts identifies. Pas de proprietaire unique (bus factor de 1). CODEOWNERS pour auto-assign les reviewers. 1 reviewer minimum par PR.",
+      "recommendation": "Bus factor = 1 assume explicitement. Contre-mesure obligatoire : documentation architectural (ADR) + README runbook + agent IA 'project memory' (CLAUDE.md / .claude/context/) maintenu a jour a chaque merge. CODEOWNERS inutile en solo. En solo avec ai_agent=yes, l'ownership collectif est un non-sens ; le risque 'bus factor=1' devient la contrainte centrale — a mitiger par documentation exhaustive (ADR, README, runbooks) et par la 'project memory' de l'agent IA, pas par pair review.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -1013,6 +1046,11 @@
           "name": "GitHub CODEOWNERS docs",
           "pyramid": 5,
           "year": 2024
+        },
+        {
+          "name": "Nygard 2011 — Documenting Architecture Decisions (ADR as bus factor mitigation)",
+          "pyramid": 5,
+          "year": 2011
         }
       ]
     },
@@ -1056,7 +1094,7 @@
       "id": "code-review",
       "domain": "code-quality",
       "question": "Comment organiser les code reviews pour maximiser la detection de defauts ?",
-      "recommendation": "Review obligatoire par au moins 1 pair avant merge. La code review trouve 60-70% des defauts, contre 25-30% pour les tests unitaires seuls.",
+      "recommendation": "Self-review discipline + agent IA reviewer (Claude/Copilot) avec check-list OWASP/Conventions ; escalade humaine externe pour changements architecturaux majeurs (> 400 LOC transverses) ou securite critique. En solo avec ai_agent=yes, la pair review humaine n'est pas disponible : substituer par (a) self-review structuree avec checklist, (b) agent IA reviewer en mode deterministe sur chaque PR, (c) escalade ponctuelle vers un pair externe (mentor, communaute) sur les changements a fort impact.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -1070,6 +1108,11 @@
           "name": "SmartBear study — 60-70% defect detection rate",
           "pyramid": 4,
           "year": 2015
+        },
+        {
+          "name": "DORA 2025 — AI code review as substitute for pair review in solo contexts",
+          "pyramid": 4,
+          "year": 2025
         }
       ]
     },
@@ -1287,7 +1330,7 @@
       "id": "definition-of-done",
       "domain": "project",
       "question": "Quelle checklist appliquer avant de considerer une tache comme terminee et mergeable ?",
-      "recommendation": "DoD explicite et partagee : code review par au moins 1 pair, tests passent (unit + integration), zero erreur lint/format, deploye sur staging et verifie, documentation a jour, criteres d'acceptation remplis.",
+      "recommendation": "DoD solo (team_size=ebse-default) : self-review + agent IA review, tests passent (unit + integration), zero erreur lint/format, deploye sur staging et verifie manuellement, ADR/doc a jour, criteres d'acceptation coches. Remplace 'code review par >= 1 pair' par 'self-review + agent IA review' (voir reco `code-review`). Le reste du DoD reste intact. DoD explicite et partagee (documentee dans CONVENTIONS.md) meme en solo — l'agent IA a besoin de criteres explicites pour auto-valider.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -1714,16 +1757,26 @@
       "id": "audit-logging",
       "domain": "security",
       "question": "Comment implementer une piste d'audit structuree pour la non-repudiation ?",
-      "recommendation": "Custom Interceptor pour l'audit logging",
+      "recommendation": "Custom Interceptor pour l'audit logging en NestJS. AJOUT RESIDENCY (data_residency=EU / ebse-default) : logs d'audit contenant des user IDs = donnees personnelles indirectes = retention <= 12 mois par defaut (CNIL), stockage EU, chiffrement at-rest. Distinguer deux categories : (a) logs techniques (ex. HTTP access, erreurs applicatives) — retention 30 jours, purge automatique ; (b) logs d'audit metier (ex. acces aux donnees eleves, actions admin, modifications PII) — retention 6-12 mois, archivage froid en region EU (Scaleway Glacier fr-par, OVH Cold Archive). Format structure (JSON) obligatoire pour faciliter l'export RGPD (Art. 15). Signature des entrees critique (hash chaine) pour non-repudiation forte.",
       "grade": 4,
       "level": "RECOMMANDE",
-      "implementation": "Creer un NestJS Interceptor qui capture les actions sensibles et les enregistre dans un format structure.",
+      "implementation": "Creer un NestJS Interceptor qui capture les actions sensibles (CRUD sur donnees eleves, login admin, changements de permissions) et les enregistre dans un format JSON structure avec user_id, action, resource_id, timestamp, ip, user_agent. Utiliser Pino avec un transport dedie pour separer les logs d'audit des logs applicatifs.",
       "is_universal": false,
       "sources": [
         {
           "name": "NestJS Interceptors docs",
           "pyramid": 3,
           "year": 2024
+        },
+        {
+          "name": "CNIL — Duree de conservation des donnees (recommandations sectorielles)",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "RGPD Art. 5(1)(e) — limitation de la conservation",
+          "pyramid": 1,
+          "year": 2016
         }
       ]
     },
@@ -1824,7 +1877,7 @@
       "id": "ci-pipeline",
       "domain": "cicd",
       "question": "Quel outil CI/CD, quelles stages et quality gates pour le pipeline ?",
-      "recommendation": "GitHub Actions pour les equipes sur GitHub : 53% adoption (SO 2024), 61% equipes 2-10 devs (JetBrains), integration native, 2000 min/mois gratuit, onboarding < 1 jour.",
+      "recommendation": "GitHub Actions pour les projets sur GitHub : 53% adoption (SO 2024), 61% equipes 2-10 devs (JetBrains), integration native, 2000 min/mois gratuit, onboarding < 1 jour. Pipeline simplifie en solo (team_size=ebse-default) : build + test + lint + SAST (seuils) + deploy staging auto. PAS de gate 'required review' (inatteignable en solo). Ajouter un gate 'agent IA review commentaire' si l'outil est disponible (GitHub Copilot PR review, Claude). Garder branch protection sur main : linear history + status checks (tests verts, lint OK, SAST OK). Les quality gates automatises (CI) remplacent la gate humaine synchrone.",
       "grade": 4,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -2788,7 +2841,7 @@
       "id": "ai-agent-delegation-model",
       "domain": "ai-tooling",
       "question": "Un PO solo peut-il deleguer entierement le developpement a un agent IA autonome — et a quelles conditions la delegation partielle est-elle viable ?",
-      "recommendation": "Copilot (mode assistance) — l'humain reste developpeur principal, l'IA suggere et complete. Gains documentés sur tâches simples bien définies (+55.8% sur tâche HTTP server isolée, GitHub Copilot RCT Microsoft). Perte documentée sur tâches complexes en codebase mature (-19% METR quasi-RCT). Pertinent si le PO veut rester en mode 'dev + IA', pas 'PO + equipe IA'.",
+      "recommendation": "Copilot (mode assistance) — l'humain reste developpeur principal, l'IA suggere et complete. Gains documentés sur tâches simples bien définies (+55.8% sur tâche HTTP server isolée, GitHub Copilot RCT Microsoft). Perte documentée sur tâches complexes en codebase mature (-19% METR quasi-RCT). Pertinent si le PO veut rester en mode 'dev + IA', pas 'PO + equipe IA'.\n\nRENFORCEMENT SOLO (team_size=ebse-default) : en solo, la delegation partielle n'est pas optionnelle — c'est la seule voie viable. Formaliser les garde-fous : (a) tache decoupee < 1 jour-homme ; (b) DoD mesurable (tests, criteres d'acceptation) defini AVANT delegation ; (c) tests rouges avant implementation (TDD-lite) ; (d) revue PR diff systematique par le PO avant merge. Sans ces garde-fous, la delegation produit un drift silencieux du codebase (observe dans DORA 2024 : +9% bug rate avec IA sans bases solides).",
       "grade": 2,
       "level": "BONNE_PRATIQUE",
       "implementation": "GitHub Copilot, Cursor en mode autocomplete. Necessite que l'utilisateur soit developpeur. Non adapte au profil PO non-developpeur voulant deleguer.",
@@ -2841,7 +2894,7 @@
       "id": "ai-agent-dora-instrumentation",
       "domain": "operations",
       "question": "Comment un agent codeur autonome instrumente-t-il et rapporte-t-il ses propres métriques DORA ?",
-      "recommendation": "Définir les 4 métriques DORA canoniques (Deployment Frequency, Lead Time for Changes, Change Failure Rate, MTTR) comme unité de mesure standard de la performance de livraison d'un agent autonome, en ajoutant la Reliability (disponibilité opérationnelle) comme 5e métrique introduite dans DORA 2022. Ces métriques sont les seules dont la corrélation empirique avec la performance organisationnelle est établie sur 4 ans de données (n > 32 000 professionnels).",
+      "recommendation": "Définir les 4 métriques DORA canoniques (Deployment Frequency, Lead Time for Changes, Change Failure Rate, MTTR) comme unité de mesure standard de la performance de livraison d'un agent autonome, en ajoutant la Reliability (disponibilité opérationnelle) comme 5e métrique introduite dans DORA 2022. Ces métriques sont les seules dont la corrélation empirique avec la performance organisationnelle est établie sur 4 ans de données (n > 32 000 professionnels).\n\nCALIBRATION SOLO (team_size=ebse-default) : se referer a la reco `dora-metrics` pour les seuils calibres 'High tier' plutot qu'Elite (DF >= 1/semaine, LT < 1 jour, CFR <= 15%, MTTR < 4h) — l'instrumentation est conservee, seuls les seuils d'evaluation sont ajustes.",
       "grade": 2,
       "level": "BONNE_PRATIQUE",
       "is_universal": true,
@@ -2872,7 +2925,7 @@
       "id": "ai-agent-human-only-gates",
       "domain": "ai-collaboration",
       "question": "Quelles decisions doivent rester exclusivement humaines quelle que soit la confiance de l'agent ?",
-      "recommendation": "Maintenir une liste explicite et ecrite des decisions qui doivent rester humaines quelle que soit la confiance auto-reportee par l'agent : schema migrations, secret rotation, production deploys, license changes, customer-data handling (PII deletion/access), architectural boundary changes, force-push sur branches protegees. Enforcer techniquement via allow/deny lists, branch protection, CI approvals nommees. Ne JAMAIS utiliser de confidence-threshold gating : la confabulation (NIST AI 600-1) rend la confiance auto-reportee non-fiable.",
+      "recommendation": "Maintenir une liste explicite et ecrite des decisions qui doivent rester humaines quelle que soit la confiance auto-reportee par l'agent : schema migrations, secret rotation, production deploys, license changes, customer-data handling (PII deletion/access), architectural boundary changes, force-push sur branches protegees. Enforcer techniquement via allow/deny lists, branch protection, CI approvals nommees. Ne JAMAIS utiliser de confidence-threshold gating : la confabulation (NIST AI 600-1) rend la confiance auto-reportee non-fiable.\n\nCLARIFICATION SOLO (team_size=ebse-default) : en solo, le 'humain' = le PO lui-meme. Meme en solo, maintenir une gate humaine SYNCHRONE (pas async) sur : (a) deploy production, (b) changements securite, (c) donnees PII. L'agent ne peut pas s'auto-approuver sur ces axes, meme si aucun autre humain n'est disponible. Cette contrainte renforce la reco (pas d'exception 'parce que je suis seul') plutot que de l'annuler.",
       "grade": 2,
       "level": "BONNE PRATIQUE",
       "is_universal": true,
@@ -3277,7 +3330,7 @@
       "id": "encryption",
       "domain": "security",
       "question": "Comment chiffrer les donnees en transit (TLS) et au repos (at-rest) ?",
-      "recommendation": "TLS 1.3 obligatoire pour toutes les communications. HTTPS everywhere avec redirection automatique.",
+      "recommendation": "TLS 1.3 obligatoire pour toutes les communications. HTTPS everywhere avec redirection automatique. AJOUT AT-REST (requis avec data_residency=EU + donnees PII) : encryption at rest obligatoire pour Postgres — soit LUKS sur volume Docker (chiffrement disque integral), soit pgcrypto pour colonnes PII sensibles (emails, identifiants parentaux, donnees eleves). Gestion des cles via KMS local : age (moderne, simple), sops (mozilla/sops, integration Git), ou Vault self-hosted EU. Exclure AWS KMS et GCP KMS US par defaut (residency). Les backups chiffres c-s (voir reco `backup-recovery`) utilisent la meme chaine de cles.",
       "grade": 6,
       "level": "STANDARD",
       "is_universal": true,
@@ -3295,6 +3348,16 @@
         {
           "name": "Mozilla TLS Guidelines",
           "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "PostgreSQL pgcrypto — column-level encryption",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "age / sops — modern file encryption for secrets",
+          "pyramid": 3,
           "year": 2024
         }
       ]
@@ -3487,7 +3550,7 @@
       "id": "dev-onboarding",
       "domain": "project",
       "question": "Comment integrer efficacement un nouveau developpeur dans l'equipe pour minimiser le time-to-productivity ?",
-      "recommendation": "Setup local < 30 min via README. Premiere PR < 24h (typo fix, small task). Pair programming premiere semaine avec un buddy attribue.",
+      "recommendation": "Setup local < 30 min via README + `make bootstrap` ou `scripts/setup.sh`. Pas de pair programming (solo). Focus : README + CONVENTIONS.md + CLAUDE.md exhaustifs pour l'agent IA (qui est le 'nouveau dev' structurel en solo). Dogfooding : l'agent IA doit pouvoir onboarder en lisant uniquement les docs. En team_size=solo (ebse-default), la notion de 'buddy' disparait ; le 'nouveau dev' devient l'agent IA a chaque nouvelle session OU un repreneur hypothetique en cas de transmission. Le test de la doc : un agent IA fraichement demarre doit pouvoir contribuer sans question de clarification.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -3858,7 +3921,7 @@
       "id": "coverage-thresholds",
       "domain": "testing",
       "question": "Quels seuils de couverture de code (line, branch, mutation) fixer comme quality gate, sachant que la couverture de lignes est un indicateur imparfait de la qualite des tests ?",
-      "recommendation": "Distinguer couverture-detecteur (identifier les zones non testees) de couverture-validateur (prouver la qualite des tests) : ces deux usages ne sont pas equivalents. (1) Line/branch coverage >= 80% sur le nouveau code est le standard industrie (SonarQube 'Clean as You Code', Stryker default) et constitue un seuil utile pour reperer les angles morts — mais la correlation entre line coverage et detection de bugs post-release est faible a moderee (Inozemtseva & Holmes ICSE 2014, Kochhar et al. IEEE TR 2017). (2) Branch coverage est superieur a line coverage (Zhu, Hall & May ACM Computing Surveys 1997) : exercer les conditions booliennes detecte plus de defauts que simplement executer les lignes. (3) Mutation score (Stryker / PIT) est la metrique la plus fiable pour valider la capacite de detection des tests : elle mesure si les tests detectent des changements deliberes dans le code (Jia & Harman IEEE TSE 2011 — survey 30 ans de litterature ; Zhu et al. SLR STVR 2018) — seuil recommande 70-80%, Stryker default 80%. (4) Un seuil trop bas (< 60%) ne detecte pas les regressions ; un seuil de 100% cree une fausse securite via des tests qui couvrent sans asserter (Fowler 2012) et consume un effort disproportionne. (5) Systemes critiques (securite, sante, finance) : seuils eleves 90%+ branch coverage + mutation score >= 80% (pratique industrie verifiee : ACM SAC 2017, systeme industriel 75k mutants, 47 defauts reels identifies). Recommandation operationnelle : (a) fixer line/branch >= 80% dans le quality gate CI (SonarQube 'Sonar Way' sur nouveau code) ; (b) ajouter mutation testing a 70%+ sur les composants metier critiques (services, use cases) — pas sur les DTO, controllers simples, ni le code de configuration ; (c) ne jamais interpreter un pourcentage de couverture eleve seul comme garantie de qualite.",
+      "recommendation": "Seuil abaisse tolere en solo (team_size=ebse-default) : line/branch >= 70% nouveau code (vs 80% standard equipe), mutation optionnelle pour domaines metier critiques seulement. Justification : en solo sans pair review, les tests sont le principal filet de securite — mais le budget cognitif est limite. Prioriser les tests d'integration (haute valeur/LOC) > unitaires exhaustifs. Distinguer couverture-detecteur (identifier les zones non testees) de couverture-validateur (prouver la qualite des tests) : ces deux usages ne sont pas equivalents. (1) Line/branch coverage >= 70% (solo) ou >= 80% (equipe) sur le nouveau code constitue un seuil utile pour reperer les angles morts — correlation avec detection de bugs post-release faible a moderee (Inozemtseva & Holmes ICSE 2014). (2) Branch coverage superieur a line coverage (Zhu, Hall & May ACM Computing Surveys 1997). (3) Mutation score (Stryker) plus fiable mais couteux — en solo, reserver aux composants metier critiques seulement. (4) Un seuil trop bas (< 60%) ne detecte pas les regressions ; un seuil de 100% cree une fausse securite (Fowler 2012). (5) Systemes critiques : 90%+ branch + mutation >= 80%. Recommandation operationnelle solo : (a) fixer line/branch >= 70% dans quality gate CI ; (b) ajouter mutation testing a 70%+ sur services/use cases critiques uniquement ; (c) prioriser tests d'integration > unitaires exhaustifs ; (d) ne jamais interpreter un pourcentage de couverture eleve seul comme garantie de qualite.",
       "grade": 4,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -4031,19 +4094,24 @@
       "id": "error-tracking",
       "domain": "operations",
       "question": "Quel outil de suivi d'erreurs en production (capture, grouping, alerting) ?",
-      "recommendation": "Sentry SDK pour Spring Boot : sentry.dsn, sentry.traces-sample-rate=0.2, sentry.environment=${SPRING_PROFILES_ACTIVE}. Source maps pour le frontend React.",
+      "recommendation": "Sentry SDK pour le backend (NestJS) et le frontend (React avec source maps). Avec data_residency=EU (ebse-default) : Sentry SaaS uniquement si region EU (de.sentry.io disponible depuis 2024) OU Sentry self-hosted (Docker). Scrubbing PII actif obligatoire : `sendDefaultPii: false`, `beforeSend` filter sur emails/noms dans les messages d'erreur et les breadcrumbs. DSN EU explicite dans la config (ne jamais utiliser sentry.io US par defaut). Configuration NestJS : @sentry/nestjs avec dsn EU, tracesSampleRate: 0.2, environment depuis NODE_ENV. Source maps uploadees en CI pour le frontend React.",
       "grade": 4,
       "level": "RECOMMANDE",
       "is_universal": false,
       "sources": [
         {
-          "name": "Sentry docs — Spring Boot integration",
+          "name": "Sentry docs — NestJS integration + EU region",
           "pyramid": 3,
           "year": 2024
         },
         {
           "name": "Stack Overflow Survey 2024",
           "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Sentry — Data Storage Location (EU) announcement 2024",
+          "pyramid": 3,
           "year": 2024
         }
       ]
@@ -4093,7 +4161,7 @@
       "id": "container-registry",
       "domain": "cicd",
       "question": "Quel container registry pour stocker et distribuer les images Docker ?",
-      "recommendation": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire.",
+      "recommendation": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire. Note data_residency (EU, ebse-default) : GitHub ne publie pas de politique de residency pour GHCR, mais pour une image applicative (non-donnees utilisateur), pas de contrainte RGPD directe. Flag : si l'on stocke des images contenant des seeds ou fixtures avec donnees PII (anti-pattern mais parfois vu en dev/staging), basculer sur un registry EU (Scaleway Container Registry, OVH Harbor) OU garantir que les images ne contiennent jamais de PII. Reco operationnelle : traiter les images Docker comme du code applicatif (pas de PII embarquee), GHCR reste valide.",
       "grade": 3,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -4170,7 +4238,7 @@
       "id": "database-backup-disaster-recovery",
       "domain": "reliability",
       "question": "Quelle strategie de backup et disaster recovery (RPO/RTO) adopter pour PostgreSQL dans une startup en croissance sur VPS Docker Compose ?",
-      "recommendation": "Strategie a 2 niveaux obligatoire : (1) backup logique quotidien pg_dump -Fc -Z 9 en cron (RPO 24h, RTO previsible), (2) WAL archiving continu vers MinIO via WAL-G ou pgBackRest (RPO <= 1h, PITR). Les deux sont complementaires et non substituables. Configuration PostgreSQL requise : wal_level=replica, archive_mode=on, archive_timeout=60s.",
+      "recommendation": "Strategie a 2 niveaux obligatoire : (1) backup logique quotidien pg_dump -Fc -Z 9 en cron (RPO 24h, RTO previsible), (2) WAL archiving continu vers MinIO via WAL-G ou pgBackRest (RPO <= 1h, PITR). Les deux sont complementaires et non substituables. Configuration PostgreSQL requise : wal_level=replica, archive_mode=on, archive_timeout=60s.\n\nRESIDENCE EU OBLIGATOIRE (data_residency=ebse-default) : stockage MinIO en region EU (serveur self-hosted EU, Scaleway Object Storage fr-par, ou OVH Object Storage). Exclure S3 us-east-1 meme pour backups tant que les donnees contiennent du PII. Chiffrement at-rest server-side AES-256 + chiffrement client-side avec cle locale (age/sops) = double chiffrement pour mitigation Schrems II. Drill de restauration trimestriel documente (runbook). Verifier l'integrite des backups (checksum) apres chaque cycle.",
       "grade": 3,
       "level": "STANDARD",
       "is_universal": true,
@@ -4272,7 +4340,7 @@
       "id": "dora-metrics",
       "domain": "quality",
       "question": "Quelles métriques DORA implémenter pour évaluer la performance de livraison logicielle et comment les améliorer concrètement avec GitHub Actions ?",
-      "recommendation": "Les 4 métriques DORA (Deployment Frequency, Lead Time for Changes, Change Failure Rate, Mean Time to Restore) mesurent orthogonalement deux dimensions : la velocity (DF + LT) et la stability (CFR + MTTR). Ces dimensions sont en tension productive — optimiser l'une sans surveiller l'autre produit un système dégradé. Elite performers 2024 : DF ≥ 1 déploiement/jour, LT < 1 heure, CFR ≤ 5%, MTTR < 1 heure. Ces seuils sont des repères statistiques issus de n=39 000+, pas des objectifs absolus.\n\nIMPLÉMENTATION GITHUB ACTIONS : (1) Lead Time = timestamp commit → timestamp deploy réussi, calculé via workflow dispatch + commit SHA ; (2) Deployment Frequency = nombre de runs deploy-production réussis par unité de temps (daily/weekly) ; (3) Change Failure Rate = ratio (runs rollback ou hotfix urgents) / (total runs deploy) sur la même période ; (4) MTTR = delta entre création d'une issue GitHub taguée `incident` et fermeture. Le projet open source DORA Four Keys (Google Cloud) fournit un pipeline de référence : webhooks GitHub → BigQuery → Looker Studio. Mesure automatisée en temps réel via microservice décrite dans Kearsely et al. ICSE 2024.\n\n5e MÉTRIQUE 2024 : rework rate — ratio de commits ou PRs qui corrigent des erreurs récentes (hotfixes, reverts). Indicateur de qualité du processus de développement.\n\nNUANCE AI : les données DORA 2024 montrent que l'adoption de l'IA sans bases solides (small batches, tests robustes, trunk-based development) produit -1.5% throughput et -7.2% stability. L'automatisation AI amplifie les pratiques existantes — bonnes ou mauvaises.\n\nANTI-PATTERN : mesurer une seule métrique. Haute DF + haute CFR = déploiement instable. Bas LT + haut MTTR = vitesse sans résilience. Les 4 métriques se lisent ensemble.",
+      "recommendation": "Les 4 métriques DORA (Deployment Frequency, Lead Time for Changes, Change Failure Rate, Mean Time to Restore) mesurent orthogonalement deux dimensions : la velocity (DF + LT) et la stability (CFR + MTTR). Ces dimensions sont en tension productive — optimiser l'une sans surveiller l'autre produit un système dégradé.\n\nCALIBRATION SOLO (team_size=ebse-default) : viser High tier (pas Elite) — DF >= 1/semaine, LT < 1 jour, CFR <= 15%, MTTR < 4h (heures ouvrees). Elite (DF >= 1/jour, LT < 1h, CFR <= 5%, MTTR < 1h) requiert une equipe : en solo, chasser l'Elite genere un burnout garanti. High tier reste empiriquement performant (DORA Accelerate) et realiste pour un PO developpeur unique + agent IA. Le 'rework rate' 2024 reste pertinent comme 5e metrique.\n\nIMPLÉMENTATION GITHUB ACTIONS : (1) Lead Time = timestamp commit → timestamp deploy réussi, calculé via workflow dispatch + commit SHA ; (2) Deployment Frequency = nombre de runs deploy-production réussis par unité de temps (weekly en solo) ; (3) Change Failure Rate = ratio (runs rollback ou hotfix urgents) / (total runs deploy) sur la même période ; (4) MTTR = delta entre création d'une issue GitHub taguée `incident` et fermeture. Le projet open source DORA Four Keys (Google Cloud) fournit un pipeline de référence.\n\nNUANCE AI : les données DORA 2024 montrent que l'adoption de l'IA sans bases solides (small batches, tests robustes, trunk-based development) produit -1.5% throughput et -7.2% stability. L'automatisation AI amplifie les pratiques existantes — bonnes ou mauvaises.\n\nANTI-PATTERN : mesurer une seule métrique. Haute DF + haute CFR = déploiement instable. Bas LT + haut MTTR = vitesse sans résilience. Les 4 métriques se lisent ensemble.",
       "grade": 3,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -4607,13 +4675,13 @@
       "id": "gdpr",
       "domain": "safety",
       "question": "Quelles sont les exigences RGPD obligatoires pour tout traitement de donnees personnelles UE ?",
-      "recommendation": "Le RGPD est une obligation legale (amende jusqu'a 4% du CA mondial). Consentement explicite (opt-in, pas pre-coche), droit d'acces/export (Art. 15, 20), droit a l'effacement (Art. 17), minimisation des donnees (Art. 5), privacy by design (Art. 25).",
+      "recommendation": "Le RGPD est une obligation legale (amende jusqu'a 4% du CA mondial). Consentement explicite (opt-in, pas pre-coche), droit d'acces/export (Art. 15, 20), droit a l'effacement (Art. 17), minimisation des donnees (Art. 5), privacy by design (Art. 25).\n\nEXTENSION CONTEXTUELLE OLS (data_residency=EU + cible scolaires FR) : ajouter section 'mineurs' (CNIL reco 2024) — si utilisateurs < 15 ans, consentement parental obligatoire (Art. 8 RGPD + art. 45 loi Informatique et Libertes) ; < 18 ans, mesures de protection renforcees (minimisation stricte, pas de profilage marketing). DPA (Art. 28) obligatoire avec tous les sous-traitants (Sentry, cloud provider EU, email transactionnel, etc.). Registre de traitement (Art. 30) obligatoire meme pour une structure < 250 employes des lors que le traitement porte sur des donnees d'eleves (pas de dispense PME). Designation d'un DPO (Art. 37) a evaluer si traitement 'grande echelle' apres 1000 utilisateurs actifs.",
       "grade": 6,
       "level": "STANDARD",
       "is_universal": true,
       "sources": [
         {
-          "name": "Reglement UE 2016/679 (RGPD) — Art. 5, 6, 7, 15, 17, 20, 25, 30",
+          "name": "Reglement UE 2016/679 (RGPD) — Art. 5, 6, 7, 8, 15, 17, 20, 25, 28, 30, 37",
           "pyramid": 1,
           "year": 2016
         },
@@ -4621,6 +4689,16 @@
           "name": "CNIL — Guidelines consentement, droit a l'effacement, privacy by design",
           "pyramid": 1,
           "year": 2024
+        },
+        {
+          "name": "CNIL — Recommandation protection des mineurs en ligne (2024)",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Loi Informatique et Libertes art. 45 — protection des mineurs",
+          "pyramid": 1,
+          "year": 2018
         }
       ]
     },
@@ -5612,14 +5690,24 @@
       "id": "secrets-management",
       "domain": "security",
       "question": "Comment gerer les secrets (credentials, API keys, tokens) de maniere securisee ?",
-      "recommendation": "@nestjs/config pour la gestion des variables d'environnement",
+      "recommendation": "@nestjs/config pour la gestion des variables d'environnement en developpement. AJOUT PRODUCTION (avec data_residency=EU / ebse-default) : secrets en prod via variable d'environnement injectee par l'orchestrateur (Docker Compose env_file + .env en dehors de l'image, ou Kubernetes Secrets), JAMAIS dans l'image. Pour multi-environnements, envisager `sops` + age (local, pas US-cloud) ou Vault self-hosted en region EU. Exclure AWS Secrets Manager et GCP Secret Manager par defaut (region US si mal configure). Rotation obligatoire sur compromission connue + revue periodique (trimestrielle). Auditer que le .env n'est jamais committe (pre-commit hook + git-secrets).",
       "grade": 6,
       "level": "STANDARD",
-      "implementation": "Installer @nestjs/config, importer ConfigModule.forRoot() avec validation via Joi ou class-validator. Acceder aux valeurs via ConfigService.",
+      "implementation": "Installer @nestjs/config, importer ConfigModule.forRoot() avec validation via Joi ou class-validator. Acceder aux valeurs via ConfigService. En prod : sops + age pour chiffrer les .env par environnement, decryptage au demarrage du container via entrypoint.",
       "is_universal": false,
       "sources": [
         {
           "name": "@nestjs/config docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "sops (Mozilla) — secrets management with age/GPG",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "HashiCorp Vault — self-hosted secrets management",
           "pyramid": 3,
           "year": 2024
         }
@@ -6033,7 +6121,7 @@
       "id": "soft-delete",
       "domain": "architecture",
       "question": "Quand utiliser le soft delete vs hard delete ?",
-      "recommendation": "Soft delete (deletedAt timestamp) pour entites owned restaurables. Hard delete pour donnees techniques/ephemeres. Jamais event sourcing pour du CRUD.",
+      "recommendation": "Soft delete (deletedAt timestamp) pour entites owned restaurables. Hard delete pour donnees techniques/ephemeres. Jamais event sourcing pour du CRUD.\n\nAJOUT RGPD (data_residency=EU / ebse-default) : soft-delete SEUL NE SATISFAIT PAS l'Art. 17 RGPD (droit a l'effacement). Un soft-delete qui ne purge jamais = violation du principe de limitation de la conservation (Art. 5(1)(e)). Prevoir obligatoirement : (a) un job de hard-delete cron (> 30 jours soft-deleted → purge definitive des entites + anonymisation des logs/events referents), (b) un endpoint `/users/me/erase` qui declenche un hard-delete immediat + anonymisation. Tests d'integration verifiant la suppression complete (aucune fuite PII apres l'effacement). Soft-delete reste valide comme mecanisme de restauration accidentelle dans une fenetre courte (< 30 jours), pas comme tombstone permanent.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -6062,6 +6150,11 @@
           "name": "RGPD Article 17 — Droit a l'effacement",
           "pyramid": 1,
           "year": 2018
+        },
+        {
+          "name": "RGPD Article 5(1)(e) — limitation de la conservation",
+          "pyramid": 1,
+          "year": 2016
         }
       ]
     },
@@ -7147,7 +7240,7 @@
       "id": "pr-size-discipline",
       "domain": "process",
       "question": "Quelle taille maximale de Pull Request permet d'optimiser la qualite de review et minimiser les defauts post-release ?",
-      "recommendation": "Limiter chaque PR a 400 LOC maximum, viser 200 LOC (mediane empirique). Au-dela de 400 LOC, la capacite de detection de defauts du reviewer chute significativement — l'etude Cisco sur 2500+ reviews etablit une vitesse optimale de ~500 LOC/heure ; au-dela, la fatigue cognitive degrade la qualite. Les agents codeurs autonomes DOIVENT respecter ce seuil strictement : decouper avant de soumettre, pas apres.",
+      "recommendation": "Maintenir la regle de 400 LOC max / 200 LOC median meme en solo — pas pour le reviewer humain (inexistant) mais pour (a) git bisect O(log n) : une PR de 1000 LOC rend l'isolation des regressions exponentiellement plus couteuse ; (b) lisibilite du changelog : les PRs courtes documentent l'historique de facon auto-explicative ; (c) capacite de l'agent IA reviewer a auditer avec qualite : les LLM perdent en precision au-dela de ~500 LOC par contexte. Seuil inchange : 400 LOC max, viser 200 LOC mediane. La justification change (bisect + agent IA reviewer en solo) mais la valeur numerique reste identique. Les agents codeurs autonomes DOIVENT respecter ce seuil strictement : decouper avant de soumettre, pas apres.",
       "grade": 5,
       "level": "STANDARD",
       "is_universal": true,
@@ -7706,19 +7799,24 @@
       "id": "session-replay",
       "domain": "project",
       "question": "Faut-il utiliser le session replay et avec quelles precautions RGPD ?",
-      "recommendation": "Session replay utile pour le debugging UX et la validation de features. PostHog recordings si deja PostHog, Hotjar pour UX pure.",
+      "recommendation": "Avec data_residency=EU (ebse-default) : Hotjar EXCLU (US, pas de region EU dediee pour session replay). Si session replay necessaire : PostHog self-hosted EU uniquement, avec masking obligatoire de tous les inputs (password, email, PII), consent explicite dedie (pas le consent analytics generique). Session replay utile pour debugging UX et validation de features, MAIS pour OLS (cible scolaires FR) potentiellement mineurs, c'est une decision a haut risque RGPD : session replay sur mineurs = donnees sensibles Art. 9 (parfois) + protection renforcee CNIL 2024. Recommandation defaut : differer le session replay, privilegier les analytics classiques + feedback qualitatif. Si active : PostHog self-hosted EU + masking strict + consent dedie + DPIA documente.",
       "grade": 4,
       "level": "RECOMMANDE",
       "is_universal": true,
       "sources": [
         {
-          "name": "PostHog session replay docs",
+          "name": "PostHog session replay docs — masking and self-hosted",
           "pyramid": 5,
           "year": 2024
         },
         {
           "name": "Hotjar docs",
           "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "CNIL — Recommandation mineurs et donnees personnelles (2024)",
+          "pyramid": 1,
           "year": 2024
         }
       ]
@@ -8208,7 +8306,7 @@
       "id": "oncall-management",
       "domain": "reliability",
       "question": "Comment structurer les rotations on-call et la gestion des incidents pour assurer une réponse efficace sans épuiser les équipes ?",
-      "recommendation": "Structure d'une rotation saine. Limiter la charge à un maximum de 2 incidents actifs par shift de garde (Google SRE Workbook) — au-delà, une action corrective est requise (réduction du pager load, renfort d'équipe). La rotation doit impliquer un minimum de 4 ingénieurs pour éviter la fatigue chronique et garantir un temps de récupération suffisant entre les gardes. Le temps passé en garde ne doit pas dépasser 25 % du temps de travail total (règle Google SRE). Hors urgence caractérisée, l'ingénieur on-call ne doit pas être contraint d'être à son poste et opérationnel en quelques minutes — la pression de disponibilité immédiate permanente est un facteur d'épuisement documenté. Taxonomie de sévérité obligatoire. Définir une grille de sévérité à trois niveaux minimum partagée par toute l'équipe — elle constitue le langage commun indispensable pendant une urgence : SEV1 (système inopérant ou impact critique sur les utilisateurs, réponse immédiate < 15 min, coordination élargie), SEV2 (dégradation significative sans coupure totale, réponse < 1 h), SEV3 (impact limité ou isolé, traitement asynchrone sans interruption des autres travaux). Les niveaux inférieurs permettent explicitement un traitement asynchrone — ne pas paguer en dehors des heures ouvrées pour un SEV3. Gestion de l'alert fatigue. Classer systématiquement chaque alerte dans l'une des trois catégories : actionnable (nécessite une action humaine immédiate), informationnelle (log ou métrique à consulter, pas d'action requise), bruit / faux positif (à supprimer ou silencer). Supprimer ou silencer activement la catégorie bruit : cette seule action réduit le pager load de 30 à 40 % (incident.io 2026). Une alerte non-actionnable qui page est par définition une alerte à corriger ou supprimer — tolérer le bruit entraîne une désensibilisation documentée qui fait manquer les vraies alertes. Handoff structuré. Organiser une réunion hebdomadaire de passation entre l'ingénieur sortant et l'ingénieur entrant. Le contenu minimal : revue des incidents actifs ou récents, alertes actuellement silencées et leur justification, changements risqués à venir dans la semaine. Avant que l'ingénieur sortant signe off, l'ingénieur entrant résume oralement ce qu'il a compris — ce mécanisme de confirmation détecte les incompréhensions avant qu'elles deviennent des incidents. La passation est documentée dans le runbook de garde (lien avec la décision runbooks). Sécurité psychologique et chemins d'escalade. Les procédures et les chemins d'escalade doivent être définis et accessibles AVANT la prise de garde — un ingénieur ne doit jamais se retrouver seul face à un SEV1 sans savoir qui appeler. La sécurité psychologique est une condition préalable à une rotation efficace : sans elle, les incidents sont sous-reportés, les post-mortems sont inhibés, et la dette opérationnelle s'accumule silencieusement. Définir explicitement : qui escalader en SEV1 (manager, tech lead, autre ingénieur senior), délai max avant escalade, canal de communication d'urgence. Post-mortem blameless obligatoire. Après chaque SEV1 et SEV2, conduire un post-mortem sans blame : focaliser l'analyse sur les causes systémiques (manque de monitoring, procédure absente, configuration fragile), jamais sur les individus. Le post-mortem est un outil d'amélioration continue, pas de sanction. Son résultat est une liste d'actions correctives traçables, intégrées au backlog avec priorité.",
+      "recommendation": "Pas de rotation — solo on-call permanent. Contre-mesures obligatoires : (a) SLO realistes non-24/7 (ex. SLA best-effort < 4h en heures ouvrees) communique aux utilisateurs ; (b) auto-remediation maximale (healthchecks + restart Docker + circuit breakers) ; (c) alerting agressivement filtre (SEV1 only hors horaires) ; (d) runbooks exhaustifs pour l'agent IA en cas d'incident ; (e) accepter qu'un SEV1 nuit = downtime jusqu'au matin. La recommandation standard (rotation 4+ ingenieurs, 25% time max, SEV1 < 15 min) est physiquement impossible en solo — l'architecture et les SLO doivent etre calibres pour tolerer l'absence de rotation. Taxonomie de severite conservee (SEV1/SEV2/SEV3) mais les delais de reponse sont recalibres sur les heures ouvrees. Alert fatigue management et post-mortem blameless restent applicables en solo (retrospective avec agent IA).",
       "grade": 3,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -8347,7 +8445,7 @@
       "id": "team-topology",
       "domain": "project",
       "question": "Comment organiser les équipes de développement pour que la structure organisationnelle favorise l'architecture logicielle souhaitée, en minimisant la charge cognitive et les dépendances inter-équipes ?",
-      "recommendation": "Loi de Conway (règle fondamentale) : toute organisation produira une architecture qui est une copie de sa structure de communication (Conway, 1968). Corollaire opérationnel : si l'architecture souhaitée diffère de l'architecture actuelle, changer d'abord la structure organisationnelle — la refactorisation technique seule recréera l'ancienne architecture dans les semaines qui suivent. Inverse Conway Maneuver (InfoQ 2019) : concevoir proactivement les frontières d'équipes autour des domaines métier souhaités — pas des couches techniques — et laisser l'architecture émerger de cette structure. Anti-pattern à éviter absolument : organisation par couches techniques (« backend team / frontend team / DBA team ») — ce modèle génère mécaniquement des architectures monolithiques couplées et des goulots d'étranglement de communication inter-équipes pour chaque livraison. Préférer des équipes verticales par domaine métier (« équipe facturation », « équipe catalogue », « équipe notification »), chacune propriétaire end-to-end de son slice produit. Quatre topologies fondamentales (Skelton & Pais 2019) : (1) Stream-aligned team — propriétaire end-to-end d'un flux de valeur issu d'un domaine métier, capable de livrer en continu sans dépendre d'autres équipes pour les décisions quotidiennes ; (2) Platform team — fournit des capacités self-service en interne (infrastructure, tooling, observabilité) pour réduire la charge cognitive des stream-aligned teams, exposées comme un produit interne avec SLA ; (3) Enabling team — aide temporairement une ou plusieurs stream-aligned teams à acquérir des compétences manquantes (sécurité, performance, architecture) ; s'efface une fois la compétence transférée — ce n'est pas une équipe permanente ; (4) Complicated-subsystem team — gère un composant à expertise rare et haute complexité (moteur de règles, traitement signal, algorithme ML critique) pour réduire la charge cognitive sur la stream-aligned team consommatrice. Trois modes d'interaction (Skelton & Pais 2019) : (1) Collaboration — mode temporaire, intense, pour innover ensemble sur un nouveau domaine ou résoudre une incertitude technique — à limiter dans le temps car coûteux en communication ; (2) X-as-a-Service — une équipe consomme une API stable d'une autre équipe sans interaction requise — mode cible pour une platform team mature ; (3) Facilitating — une enabling team aide une stream-aligned team sans co-livrer — transfert de compétences, pas co-dépendance. Charge cognitive comme contrainte de design (teamtopologies.com 2022) : une équipe ne peut posséder qu'un nombre limité de services, domaines ou systèmes complexes avant d'être en surcharge et de ralentir. Règles pratiques : limiter à 6-8 microservices par équipe, 8-12 personnes maximum par équipe (loi de Brooks + two-pizza rule). Scoper les responsabilités pour maximiser le flux et minimiser les handoffs. Une équipe surchargée devient un goulot d'étranglement organisationnel aussi problématique qu'un couplage technique.",
+      "recommendation": "Non applicable — N/A pour solo. Renvoyer a `monorepo-vs-polyrepo` + `code-ownership` (solo) pour l'organisation du code. Sans equipe, la loi de Conway reste vraie (l'architecture = copie des communications = monologue interne) mais le contenu prescriptif (topologies Skelton-Pais, 2-pizza, 6-8 microservices par equipe, 8-12 personnes) n'a aucune application. En solo avec ai_agent=yes, les seules 'frontieres' pertinentes sont les frontieres de module/domaine metier dans le codebase (voir `hexagonal-architecture`, `folder-structure`). Si l'equipe croit a terme, reevaluer cette recommandation a partir de 2-3 contributeurs.",
       "grade": 3,
       "level": "RECOMMANDE",
       "is_universal": true,
@@ -8466,7 +8564,7 @@
       "id": "monorepo-vs-polyrepo",
       "domain": "project",
       "question": "Faut-il utiliser un monorepo ou un polyrepo pour organiser les repositories du projet ?",
-      "recommendation": "Pas de consensus scientifique. Monorepo si code partage important et petite equipe ; polyrepo si equipes independantes, cycles de release differents ou stack heterogene.",
+      "recommendation": "Monorepo par defaut — solo n'a pas les couts de coordination inter-repos. Exception : si le PWA frontend et le backend NestJS ont des cycles de release radicalement differents (rare en startup), split. Sinon, Nx ou Turborepo pour tooling, single repo pour simplicite cognitive. En team_size=solo (ebse-default), la question du polyrepo pour 'equipes independantes' ne se pose pas ; le monorepo minimise le cout cognitif de context-switching et facilite les refactors transverses.",
       "grade": 2,
       "level": "BONNE_PRATIQUE",
       "is_universal": true,

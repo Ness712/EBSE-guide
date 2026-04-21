@@ -215,12 +215,16 @@ Le guide couvre actuellement **le web** (navigateur). Les autres plateformes ne 
 |-----------|--------|-----------------|
 | **Web (navigateur)** | Couvert | 106 decisions, 3 stacks backend, multi-frontend |
 | **Web vers Mobile (PWA/Capacitor)** | Couvert | Page web-mobile-strategy.md, batch 16 |
-| Mobile natif Android | Pas couvert | Necessite EBSE : Kotlin, Jetpack Compose, etc. |
-| Mobile natif iOS | Pas couvert | Necessite EBSE : Swift, SwiftUI, etc. |
-| Mobile cross-platform | Pas couvert | Necessite EBSE : Flutter vs React Native vs KMP |
-| Desktop | Pas couvert | Necessite EBSE : Electron vs Tauri |
+| Mobile natif Android | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
+| Mobile natif iOS | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
+| Mobile cross-platform | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
+| Mobile game (2D/3D) | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
+| Desktop app | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
+| Desktop game (2D/3D) | Pas couvert | A couvrir par SLR dediee (scope + PICOC + alternatives a decouvrir systematiquement par §1.3) |
 
 **Regle** : le guide NE RECOMMANDE PAS une plateforme qu'il n'a pas recherchee. L'arbre de decision affiche "pas encore couvert" pour les plateformes non recherchees.
+
+**Regle anti-biais (correction 2026-04-21)** : la colonne "Prochaine etape" NE DOIT PAS pre-identifier de candidats (ex: "Flutter vs React Native vs KMP"). Cette pre-selection cree un biais d'ancrage (selection bias §2.3, performance bias) — les alternatives seront decouvertes systematiquement via §1.3 "Decouverte des alternatives" dans les bases appropriees au moment de la SLR dediee. Correction documentee comme amendement global au protocole : voir `verification/amendments/methodology-global-amendments.md`.
 
 ---
 
@@ -1259,6 +1263,115 @@ Kitchenham notes that results should be disseminated to practitioners as well as
 - L'API est le canal secondaire (audience : machines/IA)
 - Les fichiers Markdown sont le canal de contribution/audit
 - Les trois canaux doivent etre synchronises
+
+### 3.1.1 — Arbre de decision : regles de design
+
+L'arbre de decision (`data/decision-tree.json`) est le mecanisme primaire de personnalisation du guide.
+
+**Regle 1 — Questions metier uniquement, jamais techniques**
+
+L'utilisateur repond a des questions sur son contexte, pas sur sa stack. Le guide DEDUIT la tech depuis les reponses.
+
+| Question valide | Question invalide |
+|---|---|
+| "Ou tes utilisateurs vont-ils utiliser ton app ?" | "Tu veux du React ou du Vue ?" |
+| "Est-ce un jeu ou une app ?" | "Tu veux Godot ou Unity ?" |
+| "Quel est ton budget infrastructure ?" | "Tu utilises Sentry ou GlitchTip ?" |
+| "Un agent IA ecrira du code ?" | "Tu utilises Claude Code ou Cursor ?" |
+
+**Regle 2 — Questions transverses AVANT divergence domain-specific**
+
+Classification des questions :
+
+| Type | Exemples | Placement |
+|---|---|---|
+| Transverses (applicables a tout projet) | budget, ai-agent-usage, scale, team-size, data-residency | Stage 1, avant divergence, sur un tronc commun unique |
+| Domain-specific (applicables a une branche) | mobile=iOS/Android, game=pixel-art/3D, web=PWA/store | Stage 2, dans la branche correspondante |
+
+Architecture :
+
+```
+Stage 1 — Transverses (tronc commun)
+  budget → ai-agent-usage → team-size → scale
+
+Stage 2 — Platform & domain (divergence)
+  platform-question
+  ├─ web → mobile-need → store-need → result
+  ├─ mobile → mobile-type → mobile-kind
+  │         └─ game-genre (si game) OU app-type (si app) → result
+  └─ desktop → not-covered-yet
+
+Stage 3 — Result
+  result : accumule sets (budget, ai_agent, team_size, scale, platform, domain...)
+         → selectionne stack profile via combinatoire (domain, budget)
+```
+
+Rationale : les SLR domain-specific filtrent leurs candidats selon les transverses. Si les transverses sont poses apres les SLRs, les recommendations sont figees sur des candidats qui peuvent ne plus correspondre aux contraintes.
+
+Anti-pattern : dupliquer la question `budget` dans chaque branche. Les questions transverses doivent etre posees une seule fois sur le tronc commun.
+
+**Regle 3 — Option "Laisse le guide decider (EBSE default)" obligatoire**
+
+Chaque question DOIT offrir l'option "Laisse le guide decider" avec set `"ebse-default"` et un `default_recommendation` expliquant le defaut choisi.
+
+Rationale : trois cas d'usage convergent vers le meme comportement :
+1. L'utilisateur ne sait pas → veut un defaut sensible
+2. L'utilisateur veut "le mieux" → veut l'optimal evidence-based
+3. L'utilisateur considere la question comme non-contrainte → veut que le guide derive la valeur
+
+Le guide applique les sources EBSE pour determiner la valeur evidence-based optimale pour le contexte. Le defaut EBSE EST l'optimal selon les sources, par definition.
+
+Operationnellement : `sets: { question: "ebse-default" }`. Le synthesis downstream resout la valeur en appliquant le ranking O-matrix des PICOCs du domaine.
+
+**Regle 4 — Budget a trois niveaux distincts**
+
+Le tree DOIT offrir trois niveaux de budget :
+
+| Niveau | Definition | Exclut |
+|--------|------------|--------|
+| `budget=open-source` | Self-host sur ton infra + OSS-licensed | Tout SaaS meme gratuit (free tier inclus) |
+| `budget=free-ok` | Free tier SaaS + OSS self-host | Paid SaaS |
+| `budget=saas-ok` | Tous candidats evalues sur merite | Rien |
+
+Rationale : "open source" refere a la licence et au code source, pas au prix. Free tier SaaS est du SaaS proprietaire gratuit, pas open source. Les trois concepts — prix, licence, modele de deploiement — sont distincts et doivent etre represent es par des niveaux separes pour eviter l'ambiguite.
+
+Les SLR domain-specific DOIVENT filtrer les candidats selon le niveau budget :
+- `budget=open-source` : candidats SaaS (meme free tier) scored 1/5 sur O1, rejetes sauf platform-mandatory
+- `budget=free-ok` : paid SaaS scored 1/5, rejetes ; free tier + OSS self-host acceptes
+- `budget=saas-ok` : tous candidats evalues sur autres criteres
+
+**Regle 5 — Services platform-mandatory acceptes dans tous niveaux budget**
+
+Certains services sont requis pour distribution et ne sont pas des "choix" : Apple Developer, Google Play Console, Play Billing, StoreKit, AdMob (mobile ads), Play Vitals, Xcode Organizer. Ils sont acceptes dans tous les niveaux budget.
+
+**Regle 6 — Decomposition des services hybrides par facette**
+
+Certains services ont plusieurs facettes avec des classifications differentes. Ils doivent etre evalues par facette, pas comme un monolithe.
+
+Cas canonique : GitHub / GitLab.com / Forgejo.org (git hosting + CI/CD platforms) :
+
+| Facette | Classification | `budget=open-source` compliant ? |
+|---------|----------------|:---------------------------------:|
+| Git hosting (code repo) | OSS-adjacent (git distribue, pas de vendor lock-in) | Oui |
+| Workflow YAML syntax | Texte standard dans ton repo, portable | Oui |
+| Hosted runner / shared compute | SaaS compute | Non |
+| Self-hosted runner | Ton infra | Oui |
+
+Quand un SLR evalue un service hybride, le PICOC doit decomposer en facettes et scorer chacune. Exemple pour H33 CI/CD : "GitHub Actions" seul est ambigu, decomposer en "GitHub Actions + hosted runner" vs "GitHub Actions + self-hosted runner".
+
+**Regle 7 — `sets` authoritative, `deduced_tech` commentaire**
+
+`sets` persiste les choix utilisateur (inputs de la fonction synthesis). `deduced_tech` est un commentaire pour transparence au PO mais ne doit pas etre utilise dans la logique downstream — seul `sets` est authoritative.
+
+**Checklist pour ajouter un nouveau domaine au guide :**
+
+1. SLR complete pour le domaine (Phases 1-3) — genere PICOCs + synthesis + stack profile
+2. Identifier les questions domain-specific (celles qui ne s'appliquent qu'a ce domaine)
+3. Ajouter ces questions comme noeuds dans la branche domain, avec choix metier + option "Laisse le guide decider"
+4. Faire converger la branche vers `next: "result"` (le tronc commun transverses est deja parcouru au Stage 1)
+5. Inscrire `domain` dans les `sets` du dernier noeud domain-specific
+6. Verifier que le noeud `result` combine `domain` + transverses pour selectionner le stack profile
+7. Tester le flow complet avec les trois profils typiques : (a) budget=open-source + solo, (b) budget=free-ok + startup, (c) laisse-le-guide-decider partout
 
 ---
 

@@ -1,0 +1,225 @@
+{
+  "id": "godot-mobile-game-2d",
+  "name": "Stack Jeu Mobile 2D Pixel-Art",
+  "description": "Stack recommandé pour domaine mobile-game-2d. Derive via decision tree (transverses Stage 1 + domain Stage 2) et SLR 37 PICOCs.",
+  "guide_version": "2026.04.7",
+  "stack_by_picoc": {
+    "A1_engine": {
+      "reco": "Godot 4 (GDScript primary, C# for hot paths)",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "A4p_determinism": {
+      "reco": "_physics_process 60 Hz + seeded RandomNumberGenerator (PCG32) per-subsystem + record-input replay harness",
+      "grade": 4,
+      "tier": "STANDARD"
+    },
+    "A6_input_a11y": {
+      "reco": "Godot InputEvent natif + state machines custom (swipe/long-press/double-tap) + Control min-size 44 CSS px (WCAG 2.2 SC 2.5.5 AAA) + DisplayServer.tts_speak",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "A7_persistence": {
+      "reco": "Platform-native saves (Google Play Games Saved Games + Apple iCloud Key-Value Store)",
+      "reco_if_backend_needed": "PocketBase OU Nakama OSS self-host",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "A8_asset_pipeline": {
+      "reco": "Godot Lossy 2D import + build-time TextureAtlas + plain AAB (Android) / App-Sliced IPA (iOS) ; ASTC VRAM pour HUD persistent uniquement",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "B7_tile_editor": {
+      "reco": "Godot TileMap + LDtk interchange JSON",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "B8_font_rendering": {
+      "reco": "MSDF pour scalable UI + bitmap pour retro HUD + HarfBuzz via Godot TextServer pour Arabic/CJK/Indic",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "B9_audio": {
+      "reco": "Godot AudioStreamPlayer built-in + Audacity authoring",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "B10_animation": {
+      "reco": "Aseprite frame-by-frame + Godot AnimationPlayer state machine",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "B11_pixel_art_tool": {
+      "reco": "Aseprite (commercial one-time, palette-indexed, .aseprite + PNG+JSON sidecar export)",
+      "alternatives_strict_foss": "LibreSprite v1.1 stable OR Pixelorama (si budget zero dépenses one-time)",
+      "grade": 4,
+      "tier": "STANDARD"
+    },
+    "C12_save_serialization": {
+      "reco": "JSON baseline (Godot native, human-diffable)",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "C13_save_scheduling": {
+      "reco": "Event-driven + SQLite WAL + Godot NOTIFICATION_APPLICATION_PAUSED hook",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "C14_schema_migration": {
+      "reco": "Additive-only JSON + save_version field + stepwise manual migrations per breaking change",
+      "grade": 1,
+      "tier": "ACCEPTABLE"
+    },
+    "C15_save_integrity": {
+      "reco": "Platform-native cloud saves (integrité platform-managed)",
+      "reco_with_backend": "Keystore-HMAC (clé TEE/Secure Enclave) + server sign on sync + Play Integrity/App Attest UNIQUEMENT leaderboard submit + IAP verification",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "D17_publishing": {
+      "reco": "Fastlane + Play Console Internal→Beta→Production staged rollout 5→20→50→100% + crash-rate halt triggers",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "D19_dynamic_delivery": {
+      "reco": "Plain AAB/IPA (pixel-art <200MB rentre dans AAB base)",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "D20_privacy_manifest": {
+      "reco": "Apple Privacy Manifest + Play Data Safety + UMP (GDPR consent) + ATT (iOS 14.5+)",
+      "grade": 4,
+      "tier": "STANDARD"
+    },
+    "D21_launch_surface": {
+      "reco": "Android 12+ SplashScreen API + adaptive icons + iOS multi-variant + monochrome/themed icon support",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "E22_ads": {
+      "reco": "AdMob single-SDK direct via godot-admob plugin",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "E22b_ad_ux": {
+      "reco": "Rewarded-opt-in primary + anchored adaptive banner + frequency cap ≥60s + no-interstitial-on-splash + WCAG 2.2 SC 2.5.8 target size",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "E23_iap_abstraction": {
+      "reco": "OpenIAP (hyodotdev monorepo) — unified GDScript API Play Billing 8.x + StoreKit 2",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "E24_monetization_model": {
+      "reco": "F2P + IAP (per acres.md product concept)",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "E25_receipt_validation": {
+      "reco": "Platform-native Play Billing sandbox + StoreKit 2 local verify",
+      "reco_with_backend": "Custom HTTP endpoint calling Apple App Store Server API + Google Play Developer API",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "F26_leaderboards": {
+      "reco": "Platform-native Google Play Games Services v2 + Apple Game Center",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "F28_identity": {
+      "reco": "Anonymous-first UUID local + Sign in with Apple (iOS mandatory si autre auth) + GPGS Sign-In (Android optionnel)",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "F29_deep_linking": {
+      "reco": "Universal Links (iOS) + App Links (Android) + SKAdNetwork 4 + Play Install Referrer",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "G30_localization_workflow": {
+      "reco": "gettext PO (Godot native) + XLIFF interchange + Weblate self-host + pseudo-localization CI",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "G31_rtl_bidi": {
+      "reco": "UAX #9 isolates (FSI/PDI) + Godot layout_direction + per-sprite rtl_policy (mirror/preserve/replace) + first-strong auto on user inputs",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "G32_message_format": {
+      "reco": "ICU MessageFormat 1 + gettext PO + CLDR 6 categories",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "H33_cicd": {
+      "reco": "GitHub Actions workflow YAML + self-hosted runner sur VPS + Godot CLI headless export + Fastlane overlay",
+      "alternative_full_oss": "Forgejo Actions self-host",
+      "grade": 1,
+      "tier": "ACCEPTABLE"
+    },
+    "H34_device_testing": {
+      "reco": "Local Android Studio AVD + Xcode Simulator + Waydroid (optionnel) + TestFlight + Play Internal Testing + devices physiques",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "H35_crash_reporting": {
+      "reco": "Play Console Vitals + Xcode Organizer + MetricKit (platform-native)",
+      "reco_with_backend": "GlitchTip self-host + sentry-godot SDK pointant DSN vers GlitchTip",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "H36_analytics": {
+      "reco": "Play Console + App Store Connect dashboards",
+      "reco_with_backend": "Plausible self-host OR custom /events endpoint",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "H37_remote_config": {
+      "reco": "Hardcode + redeploy",
+      "reco_with_backend": "Unleash self-host OR static JSON + ETag sur VPS",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "I37_test_methodology": {
+      "reco": "gdUnit4 unit + scene_runner integration + replay-based regression (release-candidate branches) + periodic playtesting",
+      "grade": 2,
+      "tier": "BONNE_PRATIQUE"
+    },
+    "I39_accessibility": {
+      "reco": "Pixel-art palette-swap colorblind modes + GAG Basic all 5 categories + OS-bridged prefers-reduced-motion",
+      "grade": 3,
+      "tier": "RECOMMANDE"
+    },
+    "J43_ai_asset_gate": {
+      "reco": "Composed gate : palette-lock + atlas-UV schema + pHash golden-image + audio fingerprint + threshold human spot-check + provenance manifest (NIST AI 600-1 + ISO 42001)",
+      "grade": 1,
+      "tier": "INFORMATIONNEL"
+    }
+  },
+  "platform_mandatory_services": [
+    "Apple Developer account (distribution iOS)",
+    "Google Play Console (distribution Android)",
+    "Apple App Store Review",
+    "Play Billing (IAP Android)",
+    "StoreKit 2 (IAP iOS)",
+    "AdMob (ads mobile)",
+    "Play Console Vitals (crashes + ANR Android)",
+    "Xcode Organizer + MetricKit (crashes iOS)",
+    "Apple Game Center (leaderboards iOS)",
+    "Google Play Games Services (leaderboards Android)",
+    "Google Play Games Saved Games (saves cross-device Android)",
+    "Apple iCloud Key-Value Store (saves cross-device iOS)"
+  ],
+  "quality_attributes_iso_25010_2023": {
+    "functional_suitability": "37 PICOCs couverts, chaque primary traceable à ≥ 1 anchor",
+    "performance_efficiency": "Fixed-timestep + ASTC + AAB",
+    "compatibility": "XLIFF + gettext PO + JSON portabilité",
+    "interaction_capability": "GAG Basic + WCAG 2.2 SC 2.5.5 + Apple HIG 44pt",
+    "reliability": "Offline-first platform-native + replay-based regression",
+    "security": "Keystore-HMAC + server-authoritative IAP + MASVS-CRYPTO",
+    "maintainability": "MIT engine + Foundation governance + XLIFF + gettext PO",
+    "portability": "Godot multi-export + ICU MessageFormat"
+  }
+}

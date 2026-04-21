@@ -1,11 +1,145 @@
 {
-  "version": "2026.04.6",
-  "methodology_note": "L'arbre pose UNIQUEMENT des questions metier (que l'utilisateur connait). Le guide DEDUIT les choix techniques. L'utilisateur ne voit jamais 'React' ou 'PWA' dans les questions — il voit 'tes utilisateurs telecharment depuis le store ?'. Chaque question a une option 'je ne sais pas' avec reco par defaut EBSE.",
+  "version": "2026.04.7",
+  "methodology_note": "L'arbre pose UNIQUEMENT des questions metier (que l'utilisateur connait). Le guide DEDUIT les choix techniques. L'utilisateur ne voit jamais 'React' ou 'PWA' dans les questions — il voit 'tes utilisateurs telecharment depuis le store ?'. Chaque question a une option 'je ne sais pas' avec reco par defaut EBSE. Ordre des questions (Amendement G-3.3, 2026-04-21) : TRANSVERSES (budget, ai-agent, scale, team-size) d'abord — ces contraintes globales filtrent les candidats des SLRs domain-specific. DOMAIN-SPECIFIC (platform, game-genre, etc.) ensuite — raffinent le stack selon le context. Architecture: Stage 1 Profile transverse → Stage 2 Platform+Domain → Stage 3 Result.",
+  "node_types": {
+    "choice": "Question a l'utilisateur avec options. Chaque option a label, criteria, sets, next. Option 'Je ne sais pas' obligatoire avec default_recommendation.",
+    "result": "Noeud terminal. Fournit stack_profile id + description + sets (accumule les choix) + ebse_refs (pointeurs PRISMA/synthesis)."
+  },
   "nodes": {
     "start": {
       "type": "choice",
+      "question": "Quel est ton budget infrastructure ?",
+      "source": "Transverse #1 — budget contraint la recherche candidats des SLRs domain-specific. 3 niveaux distincts par Amendement G-3.5 (clarification post-bug Acres 2026-04-21 : 'open-source' != 'free tier SaaS' — free tier est du SaaS proprietaire gratuit, pas open-source).",
+      "options": [
+        {
+          "label": "Open source strict (self-host uniquement)",
+          "criteria": "Tu heberges TOUT toi-meme sur ta propre infra (VPS). Zero SaaS meme gratuit (pas de free tier). Exemples : GlitchTip self-host, Unleash self-host, Plausible self-host, Supabase self-host OU plain Postgres, Forgejo Actions self-host. Prerequis : tu as ou tu acceptes un VPS (~5-10 EUR/mo). Avantage : zero vendor lock-in, GDPR native, pérennité garantie.",
+          "sets": { "budget": "open-source" },
+          "next": "ai-agent-usage"
+        },
+        {
+          "label": "Free-tier OK (zero cout mensuel, SaaS gratuit accepte)",
+          "criteria": "Tu acceptes les free tiers SaaS pour zero cout mensuel (GitHub Actions free 2000min, Sentry free 5k events, Firebase Spark, Supabase free tier). OSS self-host prefere quand equivalent existe. PAS de paid SaaS. Tradeoff : vendor lock-in possible (free tiers peuvent etre deprecated ex Firebase Dynamic Links), quotas peuvent contraindre. Pragmatique pour MVP solo indie.",
+          "sets": { "budget": "free-ok" },
+          "next": "ai-agent-usage"
+        },
+        {
+          "label": "SaaS paid OK (je paie si c'est le meilleur choix)",
+          "criteria": "Tu es pret a payer des services SaaS (Vercel Pro, Sentry Team, Auth0, Supabase Pro, LaunchDarkly...) si c'est justifie par le gain temps/fiabilite/features. Utilise typiquement quand revenue ou scale-up justifie.",
+          "sets": { "budget": "saas-ok" },
+          "next": "ai-agent-usage"
+        },
+        {
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "Free-tier OK — l'evidence-based default pour MVP solo indie. Demarre a zero cout, tu decides plus tard entre open-source strict OU saas-ok selon evolution. Transition path documente vers self-host quand quotas depasses.",
+          "sets": { "budget": "ebse-default" },
+          "next": "ai-agent-usage"
+        }
+      ]
+    },
+    "ai-agent-usage": {
+      "type": "choice",
+      "question": "Un agent IA ecrira-t-il du code sur ce projet ?",
+      "source": "Transverse #2 — active le domaine ai-collaboration (17 PICOCs : autonomy granularity, deterministic gates, sandboxing, etc.) et influence les patterns dev (CLAUDE.md, gates humaines, audit trail).",
+      "options": [
+        {
+          "label": "Oui, un agent IA ecrira du code regulierement",
+          "criteria": "L'agent modifiera des fichiers, fera des commits, executera des commands shell, eventuellement de facon autonome sur certaines taches.",
+          "sets": { "ai_agent": "yes" },
+          "next": "team-size"
+        },
+        {
+          "label": "Non, uniquement humain",
+          "criteria": "Pas d'agent IA autonome. Peut utiliser autocomplete IDE (Copilot inline, tab completion) mais pas de delegation de taches.",
+          "sets": { "ai_agent": "no" },
+          "next": "team-size"
+        },
+        {
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "Oui — l'evidence-based default. En 2026, la majorite des projets SE utilisent un agent IA au moins partiellement. Active ai-collaboration pour avoir les bonnes gates et le bon niveau d'autonomie des le depart.",
+          "sets": { "ai_agent": "ebse-default" },
+          "next": "team-size"
+        }
+      ]
+    },
+    "team-size": {
+      "type": "choice",
+      "question": "Combien de personnes vont travailler sur le code ?",
+      "source": "Transverse #3 — team size influence les patterns gouvernance (gates humaines, review cadence, DORA metrics targets) et la complexite tolerable (monorepo vs polyrepo, microservices vs monolithe).",
+      "options": [
+        {
+          "label": "Moi seul (solo)",
+          "criteria": "Tu es l'unique developpeur. Pas de code review humain possible, simplicite prioritaire.",
+          "sets": { "team_size": "solo" },
+          "next": "scale"
+        },
+        {
+          "label": "Petite equipe (2-5 personnes)",
+          "criteria": "Petit groupe, communication directe, process informel.",
+          "sets": { "team_size": "small" },
+          "next": "scale"
+        },
+        {
+          "label": "Moyenne equipe (6-20 personnes)",
+          "criteria": "Plusieurs sous-equipes, process plus formel, code review obligatoire.",
+          "sets": { "team_size": "medium" },
+          "next": "scale"
+        },
+        {
+          "label": "Grande equipe (20+ personnes)",
+          "criteria": "Organisation multi-squads, gouvernance technique formelle, architecture decisions committee.",
+          "sets": { "team_size": "large" },
+          "next": "scale"
+        },
+        {
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "Le guide derive la team size optimale depuis le stack recommande. Tu adaptes l'equipe a ce que le stack demande, pas l'inverse.",
+          "sets": { "team_size": "ebse-default" },
+          "next": "scale"
+        }
+      ]
+    },
+    "scale": {
+      "type": "choice",
+      "question": "Quelle est la phase / l'echelle du projet ?",
+      "source": "Transverse #4 — scale influence la tolerance complexity (MVP vs prod-scale), les outcomes prioritaires (time-to-ship vs reliability), et les investments infra (free tiers vs paid SaaS vs self-host).",
+      "options": [
+        {
+          "label": "MVP / pre-launch (pas encore d'users)",
+          "criteria": "Projet en demarrage, priorite = ship le plus vite possible pour valider le product-market fit.",
+          "sets": { "scale": "mvp" },
+          "next": "platform-question"
+        },
+        {
+          "label": "Startup (early users, cherche traction)",
+          "criteria": "Product live avec quelques utilisateurs, iteration rapide encore prioritaire vs fiabilite max.",
+          "sets": { "scale": "startup" },
+          "next": "platform-question"
+        },
+        {
+          "label": "Scale-up (croissance, fiabilite critique)",
+          "criteria": "Product mature, revenue, fiabilite et observability deviennent critiques.",
+          "sets": { "scale": "scaleup" },
+          "next": "platform-question"
+        },
+        {
+          "label": "Enterprise (grand compte, compliance)",
+          "criteria": "Contraintes reglementaires fortes, SLA, audit, governance formelle.",
+          "sets": { "scale": "enterprise" },
+          "next": "platform-question"
+        },
+        {
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "MVP par defaut — la plupart des nouveaux projets demarrent sans users. Si tu vises un stack scale-ready from day 1, choisis explicitement 'Startup' (evidence-based : build foundations that scale, phase operational overhead).",
+          "sets": { "scale": "ebse-default" },
+          "next": "platform-question"
+        }
+      ]
+    },
+    "platform-question": {
+      "type": "choice",
       "question": "Ou tes utilisateurs vont-ils utiliser ton app ?",
-      "source": "Contrainte technique : le runtime determine l'ecosysteme. W3C/WHATWG pour le web, Apple/Google pour le mobile natif.",
+      "source": "Domain-specific #1 — le runtime determine l'ecosysteme. W3C/WHATWG pour le web, Apple/Google pour le mobile natif.",
       "options": [
         {
           "label": "Dans un navigateur web (PC ou mobile)",
@@ -40,23 +174,77 @@
         {
           "label": "Android uniquement",
           "sets": { "platform": "android" },
-          "next": "not-covered-yet"
+          "next": "mobile-kind"
         },
         {
           "label": "iOS (iPhone) uniquement",
           "sets": { "platform": "ios" },
-          "next": "not-covered-yet"
+          "next": "mobile-kind"
         },
         {
           "label": "Les deux (Android + iOS)",
           "sets": { "platform": "mobile-cross" },
-          "next": "not-covered-yet"
+          "next": "mobile-kind"
         },
         {
           "label": "Je ne sais pas",
           "default_recommendation": "Les deux — tu ne veux pas exclure la moitie de tes utilisateurs.",
           "sets": { "platform": "mobile-cross" },
+          "next": "mobile-kind"
+        }
+      ]
+    },
+    "mobile-kind": {
+      "type": "choice",
+      "question": "Est-ce un jeu ou une app ?",
+      "source": "SLR mobile-game-2d (37 PICOCs, Phase 2 synthesis 2026-04-21) : jeu != app, les stacks et contraintes diffèrent fondamentalement (game loop, renderer, asset pipeline, monetisation F2P+IAP, offline-first). Amendement G-1 (zero pre-identification).",
+      "options": [
+        {
+          "label": "Un jeu",
+          "criteria": "Gameplay interactif, boucle de simulation, rendu 2D/3D, assets visuels/audio, monetisation store + ads/IAP.",
+          "sets": { "mobile_kind": "game" },
+          "next": "game-genre"
+        },
+        {
+          "label": "Une app (non-jeu)",
+          "criteria": "App fonctionnelle (social, productivite, e-commerce, etc.).",
+          "sets": { "mobile_kind": "app" },
           "next": "not-covered-yet"
+        },
+        {
+          "label": "Je ne sais pas",
+          "default_recommendation": "Si l'utilisateur 'joue' et a un score/progression, c'est un jeu. Sinon c'est une app.",
+          "sets": { "mobile_kind": "app" },
+          "next": "not-covered-yet"
+        }
+      ]
+    },
+    "game-genre": {
+      "type": "choice",
+      "question": "Quel style visuel ?",
+      "source": "SLR mobile-game-2d Phase 2 synthesis : pixel-art 2D a des contraintes distinctes (palette-indexed, integer scale, bitmap authoring) vs 2D vector vs 3D. Pilot P cible pixel-art 2D.",
+      "options": [
+        {
+          "label": "Pixel-art 2D (style retro, sprites a la Stardew Valley / CoC / Sunflower Land)",
+          "criteria": "Sprites pixel-art, palette-locked, animation frame-by-frame.",
+          "sets": { "game_style": "2d-pixel-art", "domain": "mobile-game-2d" },
+          "next": "result"
+        },
+        {
+          "label": "2D vector / illustre (style moderne, Lottie, Rive)",
+          "sets": { "game_style": "2d-vector" },
+          "next": "not-covered-yet"
+        },
+        {
+          "label": "3D",
+          "sets": { "game_style": "3d" },
+          "next": "not-covered-yet"
+        },
+        {
+          "label": "Je ne sais pas",
+          "default_recommendation": "Pixel-art 2D — le plus accessible pour solo indie (budget asset minimal, outils matures).",
+          "sets": { "game_style": "2d-pixel-art", "domain": "mobile-game-2d" },
+          "next": "result"
         }
       ]
     },
@@ -114,11 +302,10 @@
           "next": "native-api-need"
         },
         {
-          "label": "Je ne sais pas",
+          "label": "Laisse le guide decider (EBSE default)",
           "default_recommendation": "Non par defaut — commence sans le store (PWA), ajoute Capacitor plus tard si le besoin se confirme. Zero rework.",
-          "sets": { "store_need": "no" },
-          "deduced_tech": "PWA maintenant, Capacitor plus tard si besoin.",
-          "next": "user-count"
+          "sets": { "store_need": "ebse-default" },
+          "next": "project-purpose"
         }
       ]
     },
@@ -131,139 +318,18 @@
           "label": "Non, camera/photos/notifications suffisent",
           "criteria": "Les fonctions basiques (camera, galerie, notifications push) sont couvertes par Capacitor.",
           "sets": { "native_apis": "basic" },
-          "deduced_tech": "Capacitor suffit.",
-          "next": "user-count"
+          "next": "project-purpose"
         },
         {
           "label": "Oui, Bluetooth / NFC / capteurs avances",
           "criteria": "L'app a besoin d'API hardware avancees non disponibles dans un WebView.",
           "sets": { "native_apis": "advanced" },
-          "deduced_tech": "React Native ou natif recommande — Capacitor ne couvre pas tous les capteurs avances. Plateforme mobile native pas encore couverte par le guide.",
           "next": "not-covered-yet"
         },
         {
-          "label": "Je ne sais pas",
-          "default_recommendation": "Non par defaut — camera et notifications suffisent pour 90% des apps. Capacitor les couvre.",
-          "sets": { "native_apis": "basic" },
-          "deduced_tech": "Capacitor suffit.",
-          "next": "user-count"
-        }
-      ]
-    },
-    "user-count": {
-      "type": "choice",
-      "question": "Combien d'utilisateurs vises-tu ?",
-      "source": "Twelve-Factor App + Google SRE — l'echelle affecte l'infrastructure.",
-      "options": [
-        {
-          "label": "Moins de 100 (outil interne, prototype)",
-          "sets": { "scale": "local" },
-          "next": "team-size"
-        },
-        {
-          "label": "100 a 10 000 (startup, PME)",
-          "sets": { "scale": "startup" },
-          "next": "team-size"
-        },
-        {
-          "label": "10 000 a 1 million",
-          "sets": { "scale": "scale" },
-          "next": "team-size"
-        },
-        {
-          "label": "Plus d'1 million (mondial)",
-          "sets": { "scale": "global" },
-          "next": "team-size"
-        },
-        {
-          "label": "Je ne sais pas",
-          "default_recommendation": "Startup (100-10k) — les bonnes pratiques sont les memes, le scaling vient apres.",
-          "sets": { "scale": "startup" },
-          "next": "team-size"
-        }
-      ]
-    },
-    "team-size": {
-      "type": "choice",
-      "question": "Combien de developpeurs travaillent sur le projet ?",
-      "source": "DORA/Accelerate — la taille d'equipe affecte les pratiques (review, CI/CD, ownership). Note : n'affecte PAS le choix de stack (TypeScript full-stack reste optimal quelle que soit la taille) mais affecte les pratiques recommandees.",
-      "options": [
-        {
-          "label": "1 a 5 developpeurs",
-          "criteria": "Tout le monde touche a tout. Pas d'equipes separees backend/frontend.",
-          "sets": { "team_size": "small" },
-          "deduced_tech": "Equipe polyvalente — les pratiques recommandees sont legeres (review par 1 personne, CI simple).",
-          "next": "team-experience"
-        },
-        {
-          "label": "5 a 20 developpeurs",
-          "criteria": "Debut de specialisation. Possible d'avoir des sous-equipes.",
-          "sets": { "team_size": "medium" },
-          "deduced_tech": "Equipe structuree — CODEOWNERS, reviews croisees, CI plus stricte.",
-          "next": "team-experience"
-        },
-        {
-          "label": "Plus de 20 developpeurs",
-          "criteria": "Equipes separees (backend, frontend, infra). Process formalises.",
-          "sets": { "team_size": "large" },
-          "deduced_tech": "Equipes specialisees — architecture microservices possible, governance plus formelle.",
-          "next": "team-experience"
-        },
-        {
-          "label": "Je suis seul",
-          "sets": { "team_size": "solo" },
-          "deduced_tech": "Solo — simplicite maximale, automatiser au max pour compenser.",
-          "next": "team-experience"
-        },
-        {
-          "label": "Je ne sais pas / je veux le mieux",
-          "default_recommendation": "La taille d'equipe n'affecte pas la stack recommandee — elle affecte les pratiques (code review, CI, ownership). Le guide adaptera les recos de pratiques.",
-          "sets": { "team_size": "small" },
-          "next": "team-experience"
-        }
-      ]
-    },
-    "team-experience": {
-      "type": "choice",
-      "question": "Ton equipe a-t-elle deja de l'experience en programmation ?",
-      "source": "SWEBOK v4 SE Economics — la productivite depend de la maitrise du langage.",
-      "options": [
-        {
-          "label": "Oui, en JavaScript / TypeScript",
-          "sets": { "language": "typescript", "backend": "typescript-nestjs", "backend_label": "NestJS (TypeScript)", "polyglot": "false" },
-          "deduced_tech": "TypeScript full-stack (NestJS + React) — meme langage partout, type safety DB→UI.",
-          "next": "project-purpose"
-        },
-        {
-          "label": "Oui, en Java",
-          "sets": { "language": "java", "backend": "java-spring-boot", "backend_label": "Spring Boot (Java 21)", "polyglot": "true" },
-          "deduced_tech": "Spring Boot (Java) + React (TypeScript) — stack polyglotte, ecosysteme enterprise.",
-          "next": "project-purpose"
-        },
-        {
-          "label": "Oui, en Python",
-          "sets": { "language": "python", "backend": "python-django", "backend_label": "Django (Python)", "polyglot": "true" },
-          "deduced_tech": "Django (Python) + React (TypeScript) — MVP rapide, batteries incluses.",
-          "next": "project-purpose"
-        },
-        {
-          "label": "Oui, en C#",
-          "sets": { "language": "csharp", "backend": "csharp-aspnet", "backend_label": "ASP.NET Core (C#)", "polyglot": "true" },
-          "deduced_tech": "ASP.NET Core (C#) + React (TypeScript) — performance top.",
-          "next": "project-purpose"
-        },
-        {
-          "label": "Non, debutants / pas de preference",
-          "default_recommendation": "TypeScript full-stack (GRADE optimal EBSE batch 12) — le plus productif, un seul langage a apprendre.",
-          "sets": { "language": "typescript", "backend": "typescript-nestjs", "backend_label": "NestJS (TypeScript)", "polyglot": "false" },
-          "deduced_tech": "TypeScript full-stack — 1 langage, type safety partout.",
-          "next": "project-purpose"
-        },
-        {
-          "label": "Je ne sais pas / je veux le mieux",
-          "default_recommendation": "TypeScript full-stack — stack optimale EBSE, 2 agents convergent (batch 12).",
-          "sets": { "language": "typescript", "backend": "typescript-nestjs", "backend_label": "NestJS (TypeScript)", "polyglot": "false" },
-          "deduced_tech": "TypeScript full-stack — recommande par EBSE.",
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "Basic par defaut — camera et notifications suffisent pour la majorite des apps.",
+          "sets": { "native_apis": "ebse-default" },
           "next": "project-purpose"
         }
       ]
@@ -276,140 +342,63 @@
         {
           "label": "App interactive (dashboard, outil, plateforme collaborative)",
           "criteria": "Beaucoup d'interactions, navigation complexe, etat client riche. Ex: Notion, Figma, Trello.",
-          "sets": { "project_type": "spa", "frontend": "react", "frontend_label": "React 19 + TypeScript" },
-          "deduced_tech": "SPA React — interactivite maximale.",
-          "next": "data-type"
+          "sets": { "project_type": "spa" },
+          "next": "data-shape"
         },
         {
           "label": "Site avec beaucoup de contenu (blog, docs, e-commerce)",
           "criteria": "Contenu principalement textuel, SEO important. Ex: blog, documentation, boutique en ligne.",
-          "sets": { "project_type": "content", "frontend": "react", "frontend_label": "React 19 + TypeScript" },
-          "deduced_tech": "React avec SSR (Next.js) pour le SEO. Note: la recherche EBSE couvre le CSR (SPA), pas encore le SSR specifiquement.",
-          "next": "data-type"
+          "sets": { "project_type": "content" },
+          "next": "data-shape"
         },
         {
           "label": "App de communication temps-reel (chat, video, collab)",
           "criteria": "Messages instantanes, notifications live, collaboration en temps reel.",
-          "sets": { "project_type": "realtime", "frontend": "react", "frontend_label": "React 19 + TypeScript" },
-          "deduced_tech": "SPA React + WebSocket (STOMP). Voir page realtime.md.",
-          "next": "data-type"
+          "sets": { "project_type": "realtime" },
+          "next": "data-shape"
         },
         {
           "label": "API sans interface (backend pour une app mobile ou un autre frontend)",
           "criteria": "Pas de frontend web — juste une API consommee par d'autres clients.",
           "sets": { "project_type": "api-only" },
-          "deduced_tech": "Backend API uniquement. Pas de frontend dans ce guide.",
-          "next": "data-type"
+          "next": "data-shape"
         },
         {
-          "label": "Je ne sais pas",
-          "default_recommendation": "App interactive (SPA) — le type le plus courant pour les web apps modernes.",
-          "sets": { "project_type": "spa", "frontend": "react", "frontend_label": "React 19 + TypeScript" },
-          "deduced_tech": "SPA React — choix par defaut.",
-          "next": "data-type"
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "App interactive (SPA) par defaut — le type le plus courant pour les web apps modernes.",
+          "sets": { "project_type": "ebse-default" },
+          "next": "data-shape"
         }
       ]
     },
-    "data-type": {
+    "data-shape": {
       "type": "choice",
       "question": "Comment sont structurees tes donnees ?",
-      "source": "SO Survey 2025 — PostgreSQL #1 en adoption et satisfaction pour le relationnel.",
+      "source": "Caracteristique metier des donnees — le guide derive le choix BDD (relationnelle, document, hybride) depuis la forme des donnees + transverses.",
       "options": [
         {
           "label": "Des tables avec des relations (utilisateurs, produits, commandes...)",
           "criteria": "Tes donnees ont des liens entre elles (un utilisateur A des commandes, une commande CONTIENT des produits).",
-          "sets": { "database": "postgresql", "database_label": "PostgreSQL" },
-          "deduced_tech": "PostgreSQL (GRADE 5/7) — #1 BDD relationnelle.",
-          "next": "budget"
+          "sets": { "data_shape": "relational" },
+          "next": "result"
         },
         {
           "label": "Des documents flexibles (JSON, pas de schema fixe)",
           "criteria": "Tes donnees n'ont pas de structure fixe, chaque document peut etre different (CMS, logs, IoT).",
-          "sets": { "database": "mongodb", "database_label": "MongoDB" },
-          "deduced_tech": "MongoDB — BDD document.",
-          "next": "budget"
-        },
-        {
-          "label": "Je ne sais pas",
-          "default_recommendation": "Relationnel (PostgreSQL) — convient a 95% des apps web. Supporte aussi le JSON (JSONB) si besoin de flexibilite.",
-          "sets": { "database": "postgresql", "database_label": "PostgreSQL" },
-          "deduced_tech": "PostgreSQL — choix par defaut, le plus polyvalent.",
-          "next": "budget"
-        }
-      ]
-    },
-    "budget": {
-      "type": "choice",
-      "question": "As-tu un budget pour des services payants ?",
-      "options": [
-        {
-          "label": "Non, tout doit etre gratuit / open source",
-          "criteria": "Tu heberges tout toi-meme. GlitchTip au lieu de Sentry, Unleash au lieu de LaunchDarkly.",
-          "sets": { "budget": "open-source" },
-          "next": "ai-agent-usage"
-        },
-        {
-          "label": "Oui, je peux payer si c'est le meilleur choix",
-          "criteria": "Tu es pret a utiliser des services SaaS payants (Vercel, Sentry, Auth0...) si c'est justifie.",
-          "sets": { "budget": "saas-ok" },
-          "next": "ai-agent-usage"
-        },
-        {
-          "label": "Je ne sais pas",
-          "default_recommendation": "Open source — commence gratuit. Tu pourras payer plus tard si un service payant se justifie.",
-          "sets": { "budget": "open-source" },
-          "next": "ai-agent-usage"
-        }
-      ]
-    },
-    "ai-agent-usage": {
-      "type": "choice",
-      "question": "Vas-tu utiliser un agent de codage IA (Claude Code, Cursor, Copilot, Aider...) pour ecrire du code sur ce projet ?",
-      "source": "Batch AI-1 a AI-3 ai-collaboration — domaine EBSE construit via Kitchenham 2007 + double extraction + Agent C. 17 decisions couvrant autonomy, gates, permissions, monitoring, metrics, audit trail.",
-      "options": [
-        {
-          "label": "Oui, un agent IA ecrira du code regulierement",
-          "criteria": "L'agent modifiera des fichiers, fera des commits, executera des commands shell, eventuellement de facon autonome sur certaines taches.",
-          "sets": { "ai_agent": "yes" },
-          "deduced_tech": "Domaine ai-collaboration active : 17 decisions (autonomy granularity, task-type routing, human-only gates, deterministic verification, sandboxing, silent-failure monitoring, DORA/SPACE adapte, budget caps, audit trail lie aux commits...) — voir guide/02-domains/ai-collaboration/README.md",
+          "sets": { "data_shape": "document" },
           "next": "result"
         },
         {
-          "label": "Non, uniquement humain",
-          "criteria": "Pas d'agent IA autonome. Peut utiliser autocomplete IDE (Copilot inline, tab completion) mais pas de delegation de taches.",
-          "sets": { "ai_agent": "no" },
-          "deduced_tech": "Domaine ai-collaboration non active. Les decisions classiques du guide suffisent.",
-          "next": "result"
-        },
-        {
-          "label": "Je ne sais pas",
-          "default_recommendation": "Oui par defaut — en 2026, la majorite des projets web SE utilisent un agent IA au moins partiellement. Active ai-collaboration pour avoir les bonnes gates et le bon niveau d'autonomie des le depart.",
-          "sets": { "ai_agent": "yes" },
-          "deduced_tech": "Domaine ai-collaboration active par defaut.",
+          "label": "Laisse le guide decider (EBSE default)",
+          "default_recommendation": "Relationnel par defaut — convient a la majorite des apps web. Les BDD relationnelles modernes supportent aussi le JSON embarque si besoin de flexibilite.",
+          "sets": { "data_shape": "ebse-default" },
           "next": "result"
         }
       ]
-    },
-    "optimal-result": {
-      "type": "result",
-      "description": "Stack optimale web — EBSE batch 12, 2 agents 100% convergence.",
-      "source": "batch-12-optimal-stack.md",
-      "sets": {
-        "platform": "web",
-        "language": "typescript",
-        "backend": "typescript-nestjs",
-        "backend_label": "NestJS (TypeScript) sur Fastify",
-        "frontend": "react",
-        "frontend_label": "React 19 + TypeScript",
-        "database": "postgresql",
-        "database_label": "PostgreSQL",
-        "polyglot": "false",
-        "budget": "open-source"
-      }
     },
     "result": {
       "type": "result",
-      "description": "Guide personnalise genere. Chaque recommandation est adaptee a tes choix."
+      "description": "Guide personnalise genere. Le stack profile est selectionne via la combinaison (domain, transverses) appliquee aux SLRs. La tech (langage, backend, frontend, BDD) est derivee par le synthesis depuis les reponses business + SLRs pertinents, pas fixee dans l'arbre."
     }
   }
 }

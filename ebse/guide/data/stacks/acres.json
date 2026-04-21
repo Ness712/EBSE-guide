@@ -1,0 +1,23 @@
+{
+  "id": "acres",
+  "name": "Acres - jeu mobile 2D pixel-art farming-sim",
+  "description": "Jeu ferme style Clash of Clans + Sunflower Land. Solo indie, Godot 4, Android+iOS, open-source self-host.",
+  "guide_version": "2026.04.7",
+  "source_product_concept": "Acres/acres.md",
+  "choices": {
+    "approach": "constrained",
+    "platform": "mobile",
+    "mobile_platform": "mobile-cross",
+    "mobile_kind": "game",
+    "game_style": "2d-pixel-art",
+    "domain": "mobile-game-2d",
+    "scale": "mvp",
+    "team_size": "ebse-default",
+    "budget": "open-source",
+    "ai_agent": "yes",
+    "data_residency": "ebse-default"
+  },
+  "stack_profile_refs": [
+    "godot-mobile-game-2d"
+  ]
+}
