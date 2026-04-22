@@ -261,7 +261,11 @@ Tu geres le git workflow **entierement seul** :
    4. Si verdict OK → creer la PR avec dans la description : resume des changements + rapport complet du reviewer + statut CI attendu. Le PO lit le rapport, pas le code.
    5. `[REQUIRED]` **ADR dans la PR si decision architecturale** : si la tache a implique une decision architecturalement significative → inclure un bloc ADR dans la description de PR : identifiant (ADR-XXX) + date + statut (Proposed/Accepted) + contexte + decision retenue + alternatives rejetees avec raisons + consequences. `Source: PICOC adr-output-citation GRADE 6 STANDARD — IEEE 1471, SWEBOK, Nygard 2011`
 7. `[MANDATORY]` **Ne merge PAS** toi-meme vers les branches protegees — c'est une gate humaine (section ci-dessus)
-8. `[REQUIRED]` **Post-merge** : apres chaque merge approuve par le PO, dans tous les repos touches par la PR : `git checkout <branche-cible> && git pull && git branch -d <branche>`. L'auto-delete GitHub supprime la branche distante automatiquement ; `git branch -d` supprime la copie locale (non couverte par l'auto-delete). Les branches locales orphelines s'accumulent sinon. `Source: GitHub Docs — Managing the automatic deletion of branches`
+8. `[REQUIRED]` **Post-merge** : apres chaque merge approuve par le PO, dans tous les repos touches par la PR, **dans cet ordre** :
+   1. Si un worktree a ete cree pour la branche : `git worktree remove <path>` depuis le repo principal. Sur Windows, des binaires natifs (`.dll`, `.node`) peuvent bloquer — utiliser `git worktree remove --force <path>` dans ce cas.
+   2. `git worktree prune` — nettoie les refs stale dans `.git/worktrees/` (sans ca, git accumule des entrees fantomes pour chaque worktree supprime manuellement ou dont le dossier a ete efface).
+   3. `git checkout <branche-cible> && git pull && git branch -d <branche>` — l'auto-delete GitHub supprime la branche distante ; `git branch -d` supprime la copie locale.
+   Le hook `post-merge-worktree.sh` automatise l'etape 2 (`git worktree prune`) apres chaque `gh pr merge`. `Source: git-scm.com/docs/git-worktree ; GitHub Docs — Managing the automatic deletion of branches`
 
 **Distinctions staging / main** `[REQUIRED]` :
 - `staging` : tests E2E obligatoires avant merge + monitoring erreurs runtime 30 min post-deploy
@@ -692,10 +696,36 @@ Script `.claude/hooks/session-start.sh` :
 **2. PostToolUse apres Edit** — lint rapide, feedback immediat (soft gate) :
 
 ```json
-"PostToolUse": [{ "matcher": "Edit", "hooks": [{ "type": "command", "command": "bash .claude/hooks/post-edit-lint.sh" }] }]
+"PostToolUse": [
+  { "matcher": "Edit", "hooks": [{ "type": "command", "command": "bash .claude/hooks/post-edit-lint.sh" }] },
+  { "matcher": "Bash", "hooks": [{ "type": "command", "if": "Bash(gh pr merge*)", "command": "bash .claude/hooks/post-merge-worktree.sh", "timeout": 30 }] }
+]
 ```
 
 Regle : lint uniquement (< 5s) — jamais de tests ici (trop frequent, trop lent).
+
+Script `.claude/hooks/post-merge-worktree.sh` — nettoie les refs worktree stale apres chaque `gh pr merge` :
+```bash
+#!/bin/bash
+COMMAND=$(echo "$CLAUDE_TOOL_INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('command',''))" 2>/dev/null || echo "")
+echo "$COMMAND" | grep -q 'gh pr merge' || exit 0
+
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+# [CONFIGURER: liste des repos du projet]
+for REPO in "$PROJECT_DIR/[REPO-1]" "$PROJECT_DIR/[REPO-2]"; do
+  [ -d "$REPO/.git" ] || continue
+  PRUNED=$(git -C "$REPO" worktree prune -v 2>&1 || true)
+  [ -n "$PRUNED" ] && echo "[hook][worktree] $REPO : $PRUNED"
+
+  ACTIVE=$(git -C "$REPO" worktree list --porcelain 2>/dev/null | grep '^worktree' | grep -v "^worktree $REPO$" || true)
+  if [ -n "$ACTIVE" ]; then
+    echo "[hook][worktree] RAPPEL — worktrees actifs dans $(basename $REPO) :"
+    echo "$ACTIVE" | sed 's/^worktree /  /'
+    echo "[hook][worktree] Sequence post-merge : git worktree remove <path> [--force si Windows] → git worktree prune → git branch -d <branche>"
+  fi
+done
+exit 0
+```
 
 **3. PreToolUse avant commit** — lint + typecheck (hard gate) :
 
