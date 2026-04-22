@@ -125,6 +125,11 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 2. **Extend** — si l'abstraction ne couvre pas entierement le besoin, etendre sa config/interface (nouveau prop, nouveau slot, nouvelle option). Jamais contourner son output en le wrappant.
 3. **Create** — si rien n'existe, creer quelque chose de generique et reutilisable. Un element qui ne profite qu'a un seul endroit est un signal d'erreur de design.
 
+**Avant d'appliquer l'etape 2, trancher : adapter l'archi ou adapter le besoin ?**
+- **Meme gap dans 2+ modules** → le gap revele un extension point manquant dans le shell → etendre l'abstraction (OCP : pattern d'extension repetitif).
+- **Gap unique a ce module** → le besoin est probablement specifique → adapter le besoin pour coller a l'abstraction existante (YAGNI : n'extraire une abstraction que si l'extension est probable).
+- **Abstraction fondamentalement incompatible avec le domaine** → decision architecturale a fort cout de retour en arriere → escalader au PO avant d'agir.
+
 `Source: PICOC dry-principle GRADE 5 STANDARD (Hunt&Thomas 2019) + PICOC open-closed-principle GRADE 5 STANDARD (Martin 2003)`
 
 ---
