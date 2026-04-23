@@ -47,27 +47,32 @@ git -C <repo> ls-files | grep -v node_modules | grep -v .git | sort
 Exclure uniquement : `node_modules/`, `.git/`, fichiers binaires (images, fonts, archives).
 **Ne pas filtrer par extension ou pattern** — tous les fichiers sont inclus.
 
-Regrouper les fichiers en blocs de ~30 fichiers, en conservant les fichiers d'un même répertoire ensemble (cohérence de contexte).
+Lister tous les répertoires du projet (un niveau de profondeur significatif) :
+
+```bash
+git -C <repo> ls-files | grep -v node_modules | xargs -I{} dirname {} | sort -u
+```
+
+Un agent par répertoire. Les fichiers à la racine d'un repo (tsconfig.json, package.json, main.ts, etc.) forment un répertoire "racine" traité par un agent dédié.
 
 ```
-FICHIERS ÉNUMÉRÉS :
-  OLS-backend  : N fichiers → K blocs
-  OLS-frontend : N fichiers → K blocs
-  OLS-infrastructure : N fichiers → K blocs
-  OLS-documentation  : N fichiers → K blocs
-  Total : N fichiers, K blocs
+RÉPERTOIRES ÉNUMÉRÉS :
+  OLS-backend  : src/auth/, src/users/, src/messages/, prisma/, … → K agents
+  OLS-frontend : src/features/auth/, src/features/lab/, src/components/, … → K agents
+  OLS-infrastructure : / (racine), … → K agents
+  Total : K agents
 ```
 
 ---
 
-## Étape 3 — Lecture exhaustive par blocs (agents en parallèle)
+## Étape 3 — Lecture exhaustive par répertoire (agents en parallèle)
 
-Spawner un agent par bloc. Chaque agent :
+Spawner un agent par répertoire. Chaque agent :
 
-1. **Lit chaque fichier de son bloc en entier** (pas de grep, pas de résumé — lecture complète)
+1. **Lit chaque fichier de son répertoire en entier** (pas de grep, pas de résumé — lecture complète ligne par ligne)
 2. **Vérifie chaque ligne** contre la grille complète de l'étape 1 :
    - Recommandations EBSE applicables au type de fichier
-   - Critères Tier 1 applicables (OWASP pour les fichiers auth/API, WCAG pour les composants UI, RGPD pour les modèles de données, etc.)
+   - Critères Tier 1 (OWASP pour auth/API, WCAG pour composants UI, RGPD pour modèles de données…)
    - `what_to_check` Tier 2 pour les fichiers de config
    - Règles Tier 3 (CONVENTIONS.md) pour tous les fichiers de code
    - Contraintes Tier 4 pour les fichiers d'architecture
@@ -75,18 +80,18 @@ Spawner un agent par bloc. Chaque agent :
 
 Prompt de chaque agent :
 ```
-Audit exhaustif — bloc [N/K] — repo [NOM].
+Audit exhaustif — répertoire [CHEMIN] — repo [NOM].
 Tu n'as pas participé à la construction de ce code. Contexte frais, sois critique.
 
 Grille de vérification (lire avant d'ouvrir les fichiers) :
-- Recommandations EBSE : [liste des recos pertinentes extraites de l'étape 1]
-- Tier 1 : [critères normes applicables]
-- Tier 2 : [what_to_check pour les outils présents dans ce bloc]
+- Recommandations EBSE : [recos pertinentes extraites de l'étape 1]
+- Tier 1 : [critères normes applicables à ce type de répertoire]
+- Tier 2 : [what_to_check pour les outils présents dans ce répertoire]
 - Tier 3 : [règles CONVENTIONS.md]
 - Tier 4 : [contraintes architecture]
 
 Fichiers à auditer (lire chaque fichier en entier, ligne par ligne) :
-[liste des 30 fichiers du bloc]
+[liste de tous les fichiers du répertoire]
 
 Pour chaque fichier :
   - Lire intégralement
@@ -122,7 +127,7 @@ Format finding :
 
 ```
 REPOS AUDITÉS : [liste]
-FICHIERS LUS  : N total (exhaustif — 0 fichier ignoré)
+RÉPERTOIRES AUDITÉS : K (exhaustif — 0 répertoire ignoré, 0 fichier ignoré)
 SOURCES VÉRIFIÉES :
   Recos EBSE : N critères
   Tier 1 : [normes appliquées]
