@@ -134,9 +134,9 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 
 ---
 
-### Conventions (mecanisees — implementer dans les hooks) `[MANDATORY]`
+### Conventions (mecanisees — implementer dans les git hooks) `[MANDATORY]`
 
-Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme hooks pre-commit (grep/linter). Ajouter dans `pre-commit-quality.sh` `[CONFIGURER]` :
+Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme **git hooks reels** (`.husky/pre-commit` pour Node.js, `.git/hooks/pre-commit` natif pour les autres stacks) qui s'executent pour tout acteur. Ajouter dans le script pre-commit `[CONFIGURER]` :
 
 ```bash
 # Convention : pas de suppression de warning
@@ -152,7 +152,7 @@ Si le hook n'est pas encore configure, ces violations restent non-detecees — c
 ### Verification proactive (tu fais ca SANS qu'on te le demande)
 
 **Pipeline deterministe obligatoire avant de presenter le travail** `[MANDATORY]` (PICOC #4 — METR RCT: 19% slower without pre-flight gates) :
-1. `[MANDATORY]` **Typecheck + lint** — hooks automatiques, corriger si echec AVANT de continuer
+1. `[MANDATORY]` **Typecheck + lint** — git pre-commit / pre-push hooks (husky pour Node.js — s'executent pour tout acteur, pas seulement l'agent), corriger si echec AVANT de continuer
 2. `[MANDATORY]` **Tests unitaires** — lancer la suite de tests, zero regression toleree
 3. `[MANDATORY]` **Build** — verifier que le build passe. **Si Dockerfile ou docker-compose modifie** → `docker build --check` + `docker compose config` avant tout push (feedback < 1 sec vs 10-20 min pipeline CI — PICOC containerization STANDARD)
 4. `[REQUIRED]` **Attente pipeline CI** — pour surveiller un pipeline GitHub Actions apres push, utiliser `gh run watch <run-id> --exit-status` en `run_in_background: true`. **Ne jamais faire de polling manuel** (boucle sleep/until ou ScheduleWakeup repetitif) — `gh run watch` bloque et notifie a la fin en une seule fois. Si le pipeline reste en etat `in_progress` au-dela de 60 min sans progression → escalade au PO (anomalie probable : runner bloque, quota epuise).
@@ -227,7 +227,7 @@ Avant de coder, verifier qu'une issue existe et est assignee — c'est le mecani
 - **Triage hebdomadaire** du backlog par le PO.
 - **Labels** : `bug`, `feat`, `chore` (+ labels projet si besoin).
 
-**Partie mecanique — implementer dans `pre-push` hook `[MANDATORY]`** :
+**Partie mecanique — implementer dans un git `pre-push` hook reel `[MANDATORY]`** (`.husky/pre-push` pour Node.js — s'execute pour tout acteur) :
 - Le nom de branche doit inclure le numero d'issue : `[CONFIGURER: ex: OLS-{issue-number}-{description}]`
 - Le hook verifie que l'issue existe sur GitHub (`gh issue view {NUMBER}`) et est ouverte
 - Hard gate : bloquer le push si l'issue n'existe pas ou est closed
@@ -659,7 +659,22 @@ Note PICOC #9 : `Bash(*)` = choix autonomie (allow-all + deny list). Alternative
 
 ### Hooks qualite `[CONFIGURER]`
 
-Cinq hooks dans `.claude/settings.json` couvrant le pipeline deterministe complet (PICOC #4) :
+**Deux niveaux complementaires — ne pas confondre :**
+
+| Niveau | Outil | Perimetre | Quand |
+|--------|-------|-----------|-------|
+| **Git hooks reels** | husky + lint-staged (Node.js) / `.git/hooks/` natif | Universel — tout acteur (humain, agent, script) | Sur chaque `git commit` / `git push` |
+| **Claude Code hooks** | `.claude/settings.json` | Agent uniquement — durant une session Claude Code | Sur les actions de l'agent |
+
+Les quality gates (lint, typecheck, tests, audit) doivent etre dans les **git hooks reels** pour etre universelles. Les Claude Code hooks (`settings.json`) couvrent ce qui est specifique a l'agent : audit trail, SessionStart tokens, prompt injection, events Stop/WorktreeCreate.
+
+Voir `ebse/guide/02-domains/code-quality/git-hooks.md` pour la mise en place des git hooks reels (husky + lint-staged).
+
+`Source: ebse/guide/02-domains/code-quality/git-hooks.md + Claude Code hooks documentation (docs.anthropic.com/en/docs/claude-code/hooks)`
+
+---
+
+**Claude Code hooks** dans `.claude/settings.json` — interceptions specifiques a l'agent :
 
 **1. SessionStart** — charge l'environnement au demarrage de session (tokens, variables) :
 
@@ -730,7 +745,7 @@ done
 exit 0
 ```
 
-**3. PreToolUse avant commit** — lint + typecheck (hard gate) :
+**3. PreToolUse avant commit** — hard gate agent-side (complement aux git hooks reels, pas substitut) :
 
 ```json
 "PreToolUse": [{ "matcher": "Bash", "hooks": [

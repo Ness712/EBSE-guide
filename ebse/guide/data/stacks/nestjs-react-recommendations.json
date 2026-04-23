@@ -2502,6 +2502,48 @@
       ]
     },
     {
+      "id": "git-hooks",
+      "domain": "code-quality",
+      "question": "Comment enforcer les quality gates localement avant commit et push, pour tout acteur (humain, agent IA, script) ?",
+      "recommendation": "Husky (~5M dl/sem) est le standard de facto Node.js pour installer les git hooks sans editer manuellement .git/hooks/ (non commite). Lint-staged (~5M dl/sem) optimise en ciblant uniquement les fichiers staged — 10 a 100x plus rapide que linter tout le repo. Distinction critique : les git hooks s'executent pour TOUT acteur qui commite/pousse (humain, agent IA, script CI local) ; les hooks d'agent IA (ex. Claude Code settings.json PreToolUse) ne s'executent que durant une session agent — ils ne remplacent pas les git hooks. Perimetre : pre-commit = lint + format (< 5s) ; pre-push = typecheck + tests (30-60s) ; build complet en CI uniquement. Limite : bypassable par git commit --no-verify — le CI reste la gate authoritative. Utilise par React, Prettier, ESLint, NestJS et la majorite des projets open-source Node.js majeurs.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "implementation": "pnpm add -D husky lint-staged && pnpm exec husky init\n\nAjouter dans package.json :\n{\n  \"scripts\": { \"prepare\": \"husky\" },\n  \"lint-staged\": {\n    \"*.{ts,tsx}\": [\"eslint --fix --quiet\", \"prettier --write\"],\n    \"*.{json,md,css}\": [\"prettier --write\"]\n  }\n}\n\n.husky/pre-commit : pnpm exec lint-staged\n.husky/pre-push   : pnpm run type:check && pnpm test --run",
+      "sources": [
+        {
+          "name": "git-scm.com — Git Hooks (documentation officielle)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Husky documentation — typicode.github.io/husky",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "lint-staged documentation — github.com/lint-staged/lint-staged",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React — github.com/facebook/react (utilise husky)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "DORA State of DevOps 2024 — fast feedback correlates with 4x deployment frequency",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "npm trends — husky ~5M/sem, lint-staged ~5M/sem",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
       "id": "loading-states",
       "domain": "design",
       "question": "Quel pattern de chargement utiliser (skeleton, spinner, barre de progression) ?",
