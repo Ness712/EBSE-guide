@@ -668,6 +668,14 @@ Note PICOC #9 : `Bash(*)` = choix autonomie (allow-all + deny list). Alternative
 
 Les quality gates (lint, typecheck, tests, audit) doivent etre dans les **git hooks reels** pour etre universelles. Les Claude Code hooks (`settings.json`) couvrent ce qui est specifique a l'agent : audit trail, SessionStart tokens, prompt injection, events Stop/WorktreeCreate.
 
+**Regle de decision — Claude Code hook justifie si et seulement si :**
+- **(a) verification Claude-specifique** : Co-Authored-By, audit trail, prompt injection, variables de session — choses sans equivalent pour un acteur humain
+- **(b) feedback intra-session avant git** : ex. lint apres chaque `Edit` (PostToolUse) — donne a l'agent un retour immediat avant meme que git s'en mele
+
+Si ni (a) ni (b) → implementer en git hook, pas en Claude Code hook.
+
+Templates prets a l'emploi : `scaffold/hooks/` (Claude Code) et `scaffold/git-hooks/` (git).
+
 Voir `ebse/guide/02-domains/code-quality/git-hooks.md` pour la mise en place des git hooks reels (husky + lint-staged).
 
 `Source: ebse/guide/02-domains/code-quality/git-hooks.md + Claude Code hooks documentation (docs.anthropic.com/en/docs/claude-code/hooks)`
