@@ -12,6 +12,43 @@
   },
   "total": 264,
   "methodology": "EBSE (Kitchenham 2004), adapted from Evidence-Based Medicine",
+  "applicable_sources": {
+    "derived_from": "sources-catalog.json filtered by ols.json profile",
+    "updated_at": "2026-04-23",
+    "tier1": [
+      { "id": "owasp-asvs",  "rationale": "plateforme web avec authentification utilisateur" },
+      { "id": "owasp-top10", "rationale": "plateforme web" },
+      { "id": "owasp-api",   "rationale": "API REST exposée (NestJS)" },
+      { "id": "wcag-22-aa",  "rationale": "interface utilisateur publique (React)" },
+      { "id": "rgpd-cnil",   "rationale": "traitement données personnelles utilisateurs EU" },
+      { "id": "lcen",        "rationale": "site web français — mentions légales" }
+    ],
+    "tier2": [
+      { "id": "typescript",     "rationale": "stack NestJS + React, tsconfig backend et frontend" },
+      { "id": "nodejs",         "rationale": "runtime backend NestJS" },
+      { "id": "nestjs",         "rationale": "framework backend principal" },
+      { "id": "prisma",         "rationale": "ORM PostgreSQL" },
+      { "id": "react",          "rationale": "framework frontend principal" },
+      { "id": "vite",           "rationale": "bundler frontend" },
+      { "id": "tailwind",       "rationale": "framework CSS" },
+      { "id": "shadcn-ui",      "rationale": "bibliothèque de composants UI" },
+      { "id": "eslint",         "rationale": "linter TypeScript backend + frontend" },
+      { "id": "postgresql",     "rationale": "base de données principale" },
+      { "id": "redis",          "rationale": "cache + sessions temps réel" },
+      { "id": "minio",          "rationale": "object storage fichiers" },
+      { "id": "docker",         "rationale": "conteneurisation (Dockerfile backend + frontend)" },
+      { "id": "docker-compose", "rationale": "orchestration locale et prod" },
+      { "id": "caddy",          "rationale": "reverse proxy prod" },
+      { "id": "github-actions", "rationale": "CI/CD (build, test, deploy)" },
+      { "id": "dependabot",     "rationale": "mises à jour dépendances automatiques" },
+      { "id": "codeql",         "rationale": "scan sécurité statique hebdomadaire" },
+      { "id": "sonarqube",      "rationale": "quality gate statique" },
+      { "id": "pnpm",           "rationale": "package manager" },
+      { "id": "playwright",     "rationale": "tests E2E" },
+      { "id": "vitest",         "rationale": "tests unitaires frontend" },
+      { "id": "jest",           "rationale": "tests unitaires backend (NestJS)" }
+    ]
+  },
   "recommendations": [
     {
       "id": "active-states",

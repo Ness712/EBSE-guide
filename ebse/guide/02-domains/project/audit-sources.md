@@ -21,15 +21,19 @@ L'énumération explicite de toutes les sources de vérité AVANT l'audit garant
 
 ### Tier 1 — Normes universelles (dérivées du profil projet)
 
-Applicabilité déterminée par l'arbre de décisions selon le profil du projet. Liste exhaustive dans [`ebse/guide/data/sources-catalog.md`](../data/sources-catalog.md) — section Tier 1.
+Catalogue exhaustif dans [`ebse/guide/data/sources-catalog.json`](../data/sources-catalog.json) — chaque entrée a un `id`, une URL officielle et des `condition_keys` d'applicabilité.
 
-> **Comment déterminer l'applicabilité** : lire le profil projet (`ols.json`) + arbre de décisions. Exemples : OWASP ASVS si authentification, WCAG si UI publique, RGPD si données personnelles EU.
+Pour un projet avec `<stack>-recommendations.json` : lire directement `applicable_sources.tier1` — liste pré-calculée depuis le profil.
+
+> Exemple OLS → `ols-recommendations.json → applicable_sources.tier1` : owasp-asvs, owasp-top10, owasp-api, wcag-22-aa, rgpd-cnil, lcen.
 
 ### Tier 2 — Documentation officielle des outils
 
-Pour chaque outil utilisé dans le projet, vérifier la configuration réelle contre la documentation officielle. Liste exhaustive dans [`ebse/guide/data/sources-catalog.md`](../data/sources-catalog.md) — section Tier 2.
+Catalogue exhaustif dans [`ebse/guide/data/sources-catalog.json`](../data/sources-catalog.json) — chaque outil a son URL officielle et `what_to_check`.
 
-> **Comment déterminer les outils applicables** : lire le profil projet ou le `package.json` / `docker-compose.yml` du projet.
+Pour un projet avec `<stack>-recommendations.json` : lire directement `applicable_sources.tier2` — liste pré-calculée depuis le profil.
+
+> Exemple OLS → `ols-recommendations.json → applicable_sources.tier2` : typescript, nestjs, prisma, react, vite, tailwind, shadcn-ui, eslint, postgresql, redis, minio, docker, docker-compose, caddy, github-actions, dependabot, codeql, sonarqube, pnpm, playwright, vitest, jest.
 
 ### Tier 3 — Conventions projet (spécifiques au projet)
 
