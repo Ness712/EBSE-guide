@@ -66,9 +66,12 @@ reference/audit-sources-manifest.md   (OLS — exemple)
 docs/audit-sources-manifest.md        (autres projets)
 ```
 
-Ce fichier est lu en premier lors de tout audit — il remplace la recherche manuelle des conventions et docs architecture. Voir `OLS-documentation/reference/audit-sources-manifest.md` pour un exemple complet.
+Ce fichier est lu en premier lors de tout audit — il remplace la recherche manuelle des conventions et docs architecture.
 
-> Tier 1 et Tier 2 ne figurent pas dans ce manifest : ils sont dérivés automatiquement via `sources-catalog.md` + profil projet.
+- **Template** : `ebse-scaffold/scaffold/templates/audit-sources-manifest.md` (à copier et remplir)
+- **Exemple complet** : `OLS-documentation/reference/audit-sources-manifest.md`
+
+> Tier 1 et Tier 2 ne figurent pas dans ce manifest : ils sont dans `<project>-recommendations.json → applicable_sources`.
 
 ---
 
