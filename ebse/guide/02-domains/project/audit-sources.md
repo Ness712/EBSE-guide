@@ -21,35 +21,15 @@ L'énumération explicite de toutes les sources de vérité AVANT l'audit garant
 
 ### Tier 1 — Normes universelles (dérivées du profil projet)
 
-Applicabilité déterminée par l'arbre de décisions selon le profil du projet :
+Applicabilité déterminée par l'arbre de décisions selon le profil du projet. Liste exhaustive dans [`ebse/guide/data/sources-catalog.md`](../data/sources-catalog.md) — section Tier 1.
 
-| Source | Applicable si | Contenu |
-|--------|--------------|---------|
-| OWASP ASVS 4.0.3 | Tout projet web avec authentification | ~286 contrôles sécurité L1-L3 |
-| WCAG 2.2 AA | Tout projet avec interface utilisateur publique | ~50 critères accessibilité |
-| RGAA 4.1 | Projet France + clients publics ou RGAA volontaire | Critères accessibilité français |
-| RGPD / Checklist CNIL | Tout projet EU traitant des données personnelles | ~25 points conformité |
-| HDS | Projet traitant des données de santé (Art. 9 RGPD) | Certification hébergement santé |
-| ISO 27001 | Projet avec appels d'offres publics ou exigence contractuelle | Management sécurité de l'information |
-
-> **Comment déterminer l'applicabilité** : répondre aux questions de l'arbre de décisions ou lire le profil projet (`ols.json` pour OLS). L'arbre déduit automatiquement les Tier 1 applicables.
+> **Comment déterminer l'applicabilité** : lire le profil projet (`ols.json`) + arbre de décisions. Exemples : OWASP ASVS si authentification, WCAG si UI publique, RGPD si données personnelles EU.
 
 ### Tier 2 — Documentation officielle des outils
 
-Pour chaque outil utilisé dans le projet, vérifier la configuration réelle contre la configuration recommandée par la documentation officielle :
+Pour chaque outil utilisé dans le projet, vérifier la configuration réelle contre la documentation officielle. Liste exhaustive dans [`ebse/guide/data/sources-catalog.md`](../data/sources-catalog.md) — section Tier 2.
 
-| Outil | Config à vérifier | Document de référence |
-|-------|------------------|----------------------|
-| TypeScript | `tsconfig.json` (strict, target, paths, moduleResolution) | TypeScript Handbook — TSConfig reference |
-| ESLint | `.eslintrc` / `eslint.config.js` (règles recommended + plugin) | ESLint docs + plugin docs (NestJS, React) |
-| Vite | `vite.config.ts` (code splitting, tree shaking, build.target) | Vite Guide — Build Optimizations |
-| NestJS | Modules, guards, pipes, interceptors, exception filters | NestJS Security, NestJS Techniques |
-| Prisma | `schema.prisma` (indexes, relations, types, cascade) | Prisma Best Practices |
-| Docker | `Dockerfile` + Compose (non-root user, healthcheck, resource limits) | Docker Best Practices for Node.js |
-| GitHub Actions | Workflows (permissions minimales, pinning des actions, secrets) | GitHub Security Hardening for GitHub Actions |
-| Redis | Config (maxmemory, eviction-policy, requirepass) | Redis documentation |
-| Caddy | `Caddyfile` (headers sécurité, TLS, rate limiting) | Caddy documentation |
-| Tailwind CSS | `tailwind.config.*` (content paths, theme extension) | Tailwind CSS documentation |
+> **Comment déterminer les outils applicables** : lire le profil projet ou le `package.json` / `docker-compose.yml` du projet.
 
 ### Tier 3 — Conventions projet (spécifiques au projet)
 
@@ -74,11 +54,13 @@ Documents qui capturent les choix d'architecture spécifiques au projet :
 Chaque projet doit maintenir un fichier manifest qui liste explicitement tous ses chemins Tier 3/4 :
 
 ```
-reference/audit-sources-manifest.md   (OLS)
+reference/audit-sources-manifest.md   (OLS — exemple)
 docs/audit-sources-manifest.md        (autres projets)
 ```
 
 Ce fichier est lu en premier lors de tout audit — il remplace la recherche manuelle des conventions et docs architecture. Voir `OLS-documentation/reference/audit-sources-manifest.md` pour un exemple complet.
+
+> Tier 1 et Tier 2 ne figurent pas dans ce manifest : ils sont dérivés automatiquement via `sources-catalog.md` + profil projet.
 
 ---
 
