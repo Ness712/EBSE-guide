@@ -65,7 +65,20 @@ Documents qui capturent les choix d'architecture spécifiques au projet :
 - `modules.md` — schéma inter-modules et contrats
 - `design-direction.md` — direction design et système de design
 - `CLAUDE.md` — contraintes et conventions pour agents IA
+- `schema.prisma` — modèle de données (pertinent RGPD : données personnelles)
+- `docs/openapi.json` — spécification API (contrats, sécurité endpoints)
 - Tout ADR (Architecture Decision Record) documenté
+
+### Manifest Tier 3/4 (recommandé)
+
+Chaque projet doit maintenir un fichier manifest qui liste explicitement tous ses chemins Tier 3/4 :
+
+```
+reference/audit-sources-manifest.md   (OLS)
+docs/audit-sources-manifest.md        (autres projets)
+```
+
+Ce fichier est lu en premier lors de tout audit — il remplace la recherche manuelle des conventions et docs architecture. Voir `OLS-documentation/reference/audit-sources-manifest.md` pour un exemple complet.
 
 ---
 
