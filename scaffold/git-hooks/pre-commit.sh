@@ -38,7 +38,7 @@ fi
 # Gate : secrets en clair dans le diff
 # ============================================================
 SECRETS=$(git diff --cached -U0 2>/dev/null \
-  | grep '^+' | grep -v '^\+\+\+' \
+  | grep '^+' | grep -v '^+++' \
   | grep -iE "(password|api_key|apikey|secret_key|secret|access_token|auth_token|private_key|client_secret)\s*[=:]\s*['\"][^'\"]{8,}" \
   || true)
 if [ -n "$SECRETS" ]; then
