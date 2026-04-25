@@ -158,6 +158,8 @@
         "matcher": "Bash",
         "hooks": [
           { "type": "command", "command": "bash .claude/hooks/pre-commit-quality.sh" },
+          { "type": "command", "command": "bash .claude/hooks/pre-commit-secrets.sh" },
+          { "type": "command", "command": "bash .claude/hooks/pre-commit-sast.sh" },
           { "type": "command", "if": "Bash(git push*)", "command": "bash .claude/hooks/pre-push-quality.sh", "timeout": 120 },
           { "type": "command", "if": "Bash(gh pr create*)", "command": "bash .claude/hooks/pre-pr-create.sh", "timeout": 30 }
         ]
@@ -197,11 +199,11 @@
     //   { "hooks": [{ "type": "command", "command": "bash .claude/hooks/subagent-start.sh" }] }
     // ],
 
-    // UserPromptSubmit : detection injection + enrichissement prompt
-    // Activer si securite renforcee ou besoin d'audit des prompts
-    // "UserPromptSubmit": [
-    //   { "hooks": [{ "type": "command", "command": "bash .claude/hooks/user-prompt-filter.sh" }] }
-    // ],
+    // UserPromptSubmit : detection injection sur chaque message utilisateur
+    // Obligatoire si projet utilise GitHub Actions / PR reviews (CVE-2025-54794)
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "bash .claude/hooks/user-prompt-filter.sh" }] }
+    ],
 
     // PermissionRequest : auto-approuve patterns specifiques sans popup
     // Adapter les matchers selon les outils recurrents du projet
