@@ -136,7 +136,7 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 
 ### Conventions (mecanisees — implementer dans les git hooks) `[MANDATORY]`
 
-Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme **git hooks reels** (`.husky/pre-commit` pour Node.js, `.git/hooks/pre-commit` natif pour les autres stacks) qui s'executent pour tout acteur. Ajouter dans le script pre-commit `[CONFIGURER]` :
+Ces regles sont binaires et verifiables automatiquement. Elles ne doivent PAS apparaitre comme texte narratif — les implementer comme **git hooks reels** (`.husky/pre-commit` pour Node.js, `.git/hooks/pre-commit` natif pour les autres stacks) qui s'executent pour tout acteur. Template pret a l'emploi : `scaffold/git-hooks/pre-commit.sh` (avec lint, typecheck, gates secrets, eslint-disable, @SuppressWarnings, deprecated — tout est deja inclus). Ajouter dans le script pre-commit `[CONFIGURER]` :
 
 ```bash
 # Convention : pas de suppression de warning
@@ -283,7 +283,7 @@ Tu geres le git workflow **entierement seul** :
 - PRs vers staging : review sub-agent suffit — les tests E2E (etape 8) restent obligatoires si des changements frontend sont inclus (complementaires, pas alternatifs)
 - PRs vers main : review sub-agent + audit pre-release + relecture PO chemins critiques
 
-**Audit trail** (PICOC #17) : chaque commit inclut `Co-Authored-By: Claude <model-version>`. Chaque PR inclut le rapport reviewer + outils utilises. Note : Co-Authored-By seul est insuffisant pour conformite SOC2/HIPAA/ISO 27001 — si contexte reglemente, escalader au PO pour audit trail structure (model+version+prompt+diff+cout).
+**Audit trail** (PICOC #17) : enforced par le Claude Code hook `pre-commit-quality.sh` (gate Co-Authored-By — exit 2 si absent). Format attendu : `Co-Authored-By: Claude <model-version> <noreply@anthropic.com>`. Chaque PR inclut le rapport reviewer + outils utilises. Note : Co-Authored-By seul est insuffisant pour conformite SOC2/HIPAA/ISO 27001 — si contexte reglemente, escalader au PO pour audit trail structure (model+version+prompt+diff+cout).
 
 `Source: PICOC #17 Provenance/audit trail + Feedback PO "docs with code"`
 
@@ -1057,7 +1057,7 @@ Script `.claude/hooks/pre-compact.sh` — rappel des MANDATORY avant perte de co
 #!/bin/bash
 echo "=== PRE-COMPACT REMINDER ==="
 echo "MANDATORY — Gates humaines : merge main/staging, schema DB, secrets, prod deploy → PO approval"
-echo "MANDATORY — Co-Authored-By dans chaque commit"
+echo "MANDATORY — Co-Authored-By: Claude <model-version> <noreply@anthropic.com> dans chaque commit (enforced par pre-commit-quality.sh)"
 # [CONFIGURER: ajouter les regles MANDATORY du projet]
 exit 0
 ```

@@ -59,10 +59,27 @@ ebse-scaffold/
 │   │   └── scripts/        ← Outils de maintenance du guide
 │   └── app/                ← Application web (React + Vite + TypeScript)
 └── scaffold/               ← Scaffold agent (templates operationnels)
-    ├── scaffold.md  ← Template CLAUDE.md universel
-    ├── scaffold-settings.jsonc
-    ├── commands/           ← Slash commands templates
-    └── ...
+    ├── scaffold-claude.md      ← Template CLAUDE.md universel (toutes les regles agent)
+    ├── scaffold-settings.jsonc ← Template settings.json (permissions + hooks)
+    ├── agents/                 ← Templates sous-agents custom (.claude/agents/)
+    │   ├── reviewer/agent.md   ← Reviewer independant (sonnet, plan-mode, PICOC #5)
+    │   └── explorer/agent.md   ← Explorateur lecture seule (haiku, plan-mode)
+    ├── rules/                  ← Template regle path-scopee (.claude/rules/)
+    │   └── template.md         ← Regle avec frontmatter paths: (chargement on-demand)
+    ├── hooks/                  ← Scripts hooks Claude Code (.claude/hooks/)
+    │   ├── session-start.sh    ← SessionStart : env + health-check
+    │   ├── pre-commit-quality.sh ← PreToolUse : gates qualite avant commit
+    │   ├── pre-push-quality.sh ← PreToolUse : pipeline complet avant push
+    │   ├── pre-pr-create.sh    ← PreToolUse : verifie structure PR template
+    │   ├── post-edit-lint.sh   ← PostToolUse : lint rapide apres Edit
+    │   ├── post-merge-worktree.sh ← PostToolUse : cleanup worktree apres merge
+    │   ├── audit-tool-use.sh   ← PostToolUse : audit trail MANDATORY (PICOC #20)
+    │   ├── pre-compact.sh      ← PreCompact : re-injecte regles MANDATORY
+    │   ├── subagent-start.sh   ← SubagentStart : contexte + log sous-agents
+    │   ├── user-prompt-filter.sh ← UserPromptSubmit : detection injection
+    │   ├── stop-notify.sh      ← Stop : notification OS tache terminee
+    │   └── prompt-injection-filter.sh ← filtre injection generique
+    └── commands/               ← Slash commands templates (/audit, /api-test, etc.)
 ```
 
 ## Stacks couvertes

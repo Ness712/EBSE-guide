@@ -128,24 +128,88 @@
   },
 
   // --- Hooks ---
-  // Source: code.claude.com/docs/en/hooks + PICOC #4, #6
+  // Source: code.claude.com/docs/en/hooks + PICOC #4, #6 + PICOC ai-agent-extended-hook-lifecycle GRADE 3
   //
-  // PostToolUse : run lint+typecheck apres chaque edit (PICOC #4 deterministic gates)
-  //               exit code 0 = OK, exit code != 0 = Claude voit l'erreur et corrige
+  // Hooks de base (tous les projets) :
+  //   SessionStart  : charge env + health-check monitoring au demarrage
+  //   PreToolUse    : gates qualite avant commit/push/PR
+  //   PostToolUse   : lint rapide apres edit + audit trail + cleanup worktree
+  //   Stop          : rappel verification avant declaration "done"
   //
-  // Stop : rappel avant de declarer "done" (Feedback PO "never say done prematurely")
-  //        exit code 2 = empeche Claude de s'arreter, force re-verification
+  // Hooks avances (activer selon besoin) :
+  //   PreCompact      : re-injecte regles MANDATORY avant compaction — activer si sessions > 50K tokens
+  //   SubagentStart   : injecte contexte dans sous-agents + log audit — activer si multi-agents
+  //   UserPromptSubmit: detection injection + log audit prompts — activer si securite renforcee
+  //   PermissionRequest: auto-approuve patterns pre-autorises — activer pour reduire prompts repetitifs
+  //
+  // Principe de selection (PICOC ai-agent-extended-hook-lifecycle) :
+  //   activer uniquement si le scenario a ete observe comme source de defaillance.
+  //   chaque hook actif augmente la latence et la complexite de debugging.
+  //
+  // exit code 0 = continuer | exit code 2 = bloquer l'action + afficher stderr a l'utilisateur
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/session-start.sh" }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/pre-commit-quality.sh" },
+          { "type": "command", "if": "Bash(git push*)", "command": "bash .claude/hooks/pre-push-quality.sh", "timeout": 120 },
+          { "type": "command", "if": "Bash(gh pr create*)", "command": "bash .claude/hooks/pre-pr-create.sh", "timeout": 30 }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit",
-        "command": "[CONFIGURER: ex: pnpm lint --quiet && pnpm typecheck 2>&1 | tail -20]"
+        "matcher": "Edit",
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/post-edit-lint.sh" }]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "if": "Bash(gh pr merge*)", "command": "bash .claude/hooks/post-merge-worktree.sh", "timeout": 30 }]
+      },
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/audit-tool-use.sh" }]
       }
     ],
     "Stop": [
       {
-        "command": "echo 'RAPPEL: As-tu relu le plan point par point ? Chaque item est-il verifie ? Les tests passent ?'"
+        "hooks": [{ "type": "command", "command": "bash .claude/hooks/stop-notify.sh" }]
       }
-    ]
+    ],
+
+    // --- Hooks avances --- decommenter selon besoin ---
+
+    // PreCompact : re-injecte regles critiques avant compaction
+    // Activer si sessions regulierement > 50K tokens
+    // "PreCompact": [
+    //   { "hooks": [{ "type": "command", "command": "bash .claude/hooks/pre-compact.sh" }] }
+    // ],
+
+    // SubagentStart : injecte contexte dans sous-agents + log audit
+    // Activer si architecture multi-agents (PICOC #20 audit trail)
+    // "SubagentStart": [
+    //   { "hooks": [{ "type": "command", "command": "bash .claude/hooks/subagent-start.sh" }] }
+    // ],
+
+    // UserPromptSubmit : detection injection + enrichissement prompt
+    // Activer si securite renforcee ou besoin d'audit des prompts
+    // "UserPromptSubmit": [
+    //   { "hooks": [{ "type": "command", "command": "bash .claude/hooks/user-prompt-filter.sh" }] }
+    // ],
+
+    // PermissionRequest : auto-approuve patterns specifiques sans popup
+    // Adapter les matchers selon les outils recurrents du projet
+    // "PermissionRequest": [
+    //   {
+    //     "matcher": "Bash(npm run test*)",
+    //     "hooks": [{ "type": "command", "command": "bash -c 'echo \"{\\\"action\\\": \\\"allow\\\"}\"'" }]
+    //   }
+    // ]
   }
 }
