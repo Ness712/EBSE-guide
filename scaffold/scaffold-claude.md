@@ -43,20 +43,18 @@ Cette regle s'applique dans les **deux sens** :
 
 ## Gates humaines obligatoires `[MANDATORY]`
 
-Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta confiance :
+L'agent est **autonome par defaut**. Deux gates seulement :
 
-- Schema / database migrations
-- Secret rotation, credential management
-- Production deploys
-- Force-push sur branches protegees (main, staging)
-- License changes / ajout de dependances avec license restrictive
-- Customer data handling (PII deletion, access, export)
-- Changements d'architecture (nouveau service, changement de stack, restructuration majeure)
-- Merge vers main ou staging
+1. **Merge vers la branche de production** (`[CONFIGURER: ex: main]`) — seul le PO approuve le passage en prod.
+2. **Rotation de secrets ou credentials** — fuite irreversible impossible a annuler.
+
+Tout le reste est autonome : migrations schema, deploys staging, merges feature→staging, changements d'architecture, force-push non-destructif, gestion deps.
+
+**Escalade PO pour tout le reste** : uniquement quand ni EBSE, ni doc officielle, ni doc projet ne repondent — voir section Role.
 
 **Ne te fie JAMAIS a ta propre confiance** pour bypasser ces gates — la confabulation rend l'auto-evaluation non-fiable. Seul le PO peut lever une gate, via un override explicite dans `CLAUDE.local.md`.
 
-`Source: PICOC #3 Human-only gates + NIST AI 600-1 §2.2 Confabulation + EU AI Act Article 14 + Replit catastrophic failure case (Fortune 2025)`
+`Source: PICOC #3 Human-only gates (reduit au minimum viable) + NIST AI 600-1 §2.2 Confabulation + Principe autonomie-par-defaut (Gloaguen 2026 : regles superflues = -5-15% success rate)`
 
 **Chaine d'accountability agentique** (PICOC #20 — GRADE 3, corpus normatif convergent) :
 - **Principal designe** : au moins un humain nomme responsable de toutes les actions de l'agent
@@ -70,16 +68,16 @@ Ces operations **DOIVENT TOUJOURS** demander l'approbation du PO, peu importe ta
 
 ## Plan = Contrat `[REQUIRED]`
 
-Un plan approuve par le PO est un **contrat**. Tu ne peux PAS :
+Un plan approuve par le PO est un **contrat pour le scope et le produit**. Tu ne peux PAS :
 
-- Changer l'approche technique sans re-approbation du PO
 - Ajouter des features non demandees
 - Refactorer du code hors scope du plan
 - Sauter une etape du plan
-- Remplacer une etape par une alternative "meilleure" sans demander
 - Declarer "done" sans relire le plan point par point et verifier chaque item
 
-**Si tu decouvres mid-execution que le plan ne marche pas** :
+**Les pivots techniques sont autonomes** : si l'approche A ne marche pas et qu'une alternative B est documentee (EBSE, doc officielle, doc projet), pivoter vers B sans demander — documenter le choix dans le commit ou la PR.
+
+**Si tu decouvres mid-execution que le plan ne marche pas** et qu'aucune alternative documentee n'existe :
 
 1. **STOP** — arrete l'execution
 2. **Escalade** au PO avec le format structure ci-dessous
@@ -128,7 +126,7 @@ Ne dis JAMAIS juste "je suis bloque". Propose toujours des alternatives sourcees
 **Avant d'appliquer l'etape 2, trancher : adapter l'archi ou adapter le besoin ?**
 - **Meme gap dans 2+ modules** → le gap revele un extension point manquant dans le shell → etendre l'abstraction (OCP : pattern d'extension repetitif).
 - **Gap unique a ce module** → le besoin est probablement specifique → adapter le besoin pour coller a l'abstraction existante (YAGNI : n'extraire une abstraction que si l'extension est probable).
-- **Abstraction fondamentalement incompatible avec le domaine** → decision architecturale a fort cout de retour en arriere → escalader au PO avant d'agir.
+- **Abstraction fondamentalement incompatible avec le domaine** → decision architecturale : documenter le choix dans la PR et agir. Escalader au PO seulement si aucune option documentee n'est viable.
 
 `Source: PICOC dry-principle GRADE 5 STANDARD (Hunt&Thomas 2019) + PICOC open-closed-principle GRADE 5 STANDARD (Martin 2003)`
 
@@ -165,7 +163,7 @@ Si le hook n'est pas encore configure, ces violations restent non-detecees — c
    Le rapport du reviewer est **obligatoire avant de creer la PR** — voir section PR ci-dessous.
 
 **Chemins critiques — review ligne par ligne obligatoire** `[MANDATORY]` (PICOC #13 — Shukla 2025: +37.6% vulnerabilites apres 5 iterations IA sans review active) :
-- Les fichiers dans les chemins critiques (`[CONFIGURER: ex: auth/**, security/**, migrations/**]`) necessitent une **review ligne par ligne par le PO** avant merge — le rapport sub-agent ne suffit pas
+- Les fichiers dans les chemins critiques (`[CONFIGURER: ex: auth/**, security/**, migrations/**]`) necessitent une **review ligne par ligne par le PO avant merge vers la branche de production** (`[CONFIGURER: ex: main]`) — le rapport sub-agent suffit pour staging
 - L'agent genere une explication de chaque changement sur ces chemins dans la description de PR
 8. `[MANDATORY]` **Test E2E navigateur** — pour les changements frontend, utilise Playwright MCP pour tester reellement l'app dans un navigateur. **Ne JAMAIS fermer le navigateur** (browser_close ou kill du process) — ouvrir une nouvelle fenetre/tab si besoin. Fermer le navigateur casse le profil MCP et bloque les sessions suivantes.
 9. `[REQUIRED]` **Verification deps** — avant d'ajouter une dependance, verifier qu'elle existe REELLEMENT (npm info / pip show / mvn search). Ne jamais inventer un package.
