@@ -8,7 +8,7 @@ Installation d'un agent autonome Claude Code piloté par PO sur un nouveau proje
 
 - Claude Code installé (plan Max recommandé pour usage intensif)
 - Le repo `ebse-scaffold` accessible depuis la machine (ex : `../ebse-scaffold/` depuis la racine projet)
-- CI/CD avec lint + tests + typecheck configuré (requis par les hooks `pre-commit-quality.sh` et `pre-push-quality.sh`)
+- CI/CD configuré avec lint + tests + typecheck + SonarQube (source d'autorité finale — les git hooks locaux sont la couche rapide, le CI est la gate autoritaire)
 - `gh` CLI installé et authentifié (requis par `pre-push-quality.sh` pour vérifier les issues)
 - Optionnel : Playwright MCP (tests navigateur), Context7 MCP (docs)
 
@@ -62,16 +62,38 @@ Hooks inclus :
 Hooks avancés (désactivés par défaut, voir section 5) :
 - `pre-compact.sh`, `subagent-start.sh`, `user-prompt-filter.sh`
 
-### Étape 6 — Git hooks (pre-commit natif)
+### Étape 6 — Git hooks
 
-Copier `scaffold/git-hooks/pre-commit.sh` → `<projet>/.git/hooks/pre-commit`
-Copier `scaffold/git-hooks/pre-push.sh` → `<projet>/.git/hooks/pre-push`
+Ces hooks s'exécutent pour **tous les acteurs** (humain + agent + CI local) — couche locale de la défense en profondeur.
+
+Architecture (source : `ebse/guide/02-domains/code-quality/git-hooks.md`) :
+- `pre-commit` : lint + formatter + SAST léger optionnel (< 20s)
+- `pre-push` : typecheck + tests (30-60s)
+- CI uniquement : build complet, SonarQube (PR), CodeQL (nightly) — trop lents pour le local
+
+**Approche universelle (natif git — fonctionne pour toute stack) :**
 
 ```bash
+cp scaffold/git-hooks/pre-commit.sh <projet>/.git/hooks/pre-commit
+cp scaffold/git-hooks/pre-push.sh <projet>/.git/hooks/pre-push
 chmod +x <projet>/.git/hooks/pre-commit <projet>/.git/hooks/pre-push
 ```
 
-Ces hooks s'exécutent pour **tous les acteurs** (humain + agent).
+**Node.js — recommandé : Husky** (GRADE 4) — hooks commités dans le repo, s'installent automatiquement après `pnpm install` :
+
+```bash
+pnpm add -D husky lint-staged
+pnpm exec husky init
+mkdir -p scripts/git-hooks
+cp scaffold/git-hooks/pre-commit.sh scripts/git-hooks/
+cp scaffold/git-hooks/pre-push.sh scripts/git-hooks/
+echo 'sh scripts/git-hooks/pre-commit.sh' > .husky/pre-commit
+echo 'sh scripts/git-hooks/pre-push.sh "$@"' > .husky/pre-push
+```
+
+Voir `scaffold/git-hooks/README.md` pour la configuration complète (lint-staged, bypass exceptionnel).
+
+Remplir les sections `[CONFIGURER]` dans les scripts selon la stack du projet.
 
 ### Étape 7 — Agents et Skills
 
@@ -110,8 +132,9 @@ Les `[CONFIGURER]` critiques à remplacer après copie :
 - Commandes de health-check à exécuter au démarrage
 
 **Dans les git hooks** :
-- Format de branche regex dans `pre-push.sh`
-- Commandes lint/typecheck dans `pre-commit.sh`
+- Commandes lint + formatter dans `pre-commit.sh` (ciblées sur les fichiers staged)
+- Commandes typecheck + tests dans `pre-push.sh`
+- Node.js : config `lint-staged` dans `package.json`
 
 ---
 
