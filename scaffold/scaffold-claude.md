@@ -244,7 +244,9 @@ Avant de coder, verifier qu'une issue existe et est assignee — c'est le mecani
 Tu geres le git workflow **entierement seul** :
 
 1. **Branche** : cree une branche par tache — format : `[CONFIGURER: format branche, ex: feature/description-kebab-case]`
-2. **Worktree** : au debut de chaque tache, verifier `git branch -a`. Si une autre branche de travail est deja active → creer un worktree separe pour isoler le travail. Sinon → travailler directement sur la nouvelle branche. **Definition "branche active"** : une branche non-main/staging est checkoutee ET contient des commits locaux non merges, OU des modifications uncommittees sont presentes (`git status` non-vide). Procedure worktree : voir le CLAUDE.md projet. **NE JAMAIS utiliser `Agent(isolation: "worktree")`** si la racine du projet n'est pas elle-meme un repo git (ex: dossier parent contenant plusieurs repos) — ca echouera silencieusement. Utiliser a la place : `cd <repo> && git worktree add ../<nom> -b <branche>`.
+2. **Worktree** : le hook `session-start.sh` detecte automatiquement les sessions paralleles via un lock file (`~/.claude/active-sessions/`) et affiche un warning au demarrage. Si ce warning apparait → creer un worktree avant toute modification. En l'absence de warning, verifier tout de meme : si `git branch --show-current` n'est pas main/staging OU si `git status` est non-vide → creer un worktree.
+   Procedure worktree : voir le CLAUDE.md projet. **NE JAMAIS utiliser `Agent(isolation: "worktree")`** si la racine du projet n'est pas elle-meme un repo git — ca echouera silencieusement. Utiliser a la place : `cd <repo> && git worktree add ../<nom> -b <branche>`.
+   `Source: Claude Code docs (session_id + cwd fournis au SessionStart) ; git-scm.com/docs/git-worktree`
 **Coordination multi-repo** `[REQUIRED]` (PICOC ai-agent-multi-repo-coordination — GRADE 2 BONNE PRATIQUE) : pour les modifications impactant plusieurs repos simultanement :
 
 - **1 agent orchestrateur** sur la racine projet (pas un repo git) + **1 worktree par repo concerne** : `cd <repo> && git worktree add ../<nom>/<repo> -b <branche>`
@@ -807,7 +809,7 @@ Note PICOC #9 : `Bash(*)` = choix autonomie (allow-all + deny list). Alternative
 | **Git hooks reels** | husky + lint-staged (Node.js) / `.git/hooks/` natif | Universel — tout acteur (humain, agent, script) | Sur chaque `git commit` / `git push` |
 | **Claude Code hooks** | `.claude/settings.json` | Agent uniquement — durant une session Claude Code | Sur les actions de l'agent |
 
-Les quality gates (lint, typecheck, tests, audit) doivent etre dans les **git hooks reels** pour etre universelles. Les Claude Code hooks (`settings.json`) couvrent ce qui est specifique a l'agent : audit trail, SessionStart tokens, prompt injection, events Stop/WorktreeCreate.
+Les quality gates (lint, typecheck, tests, audit) doivent etre dans les **git hooks reels** pour etre universelles. Les Claude Code hooks (`settings.json`) couvrent ce qui est specifique a l'agent : audit trail, SessionStart tokens, prompt injection, events Stop/SessionEnd/WorktreeCreate.
 
 **Regle de decision — Claude Code hook justifie si et seulement si :**
 - **(a) verification Claude-specifique** : Co-Authored-By, audit trail, prompt injection, variables de session — choses sans equivalent pour un acteur humain
@@ -1083,7 +1085,29 @@ Sur macOS/Linux, remplacer par `osascript -e 'display notification "Tache termin
 
 `Source: Claude Code hooks documentation — Stop event (docs.anthropic.com/en/docs/claude-code/hooks)`
 
-**6. PreCompact — re-injecte les regles critiques avant compaction du contexte** :
+**6. SessionEnd — nettoyage lock detection sessions paralleles** :
+
+```json
+"SessionEnd": [{ "hooks": [{ "type": "command", "command": "bash .claude/hooks/session-end.sh" }] }]
+```
+
+Script `.claude\hooks\session-end.sh` — supprime le lock de cette session a la fermeture ou `/clear` :
+```bash
+#!/bin/bash
+INPUT=$(cat)
+SID=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('session_id',''))" 2>/dev/null)
+SCWD=$(echo "$INPUT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null)
+[ -z "$SID" ] && exit 0
+[ -z "$SCWD" ] && exit 0
+CWDHASH=$(printf '%s' "$SCWD" | sha256sum 2>/dev/null | cut -c1-8 || echo "nohash")
+rm -f "$HOME/.claude/active-sessions/${CWDHASH}-${SID}.lock"
+```
+
+Complement du mecanisme : `SessionStart` ecrit le lock + detecte les autres sessions ; `Stop` le rafraichit (touch) a chaque tour ; `SessionEnd` le supprime proprement. Timeout 30 min = filet de securite pour les crashs uniquement.
+
+`Source: Claude Code hooks documentation — SessionEnd event`
+
+**7. PreCompact — re-injecte les regles critiques avant compaction du contexte** :
 
 ```json
 "PreCompact": [{ "hooks": [{ "type": "command", "command": "bash .claude/hooks/pre-compact.sh" }] }]
