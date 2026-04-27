@@ -449,6 +449,8 @@ Couvrir les 5 dimensions ci-dessous avec les commandes configurées pour ce proj
 
 **Phase 2 — Exécution** : traiter les items identifiés.
 
+**Branche cible pendant le sweep** : toutes les PRs créées pendant un sweep ciblent la branche de staging/intégration (`[CONFIGURER: ex: staging]`), jamais la branche de production. Merge vers la branche de production = gate PO — incompatible avec l'exécution autonome d'un sweep.
+
 **Phase 3 — Vérification** : re-jouer la Phase 1 en entier sur toutes les dimensions.
 → Si nouveaux items détectés pendant l'exécution : les traiter et re-vérifier.
 → **Déclarer "done" uniquement quand la découverte revient vide** — pas quand la liste initiale est épuisée.
