@@ -1,0 +1,301 @@
+{
+  "id": "agent-runtime",
+  "domain": "ai-collaboration",
+  "question": "Quel runtime choisir pour un agent de développement autonome dont les décisions techniques sont externalisées dans un guide EBSE ?",
+  "picoc": {
+    "population": "Équipes (solo founders à petites équipes) déléguant du développement à un agent IA configurable, dont toutes les décisions techniques proviennent d'un guide EBSE externalisé et non de la mémoire d'entraînement du LLM",
+    "intervention": "Runtimes agentiques : (A) Claude Code CLI + hooks, (B) Claude Agent SDK + orchestrateur léger, (C) Orchestrateur custom via abstraction LLM (LiteLLM), (D) Hybride CLI interactif + SDK pipelines autonomes",
+    "comparison": "Entre les quatre architectures de runtime sur 40+ exigences dérivées de l'analyse SDMF 6 phases",
+    "outcome": "Satisfaction des exigences EBSE-agent : mécanisation des gates, indépendance provider, contrôle de boucle, ré-injection post-compaction, canal d'interruption externe, observabilité, audit trail",
+    "context": "Développement logiciel production 2025-2026, équipe < 5 personnes, guide EBSE comme source unique de décision technique"
+  },
+  "methodology": {
+    "method": "SDMF 6 phases (ODD → FMEA → KAOS → STRIDE+Misuse → Kassab RE → MIT AI Risk)",
+    "phases_completed": 6,
+    "requirements_derived": 40,
+    "grade_level": 3,
+    "grade_label": "RECOMMANDE",
+    "confidence": "MODERE",
+    "grade_rationale": "Analyse SDMF complète convergente sur 6 méthodologies indépendantes (ingénierie système + sécurité + RE + risques IA). Toutes convergent sur E-ARCH-01 et les 5 exigences universelles. Limites : pas de RCT inter-runtimes sur tâches OLS réelles, pas de benchmark privé validé. Converge avec les conclusions de ai-agent-framework-vs-prebuilt (GRADE 3, kappa 0.79) sur l'overhead custom. MIT AI Risk Phase 6 : couverture actuelle 57%, objectif 82% atteignable avec les exigences dérivées.",
+    "depends_on": [
+      "ai-agent-framework-vs-prebuilt",
+      "ai-agent-scaffold-methodology",
+      "ai-agent-delegation-model",
+      "ai-agent-context-compaction",
+      "ai-agent-permissions-sandbox",
+      "ai-agent-prompt-injection-defense"
+    ]
+  },
+  "tags": [
+    "ai-collaboration",
+    "ai-agent",
+    "runtime",
+    "claude-code",
+    "agent-sdk",
+    "provider-independence",
+    "mechanization",
+    "ebse",
+    "autonomous-agent",
+    "scaffold"
+  ],
+  "classification": "mixed",
+  "universal": {
+    "principles": [
+      {
+        "text": "ARCHITECTURAL (E-ARCH-01) : Le runtime et le provider LLM doivent être des couches architecturalement indépendantes. Claude Code CLI fusionne les deux — cette contrainte structurelle rend l'indépendance provider impossible sans migration complète du runtime. La décision de runtime est donc aussi une décision de provider à long terme.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SDMF Phase 5 — Kassab RE — E-ARCH-01 : contrainte structurelle runtime+provider Claude Code CLI",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "Anthropic Claude Agent SDK — architecture couches explicites (docs officielles)",
+            "pyramid": 2,
+            "year": 2025
+          },
+          {
+            "name": "SDMF Phase 3 — KAOS — G5 portabilité comme méta-exigence contraignant toutes les implémentations",
+            "pyramid": 5,
+            "year": 2026
+          }
+        ]
+      },
+      {
+        "text": "MÉCANISATION DES GATES : Toutes les gates MANDATORY (merge main, secrets, actions destructives, rotation credentials) doivent être des hooks mécaniques (pre-commit, pre-push, pre-tool-use), jamais des règles textuelles dans CLAUDE.md. Taux de conformité sur instructions textuelles complexes < 30%. La confabulation rend l'auto-évaluation non fiable — l'agent ne peut pas être juge de sa propre conformité aux gates (obstacle transversal O1.2, KAOS Phase 3). Les fichiers de règles (CLAUDE.md, scaffold) doivent eux-mêmes être protégés en écriture par hook.",
+        "grade": 4,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SDMF Phase 2 — FMEA — F6-1 (RPN 504) : règles EBSE oubliées par dilution fenêtre contexte",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "SDMF Phase 3 — KAOS — O1.2 confabulation = obstacle transversal à toutes les gates",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "Scaffold v2.1 OLS — compliance stats < 30% sur instructions textuelles complexes",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "SDMF Phase 4 — STRIDE+Misuse — 12 exigences Mandatory dérivées (dont protection CLAUDE.md)",
+            "pyramid": 5,
+            "year": 2026
+          }
+        ]
+      },
+      {
+        "text": "PROTECTION CONTEXTE EBSE : Les règles MANDATORY (guide EBSE, gates, CLAUDE.md) doivent survivre à la compaction du contexte et être ré-injectées mécaniquement avant toute action post-compaction. Un hook pre-compact sans mécanisme de ré-injection active crée une fenêtre de vulnérabilité où les gates sont silencieusement ignorées. Exiger un champ réservé dans la fenêtre de contexte pour les contraintes critiques.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SDMF Phase 2 — FMEA — F6-1 (RPN 504) : dilution des règles EBSE = défaillance #1 par RPN",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "SDMF Phase 3 — KAOS — G3 obstacle : post-compaction re-injection manquante dans Claude Code",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "Liu et al. 2023 — Lost in the Middle (TACL) : dégradation significative milieu contexte",
+            "pyramid": 3,
+            "year": 2023
+          }
+        ]
+      },
+      {
+        "text": "TERMINAISON DE BOUCLE : Les pipelines autonomes (autofix, audit cyclique) nécessitent une condition de terminaison externe mécanique — compteur d'itérations maximal forcé et non modifiable par l'agent lui-même, plus signal d'arrêt externe (canal d'interruption). Un agent ne peut pas fiablement décider lui-même d'arrêter une boucle : l'auto-évaluation de complétion est sujette à la confabulation (FMEA Phase 2 F8-1 RPN 448 = 2ème défaillance par RPN).",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SDMF Phase 2 — FMEA — F8-1 (RPN 448) : boucle autonome sans condition mécanique d'arrêt",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "Anthropic Claude Agent SDK — paramètre max_turns configurable programmatiquement (docs officielles)",
+            "pyramid": 2,
+            "year": 2025
+          },
+          {
+            "name": "SDMF Phase 3 — KAOS — G4 obstacle : absence canal d'interruption externe dans Claude Code CLI",
+            "pyramid": 5,
+            "year": 2026
+          }
+        ]
+      },
+      {
+        "text": "FAIL-CLOSED SUR LES GATES : Tout mécanisme de gate (hook pre-push, CI check, validation PR) qui dépend d'un service externe (GitHub API, réseau) doit échouer en mode fail-closed (exit non-zéro) si le service est indisponible — jamais en mode fail-open silencieux. Un timeout réseau ne doit pas contourner une gate de sécurité.",
+        "grade": 3,
+        "level": "RECOMMANDE",
+        "sources": [
+          {
+            "name": "SDMF Phase 6 — MIT AI Risk D6.6 — R-MIT-02 : comportement non défini = fail-open par défaut",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "IEC 61508-3 — principe safe-state failure (SIL 2) : défaillance vers état sûr",
+            "pyramid": 1,
+            "year": 2010
+          }
+        ]
+      },
+      {
+        "text": "HÉRITAGE D'AUTORITÉ SOUS-AGENTS : L'autorité d'un sous-agent ne peut pas excéder celle de l'agent parent. Les sous-agents doivent recevoir explicitement la liste des gates MANDATORY héritées dans leur contexte de lancement. L'inter-agent trust est le vecteur le plus sous-estimé — aucune protection native dans les runtimes actuels (Lupinacci 2025).",
+        "grade": 2,
+        "level": "BONNE_PRATIQUE",
+        "sources": [
+          {
+            "name": "SDMF Phase 4 — STRIDE — Elevation of Privilege inter-agent : vecteur 100% vulnérable (Lupinacci 2025)",
+            "pyramid": 5,
+            "year": 2026
+          },
+          {
+            "name": "SDMF Phase 6 — MIT AI Risk D1.5 — R-MIT-09 : budget d'autorité transmis aux sous-agents",
+            "pyramid": 5,
+            "year": 2026
+          }
+        ]
+      }
+    ]
+  },
+  "variants": {
+    "claude-code-cli": {
+      "recommendation": "RECOMMANDE sous conditions — viable si et seulement si : (a) hookification Plan A+B implémentée (pre-compact re-injection, protection fichiers règles, bash content inspection), (b) triggers de migration provider définis et documentés dans CLAUDE.local.md. Contrainte structurelle E-ARCH-01 non résolvable : le couplage runtime+provider est inhérent à l'architecture Claude Code. DÉCLENCHER MIGRATION si : indépendance provider devient prérequis contractuel ou réglementaire.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "implementation": "1. Implémenter les 12 hooks Mandatory Phase 4 STRIDE (Plan 2 Phase A) : pre-compact re-injection + protection CLAUDE.md/settings.json en écriture.\n2. Ajouter les 4 hooks Mandatory MIT AI Risk : R-MIT-01 (protection fichiers règles étendue), R-MIT-02 (fail-closed sur appels réseau), R-MIT-03 (log scrubbing avant ingestion), R-MIT-04 (content inspection bash pour exfiltration).\n3. Documenter dans CLAUDE.local.md les triggers de migration : (a) changement pricing Anthropic > seuil PO, (b) exigence provider independence contractuelle, (c) besoin observabilité mobile.\n4. Activer max_turns via '--max-turns' CLI pour les pipelines autonomes.",
+      "sources": [
+        {
+          "name": "Claude Code CLI docs — hooks architecture : pre-commit, pre-push, pre-tool-use (docs officielles)",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "SDMF Phase 4 — STRIDE — 12 exigences Mandatory : gaps critiques identifiés dans hooks actuels",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 5 — Kassab RE — E-ARCH-01 : contrainte structurelle, non résolvable sans migration",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 6 — MIT AI Risk — couverture 57% actuelle, 68% avec Plan 2 complet",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    "claude-agent-sdk": {
+      "recommendation": "RECOMMANDE pour pipelines autonomes (autofix, full-audit, api-test cycliques). Sépare l'interface runtime de la couche provider : max_turns, max_budget_usd, ResultMessage.subtype configurables programmatiquement. Adresse E-ARCH-01 partiellement : le provider reste Anthropic mais la séparation des couches prépare une migration future. ABSENT : mode interactif PO — complémentaire à Claude Code CLI, pas substitut.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "implementation": "Orchestrateur léger (~500 LOC Python/TypeScript) exposant :\n- Canal d'interruption HTTP (endpoint /stop) ou signal UNIX\n- Paramètres : max_turns (hard limit), max_budget_usd (budget par pipeline)\n- Budget d'autorité transmis au prompt de lancement de chaque sous-agent\n- Reporting coût cumulé vers .claude/session-costs.md (R-MIT-06)\n- ResultMessage.subtype pour distinguer max_turns_reached vs. tâche complète\nGarder Claude Code CLI pour les sessions interactives PO. Déclencher l'SDK sur tâches > 50 turns estimés ou > 30 minutes.",
+      "sources": [
+        {
+          "name": "Anthropic Claude Agent SDK — max_turns, max_budget_usd, ResultMessage, sessions resumables (docs officielles)",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "SDMF Phase 2 — FMEA — F8-1 (RPN 448) : max_turns SDK = solution mécanique au problème de boucle",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 6 — MIT AI Risk D7.2 + D8.3 — R-MIT-06 : reporting coût PO solo startup",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    "custom-litellm": {
+      "recommendation": "FORTEMENT DÉCONSEILLÉ pour équipes < 5 ingénieurs IA dédiés. Taux d'abandon 80% à 6-12 mois (meta-analyse 19 études GRADE 3, kappa 0.79 — cf. ai-agent-framework-vs-prebuilt). La liberté de provider maximale ne compense pas le coût de maintenance d'un runtime custom : 60-80% du temps équipe absorbé par l'orchestration elle-même. À budget constant, investir dans les hooks Plan A+B produit un retour mesurable supérieur.",
+      "grade": 2,
+      "level": "CHOIX_EQUIPE",
+      "implementation": "NON RECOMMANDÉ. Si décision d'équipe contrainte : LiteLLM comme proxy provider uniquement, Claude Agent SDK comme base runtime (ne pas réécrire ce que le SDK fournit), implémenter uniquement les deltas requis par le guide EBSE. Budget minimum réaliste : 3 mois-ingénieur pour atteindre la parité fonctionnelle avec Claude Code CLI + hooks. Réévaluer à 6 mois avec le benchmark privé OLS.",
+      "sources": [
+        {
+          "name": "Decision ai-agent-framework-vs-prebuilt — P3 : 80% abandon custom 6-12 mois (19 études, GRADE 3, kappa 0.79)",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "LiteLLM docs — provider abstraction layer multi-modèle",
+          "pyramid": 2,
+          "year": 2025
+        }
+      ]
+    },
+    "hybrid-cli-sdk": {
+      "recommendation": "RECOMMANDE — stratégie optimale à court et moyen terme. Préserve l'expérience interactive PO (Claude Code CLI) tout en ajoutant le contrôle programmatique pour les pipelines autonomes (Agent SDK). Adresse E-ARCH-01 sans migration complète : l'interface SDK introduit une couche de séparation pour les cas d'usage autonomes. Stratégie de migration progressive mesurable par benchmark privé OLS.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "implementation": "Phase 1 (immédiat) : implémenter Plan 2 Phase A+B sur Claude Code CLI — les 12 hooks Mandatory STRIDE + les 4 Mandatory MIT AI Risk.\nPhase 2 (< 2 semaines) : orchestrateur SDK minimal pour /autofix et /full-audit — les deux pipelines qui dépassent 50 turns ou 30 minutes et nécessitent max_turns + canal d'interruption.\nPhase 3 (< 1 mois) : benchmark privé OLS — 5 à 10 tâches historiques avec critères de succès définis. Si parité SDK ≥ CLI sur ces tâches, migrer progressivement les autres pipelines.\nTriggers de migration complète vers SDK standalone : (a) provider-lock-in contractuel ou réglementaire, (b) besoin observabilité mobile, (c) coût Claude Code CLI > seuil défini par PO dans CLAUDE.local.md.",
+      "sources": [
+        {
+          "name": "SDMF Phase 1 — ODD — RF-08 : canal d'interruption externe requis pour pipelines > 30 minutes",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 2 — FMEA — F8-1 (RPN 448) : hard limit mécanique = exigence de premier rang",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 5 — Kassab RE — E-ARCH-01 : hybride = seule voie adressant la contrainte sans migration complète",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "Decision ai-agent-framework-vs-prebuilt — P2 : +18pp taux merge avec configuration explicite",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    }
+  },
+  "sdmf_synthesis": {
+    "phases_run": 6,
+    "date": "2026-04-28",
+    "requirements_count": {
+      "mandatory": 16,
+      "required": 21,
+      "advisory": 11,
+      "total": 48
+    },
+    "top_findings": [
+      "E-ARCH-01 (Phase 5 Kassab RE) : Claude Code CLI = runtime + provider couplés = contrainte architecturale non résolvable",
+      "F6-1 RPN 504 (Phase 2 FMEA) : dilution règles EBSE = défaillance #1 — résolue par fenêtre réservée + re-injection post-compaction",
+      "F8-1 RPN 448 (Phase 2 FMEA) : boucle autonome sans terminaison mécanique = défaillance #2 — résolue par max_turns SDK ou --max-turns CLI",
+      "D3.1 (Phase 4 STRIDE) : inter-agent trust = vecteur le plus sous-estimé, 100% vulnérable sans héritage explicite d'autorité",
+      "D1.4 (Phase 6 MIT AI Risk) : scope creep via modification CLAUDE.md — fichiers règles non protégés en écriture",
+      "D6.6 (Phase 6 MIT AI Risk) : fail-open sur gates réseau — comportement non défini = vulnérabilité silencieuse"
+    ],
+    "coverage_mit_risk": {
+      "current": "57%",
+      "with_plan2": "68%",
+      "with_plan2_and_mit_mandatory": "82%"
+    },
+    "blind_spots_resolved_by_phase6": [
+      "D3 Discrimination/représentation (0% couvert phases 1-5) — biais corpus EBSE, attribution code tiers",
+      "D7 Sociotechnical harms (17% couvert) — deskilling PO, sycophancy, lock-in runtime",
+      "D9.5 EU AI Act Art. 13 — décisions automatiques à impact utilisateur : explicabilité requise",
+      "D5.5 Exfiltration via contenu bash — non couverte par deny list (bloque noms, pas contenu)"
+    ]
+  }
+}

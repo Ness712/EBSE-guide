@@ -1,13 +1,13 @@
 {
   "guide_version": "2026.04.7",
-  "generated_at": "2026-04-25T15:00:05.895Z",
+  "generated_at": "2026-04-28T13:42:07.868Z",
   "profile_id": "django-react",
   "stack": {
     "backend": "python-django",
     "frontend": "react",
     "database": "postgresql"
   },
-  "total": 276,
+  "total": 277,
   "methodology": "EBSE (Kitchenham 2004), adapted from Evidence-Based Medicine",
   "recommendations": [
     {
@@ -1861,6 +1861,38 @@
       ]
     },
     {
+      "id": "agent-runtime",
+      "domain": "ai-collaboration",
+      "question": "Quel runtime choisir pour un agent de développement autonome dont les décisions techniques sont externalisées dans un guide EBSE ?",
+      "recommendation": "RECOMMANDE sous conditions — viable si et seulement si : (a) hookification Plan A+B implémentée (pre-compact re-injection, protection fichiers règles, bash content inspection), (b) triggers de migration provider définis et documentés dans CLAUDE.local.md. Contrainte structurelle E-ARCH-01 non résolvable : le couplage runtime+provider est inhérent à l'architecture Claude Code. DÉCLENCHER MIGRATION si : indépendance provider devient prérequis contractuel ou réglementaire.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "implementation": "1. Implémenter les 12 hooks Mandatory Phase 4 STRIDE (Plan 2 Phase A) : pre-compact re-injection + protection CLAUDE.md/settings.json en écriture.\n2. Ajouter les 4 hooks Mandatory MIT AI Risk : R-MIT-01 (protection fichiers règles étendue), R-MIT-02 (fail-closed sur appels réseau), R-MIT-03 (log scrubbing avant ingestion), R-MIT-04 (content inspection bash pour exfiltration).\n3. Documenter dans CLAUDE.local.md les triggers de migration : (a) changement pricing Anthropic > seuil PO, (b) exigence provider independence contractuelle, (c) besoin observabilité mobile.\n4. Activer max_turns via '--max-turns' CLI pour les pipelines autonomes.",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Claude Code CLI docs — hooks architecture : pre-commit, pre-push, pre-tool-use (docs officielles)",
+          "pyramid": 2,
+          "year": 2025
+        },
+        {
+          "name": "SDMF Phase 4 — STRIDE — 12 exigences Mandatory : gaps critiques identifiés dans hooks actuels",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 5 — Kassab RE — E-ARCH-01 : contrainte structurelle, non résolvable sans migration",
+          "pyramid": 5,
+          "year": 2026
+        },
+        {
+          "name": "SDMF Phase 6 — MIT AI Risk — couverture 57% actuelle, 68% avec Plan 2 complet",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
       "id": "ai-agent-accountability",
       "domain": "ai-collaboration",
       "question": "Quels mecanismes d'accountability et de gouvernance permettent de s'assurer qu'au moins un humain est responsable des actions d'un agent IA autonome dans un contexte de developpement logiciel ?",
@@ -2832,6 +2864,66 @@
       ]
     },
     {
+      "id": "circuit-breaker",
+      "domain": "reliability",
+      "question": "Comment proteger le systeme contre les defaillances de services externes (circuit breaker) ?",
+      "recommendation": "pybreaker — circuit breaker pour Python. Configuration simple, compatible Django.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "commit-conventions",
+      "domain": "project",
+      "question": "Quelle convention de messages de commit adopter pour automatiser le versioning et maintenir un historique lisible ?",
+      "recommendation": "Adopter Conventional Commits : type(scope): description. Types : feat (minor), fix (patch), refactor, docs, test, chore. BREAKING CHANGE declenche un major.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "conventionalcommits.org v1.0.0",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Angular commit guidelines",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "container-registry",
+      "domain": "cicd",
+      "question": "Quel container registry pour stocker et distribuer les images Docker ?",
+      "recommendation": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "GitHub docs — GHCR integration native avec Actions et permissions",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "CNCF Survey 2024 — container registry adoption",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Twelve-Factor Factor V — build artifacts immutables",
+          "pyramid": 5,
+          "year": 2012
+        }
+      ]
+    },
+    {
       "id": "ai-agent-budget-caps",
       "domain": "ai-collaboration",
       "question": "Quels caps techniques imposer aux agents IA pour eviter les runaway loops ?",
@@ -3570,40 +3662,6 @@
       ]
     },
     {
-      "id": "circuit-breaker",
-      "domain": "reliability",
-      "question": "Comment proteger le systeme contre les defaillances de services externes (circuit breaker) ?",
-      "recommendation": "pybreaker — circuit breaker pour Python. Configuration simple, compatible Django.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": false,
-      "sources": [
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "commit-conventions",
-      "domain": "project",
-      "question": "Quelle convention de messages de commit adopter pour automatiser le versioning et maintenir un historique lisible ?",
-      "recommendation": "Adopter Conventional Commits : type(scope): description. Types : feat (minor), fix (patch), refactor, docs, test, chore. BREAKING CHANGE declenche un major.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "conventionalcommits.org v1.0.0",
-          "pyramid": 5,
-          "year": 2024
-        },
-        {
-          "name": "Angular commit guidelines",
-          "pyramid": 3,
-          "year": 2024
-        }
-      ]
-    },
-    {
       "id": "component-library",
       "domain": "design",
       "question": "Quelle librairie de composants UI utiliser ?",
@@ -3765,57 +3823,6 @@
           "name": "Mozilla TLS Guidelines",
           "pyramid": 5,
           "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "exception-hierarchy",
-      "domain": "design",
-      "question": "Comment structurer une hiérarchie d'exceptions NestJS qui distingue les erreurs de domaine (attendues) des erreurs techniques (inattendues), avec les Exception Filters et le format Problem Details ?",
-      "recommendation": "Architecture à deux niveaux (Khorikov 2015) : il existe deux catégories fondamentalement distinctes d'erreurs. (1) Les erreurs de domaine sont attendues — elles font partie du modèle métier (email déjà pris, ressource introuvable, règle métier violée). Elles doivent être modélisées explicitement et retournées avec un code HTTP sémantique précis. (2) Les erreurs techniques sont inattendues — elles signalent une défaillance d'infrastructure (base de données inaccessible, timeout réseau, assertion violée). Elles doivent remonter sans être interceptées côté domaine, et être capturées uniquement par le filtre global qui les mappe sur 500 Internal Server Error. Confondre ces deux catégories produit des APIs imprévisibles et insécurisées.\n\nHiérarchie NestJS : la base de la hiérarchie est HttpException (NestJS built-in). Les exceptions de domaine héritent de HttpException avec le code HTTP approprié : NotFoundException (404), ConflictException (409), UnprocessableEntityException (422), ForbiddenException (403), BadRequestException (400), UnauthorizedException (401). Chaque exception de domaine porte un message client explicatif. Un ExceptionFilter global annoté @Catch() (sans argument) intercepte toutes les exceptions non reconnues (ni HttpException ni sous-classe) et les mappe sur 500 en produisant un message générique. Ce filtre est enregistré globalement via app.useGlobalFilters().\n\nFormat de contrat RFC 9457 Problem Details : toutes les réponses d'erreur HTTP doivent suivre le format Problem Details (RFC 9457, IETF 2023) : { \"type\": \"https://example.com/errors/not-found\", \"title\": \"Resource Not Found\", \"status\": 404, \"detail\": \"User with id 42 was not found\", \"instance\": \"/api/users/42\" }. Ce format est un standard universel permettant aux clients de distinguer, parser et afficher les erreurs de façon uniforme. Le ExceptionFilter global est responsable de produire ce format pour toutes les exceptions, qu'elles soient de domaine (4xx avec detail explicatif) ou techniques (5xx avec title générique uniquement).\n\nSécurité OWASP — jamais de stack trace dans les réponses (CWE-209) : une stack trace dans une réponse HTTP expose la structure interne de l'application, les chemins de fichiers, les versions de bibliothèques — informations exploitables par un attaquant (OWASP Error Handling Cheat Sheet 2024). Règle absolue : pour les erreurs 4xx, retourner un message client explicatif dans le champ 'detail'. Pour les erreurs 5xx, retourner uniquement 'Internal Server Error' dans 'title' — jamais le message d'exception interne. Toujours logger côté serveur le message complet et la stack trace avec un correlation ID (requestId) permettant de relier le log à la réponse client sans exposer l'information.\n\nValidation = Notification, pas exception isolée (Fowler 2014) : lorsqu'une validation doit rapporter plusieurs erreurs simultanément (formulaire avec plusieurs champs invalides), lever une exception par champ masque les erreurs suivantes. Le pattern Notification collecte toutes les erreurs avant de les signaler en une seule fois. En pratique NestJS : utiliser class-validator avec ValidationPipe global — NestJS agrège automatiquement toutes les erreurs de validation dans un BadRequestException(400) avec un tableau d'erreurs dans 'detail'. Ne jamais lever une exception par champ dans une boucle de validation.\n\nResult<T, E> pour les erreurs de domaine fortement typées (neverthrow, Khorikov) : dans la couche service, le type Result<T, E> est préférable aux exceptions pour les erreurs de domaine attendues. Le compilateur TypeScript force la gestion explicite du chemin d'erreur — un Result non géré produit une erreur de compilation, contrairement à une exception qui peut remonter silencieusement. Pattern : le service retourne Result<User, DomainError> ; le controller mappe les variantes d'erreur sur les HttpExceptions appropriées. Ce pattern est optionnel selon la maturité DDD de l'équipe — il n'est pas obligatoire pour des services CRUD simples, mais devient précieux quand la logique métier comporte de nombreux chemins d'erreur nommés.\n\nDiscriminated unions + switch exhaustif (TypeScript) : pour les types d'erreur de domaine, utiliser des discriminated unions TypeScript — chaque variante d'erreur porte un champ 'kind' littéral unique. Le switch sur ce champ avec un cas 'default: const _exhaustive: never = error' garantit qu'ajouter un nouveau type d'erreur sans mettre à jour le switch produit une erreur de compilation. Cette technique assure la complétude statique de la gestion d'erreurs sans dépendre des tests ou du runtime.",
-      "grade": 6,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "RFC 9457 — Problem Details for HTTP APIs (IETF, 2023)",
-          "pyramid": 1,
-          "year": 2023
-        },
-        {
-          "name": "OWASP Error Handling Cheat Sheet (OWASP, 2024)",
-          "pyramid": 2,
-          "year": 2024
-        },
-        {
-          "name": "NestJS — Exception Filters documentation (NestJS, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "NestJS — Built-in HTTP exceptions (NestJS, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "TypeScript — Narrowing: Exhaustiveness Checking (typescriptlang.org, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "neverthrow — NeverThrow: Type-Safe Errors for JS & TypeScript (GitHub/npm, 2024)",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "Khorikov V. — Exceptions vs Result Object (enterprisecraftsmanship.com, 2015)",
-          "pyramid": 5,
-          "year": 2015
-        },
-        {
-          "name": "Fowler M. — Replacing Throwing Exceptions with Notification in Validations (martinfowler.com, 2014)",
-          "pyramid": 5,
-          "year": 2014
         }
       ]
     },
@@ -4444,32 +4451,6 @@
       ]
     },
     {
-      "id": "container-registry",
-      "domain": "cicd",
-      "question": "Quel container registry pour stocker et distribuer les images Docker ?",
-      "recommendation": "GHCR (GitHub Container Registry) pour les repos GitHub : integration native avec Actions et permissions, authentification via GITHUB_TOKEN, zero configuration supplementaire.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "GitHub docs — GHCR integration native avec Actions et permissions",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "CNCF Survey 2024 — container registry adoption",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "Twelve-Factor Factor V — build artifacts immutables",
-          "pyramid": 5,
-          "year": 2012
-        }
-      ]
-    },
-    {
       "id": "cqrs",
       "domain": "architecture",
       "question": "Quand et comment appliquer le pattern CQRS pour séparer les modèles de lecture et d'écriture, et éviter la sur-ingénierie dans les systèmes simples ?",
@@ -4751,6 +4732,57 @@
           "name": "Django REST Framework Serializers docs",
           "pyramid": 3,
           "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "exception-hierarchy",
+      "domain": "design",
+      "question": "Comment structurer une hiérarchie d'exceptions NestJS qui distingue les erreurs de domaine (attendues) des erreurs techniques (inattendues), avec les Exception Filters et le format Problem Details ?",
+      "recommendation": "Architecture à deux niveaux (Khorikov 2015) : il existe deux catégories fondamentalement distinctes d'erreurs. (1) Les erreurs de domaine sont attendues — elles font partie du modèle métier (email déjà pris, ressource introuvable, règle métier violée). Elles doivent être modélisées explicitement et retournées avec un code HTTP sémantique précis. (2) Les erreurs techniques sont inattendues — elles signalent une défaillance d'infrastructure (base de données inaccessible, timeout réseau, assertion violée). Elles doivent remonter sans être interceptées côté domaine, et être capturées uniquement par le filtre global qui les mappe sur 500 Internal Server Error. Confondre ces deux catégories produit des APIs imprévisibles et insécurisées.\n\nHiérarchie NestJS : la base de la hiérarchie est HttpException (NestJS built-in). Les exceptions de domaine héritent de HttpException avec le code HTTP approprié : NotFoundException (404), ConflictException (409), UnprocessableEntityException (422), ForbiddenException (403), BadRequestException (400), UnauthorizedException (401). Chaque exception de domaine porte un message client explicatif. Un ExceptionFilter global annoté @Catch() (sans argument) intercepte toutes les exceptions non reconnues (ni HttpException ni sous-classe) et les mappe sur 500 en produisant un message générique. Ce filtre est enregistré globalement via app.useGlobalFilters().\n\nFormat de contrat RFC 9457 Problem Details : toutes les réponses d'erreur HTTP doivent suivre le format Problem Details (RFC 9457, IETF 2023) : { \"type\": \"https://example.com/errors/not-found\", \"title\": \"Resource Not Found\", \"status\": 404, \"detail\": \"User with id 42 was not found\", \"instance\": \"/api/users/42\" }. Ce format est un standard universel permettant aux clients de distinguer, parser et afficher les erreurs de façon uniforme. Le ExceptionFilter global est responsable de produire ce format pour toutes les exceptions, qu'elles soient de domaine (4xx avec detail explicatif) ou techniques (5xx avec title générique uniquement).\n\nSécurité OWASP — jamais de stack trace dans les réponses (CWE-209) : une stack trace dans une réponse HTTP expose la structure interne de l'application, les chemins de fichiers, les versions de bibliothèques — informations exploitables par un attaquant (OWASP Error Handling Cheat Sheet 2024). Règle absolue : pour les erreurs 4xx, retourner un message client explicatif dans le champ 'detail'. Pour les erreurs 5xx, retourner uniquement 'Internal Server Error' dans 'title' — jamais le message d'exception interne. Toujours logger côté serveur le message complet et la stack trace avec un correlation ID (requestId) permettant de relier le log à la réponse client sans exposer l'information.\n\nValidation = Notification, pas exception isolée (Fowler 2014) : lorsqu'une validation doit rapporter plusieurs erreurs simultanément (formulaire avec plusieurs champs invalides), lever une exception par champ masque les erreurs suivantes. Le pattern Notification collecte toutes les erreurs avant de les signaler en une seule fois. En pratique NestJS : utiliser class-validator avec ValidationPipe global — NestJS agrège automatiquement toutes les erreurs de validation dans un BadRequestException(400) avec un tableau d'erreurs dans 'detail'. Ne jamais lever une exception par champ dans une boucle de validation.\n\nResult<T, E> pour les erreurs de domaine fortement typées (neverthrow, Khorikov) : dans la couche service, le type Result<T, E> est préférable aux exceptions pour les erreurs de domaine attendues. Le compilateur TypeScript force la gestion explicite du chemin d'erreur — un Result non géré produit une erreur de compilation, contrairement à une exception qui peut remonter silencieusement. Pattern : le service retourne Result<User, DomainError> ; le controller mappe les variantes d'erreur sur les HttpExceptions appropriées. Ce pattern est optionnel selon la maturité DDD de l'équipe — il n'est pas obligatoire pour des services CRUD simples, mais devient précieux quand la logique métier comporte de nombreux chemins d'erreur nommés.\n\nDiscriminated unions + switch exhaustif (TypeScript) : pour les types d'erreur de domaine, utiliser des discriminated unions TypeScript — chaque variante d'erreur porte un champ 'kind' littéral unique. Le switch sur ce champ avec un cas 'default: const _exhaustive: never = error' garantit qu'ajouter un nouveau type d'erreur sans mettre à jour le switch produit une erreur de compilation. Cette technique assure la complétude statique de la gestion d'erreurs sans dépendre des tests ou du runtime.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "RFC 9457 — Problem Details for HTTP APIs (IETF, 2023)",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "OWASP Error Handling Cheat Sheet (OWASP, 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "NestJS — Exception Filters documentation (NestJS, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NestJS — Built-in HTTP exceptions (NestJS, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "TypeScript — Narrowing: Exhaustiveness Checking (typescriptlang.org, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "neverthrow — NeverThrow: Type-Safe Errors for JS & TypeScript (GitHub/npm, 2024)",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Khorikov V. — Exceptions vs Result Object (enterprisecraftsmanship.com, 2015)",
+          "pyramid": 5,
+          "year": 2015
+        },
+        {
+          "name": "Fowler M. — Replacing Throwing Exceptions with Notification in Validations (martinfowler.com, 2014)",
+          "pyramid": 5,
+          "year": 2014
         }
       ]
     },
@@ -5887,57 +5919,6 @@
       ]
     },
     {
-      "id": "test-strategy",
-      "domain": "testing",
-      "question": "Comment definir et appliquer une strategie de test globale — pyramide, types de tests, ratio optimal — pour maximiser la confiance au deploiement tout en controlant le cout de maintenance des tests ?",
-      "recommendation": "Adopter une strategie de test structuree en niveaux complementaires — unit, integration, system, acceptance — ou chaque niveau detecte des defauts que les autres ne peuvent pas detecter. Implementer la pyramide des tests comme orientation (base large d'unit tests rapides et isoles, couche intermediaire d'integration sur comportements metier, sommet etroit d'E2E validant les flux utilisateur reels) sans traiter le ratio 70/20/10 comme une regle rigide : le ratio optimal depend du contexte (backend API vs UI frontend). Ajouter les tests statiques (TypeScript, linting) comme couche zero a cout quasi-nul. Principe 'shift-left' : detecter les defauts le plus tot possible dans le cycle de developpement reduit le cout de correction de facon exponentielle. Integrer les tests dans la Definition of Done plutot qu'en phase separee. Fondements : SWEBOK v4 (IEEE) structure formellement les quatre niveaux de test (unit/integration/system/acceptance) comme complementaires et non substituables — chaque niveau a un objectif distinct qui ne peut pas etre couvert par un autre ; ISO/IEC/IEEE 29119-2 definit les processus formels de test a chaque niveau (organization/management/dynamic) ; Cohn (Agile 2009) et Fowler (blogi 2012) posent la pyramide comme heuristique praticien : beaucoup plus d'unit tests que de broadstack tests, inversement a l'antipatern 'ice cream cone' ; Vocke/ThoughtWorks 2018 : plus d'UI tests = plus lents, plus fragiles, plus couteux en maintenance ; Humble & Farley (Continuous Delivery 2010) : deployment pipeline avec tests gradues par vitesse et isolation ; Dodds (Testing Trophy 2018) : variante moderne valorisant l'integration comme meilleur rapport confiance/maintenance, surtout pour le frontend React ; DORA State of DevOps 2023+2024 (N=39 000+ repondants) : CI + automated testing correle empiriquement avec la performance elite — les equipes integrant les tests dans la Definition of Done surpassent celles qui testent en phase separee ; ArXiv 2019 (ROI GUI automation) : ROI moyen ~250% apres 6 mois, valide l'investissement en tests automatises a grande echelle. Limite : le ratio exact 70/20/10 est une heuristique praticien sans etude controlee comparant les ratios — il s'agit d'une orientation, pas d'une prescription normative. La strategie definit l'architecture des tests ; les seuils de couverture et le mutation testing completent en mesurant leur qualite.",
-      "grade": 5,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "SWEBOK v4 — Guide to the Software Engineering Body of Knowledge, Chapter 5 Software Testing (IEEE, 2024)",
-          "pyramid": 1,
-          "year": 2024
-        },
-        {
-          "name": "ISO/IEC/IEEE 29119-2:2021 — Software and Systems Engineering — Software Testing Part 2: Test Processes",
-          "pyramid": 1,
-          "year": 2021
-        },
-        {
-          "name": "DORA State of DevOps Report 2023 + 2024 (Google/DORA, N=39 000+ repondants)",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "Mike Cohn — Succeeding with Agile (Addison-Wesley, 2009)",
-          "pyramid": 5,
-          "year": 2009
-        },
-        {
-          "name": "Martin Fowler — TestPyramid (martinfowler.com bliki, 2012)",
-          "pyramid": 5,
-          "year": 2012
-        },
-        {
-          "name": "Ham Vocke (ThoughtWorks) — The Practical Test Pyramid (martinfowler.com, 2018)",
-          "pyramid": 5,
-          "year": 2018
-        },
-        {
-          "name": "Kent C. Dodds — The Testing Trophy (kentcdodds.com, 2018)",
-          "pyramid": 5,
-          "year": 2018
-        },
-        {
-          "name": "ArXiv 2019 — Return on Investment of GUI Test Automation (preprint)",
-          "pyramid": 3,
-          "year": 2019
-        }
-      ]
-    },
-    {
       "id": "feature-flags-lifecycle",
       "domain": "maintainability",
       "question": "Comment gérer le cycle de vie des feature flags (types, TTL, cleanup) pour éviter la dette technique et les incidents de type Knight Capital ?",
@@ -6267,6 +6248,57 @@
       ]
     },
     {
+      "id": "react-async-patterns",
+      "domain": "frontend",
+      "question": "Comment gérer les opérations asynchrones dans React pour prévenir les race conditions, memory leaks et mises à jour d'état sur composants démontés ?",
+      "recommendation": "Problème fondamental : useEffect + fetch sans cleanup crée deux classes de bugs systématiques. Première classe — race conditions : si une dépendance change (ex. userId) avant qu'une requête se termine, la réponse tardive de l'ancienne requête peut écraser l'état produit par la requête plus récente, affichant des données incorrectes à l'utilisateur. Deuxième classe — memory leaks / mises à jour orphelines : si le composant est démonté pendant qu'une requête est en vol, l'appel setState() qui suit la résolution de la Promise tente de mettre à jour un composant démonté — comportement indéfini, avertissement React en développement, fuite mémoire potentielle. Ces deux bugs partagent la même cause racine : l'absence de mécanisme d'annulation ou d'ignorance dans la cleanup function de useEffect.\n\nSolution 1 — ignore flag (simple, recommandé pour cas simples) : déclarer let ignore = false avant le fetch, n'appeler setState que si (!ignore), retourner une cleanup function () => { ignore = true }. Quand React démonte le composant ou que les dépendances changent, ignore passe à true et la réponse en vol est silencieusement ignorée. Cette solution ne cancelle pas la requête réseau — la requête part quand même jusqu'au bout, consomme de la bande passante et charge le serveur — mais elle garantit que l'état React ne sera jamais mis à jour depuis une réponse devenue obsolète. C'est le pattern documenté par React docs officiels et endossé par Max Rozen (2021, référencé par react.dev).\n\nSolution 2 — AbortController (recommandé quand la performance réseau compte) : instancier const controller = new AbortController() dans useEffect, passer { signal: controller.signal } à fetch(), retourner () => controller.abort() comme cleanup. Quand React appelle la cleanup, le signal est annulé, le navigateur abandonne la connexion réseau en cours (libération réelle des ressources réseau), et la Promise rejette avec une AbortError — à capturer explicitement (if (err.name === 'AbortError') return). Avantage : cancel réel côté réseau, pas seulement côté React. Inconvénient : légèrement plus verbeux, gestion explicite de l'AbortError obligatoire. Le standard AbortController est défini par le W3C/MDN et supporté nativement par tous les navigateurs modernes et Node.js 18+.\n\nRègle de choix entre les deux : ignore flag pour les cas simples où la performance réseau est secondaire (données légères, peu de changements rapides de dépendances). AbortController dès que les requêtes sont coûteuses, fréquentes, ou que l'on cible des environnements à faible bande passante.\n\nReact 18 Concurrent — useTransition : startTransition(() => setState(newValue)) marque une mise à jour d'état comme non-urgente. React peut interrompre et redémarrer un render en transition si une mise à jour de plus haute priorité survient entre-temps. Pour les opérations async, useTransition évite que des transitions lentes (chargement de données) ne bloquent les interactions urgentes (saisie clavier). Le composant n'entre pas dans un état de chargement brutal — React maintient l'UI précédente pendant la transition. isPending permet d'afficher un indicateur visuel subtil. Important : useTransition gère la priorité des renders, il ne remplace pas ignore flag ou AbortController — les race conditions réseau restent à gérer séparément.\n\nReact 19 — hook use() + Suspense : use(promise) suspend le composant courant tant que la Promise est en attente, déléguant l'affichage du fallback au Suspense boundary le plus proche. Les erreurs async de résolution sont capturées par le Error Boundary le plus proche si la Promise rejette. Restriction documentée : les Promises créées dans des Client Components sont recréées à chaque render — préférer les Promises stables (passées en props depuis Server Components, ou mémoïsées). use() est la direction React 19+ pour les cas Suspense-first.\n\nError Boundaries — limitation critique : les Error Boundaries React ne capturent PAS les erreurs asynchrones survenant dans les callbacks ordinaires (setTimeout, requestAnimationFrame, .catch() non relancé). Ils capturent uniquement les erreurs survenant pendant le rendu synchrone d'un composant enfant, et les erreurs dans startTransition. Pour les erreurs async hors rendu, utiliser try/catch local dans useEffect et setState sur un state d'erreur explicite.\n\nTanStack Query (React Query) : recommandé pour les cas complexes. Gère nativement : stale-while-revalidate (réponse cachée immédiate + revalidation en arrière-plan), déduplication des requêtes identiques simultanées, annulation automatique des requêtes obsolètes, retry configurable, synchronisation inter-composants via query key. Pour useEffect simple avec une seule requête et peu de dépendances, ignore flag suffit et TanStack Query serait sur-ingénierie. Seuil de bascule : dès qu'apparaissent plusieurs composants partageant les mêmes données, du caching, de l'invalidation, ou du pagination, TanStack Query apporte un ROI net.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "React docs — 'Synchronizing with Effects' (react.dev, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React docs — 'useEffect Reference' (react.dev, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "MDN Web Docs — 'AbortController / AbortSignal' (developer.mozilla.org, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React docs — 'useTransition / startTransition' (react.dev, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React docs — hook use() React 19 (react.dev, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React docs — Error Boundaries (react.dev, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "TanStack Query docs (tanstack.com, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Rozen M. — 'Fixing Race Conditions in React with useEffect' (maxrozen.com, 2021)",
+          "pyramid": 4,
+          "year": 2021
+        }
+      ]
+    },
+    {
       "id": "requirements-format",
       "domain": "project",
       "question": "Quel format utiliser pour exprimer les exigences fonctionnelles de maniere structuree et testable ?",
@@ -6390,6 +6422,66 @@
       ]
     },
     {
+      "id": "solid-principles",
+      "domain": "project",
+      "question": "Quels principes SOLID appliquer systematiquement, lesquels requierent du jugement contextuel, et comment eviter que leur application stricte genere de la sur-ingenierie ?",
+      "recommendation": "Les principes SOLID s'appliquent avec des niveaux d'universalite differents — appliquer systematiquement SRP et ISP, quasi-systematiquement DIP (avec IoC), contextuellement OCP et LSP.\n\n**SRP — Single Responsibility Principle** (universellement applicable) : une classe/module a une et une seule raison de changer. En pratique : si la description d'une classe requiert le mot 'et', elle viole SRP. Decouper selon les axes de changement independants (domaine metier, persistance, presentation, logique metier). Indicateurs de violation : classe > 200-300 lignes, methodes privees nombreuses sans lien entre elles, changements frequents pour des raisons disparates.\n\n**ISP — Interface Segregation Principle** (universellement applicable, surtout en Java) : ne pas forcer un client a dependre d'interfaces qu'il n'utilise pas. Privilegier plusieurs petites interfaces specifiques a une grosse interface generique. En Java : eviter les interfaces a plus de 5-7 methodes dont le client n'utilise que 2-3. En TypeScript : eviter les types union/intersection trop larges dans les props de composants.\n\n**DIP — Dependency Inversion Principle** (quasi-universel avec Spring Boot) : dependre d'abstractions (interfaces), pas d'implementations concretes. Base de l'injection de dependances. En Spring Boot, c'est la valeur par defaut via IoC container — ne pas l'utiliser est une deviation deliberee qui doit etre justifiee. En TypeScript/React : injecter les dependances via props ou context plutot que les importer directement dans le composant.\n\n**OCP — Open/Closed Principle** (contextuel — plus pertinent pour code etendu par des tiers) : ouvert a l'extension, ferme a la modification. Critique pour les librairies et frameworks (code consomme par des utilisateurs exterieurs). Moins critique pour le code applicatif interne ou les changements de specification sont frequents et legitimes. Appliquer quand : le composant sera etendu par des equipes differentes, ou quand l'historique montre des patterns d'extension repetitifs.\n\n**LSP — Liskov Substitution Principle** (contextuel — souvent implicitement respecte si l'heritage est evite) : les sous-types doivent etre substituables a leurs types de base sans modifier le comportement observable du programme. Souvent viole avec l'heritage profond (override de methodes avec preconditions plus fortes ou postconditions plus faibles). La meilleure defense contre LSP : privilegier la composition sur l'heritage. Si l'heritage est necessite, respecter le contrat du type de base strictement.\n\n**Hierarchie d'applicabilite** :\n1. SRP : appliquer toujours, des la premiere conception\n2. ISP : appliquer toujours en Java (interfaces), adapter en TypeScript\n3. DIP : appliquer par defaut avec Spring IoC — deviation justifiee uniquement pour les value objects et les classes utilitaires stateless\n4. OCP : appliquer quand le code est consomme par des tiers ou que l'extensibilite est un critere explicite du module\n5. LSP : verifier quand de l'heritage est utilise ; eviter l'heritage profond plutot que de devoir le respecter avec minutie\n\n**Risque de sur-application ('architecture astronaut')** : l'application mecanique et systematique de tous les principes SOLID a tout le code produit une proliferation de classes, d'interfaces et de couches d'abstraction qui degradent la lisibilite et augmentent la charge cognitive sans benefice proportionnel. Indicateurs d'over-engineering : interface a implementation unique sans perspective d'evolution, classe de 5 lignes avec son propre fichier, injection de dependances pour des objets sans etat partageable. YAGNI s'applique a SOLID : n'extraire une abstraction que si l'extension est probable ou si la testabilite l'exige.\n\n**Application au stack OLS** :\n- DIP est oblige via Spring IoC container — @Service/@Repository/@Component + @Autowired/constructeur injection\n- ISP en Java : interfaces de repository Spring Data (JpaRepository specifique par entite, pas d'interface generique fourrre-tout)\n- SRP : services Spring Boot organises par domaine metier (UserService, NotificationService — pas de FacadeService)\n- En React/TypeScript : SRP via composants fonctionnels de responsabilite unique, ISP via props typees minimales, DIP via Context API ou props drilling delibere\n- OCP : moins critique pour le code applicatif OLS (pas de SDK public) — appliquer uniquement pour les modules identifies comme points d'extension (ex. systeme de plugins de notation)",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 (2024) — ch.2 Software Design, section 2.2 Software Design Principles",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "Martin R.C. — Agile Software Development: Principles, Patterns, and Practices (Prentice Hall, 2002)",
+          "pyramid": 5,
+          "year": 2002
+        },
+        {
+          "name": "Martin R.C. — Clean Code: A Handbook of Agile Software Craftsmanship (Prentice Hall, 2008)",
+          "pyramid": 5,
+          "year": 2008
+        },
+        {
+          "name": "Spring Framework — Reference Documentation, Core Technologies: IoC Container (spring.io, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Yamashita A. & Counsell S. — Code Smells as System-Level Indicators of Maintainability (IEEE TSE, 2013)",
+          "pyramid": 3,
+          "year": 2013
+        },
+        {
+          "name": "Palomba F. et al. — Revisiting the Impact of God Classes on Software Change-proneness (ICSME 2018 / EMSE 2019)",
+          "pyramid": 3,
+          "year": 2019
+        },
+        {
+          "name": "Bieman J.M. & Kang B-K. — Cohesion and reuse in an object-oriented system (SIGSOFT FSE, 1995)",
+          "pyramid": 3,
+          "year": 1995
+        }
+      ]
+    },
+    {
+      "id": "spacing",
+      "domain": "design",
+      "question": "Quel systeme d'espacement utiliser (grille, tokens) ?",
+      "recommendation": "Grille de base 8px, sous-unite 4px. Tous les espacements, marges et paddings doivent etre des multiples de 4px, privilegiant les multiples de 8px.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
       "id": "state-management",
       "domain": "architecture",
       "question": "Comment gerer l'etat dans une application React ?",
@@ -6411,6 +6503,856 @@
         {
           "name": "Zustand docs — no providers, no boilerplate",
           "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "rendering-strategy",
+      "domain": "architecture",
+      "question": "Quelle strategie de rendu choisir (CSR, SSR, SSG) pour une application web ?",
+      "recommendation": "CSR (Vite) par defaut pour les SPA avec API backend. Zero config, HMR rapide, deploy static. SSR (Next.js) uniquement si SEO critique (blog, e-commerce public). SSG (Astro) pour les pages 100% statiques.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Vite docs — SPA mode par defaut",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "web.dev Core Web Vitals — LCP/FCP metrics",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Next.js docs — SSR/SSG tradeoffs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google Search Central — SPA indexing",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "repository-pattern",
+      "domain": "design",
+      "question": "Quand et comment implementer le Repository pattern pour abstraire l'acces aux donnees, par rapport a l'utilisation directe de l'ORM dans les services ?",
+      "recommendation": "Le Repository pattern (Fowler PEAA, 2002) definit une couche d'abstraction qui presente la persistance comme une collection in-memory d'objets domaine : le domaine ecrit et lit des objets sans savoir qu'une base de donnees existe. Cette definition est completee par le pattern Data Mapper (Fowler, 2002) qui etablit la notion de persistence ignorance : 'A Data Mapper is a layer of software that separates the in-memory objects from the database. Its responsibility is to transfer data between the two and also to isolate them from each other. With Data Mapper the in-memory objects needn't know even that there's a database present.' Repository et Data Mapper sont complementaires — le Repository definit l'interface de collection, le Mapper gere la traduction objet/BDD.\n\nQuand utiliser le Repository pattern : domaine metier riche avec logique complexe, projets DDD ou similaires, besoin de testabilite unitaire des services sans IO. La regle DDD formulee par le guide .NET Microsoft : 'The only way you should update the database [in DDD] should be through the Repositories' — les invariants du domaine sont garantis car tout acces passe par un point de controle unique. Cette regle d'unicite d'acces empeche les contournements de logique metier par des requetes directes.\n\nQuand NE PAS utiliser le Repository pattern : CRUD simple sans logique metier, applications data-centric sans regle metier complexe. Sur ces cas, le pattern ajoute une couche sans valeur. La discussion Prisma GitHub #10584 'Repository pattern with Prisma' argumente explicitement que 'Prisma unlike traditional ORMs' — Prisma est deja un query builder fortement type qui expose une API proche du domain object ; une abstraction supplementaire sous forme de classe Repository complete est souvent contre-productive. Des wrapper functions autour de PrismaService suffisent pour les projets sans domaine riche, tout en conservant la possibilite de tester via un mock minimal de PrismaService.\n\nPattern de test : c'est le benefice principal documenté. Percival & Gregory ('Architecture Patterns with Python', 2020) formalisent le trio : AbstractRepository (interface/port definissant les operations : add, get, list) + FakeRepository (implementation in-memory pour les tests unitaires, zero IO) + ConcreteRepository (implementation TypeORM ou Prisma pour la prod). Noback (2018) documente la superiorite du fake in-memory sur les mocks ORM : 'By injecting an in-memory implementation, you can test a class without using any IO' — les mocks d'EntityManager ou de PrismaClient sont fragiles car ils exposent des details d'implementation de l'ORM. Le FakeRepository teste le comportement de l'agregat sans coupler les tests a l'ORM.\n\nImplementation NestJS — deux approches selon l'ORM : (1) TypeORM : custom repository wrappant @InjectRepository() — une classe injectable dans les modules qui encapsule le Repository TypeORM et expose des methodes domaine plutot que des methodes query. La documentation NestJS TypeORM Integration documente ce pattern avec @InjectRepository() et les custom repositories ; (2) Prisma : wrapper functions ou classe legere autour de PrismaService — l'injection de PrismaService dans un service NestJS est acceptable pour les cas simples, mais une couche wrapper ameliore la testabilite en rendant le point d'injection explicite (Stemmler, 2019). Dans les deux cas : injecter le Repository (interface) dans les services, pas l'ORM directement — les services deviennent independants de la technologie de persistance.\n\nFrontiere architecturale : Repository est un port (au sens hexagonal architecture) — l'interface appartient au domaine, les implementations appartiennent a l'infrastructure. Cette separation permet de swapper l'ORM, de tester sans BDD, et de maintenir les invariants du domaine de facon centralisee. L'impact est documenté empiriquement par la facilite de test : les services qui injectent un Repository (interface) sont testables avec un FakeRepository in-memory sans configuration de base de donnees.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Repository' catalog entry (martinfowler.com/eaaCatalog/repository.html, 2002)",
+          "pyramid": 5,
+          "year": 2002
+        },
+        {
+          "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Data Mapper' catalog entry (martinfowler.com/eaaCatalog/dataMapper.html, 2002)",
+          "pyramid": 5,
+          "year": 2002
+        },
+        {
+          "name": "Percival H. & Gregory B. — Architecture Patterns with Python, ch.2 (cosmicpython.com / O'Reilly, 2020)",
+          "pyramid": 3,
+          "year": 2020
+        },
+        {
+          "name": "Noback M. — Mocking at architectural boundaries: persistence and time (matthiasnoback.nl, 2018)",
+          "pyramid": 3,
+          "year": 2018
+        },
+        {
+          "name": "Microsoft .NET Architecture Guide — Designing the infrastructure persistence layer (learn.microsoft.com, 2023)",
+          "pyramid": 4,
+          "year": 2023
+        },
+        {
+          "name": "NestJS Documentation — Database / TypeORM Integration (docs.nestjs.com/techniques/database, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NestJS Documentation — Prisma Recipe (docs.nestjs.com/recipes/prisma, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prisma GitHub Discussion #10584 — Repository pattern with Prisma (github.com/prisma/prisma/discussions/10584, 2021)",
+          "pyramid": 3,
+          "year": 2021
+        },
+        {
+          "name": "Stemmler K. — Implementing DTOs, Mappers & the Repository Pattern using the Sequelize ORM (khalilstemmler.com, 2019)",
+          "pyramid": 3,
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "id": "scheduled-tasks",
+      "domain": "reliability",
+      "question": "Comment gerer les taches planifiees dans un backend ?",
+      "is_universal": false,
+      "sources": []
+    },
+    {
+      "id": "ui-lucide-react",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les icones ?",
+      "recommendation": "lucide-react",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add lucide-react",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "Lucide docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-query",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le data fetching et le cache client ?",
+      "recommendation": "@tanstack/react-query",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add @tanstack/react-query",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "TanStack Query docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-table",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les tables avec tri, filtre et pagination ?",
+      "recommendation": "@tanstack/react-table",
+      "grade": 7,
+      "level": "STANDARD",
+      "implementation": "pnpm add @tanstack/react-table",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "TanStack Table docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "typescript-strict",
+      "domain": "code-quality",
+      "question": "Faut-il activer le mode strict de TypeScript ?",
+      "recommendation": "strict: true dans tsconfig.json. Active strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, alwaysStrict, useUnknownInCatchVariables.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "TypeScript docs — strict compiler options",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google TypeScript Style Guide",
+          "pyramid": 5,
+          "year": 2023
+        },
+        {
+          "name": "State of JS 2024",
+          "pyramid": 4,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "typography",
+      "domain": "design",
+      "question": "Quelles regles typographiques appliquer (taille, line-height, largeur de ligne, echelle) ?",
+      "recommendation": "Body text : 16px minimum. Ne jamais descendre en dessous de 14px pour du texte de contenu.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "ui-cmdk",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la command palette ?",
+      "recommendation": "cmdk",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add cmdk",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "cmdk docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-dnd-kit",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le drag and drop ?",
+      "recommendation": "@dnd-kit/core",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "dnd-kit docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-dropzone",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'upload de fichiers par drag and drop ?",
+      "recommendation": "react-dropzone",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-dropzone",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-dropzone docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-resizable-panels",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les panels redimensionnables ?",
+      "recommendation": "react-resizable-panels",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-resizable-panels",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-resizable-panels docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tanstack-react-virtual",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la virtualisation de listes longues ?",
+      "recommendation": "@tanstack/react-virtual",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @tanstack/react-virtual",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "TanStack Virtual docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "unit-tests",
+      "domain": "testing",
+      "question": "Quel framework et quelle strategie pour les tests unitaires ?",
+      "recommendation": "pytest + pytest-django. pytest est le standard de facto pour Python, pytest-django fournit les fixtures et integration Django.",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "wcag-level",
+      "domain": "accessibility",
+      "question": "Quel niveau WCAG cibler (A, AA, AAA) ?",
+      "recommendation": "WCAG 2.2 Level AA : obligatoire legalement (EU, US, Canada), contraste 4.5:1, pas de restriction de niveau de lecture (contrairement a AAA qui exige niveau college, impossible pour contenu scientifique).",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "web-mobile-strategy",
+      "domain": "architecture",
+      "question": "Comment rendre une web app accessible sur mobile ?",
+      "grade": 6,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "web.dev PWA docs",
+          "pyramid": 3,
+          "year": 2026
+        },
+        {
+          "name": "Can I Use service worker 97%",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "vite-plugin-pwa 3M+ dl/sem",
+          "pyramid": 4,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "zero-trust",
+      "domain": "security",
+      "question": "Comment implémenter une architecture Zero Trust — never trust always verify, least privilege, assume breach — pour les accès utilisateurs et les communications inter-services ?",
+      "recommendation": "Zero Trust est une stratégie architecturale fondée sur trois principes fondamentaux définis par le NIST SP 800-207 et le CISA ZTMM v2.0 : (1) 'Never trust, always verify' — aucune confiance implicite n'est accordée sur la base de la localisation réseau ou physique. Chaque accès à une ressource est authentifié et autorisé de manière indépendante, sans présupposer la légitimité d'une requête parce qu'elle provient du réseau interne. (2) 'Least privilege' — chaque identité (utilisateur, service, device) reçoit exactement les permissions nécessaires à la tâche en cours, et seulement pour la durée requise. L'accès est per-request : être authentifié ne confère pas de droits permanents étendus. (3) 'Assume breach' (CISA ZTMM v2.0) — l'hypothèse de brèche permanente est intégrée dans la conception : on part du principe qu'une attaque est déjà en cours quelque part. L'objectif n'est plus d'empêcher toute intrusion mais de réduire le rayon d'explosion (blast radius) pour limiter le mouvement latéral d'un attaquant ayant compromis un premier accès.\n\nLe CISA ZTMM v2.0 organise la mise en œuvre autour de cinq piliers. Le pilier Identity est le plus critique : chaque utilisateur, device, application et transaction doit être continuellement vérifié — MFA obligatoire, gestion Just-In-Time (JIT) des accès privilégiés. Le pilier Devices couvre l'attestation de l'état de santé du device avant d'accorder l'accès (conformité, patch level). Le pilier Networks impose la microsegmentation : remplacer la confiance périmétrique (firewall unique) par des segments isolés avec contrôles d'accès entre zones, rendant le mouvement latéral structurellement difficile. Le pilier Applications & Workloads exige une authorization per-request : chaque endpoint, chaque appel d'API est autorisé indépendamment sur la base de claims contextuels (identité, rôle, device, heure, risque). Le pilier Data exige la classification et le chiffrement systématique, en transit et au repos, indépendamment de la confiance réseau.\n\nLa mise en œuvre est progressive. Le CISA ZTMM définit quatre niveaux : Traditional (périmétrique, confiance implicite réseau) → Initial (MFA déployée, premières microsegmentations) → Advanced (authorization contextuelle, surveillance continue, JIT access) → Optimal (automatisation complète, politiques adaptatives en temps réel). La séquence recommandée : commencer par Identity (MFA + politiques d'accès JIT) et Networks (microsegmentation de base entre zones critiques) avant d'aborder le service mesh — le retour sur investissement sécuritaire est maximal sur ces deux piliers en premier.\n\nPour les communications inter-services (service-to-service), Istio (projet CNCF Graduated) implémente l'authentification mutuelle TLS (mTLS) : chaque service dispose d'une identité forte au format SPIFFE (Secure Production Identity Framework For Everyone), émise par SPIRE. Le mTLS garantit que les deux parties d'une communication prouvent leur identité avant tout échange de données — éliminant la confiance implicite entre services sur le réseau interne. Pour les architectures sans service mesh, l'alternative est l'usage de JWT service tokens avec validation stricte de l'audience (claim 'aud') et de l'émetteur (claim 'iss') à chaque endpoint.\n\nDans un contexte NestJS, la mise en œuvre concrète suit ces règles : (a) pas de route publique par défaut — tous les endpoints passent par un Guard JWT ; les routes réellement publiques sont explicitement décorées (@Public()); (b) RBAC ou ABAC pour le least privilege — les Guards évaluent les rôles et attributs contextuels (ex : un utilisateur 'lab-admin' peut accéder à /labs/:id uniquement si il est propriétaire du lab) ; (c) validation des claims contextuels à chaque requête (IP, device fingerprint, timestamp, risk score) pour détecter les anomalies comportementales même avec un token valide ; (d) durées de vie courtes pour les access tokens (15 min) avec rotation sécurisée des refresh tokens.\n\nLa leçon BeyondCorp de Google (Ward & Beyer, 2014) constitue la preuve de faisabilité à grande échelle : Google a supprimé le VPN d'entreprise et déplacé ses applications internes sur Internet, en validant chaque requête individuellement via un Access Proxy. Cette approche, déployée des années avant la formalisation NIST, démontre qu'une architecture Zero Trust n'est pas théorique mais opérationnellement viable à très grande échelle. BeyondCorp précède de six ans le NIST SP 800-207 et en constitue l'une des références empiriques fondatrices.\n\nDémarcation essentielle : Zero Trust est une stratégie architecturale, pas un produit. Aucun outil unique n'implémente ZT — les outils (Istio, SPIFFE/SPIRE, HashiCorp Vault pour la gestion des secrets, OAuth 2.0 / OIDC pour l'identity federation, OPA pour les politiques d'autorisation) sont des implémentations partielles de la stratégie. 'Acheter un produit Zero Trust' sans revoir l'architecture de confiance sous-jacente est une fausse sécurité. L'EO 14028 (Executive Order on Improving the Nation's Cybersecurity, 2021) et le CISA ZTMM mandatent explicitement cette migration architecturale pour les systèmes fédéraux américains — la maturité normative est maximale.",
+      "grade": 6,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NIST SP 800-207 — Zero Trust Architecture (NIST, 2020)",
+          "pyramid": 1,
+          "year": 2020
+        },
+        {
+          "name": "CISA Zero Trust Maturity Model v2.0 (CISA, 2023)",
+          "pyramid": 1,
+          "year": 2023
+        },
+        {
+          "name": "Ward R. & Beyer B. — BeyondCorp: A New Approach to Enterprise Security (Google, USENIX ;login: Vol.39 No.6, 2014)",
+          "pyramid": 3,
+          "year": 2014
+        },
+        {
+          "name": "Istio — Security: Mutual TLS and Zero-Trust Network (CNCF Graduated, istio.io, 2024)",
+          "pyramid": 2,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "test-strategy",
+      "domain": "testing",
+      "question": "Comment definir et appliquer une strategie de test globale — pyramide, types de tests, ratio optimal — pour maximiser la confiance au deploiement tout en controlant le cout de maintenance des tests ?",
+      "recommendation": "Adopter une strategie de test structuree en niveaux complementaires — unit, integration, system, acceptance — ou chaque niveau detecte des defauts que les autres ne peuvent pas detecter. Implementer la pyramide des tests comme orientation (base large d'unit tests rapides et isoles, couche intermediaire d'integration sur comportements metier, sommet etroit d'E2E validant les flux utilisateur reels) sans traiter le ratio 70/20/10 comme une regle rigide : le ratio optimal depend du contexte (backend API vs UI frontend). Ajouter les tests statiques (TypeScript, linting) comme couche zero a cout quasi-nul. Principe 'shift-left' : detecter les defauts le plus tot possible dans le cycle de developpement reduit le cout de correction de facon exponentielle. Integrer les tests dans la Definition of Done plutot qu'en phase separee. Fondements : SWEBOK v4 (IEEE) structure formellement les quatre niveaux de test (unit/integration/system/acceptance) comme complementaires et non substituables — chaque niveau a un objectif distinct qui ne peut pas etre couvert par un autre ; ISO/IEC/IEEE 29119-2 definit les processus formels de test a chaque niveau (organization/management/dynamic) ; Cohn (Agile 2009) et Fowler (blogi 2012) posent la pyramide comme heuristique praticien : beaucoup plus d'unit tests que de broadstack tests, inversement a l'antipatern 'ice cream cone' ; Vocke/ThoughtWorks 2018 : plus d'UI tests = plus lents, plus fragiles, plus couteux en maintenance ; Humble & Farley (Continuous Delivery 2010) : deployment pipeline avec tests gradues par vitesse et isolation ; Dodds (Testing Trophy 2018) : variante moderne valorisant l'integration comme meilleur rapport confiance/maintenance, surtout pour le frontend React ; DORA State of DevOps 2023+2024 (N=39 000+ repondants) : CI + automated testing correle empiriquement avec la performance elite — les equipes integrant les tests dans la Definition of Done surpassent celles qui testent en phase separee ; ArXiv 2019 (ROI GUI automation) : ROI moyen ~250% apres 6 mois, valide l'investissement en tests automatises a grande echelle. Limite : le ratio exact 70/20/10 est une heuristique praticien sans etude controlee comparant les ratios — il s'agit d'une orientation, pas d'une prescription normative. La strategie definit l'architecture des tests ; les seuils de couverture et le mutation testing completent en mesurant leur qualite.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 — Guide to the Software Engineering Body of Knowledge, Chapter 5 Software Testing (IEEE, 2024)",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "ISO/IEC/IEEE 29119-2:2021 — Software and Systems Engineering — Software Testing Part 2: Test Processes",
+          "pyramid": 1,
+          "year": 2021
+        },
+        {
+          "name": "DORA State of DevOps Report 2023 + 2024 (Google/DORA, N=39 000+ repondants)",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "Mike Cohn — Succeeding with Agile (Addison-Wesley, 2009)",
+          "pyramid": 5,
+          "year": 2009
+        },
+        {
+          "name": "Martin Fowler — TestPyramid (martinfowler.com bliki, 2012)",
+          "pyramid": 5,
+          "year": 2012
+        },
+        {
+          "name": "Ham Vocke (ThoughtWorks) — The Practical Test Pyramid (martinfowler.com, 2018)",
+          "pyramid": 5,
+          "year": 2018
+        },
+        {
+          "name": "Kent C. Dodds — The Testing Trophy (kentcdodds.com, 2018)",
+          "pyramid": 5,
+          "year": 2018
+        },
+        {
+          "name": "ArXiv 2019 — Return on Investment of GUI Test Automation (preprint)",
+          "pyramid": 3,
+          "year": 2019
+        }
+      ]
+    },
+    {
+      "id": "threat-modeling",
+      "domain": "security",
+      "question": "Comment modeliser les menaces (threat modeling) en phase de conception ?",
+      "recommendation": "Modelisation des menaces avec STRIDE en phase de conception. A realiser a chaque nouvelle fonctionnalite ou changement d'architecture.",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "SWEBOK v4 Security Knowledge Area",
+          "pyramid": 1,
+          "year": 2024
+        },
+        {
+          "name": "OWASP Threat Modeling Cheat Sheet",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Microsoft SDL",
+          "pyramid": 5,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "typescript-interface-design",
+      "domain": "design",
+      "question": "Quand utiliser interface, type alias ou class en TypeScript pour definir des contrats de types — regles de decision par contexte (API publique, DTO, domaine, union types) ?",
+      "recommendation": "Regle generale : preferer interface pour tout ce qu'elle peut modeliser. La recommandation officielle TypeScript Handbook ('default to using interface and only use type when you need to') est renforcee par le Google TypeScript Style Guide et le TypeScript Team Lead lui-meme : 'my take is that it should really just be interfaces for anything that they can model. There is no benefit to type aliases when there are so many issues around display/perf.' En pratique, cela signifie : commencer par interface par defaut, ne passer a type que lorsque l'expressivite de interface est insuffisante.\n\nPerformance compilateur : les relations de types entre interfaces sont mises en cache par le compilateur TypeScript, contrairement aux intersection types (type A = B & C) qui sont recalcules a chaque usage. Le wiki Performance de l'equipe TypeScript (Microsoft, source officielle avec benchmarks) formule explicitement : 'extending types with interfaces/extends is suggested over creating intersection types.' Dans les codebases larges, ce delta de performance compilateur est mesurable.\n\nAPI publiques et librairies : toujours interface. La declaration merging est une fonctionnalite exclusive aux interfaces — si deux declarations portent le meme nom d'interface, TypeScript les fusionne silencieusement. Cela permet aux consommateurs d'une librairie d'etendre les contrats sans fork. Inversement, declarer deux fois le meme type alias produit une erreur 'Duplicate identifier', protegant le code interne contre les merges accidentels. Regle : toute surface exposee publiquement (SDK, API response shape, module exports) utilise interface.\n\nTypes internes — quand type est obligatoire : interface ne peut pas exprimer les unions discriminees (type Result = Success | Failure), les mapped types (type Readonly<T> = { readonly [K in keyof T]: T[K] }), ni les conditional types (type IsArray<T> = T extends any[] ? true : false). Ces constructions exigent type alias. Pour les types de domaine interne sans besoin d'extension ou de merging, type convient egalement — mais la declaration merging accidentelle etant impossible (erreur compile-time), ce choix est une protection supplementaire contre les collisions de noms.\n\nDTOs NestJS — obligation de class : dans un contexte NestJS avec class-validator et class-transformer, les DTOs DOIVENT etre des classes, pas des interfaces ni des type aliases. La raison est fondamentale : TypeScript supprime les interfaces et les types a la compilation — ils n'existent pas au runtime. class-validator (@IsEmail(), @IsNotEmpty(), etc.) et class-transformer (plainToInstance()) s'appuient sur les metadonnees runtime emises par les decorateurs, qui ne fonctionnent que sur des classes. Utiliser une interface ou un type pour un DTO NestJS produit une validation silencieusement inactive ou un crash runtime lors de la transformation.\n\nAbstract class vs interface : choisir abstract class uniquement si une implementation partagee doit etre heritee par les classes concretes. Si le besoin est uniquement de definir un contrat de forme (shape contract), interface est preferable — elle impose moins de couplage, elle est effacee a la compilation (pas d'impact bundle), et elle ne contraint pas la hierarchie d'heritage. Regle de decision : 'If there is no shared implementation needed, prefer interfaces' (Stemmler).\n\nTypage structurel — interchangeabilite technique : TypeScript est structuralement type. Pour la compatibilite de type, interface et type sont techniquement interchangeables — une classe qui satisfait la shape d'une interface l'implemente implicitement, et un type alias definissant la meme shape est compatible. La decision interface vs type n'est donc pas une question de semantique runtime mais de tooling (messages d'erreur plus lisibles avec interface), de performance compilateur (interfaces cachees), et d'expressivite (unions et mapped types = type uniquement).\n\nArbre de decision synthetique :\n- DTO NestJS avec validation decorateurs → class obligatoire\n- Union discriminee, mapped type, conditional type → type obligatoire\n- API publique, surface exportee, librairie → interface (declaration merging voulu)\n- Type de domaine interne sans union → interface par defaut (performance, lisibilite erreurs)\n- Implementation partagee entre classes → abstract class\n- Shape contract sans implementation → interface",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "TypeScript Team — Performance wiki (Microsoft/TypeScript, github.com/microsoft/TypeScript/wiki/Performance, 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "Google TypeScript Style Guide (google.github.io/styleguide/tsguide.html, 2024)",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "TypeScript Handbook — Everyday Types (typescriptlang.org/docs/handbook/2/everyday-types.html, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "TypeScript Handbook — Declaration Merging (typescriptlang.org/docs/handbook/declaration-merging.html, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "TypeScript Handbook — Type Compatibility (typescriptlang.org/docs/handbook/type-compatibility.html, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Vanderkam D. — Effective TypeScript 2nd ed. (O'Reilly, 2021/2023)",
+          "pyramid": 5,
+          "year": 2023
+        },
+        {
+          "name": "Pocock M. (Total TypeScript) — Type vs Interface (totaltypescript.com, 2023)",
+          "pyramid": 3,
+          "year": 2023
+        },
+        {
+          "name": "NestJS — Documentation DTOs et Validation (docs.nestjs.com/pipes, docs.nestjs.com/techniques/validation, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Stemmler K. — When to Use TypeScript Abstract Classes (khalilstemmler.com, 2020)",
+          "pyramid": 3,
+          "year": 2020
+        }
+      ]
+    },
+    {
+      "id": "ui-nuqs",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la gestion d'etat dans l'URL ?",
+      "recommendation": "nuqs",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add nuqs",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "nuqs docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-hotkeys-hook",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les raccourcis clavier ?",
+      "recommendation": "react-hotkeys-hook",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-hotkeys-hook",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-hotkeys-hook docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-pdf",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour afficher des PDF ?",
+      "recommendation": "react-pdf",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add react-pdf",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-pdf docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-sonner",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour les toast notifications ?",
+      "recommendation": "sonner",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add sonner",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "sonner docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tiptap",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'edition rich text ?",
+      "recommendation": "@tiptap/react",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit @tiptap/pm",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "unsaved-changes",
+      "domain": "safety",
+      "question": "Comment proteger l'utilisateur contre la perte de donnees non sauvegardees dans les formulaires ?",
+      "recommendation": "Avertir avant de perdre des donnees saisies. Protection fermeture onglet/refresh via beforeunload, protection navigation SPA via useBlocker (React Router). Si auto-save disponible, sauvegarder silencieusement sans dialog.",
+      "grade": 5,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Apple HIG — 'hazard warning' avant perte de donnees",
+          "pyramid": 5,
+          "year": 2024
+        },
+        {
+          "name": "Nielsen — prevention des erreurs, heuristique #5",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "MDN — beforeunload event",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "React Router docs — useBlocker",
+          "pyramid": 3,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "user-effectiveness",
+      "domain": "design",
+      "question": "Comment mesurer l'efficacite utilisateur (task success, completion time, satisfaction) ?",
+      "recommendation": "Mesurer 4 metriques cles : task success rate (>95%), task completion time (<budget), error rate (en baisse), satisfaction SUS/CSAT (SUS >68).",
+      "grade": 5,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "transactions",
+      "domain": "reliability",
+      "question": "Comment gerer les transactions et l'idempotence des mutations API ?",
+      "recommendation": "Django transaction.atomic() au service layer ou comme decorateur. with transaction.atomic(): pour les blocs explicites. Idempotency-Key header pour les mutations API.",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "ui-react-day-picker",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour la selection de dates ?",
+      "recommendation": "react-day-picker",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add react-day-picker date-fns",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-day-picker docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-react-easy-crop",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour le recadrage d'images ?",
+      "recommendation": "react-easy-crop",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add react-easy-crop",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "react-easy-crop docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "ui-tiptap-markdown",
+      "domain": "ui-libraries",
+      "question": "Quel outil pour l'edition et l'affichage Markdown ?",
+      "recommendation": "tiptap-markdown + react-markdown",
+      "grade": 4,
+      "level": "BONNE PRATIQUE",
+      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit tiptap-markdown react-markdown",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "npm trends",
+          "pyramid": 4,
+          "year": 2026
+        },
+        {
+          "name": "tiptap-markdown docs",
+          "pyramid": 5,
+          "year": 2026
+        }
+      ]
+    },
+    {
+      "id": "uptime",
+      "domain": "operations",
+      "question": "Comment monitorer la disponibilite avec des checks externes et internes ?",
+      "recommendation": "Spring Boot Actuator avec /actuator/health, probes.enabled=true pour /health/liveness et /health/readiness. show-details: when_authorized. Check externe via UptimeRobot (SaaS gratuit 50 monitors) ou Prometheus blackbox exporter (self-hosted, integration Grafana native).",
+      "grade": 4,
+      "level": "RECOMMANDE",
+      "is_universal": false,
+      "sources": [
+        {
+          "name": "Spring Boot Actuator docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Prometheus blackbox exporter docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Google SRE Book",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "SWEBOK v4 — availability monitoring",
+          "pyramid": 1,
+          "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "visual-trends",
+      "domain": "design",
+      "question": "Quelles tendances visuelles suivre (2026) : borders, elevation, coins arrondis ?",
+      "recommendation": "Convergence M3 + Apple HIG : tonal elevation (surface teintee plutot que drop shadows lourdes), subtle borders (1px, 6% opacity), glassmorphism subtil (blur 20px), coins arrondis 8-16px.",
+      "grade": 4,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "id": "websocket-stomp-channel-auth",
+      "domain": "security",
+      "question": "Comment implementer l'authentification au handshake et l'autorisation par canal (subscription filtering) sur des connexions WebSocket avec NestJS et STOMP ?",
+      "recommendation": "Authentifier la connexion WebSocket au handshake via socket.use() middleware (pas via @UseGuards seul — les guards NestJS sont invoques sur les evenements @SubscribeMessage, pas sur l'evenement CONNECT). Verifier le JWT dans le middleware, attacher le user sur le socket, et rejeter la connexion avant etablissement si le token est absent ou invalide.",
+      "grade": 4,
+      "level": "STANDARD",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "NestJS WebSocket Guards docs",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "OWASP WebSocket Security Cheat Sheet",
+          "pyramid": 2,
+          "year": 2024
+        },
+        {
+          "name": "preetmishra.com — The Best Way to Authenticate WebSockets in NestJS",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "DEV Community — WebSocket Authentication in NestJS: Handling JWT and Guards",
+          "pyramid": 4,
+          "year": 2024
+        },
+        {
+          "name": "node.kumarchaudhary.com.np — Securing Socket.io in NestJS with JWT and Passport",
+          "pyramid": 4,
           "year": 2024
         }
       ]
@@ -6639,124 +7581,6 @@
           "name": "SO Developer Survey — satisfaction tools",
           "pyramid": 5,
           "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "legacy-code-comprehension",
-      "domain": "maintenance",
-      "question": "Comment comprendre, tester et modifier du code legacy sans tests existants, de façon sécurisée et incrémentale ?",
-      "recommendation": "Règle préliminaire absolue : NE JAMAIS refactoriser du code legacy sans couverture de tests préalable. La règle de Feathers est sans exception : d'abord les tests, ensuite le refactoring. Refactoriser du code sans filet de sécurité revient à modifier un comportement sans savoir ce qu'on casse — les bugs introduits deviennent invisibles jusqu'en production. Étape 1 — Characterization tests (Feathers) : écrire des tests qui DOCUMENTENT le comportement actuel du code, pas ce qu'il devrait faire, mais ce qu'il FAIT réellement. Un characterization test capture la sortie actuelle d'un morceau de code (même si cette sortie est incorrecte ou surprenante) et la fixe comme référence. Ces tests constituent le filet de sécurité pour tout changement ultérieur : ils détectent immédiatement toute régression comportementale. La stratégie est : exécuter le code, observer la sortie, écrire le test qui affirme cette sortie. Si le comportement est erroné, le test le documente quand même — on corrige le bug séparément, dans un commit distinct, après que le test ait établi la base. Étape 2 — Seams (Feathers) : identifier les points d'injection dans le code qui permettent d'altérer le comportement en test sans modifier le code source en production. Un seam est un lieu dans le code où les dépendances peuvent être substituées pour l'isolation en test : constructeurs (injection par constructeur), factories, interfaces, paramètres de méthode, variables d'environnement. En NestJS/TypeScript, l'injection de dépendances est naturellement un seam — chaque service injecté via @Injectable() peut être remplacé par un mock dans les tests sans modifier le code source. Identifier les seams existants avant de modifier le code : si aucun seam n'existe, en introduire un (extraction d'interface, passage par paramètre) comme première et unique modification, couverte par characterization tests. Étape 3 — Strangler Fig (Fowler) : pattern d'évolution incrémentale pour remplacer le code legacy sans big-bang rewrite. Principe : introduire une facade/proxy au point d'entrée du système qui route les requêtes entre l'ancien code et le nouveau code. Migrer les fonctionnalités feature-by-feature : chaque tranche fonctionnelle est réécrite dans le nouveau code, la facade bascule le trafic vers la nouvelle implémentation, l'ancien code 'étrangle' graduellement jusqu'à disparition complète. Le système reste déployable et fonctionnel à chaque étape — pas de branche de développement longue durée, pas de freeze fonctionnel pendant la migration. Étape 4 — Thin slices (Azure Architecture Center) : découper la migration en tranches indépendantes, suffisamment petites pour être livrables mais suffisamment significatives pour apporter de la valeur métier. Chaque tranche doit être indépendante et auto-contenue : elle peut être livrée, testée et rollbackée sans affecter les autres tranches. Ce découpage évite le syndrome du 'grand rewrite' qui échoue : les rewrites totaux ont un taux d'échec élevé car la valeur n'est livrée qu'à la fin, les risques s'accumulent, et l'organisation perd confiance. Les thin slices maintiennent la livraison continue de valeur pendant la migration. Règle de sécurité — blast radius minimal : ne pas étendre le périmètre d'une modification legacy au-delà du strict nécessaire. Chaque modification doit avoir un scope délimité : un seam introduit à la fois, un characterization test par comportement capturé, une tranche migrée à la fois. L'extension de périmètre non contrôlée est la première cause d'échec des projets de modernisation legacy — les modifications en cascade sans tests de couverture génèrent des bugs invisibles qui émergent en production.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Martin Fowler — StranglerFigApplication (martinfowler.com, 2004)",
-          "pyramid": 5,
-          "year": 2004
-        },
-        {
-          "name": "Microsoft Azure Architecture Center — Strangler Fig pattern (learn.microsoft.com, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Michael Feathers — Working Effectively with Legacy Code (Prentice Hall, 2004)",
-          "pyramid": 5,
-          "year": 2004
-        },
-        {
-          "name": "understandlegacycode.com — The key points of Working Effectively with Legacy Code (2020)",
-          "pyramid": 4,
-          "year": 2020
-        }
-      ]
-    },
-    {
-      "id": "rendering-strategy",
-      "domain": "architecture",
-      "question": "Quelle strategie de rendu choisir (CSR, SSR, SSG) pour une application web ?",
-      "recommendation": "CSR (Vite) par defaut pour les SPA avec API backend. Zero config, HMR rapide, deploy static. SSR (Next.js) uniquement si SEO critique (blog, e-commerce public). SSG (Astro) pour les pages 100% statiques.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Vite docs — SPA mode par defaut",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "web.dev Core Web Vitals — LCP/FCP metrics",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Next.js docs — SSR/SSG tradeoffs",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Google Search Central — SPA indexing",
-          "pyramid": 3,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "repository-pattern",
-      "domain": "design",
-      "question": "Quand et comment implementer le Repository pattern pour abstraire l'acces aux donnees, par rapport a l'utilisation directe de l'ORM dans les services ?",
-      "recommendation": "Le Repository pattern (Fowler PEAA, 2002) definit une couche d'abstraction qui presente la persistance comme une collection in-memory d'objets domaine : le domaine ecrit et lit des objets sans savoir qu'une base de donnees existe. Cette definition est completee par le pattern Data Mapper (Fowler, 2002) qui etablit la notion de persistence ignorance : 'A Data Mapper is a layer of software that separates the in-memory objects from the database. Its responsibility is to transfer data between the two and also to isolate them from each other. With Data Mapper the in-memory objects needn't know even that there's a database present.' Repository et Data Mapper sont complementaires — le Repository definit l'interface de collection, le Mapper gere la traduction objet/BDD.\n\nQuand utiliser le Repository pattern : domaine metier riche avec logique complexe, projets DDD ou similaires, besoin de testabilite unitaire des services sans IO. La regle DDD formulee par le guide .NET Microsoft : 'The only way you should update the database [in DDD] should be through the Repositories' — les invariants du domaine sont garantis car tout acces passe par un point de controle unique. Cette regle d'unicite d'acces empeche les contournements de logique metier par des requetes directes.\n\nQuand NE PAS utiliser le Repository pattern : CRUD simple sans logique metier, applications data-centric sans regle metier complexe. Sur ces cas, le pattern ajoute une couche sans valeur. La discussion Prisma GitHub #10584 'Repository pattern with Prisma' argumente explicitement que 'Prisma unlike traditional ORMs' — Prisma est deja un query builder fortement type qui expose une API proche du domain object ; une abstraction supplementaire sous forme de classe Repository complete est souvent contre-productive. Des wrapper functions autour de PrismaService suffisent pour les projets sans domaine riche, tout en conservant la possibilite de tester via un mock minimal de PrismaService.\n\nPattern de test : c'est le benefice principal documenté. Percival & Gregory ('Architecture Patterns with Python', 2020) formalisent le trio : AbstractRepository (interface/port definissant les operations : add, get, list) + FakeRepository (implementation in-memory pour les tests unitaires, zero IO) + ConcreteRepository (implementation TypeORM ou Prisma pour la prod). Noback (2018) documente la superiorite du fake in-memory sur les mocks ORM : 'By injecting an in-memory implementation, you can test a class without using any IO' — les mocks d'EntityManager ou de PrismaClient sont fragiles car ils exposent des details d'implementation de l'ORM. Le FakeRepository teste le comportement de l'agregat sans coupler les tests a l'ORM.\n\nImplementation NestJS — deux approches selon l'ORM : (1) TypeORM : custom repository wrappant @InjectRepository() — une classe injectable dans les modules qui encapsule le Repository TypeORM et expose des methodes domaine plutot que des methodes query. La documentation NestJS TypeORM Integration documente ce pattern avec @InjectRepository() et les custom repositories ; (2) Prisma : wrapper functions ou classe legere autour de PrismaService — l'injection de PrismaService dans un service NestJS est acceptable pour les cas simples, mais une couche wrapper ameliore la testabilite en rendant le point d'injection explicite (Stemmler, 2019). Dans les deux cas : injecter le Repository (interface) dans les services, pas l'ORM directement — les services deviennent independants de la technologie de persistance.\n\nFrontiere architecturale : Repository est un port (au sens hexagonal architecture) — l'interface appartient au domaine, les implementations appartiennent a l'infrastructure. Cette separation permet de swapper l'ORM, de tester sans BDD, et de maintenir les invariants du domaine de facon centralisee. L'impact est documenté empiriquement par la facilite de test : les services qui injectent un Repository (interface) sont testables avec un FakeRepository in-memory sans configuration de base de donnees.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Repository' catalog entry (martinfowler.com/eaaCatalog/repository.html, 2002)",
-          "pyramid": 5,
-          "year": 2002
-        },
-        {
-          "name": "Fowler M. — Patterns of Enterprise Application Architecture, 'Data Mapper' catalog entry (martinfowler.com/eaaCatalog/dataMapper.html, 2002)",
-          "pyramid": 5,
-          "year": 2002
-        },
-        {
-          "name": "Percival H. & Gregory B. — Architecture Patterns with Python, ch.2 (cosmicpython.com / O'Reilly, 2020)",
-          "pyramid": 3,
-          "year": 2020
-        },
-        {
-          "name": "Noback M. — Mocking at architectural boundaries: persistence and time (matthiasnoback.nl, 2018)",
-          "pyramid": 3,
-          "year": 2018
-        },
-        {
-          "name": "Microsoft .NET Architecture Guide — Designing the infrastructure persistence layer (learn.microsoft.com, 2023)",
-          "pyramid": 4,
-          "year": 2023
-        },
-        {
-          "name": "NestJS Documentation — Database / TypeORM Integration (docs.nestjs.com/techniques/database, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "NestJS Documentation — Prisma Recipe (docs.nestjs.com/recipes/prisma, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Prisma GitHub Discussion #10584 — Repository pattern with Prisma (github.com/prisma/prisma/discussions/10584, 2021)",
-          "pyramid": 3,
-          "year": 2021
-        },
-        {
-          "name": "Stemmler K. — Implementing DTOs, Mappers & the Repository Pattern using the Sequelize ORM (khalilstemmler.com, 2019)",
-          "pyramid": 3,
-          "year": 2019
         }
       ]
     },
@@ -7649,53 +8473,63 @@
       ]
     },
     {
-      "id": "react-async-patterns",
-      "domain": "frontend",
-      "question": "Comment gérer les opérations asynchrones dans React pour prévenir les race conditions, memory leaks et mises à jour d'état sur composants démontés ?",
-      "recommendation": "Problème fondamental : useEffect + fetch sans cleanup crée deux classes de bugs systématiques. Première classe — race conditions : si une dépendance change (ex. userId) avant qu'une requête se termine, la réponse tardive de l'ancienne requête peut écraser l'état produit par la requête plus récente, affichant des données incorrectes à l'utilisateur. Deuxième classe — memory leaks / mises à jour orphelines : si le composant est démonté pendant qu'une requête est en vol, l'appel setState() qui suit la résolution de la Promise tente de mettre à jour un composant démonté — comportement indéfini, avertissement React en développement, fuite mémoire potentielle. Ces deux bugs partagent la même cause racine : l'absence de mécanisme d'annulation ou d'ignorance dans la cleanup function de useEffect.\n\nSolution 1 — ignore flag (simple, recommandé pour cas simples) : déclarer let ignore = false avant le fetch, n'appeler setState que si (!ignore), retourner une cleanup function () => { ignore = true }. Quand React démonte le composant ou que les dépendances changent, ignore passe à true et la réponse en vol est silencieusement ignorée. Cette solution ne cancelle pas la requête réseau — la requête part quand même jusqu'au bout, consomme de la bande passante et charge le serveur — mais elle garantit que l'état React ne sera jamais mis à jour depuis une réponse devenue obsolète. C'est le pattern documenté par React docs officiels et endossé par Max Rozen (2021, référencé par react.dev).\n\nSolution 2 — AbortController (recommandé quand la performance réseau compte) : instancier const controller = new AbortController() dans useEffect, passer { signal: controller.signal } à fetch(), retourner () => controller.abort() comme cleanup. Quand React appelle la cleanup, le signal est annulé, le navigateur abandonne la connexion réseau en cours (libération réelle des ressources réseau), et la Promise rejette avec une AbortError — à capturer explicitement (if (err.name === 'AbortError') return). Avantage : cancel réel côté réseau, pas seulement côté React. Inconvénient : légèrement plus verbeux, gestion explicite de l'AbortError obligatoire. Le standard AbortController est défini par le W3C/MDN et supporté nativement par tous les navigateurs modernes et Node.js 18+.\n\nRègle de choix entre les deux : ignore flag pour les cas simples où la performance réseau est secondaire (données légères, peu de changements rapides de dépendances). AbortController dès que les requêtes sont coûteuses, fréquentes, ou que l'on cible des environnements à faible bande passante.\n\nReact 18 Concurrent — useTransition : startTransition(() => setState(newValue)) marque une mise à jour d'état comme non-urgente. React peut interrompre et redémarrer un render en transition si une mise à jour de plus haute priorité survient entre-temps. Pour les opérations async, useTransition évite que des transitions lentes (chargement de données) ne bloquent les interactions urgentes (saisie clavier). Le composant n'entre pas dans un état de chargement brutal — React maintient l'UI précédente pendant la transition. isPending permet d'afficher un indicateur visuel subtil. Important : useTransition gère la priorité des renders, il ne remplace pas ignore flag ou AbortController — les race conditions réseau restent à gérer séparément.\n\nReact 19 — hook use() + Suspense : use(promise) suspend le composant courant tant que la Promise est en attente, déléguant l'affichage du fallback au Suspense boundary le plus proche. Les erreurs async de résolution sont capturées par le Error Boundary le plus proche si la Promise rejette. Restriction documentée : les Promises créées dans des Client Components sont recréées à chaque render — préférer les Promises stables (passées en props depuis Server Components, ou mémoïsées). use() est la direction React 19+ pour les cas Suspense-first.\n\nError Boundaries — limitation critique : les Error Boundaries React ne capturent PAS les erreurs asynchrones survenant dans les callbacks ordinaires (setTimeout, requestAnimationFrame, .catch() non relancé). Ils capturent uniquement les erreurs survenant pendant le rendu synchrone d'un composant enfant, et les erreurs dans startTransition. Pour les erreurs async hors rendu, utiliser try/catch local dans useEffect et setState sur un state d'erreur explicite.\n\nTanStack Query (React Query) : recommandé pour les cas complexes. Gère nativement : stale-while-revalidate (réponse cachée immédiate + revalidation en arrière-plan), déduplication des requêtes identiques simultanées, annulation automatique des requêtes obsolètes, retry configurable, synchronisation inter-composants via query key. Pour useEffect simple avec une seule requête et peu de dépendances, ignore flag suffit et TanStack Query serait sur-ingénierie. Seuil de bascule : dès qu'apparaissent plusieurs composants partageant les mêmes données, du caching, de l'invalidation, ou du pagination, TanStack Query apporte un ROI net.",
-      "grade": 4,
+      "id": "event-driven-architecture",
+      "domain": "architecture",
+      "question": "Comment concevoir une architecture event-driven fiable avec des garanties de livraison, en choisissant entre les patterns Outbox, Saga (choreography vs orchestration), et les 4 types d'events selon Fowler ?",
+      "recommendation": "Règle de taxonomie préalable : les 4 patterns event-driven de Fowler (2017) ne sont PAS interchangeables — les confondre est la principale source d'erreurs de conception. (1) Event Notification : un service émet un événement pour signaler qu'il s'est passé quelque chose ; les consommateurs réagissent de façon autonome, mais l'émetteur ne sait pas ce qu'ils font. (2) Event-Carried State Transfer (ECST) : l'événement transporte l'état complet de l'entité modifiée, ce qui permet aux consommateurs de fonctionner sans rappel vers le service émetteur. (3) Event Sourcing : l'état du système est reconstruit à partir d'une séquence ordonnée d'événements immuables — la source de vérité est le log d'événements, pas la table de données courante. (4) CQRS (Command Query Responsibility Segregation) : sépare les modèles d'écriture et de lecture ; souvent combiné avec Event Sourcing mais indépendant — on peut avoir CQRS sans Event Sourcing et vice-versa. Choisir un pattern en connaissance de ses tradeoffs spécifiques avant de l'implémenter.\n\nDistinction command vs event (Fowler 2005) : un command exprime une intention ('créer cet utilisateur') — il peut être refusé. Un event est un fait passé immutable ('l'utilisateur a été créé le 2026-04-17 à 14h32') — il ne peut pas être annulé, seulement compensé. Nommer les événements au passé (UserRegistered, OrderShipped, PaymentFailed). Cette distinction guide la modélisation des bounded contexts (Evans 2003) : les Domain Events permettent la communication entre contextes sans couplage direct, via publication d'événements métier que les autres contextes consomment selon leurs propres besoins.\n\nDual-write problem et solution Outbox (Richardson) : écrire dans la base de données ET publier un message vers un broker dans deux opérations séparées crée un risque de perte silencieuse — si le service crashe entre les deux, l'état DB a changé mais l'événement n'a jamais été émis. Solution obligatoire : le Transactional Outbox pattern. L'état métier et l'enregistrement dans une table 'outbox' sont écrits dans la MÊME transaction DB. Un processus séparé (message relay) lit la table outbox et publie les événements vers le broker. Les consommateurs reçoivent les événements avec une garantie at-least-once (au moins une fois) : ils peuvent donc recevoir un événement plusieurs fois et DOIVENT être idempotents (traiter deux fois le même événement avec le même résultat qu'une seule fois). L'idempotence est non-optionnelle en EDA.\n\nSaga — choreography vs orchestration (Richardson, Temporal.io) : les transactions distribuées (span sur plusieurs services) nécessitent le pattern Saga — une séquence d'étapes locales avec des transactions compensatoires pour annuler les effets en cas d'échec. Deux variantes : (a) Choreography — chaque service publie des événements et réagit aux événements des autres sans coordinateur central. Avantages : autonomie des services, scalabilité maximale. Inconvénients : le flow global est implicite et distribué dans le code de chaque service — le debugging est difficile, la traçabilité nécessite un distributed tracing robuste. (b) Orchestration — un orchestrateur central envoie des commandes à chaque service et attend leurs réponses. Avantages : le flow est explicite, lisible et auditable en un seul endroit ; les erreurs sont plus faciles à localiser. Inconvénients : point de couplage central, l'orchestrateur peut devenir un goulot d'étranglement. Règle de choix : si les étapes sont strictement ordonnées et la lisibilité/auditabilité est prioritaire → orchestration. Si la scalabilité prime et que les services sont véritablement autonomes → choreography. Validation formelle (IEEE 2022, LTS + PAT) confirme ces tradeoffs.\n\nImplémentation NestJS : deux niveaux distincts selon le scope. In-process (même instance Node.js) : @nestjs/event-emitter avec @OnEvent() — adapté pour découpler des modules dans une même application sans infrastructure externe. Cross-process (services séparés) : NestJS microservices avec Redis Streams comme transport (ou Kafka, RabbitMQ, NATS selon le volume et les garanties requises). Ne pas utiliser @nestjs/event-emitter pour de la communication cross-process — les événements ne sortent pas du processus et seraient perdus en cas de redémarrage.\n\nAvertissement complexité opérationnelle : l'EDA augmente significativement la complexité opérationnelle par rapport aux appels synchrones. Les workflows asynchrones sont difficiles à déboguer sans distributed tracing (corrélation d'événements via trace IDs, visualisation des flux event par event). Avant d'adopter EDA, évaluer si la complexité additionnelle est justifiée par les besoins réels de découplage et de scalabilité. Investir dans l'observabilité (tracing distribué, correlation IDs dans chaque event) dès le début — le retrofitter coûte bien plus cher.",
+      "grade": 3,
       "level": "RECOMMANDE",
       "is_universal": true,
       "sources": [
         {
-          "name": "React docs — 'Synchronizing with Effects' (react.dev, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Fowler M. — DomainEvent (martinfowler.com, 2005)",
+          "pyramid": 5,
+          "year": 2005
         },
         {
-          "name": "React docs — 'useEffect Reference' (react.dev, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Fowler M. — What do you mean by Event-Driven? (martinfowler.com, 2017)",
+          "pyramid": 5,
+          "year": 2017
         },
         {
-          "name": "MDN Web Docs — 'AbortController / AbortSignal' (developer.mozilla.org, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Evans E. — Domain-Driven Design: Tackling Complexity in the Heart of Software (Addison-Wesley, 2003)",
+          "pyramid": 5,
+          "year": 2003
         },
         {
-          "name": "React docs — 'useTransition / startTransition' (react.dev, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Richardson C. — Microservices Patterns (Manning, 2018)",
+          "pyramid": 5,
+          "year": 2018
         },
         {
-          "name": "React docs — hook use() React 19 (react.dev, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Richardson C. — Transactional Outbox Pattern (microservices.io)",
+          "pyramid": 5,
+          "year": 2023
         },
         {
-          "name": "React docs — Error Boundaries (react.dev, 2024)",
-          "pyramid": 3,
-          "year": 2024
+          "name": "Richardson C. — Saga Pattern (microservices.io)",
+          "pyramid": 5,
+          "year": 2023
         },
         {
-          "name": "TanStack Query docs (tanstack.com, 2024)",
+          "name": "IEEE Xplore — Comparison of Choreography vs Orchestration Based Saga Patterns (2022)",
           "pyramid": 3,
-          "year": 2024
+          "year": 2022
         },
         {
-          "name": "Rozen M. — 'Fixing Race Conditions in React with useEffect' (maxrozen.com, 2021)",
+          "name": "Temporal.io — Saga Orchestration vs Choreography",
           "pyramid": 4,
-          "year": 2021
+          "year": 2024
+        },
+        {
+          "name": "NestJS — @nestjs/event-emitter documentation (docs.nestjs.com)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "NestJS — Redis Microservices documentation (docs.nestjs.com/microservices/redis)",
+          "pyramid": 3,
+          "year": 2024
         }
       ]
     },
@@ -7723,6 +8557,37 @@
           "name": "Spring Boot Docker docs",
           "pyramid": 3,
           "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "legacy-code-comprehension",
+      "domain": "maintenance",
+      "question": "Comment comprendre, tester et modifier du code legacy sans tests existants, de façon sécurisée et incrémentale ?",
+      "recommendation": "Règle préliminaire absolue : NE JAMAIS refactoriser du code legacy sans couverture de tests préalable. La règle de Feathers est sans exception : d'abord les tests, ensuite le refactoring. Refactoriser du code sans filet de sécurité revient à modifier un comportement sans savoir ce qu'on casse — les bugs introduits deviennent invisibles jusqu'en production. Étape 1 — Characterization tests (Feathers) : écrire des tests qui DOCUMENTENT le comportement actuel du code, pas ce qu'il devrait faire, mais ce qu'il FAIT réellement. Un characterization test capture la sortie actuelle d'un morceau de code (même si cette sortie est incorrecte ou surprenante) et la fixe comme référence. Ces tests constituent le filet de sécurité pour tout changement ultérieur : ils détectent immédiatement toute régression comportementale. La stratégie est : exécuter le code, observer la sortie, écrire le test qui affirme cette sortie. Si le comportement est erroné, le test le documente quand même — on corrige le bug séparément, dans un commit distinct, après que le test ait établi la base. Étape 2 — Seams (Feathers) : identifier les points d'injection dans le code qui permettent d'altérer le comportement en test sans modifier le code source en production. Un seam est un lieu dans le code où les dépendances peuvent être substituées pour l'isolation en test : constructeurs (injection par constructeur), factories, interfaces, paramètres de méthode, variables d'environnement. En NestJS/TypeScript, l'injection de dépendances est naturellement un seam — chaque service injecté via @Injectable() peut être remplacé par un mock dans les tests sans modifier le code source. Identifier les seams existants avant de modifier le code : si aucun seam n'existe, en introduire un (extraction d'interface, passage par paramètre) comme première et unique modification, couverte par characterization tests. Étape 3 — Strangler Fig (Fowler) : pattern d'évolution incrémentale pour remplacer le code legacy sans big-bang rewrite. Principe : introduire une facade/proxy au point d'entrée du système qui route les requêtes entre l'ancien code et le nouveau code. Migrer les fonctionnalités feature-by-feature : chaque tranche fonctionnelle est réécrite dans le nouveau code, la facade bascule le trafic vers la nouvelle implémentation, l'ancien code 'étrangle' graduellement jusqu'à disparition complète. Le système reste déployable et fonctionnel à chaque étape — pas de branche de développement longue durée, pas de freeze fonctionnel pendant la migration. Étape 4 — Thin slices (Azure Architecture Center) : découper la migration en tranches indépendantes, suffisamment petites pour être livrables mais suffisamment significatives pour apporter de la valeur métier. Chaque tranche doit être indépendante et auto-contenue : elle peut être livrée, testée et rollbackée sans affecter les autres tranches. Ce découpage évite le syndrome du 'grand rewrite' qui échoue : les rewrites totaux ont un taux d'échec élevé car la valeur n'est livrée qu'à la fin, les risques s'accumulent, et l'organisation perd confiance. Les thin slices maintiennent la livraison continue de valeur pendant la migration. Règle de sécurité — blast radius minimal : ne pas étendre le périmètre d'une modification legacy au-delà du strict nécessaire. Chaque modification doit avoir un scope délimité : un seam introduit à la fois, un characterization test par comportement capturé, une tranche migrée à la fois. L'extension de périmètre non contrôlée est la première cause d'échec des projets de modernisation legacy — les modifications en cascade sans tests de couverture génèrent des bugs invisibles qui émergent en production.",
+      "grade": 3,
+      "level": "RECOMMANDE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Martin Fowler — StranglerFigApplication (martinfowler.com, 2004)",
+          "pyramid": 5,
+          "year": 2004
+        },
+        {
+          "name": "Microsoft Azure Architecture Center — Strangler Fig pattern (learn.microsoft.com, 2024)",
+          "pyramid": 3,
+          "year": 2024
+        },
+        {
+          "name": "Michael Feathers — Working Effectively with Legacy Code (Prentice Hall, 2004)",
+          "pyramid": 5,
+          "year": 2004
+        },
+        {
+          "name": "understandlegacycode.com — The key points of Working Effectively with Legacy Code (2020)",
+          "pyramid": 4,
+          "year": 2020
         }
       ]
     },
@@ -7989,860 +8854,6 @@
       ]
     },
     {
-      "id": "monorepo-vs-polyrepo",
-      "domain": "project",
-      "question": "Faut-il utiliser un monorepo ou un polyrepo pour organiser les repositories du projet ?",
-      "recommendation": "Pas de consensus scientifique. Monorepo si code partage important et petite equipe ; polyrepo si equipes independantes, cycles de release differents ou stack heterogene.",
-      "grade": 2,
-      "level": "BONNE_PRATIQUE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Google monorepo paper — Potvin & Levenberg 2016",
-          "pyramid": 5,
-          "year": 2016
-        },
-        {
-          "name": "Fowler 'MonolithFirst'",
-          "pyramid": 5,
-          "year": 2015
-        }
-      ]
-    },
-    {
-      "id": "scheduled-tasks",
-      "domain": "reliability",
-      "question": "Comment gerer les taches planifiees dans un backend ?",
-      "is_universal": false,
-      "sources": []
-    },
-    {
-      "id": "ui-lucide-react",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour les icones ?",
-      "recommendation": "lucide-react",
-      "grade": 7,
-      "level": "STANDARD",
-      "implementation": "pnpm add lucide-react",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "Lucide docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-tanstack-react-query",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour le data fetching et le cache client ?",
-      "recommendation": "@tanstack/react-query",
-      "grade": 7,
-      "level": "STANDARD",
-      "implementation": "pnpm add @tanstack/react-query",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "State of JS 2024",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "TanStack Query docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-tanstack-react-table",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour les tables avec tri, filtre et pagination ?",
-      "recommendation": "@tanstack/react-table",
-      "grade": 7,
-      "level": "STANDARD",
-      "implementation": "pnpm add @tanstack/react-table",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "TanStack Table docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "typescript-strict",
-      "domain": "code-quality",
-      "question": "Faut-il activer le mode strict de TypeScript ?",
-      "recommendation": "strict: true dans tsconfig.json. Active strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, alwaysStrict, useUnknownInCatchVariables.",
-      "grade": 6,
-      "level": "STANDARD",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "TypeScript docs — strict compiler options",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Google TypeScript Style Guide",
-          "pyramid": 5,
-          "year": 2023
-        },
-        {
-          "name": "State of JS 2024",
-          "pyramid": 4,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "typography",
-      "domain": "design",
-      "question": "Quelles regles typographiques appliquer (taille, line-height, largeur de ligne, echelle) ?",
-      "recommendation": "Body text : 16px minimum. Ne jamais descendre en dessous de 14px pour du texte de contenu.",
-      "grade": 6,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {},
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "ui-cmdk",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour la command palette ?",
-      "recommendation": "cmdk",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add cmdk",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "cmdk docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-dnd-kit",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour le drag and drop ?",
-      "recommendation": "@dnd-kit/core",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "dnd-kit docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-react-dropzone",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour l'upload de fichiers par drag and drop ?",
-      "recommendation": "react-dropzone",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add react-dropzone",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-dropzone docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-react-resizable-panels",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour les panels redimensionnables ?",
-      "recommendation": "react-resizable-panels",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add react-resizable-panels",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-resizable-panels docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-tanstack-react-virtual",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour la virtualisation de listes longues ?",
-      "recommendation": "@tanstack/react-virtual",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add @tanstack/react-virtual",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "TanStack Virtual docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "unit-tests",
-      "domain": "testing",
-      "question": "Quel framework et quelle strategie pour les tests unitaires ?",
-      "recommendation": "pytest + pytest-django. pytest est le standard de facto pour Python, pytest-django fournit les fixtures et integration Django.",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "is_universal": false,
-      "sources": [
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "wcag-level",
-      "domain": "accessibility",
-      "question": "Quel niveau WCAG cibler (A, AA, AAA) ?",
-      "recommendation": "WCAG 2.2 Level AA : obligatoire legalement (EU, US, Canada), contraste 4.5:1, pas de restriction de niveau de lecture (contrairement a AAA qui exige niveau college, impossible pour contenu scientifique).",
-      "grade": 6,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {},
-        {},
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "web-mobile-strategy",
-      "domain": "architecture",
-      "question": "Comment rendre une web app accessible sur mobile ?",
-      "grade": 6,
-      "level": "RECOMMANDE",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "web.dev PWA docs",
-          "pyramid": 3,
-          "year": 2026
-        },
-        {
-          "name": "Can I Use service worker 97%",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "vite-plugin-pwa 3M+ dl/sem",
-          "pyramid": 4,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "zero-trust",
-      "domain": "security",
-      "question": "Comment implémenter une architecture Zero Trust — never trust always verify, least privilege, assume breach — pour les accès utilisateurs et les communications inter-services ?",
-      "recommendation": "Zero Trust est une stratégie architecturale fondée sur trois principes fondamentaux définis par le NIST SP 800-207 et le CISA ZTMM v2.0 : (1) 'Never trust, always verify' — aucune confiance implicite n'est accordée sur la base de la localisation réseau ou physique. Chaque accès à une ressource est authentifié et autorisé de manière indépendante, sans présupposer la légitimité d'une requête parce qu'elle provient du réseau interne. (2) 'Least privilege' — chaque identité (utilisateur, service, device) reçoit exactement les permissions nécessaires à la tâche en cours, et seulement pour la durée requise. L'accès est per-request : être authentifié ne confère pas de droits permanents étendus. (3) 'Assume breach' (CISA ZTMM v2.0) — l'hypothèse de brèche permanente est intégrée dans la conception : on part du principe qu'une attaque est déjà en cours quelque part. L'objectif n'est plus d'empêcher toute intrusion mais de réduire le rayon d'explosion (blast radius) pour limiter le mouvement latéral d'un attaquant ayant compromis un premier accès.\n\nLe CISA ZTMM v2.0 organise la mise en œuvre autour de cinq piliers. Le pilier Identity est le plus critique : chaque utilisateur, device, application et transaction doit être continuellement vérifié — MFA obligatoire, gestion Just-In-Time (JIT) des accès privilégiés. Le pilier Devices couvre l'attestation de l'état de santé du device avant d'accorder l'accès (conformité, patch level). Le pilier Networks impose la microsegmentation : remplacer la confiance périmétrique (firewall unique) par des segments isolés avec contrôles d'accès entre zones, rendant le mouvement latéral structurellement difficile. Le pilier Applications & Workloads exige une authorization per-request : chaque endpoint, chaque appel d'API est autorisé indépendamment sur la base de claims contextuels (identité, rôle, device, heure, risque). Le pilier Data exige la classification et le chiffrement systématique, en transit et au repos, indépendamment de la confiance réseau.\n\nLa mise en œuvre est progressive. Le CISA ZTMM définit quatre niveaux : Traditional (périmétrique, confiance implicite réseau) → Initial (MFA déployée, premières microsegmentations) → Advanced (authorization contextuelle, surveillance continue, JIT access) → Optimal (automatisation complète, politiques adaptatives en temps réel). La séquence recommandée : commencer par Identity (MFA + politiques d'accès JIT) et Networks (microsegmentation de base entre zones critiques) avant d'aborder le service mesh — le retour sur investissement sécuritaire est maximal sur ces deux piliers en premier.\n\nPour les communications inter-services (service-to-service), Istio (projet CNCF Graduated) implémente l'authentification mutuelle TLS (mTLS) : chaque service dispose d'une identité forte au format SPIFFE (Secure Production Identity Framework For Everyone), émise par SPIRE. Le mTLS garantit que les deux parties d'une communication prouvent leur identité avant tout échange de données — éliminant la confiance implicite entre services sur le réseau interne. Pour les architectures sans service mesh, l'alternative est l'usage de JWT service tokens avec validation stricte de l'audience (claim 'aud') et de l'émetteur (claim 'iss') à chaque endpoint.\n\nDans un contexte NestJS, la mise en œuvre concrète suit ces règles : (a) pas de route publique par défaut — tous les endpoints passent par un Guard JWT ; les routes réellement publiques sont explicitement décorées (@Public()); (b) RBAC ou ABAC pour le least privilege — les Guards évaluent les rôles et attributs contextuels (ex : un utilisateur 'lab-admin' peut accéder à /labs/:id uniquement si il est propriétaire du lab) ; (c) validation des claims contextuels à chaque requête (IP, device fingerprint, timestamp, risk score) pour détecter les anomalies comportementales même avec un token valide ; (d) durées de vie courtes pour les access tokens (15 min) avec rotation sécurisée des refresh tokens.\n\nLa leçon BeyondCorp de Google (Ward & Beyer, 2014) constitue la preuve de faisabilité à grande échelle : Google a supprimé le VPN d'entreprise et déplacé ses applications internes sur Internet, en validant chaque requête individuellement via un Access Proxy. Cette approche, déployée des années avant la formalisation NIST, démontre qu'une architecture Zero Trust n'est pas théorique mais opérationnellement viable à très grande échelle. BeyondCorp précède de six ans le NIST SP 800-207 et en constitue l'une des références empiriques fondatrices.\n\nDémarcation essentielle : Zero Trust est une stratégie architecturale, pas un produit. Aucun outil unique n'implémente ZT — les outils (Istio, SPIFFE/SPIRE, HashiCorp Vault pour la gestion des secrets, OAuth 2.0 / OIDC pour l'identity federation, OPA pour les politiques d'autorisation) sont des implémentations partielles de la stratégie. 'Acheter un produit Zero Trust' sans revoir l'architecture de confiance sous-jacente est une fausse sécurité. L'EO 14028 (Executive Order on Improving the Nation's Cybersecurity, 2021) et le CISA ZTMM mandatent explicitement cette migration architecturale pour les systèmes fédéraux américains — la maturité normative est maximale.",
-      "grade": 6,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "NIST SP 800-207 — Zero Trust Architecture (NIST, 2020)",
-          "pyramid": 1,
-          "year": 2020
-        },
-        {
-          "name": "CISA Zero Trust Maturity Model v2.0 (CISA, 2023)",
-          "pyramid": 1,
-          "year": 2023
-        },
-        {
-          "name": "Ward R. & Beyer B. — BeyondCorp: A New Approach to Enterprise Security (Google, USENIX ;login: Vol.39 No.6, 2014)",
-          "pyramid": 3,
-          "year": 2014
-        },
-        {
-          "name": "Istio — Security: Mutual TLS and Zero-Trust Network (CNCF Graduated, istio.io, 2024)",
-          "pyramid": 2,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "threat-modeling",
-      "domain": "security",
-      "question": "Comment modeliser les menaces (threat modeling) en phase de conception ?",
-      "recommendation": "Modelisation des menaces avec STRIDE en phase de conception. A realiser a chaque nouvelle fonctionnalite ou changement d'architecture.",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "SWEBOK v4 Security Knowledge Area",
-          "pyramid": 1,
-          "year": 2024
-        },
-        {
-          "name": "OWASP Threat Modeling Cheat Sheet",
-          "pyramid": 2,
-          "year": 2024
-        },
-        {
-          "name": "Microsoft SDL",
-          "pyramid": 5,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "typescript-interface-design",
-      "domain": "design",
-      "question": "Quand utiliser interface, type alias ou class en TypeScript pour definir des contrats de types — regles de decision par contexte (API publique, DTO, domaine, union types) ?",
-      "recommendation": "Regle generale : preferer interface pour tout ce qu'elle peut modeliser. La recommandation officielle TypeScript Handbook ('default to using interface and only use type when you need to') est renforcee par le Google TypeScript Style Guide et le TypeScript Team Lead lui-meme : 'my take is that it should really just be interfaces for anything that they can model. There is no benefit to type aliases when there are so many issues around display/perf.' En pratique, cela signifie : commencer par interface par defaut, ne passer a type que lorsque l'expressivite de interface est insuffisante.\n\nPerformance compilateur : les relations de types entre interfaces sont mises en cache par le compilateur TypeScript, contrairement aux intersection types (type A = B & C) qui sont recalcules a chaque usage. Le wiki Performance de l'equipe TypeScript (Microsoft, source officielle avec benchmarks) formule explicitement : 'extending types with interfaces/extends is suggested over creating intersection types.' Dans les codebases larges, ce delta de performance compilateur est mesurable.\n\nAPI publiques et librairies : toujours interface. La declaration merging est une fonctionnalite exclusive aux interfaces — si deux declarations portent le meme nom d'interface, TypeScript les fusionne silencieusement. Cela permet aux consommateurs d'une librairie d'etendre les contrats sans fork. Inversement, declarer deux fois le meme type alias produit une erreur 'Duplicate identifier', protegant le code interne contre les merges accidentels. Regle : toute surface exposee publiquement (SDK, API response shape, module exports) utilise interface.\n\nTypes internes — quand type est obligatoire : interface ne peut pas exprimer les unions discriminees (type Result = Success | Failure), les mapped types (type Readonly<T> = { readonly [K in keyof T]: T[K] }), ni les conditional types (type IsArray<T> = T extends any[] ? true : false). Ces constructions exigent type alias. Pour les types de domaine interne sans besoin d'extension ou de merging, type convient egalement — mais la declaration merging accidentelle etant impossible (erreur compile-time), ce choix est une protection supplementaire contre les collisions de noms.\n\nDTOs NestJS — obligation de class : dans un contexte NestJS avec class-validator et class-transformer, les DTOs DOIVENT etre des classes, pas des interfaces ni des type aliases. La raison est fondamentale : TypeScript supprime les interfaces et les types a la compilation — ils n'existent pas au runtime. class-validator (@IsEmail(), @IsNotEmpty(), etc.) et class-transformer (plainToInstance()) s'appuient sur les metadonnees runtime emises par les decorateurs, qui ne fonctionnent que sur des classes. Utiliser une interface ou un type pour un DTO NestJS produit une validation silencieusement inactive ou un crash runtime lors de la transformation.\n\nAbstract class vs interface : choisir abstract class uniquement si une implementation partagee doit etre heritee par les classes concretes. Si le besoin est uniquement de definir un contrat de forme (shape contract), interface est preferable — elle impose moins de couplage, elle est effacee a la compilation (pas d'impact bundle), et elle ne contraint pas la hierarchie d'heritage. Regle de decision : 'If there is no shared implementation needed, prefer interfaces' (Stemmler).\n\nTypage structurel — interchangeabilite technique : TypeScript est structuralement type. Pour la compatibilite de type, interface et type sont techniquement interchangeables — une classe qui satisfait la shape d'une interface l'implemente implicitement, et un type alias definissant la meme shape est compatible. La decision interface vs type n'est donc pas une question de semantique runtime mais de tooling (messages d'erreur plus lisibles avec interface), de performance compilateur (interfaces cachees), et d'expressivite (unions et mapped types = type uniquement).\n\nArbre de decision synthetique :\n- DTO NestJS avec validation decorateurs → class obligatoire\n- Union discriminee, mapped type, conditional type → type obligatoire\n- API publique, surface exportee, librairie → interface (declaration merging voulu)\n- Type de domaine interne sans union → interface par defaut (performance, lisibilite erreurs)\n- Implementation partagee entre classes → abstract class\n- Shape contract sans implementation → interface",
-      "grade": 5,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "TypeScript Team — Performance wiki (Microsoft/TypeScript, github.com/microsoft/TypeScript/wiki/Performance, 2024)",
-          "pyramid": 2,
-          "year": 2024
-        },
-        {
-          "name": "Google TypeScript Style Guide (google.github.io/styleguide/tsguide.html, 2024)",
-          "pyramid": 2,
-          "year": 2024
-        },
-        {
-          "name": "TypeScript Handbook — Everyday Types (typescriptlang.org/docs/handbook/2/everyday-types.html, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "TypeScript Handbook — Declaration Merging (typescriptlang.org/docs/handbook/declaration-merging.html, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "TypeScript Handbook — Type Compatibility (typescriptlang.org/docs/handbook/type-compatibility.html, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Vanderkam D. — Effective TypeScript 2nd ed. (O'Reilly, 2021/2023)",
-          "pyramid": 5,
-          "year": 2023
-        },
-        {
-          "name": "Pocock M. (Total TypeScript) — Type vs Interface (totaltypescript.com, 2023)",
-          "pyramid": 3,
-          "year": 2023
-        },
-        {
-          "name": "NestJS — Documentation DTOs et Validation (docs.nestjs.com/pipes, docs.nestjs.com/techniques/validation, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Stemmler K. — When to Use TypeScript Abstract Classes (khalilstemmler.com, 2020)",
-          "pyramid": 3,
-          "year": 2020
-        }
-      ]
-    },
-    {
-      "id": "ui-nuqs",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour la gestion d'etat dans l'URL ?",
-      "recommendation": "nuqs",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add nuqs",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "nuqs docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-react-hotkeys-hook",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour les raccourcis clavier ?",
-      "recommendation": "react-hotkeys-hook",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add react-hotkeys-hook",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-hotkeys-hook docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-react-pdf",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour afficher des PDF ?",
-      "recommendation": "react-pdf",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add react-pdf",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-pdf docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-sonner",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour les toast notifications ?",
-      "recommendation": "sonner",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add sonner",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "sonner docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-tiptap",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour l'edition rich text ?",
-      "recommendation": "@tiptap/react",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit @tiptap/pm",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "tiptap docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "unsaved-changes",
-      "domain": "safety",
-      "question": "Comment proteger l'utilisateur contre la perte de donnees non sauvegardees dans les formulaires ?",
-      "recommendation": "Avertir avant de perdre des donnees saisies. Protection fermeture onglet/refresh via beforeunload, protection navigation SPA via useBlocker (React Router). Si auto-save disponible, sauvegarder silencieusement sans dialog.",
-      "grade": 5,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Apple HIG — 'hazard warning' avant perte de donnees",
-          "pyramid": 5,
-          "year": 2024
-        },
-        {
-          "name": "Nielsen — prevention des erreurs, heuristique #5",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "MDN — beforeunload event",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "React Router docs — useBlocker",
-          "pyramid": 3,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "user-effectiveness",
-      "domain": "design",
-      "question": "Comment mesurer l'efficacite utilisateur (task success, completion time, satisfaction) ?",
-      "recommendation": "Mesurer 4 metriques cles : task success rate (>95%), task completion time (<budget), error rate (en baisse), satisfaction SUS/CSAT (SUS >68).",
-      "grade": 5,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "solid-principles",
-      "domain": "project",
-      "question": "Quels principes SOLID appliquer systematiquement, lesquels requierent du jugement contextuel, et comment eviter que leur application stricte genere de la sur-ingenierie ?",
-      "recommendation": "Les principes SOLID s'appliquent avec des niveaux d'universalite differents — appliquer systematiquement SRP et ISP, quasi-systematiquement DIP (avec IoC), contextuellement OCP et LSP.\n\n**SRP — Single Responsibility Principle** (universellement applicable) : une classe/module a une et une seule raison de changer. En pratique : si la description d'une classe requiert le mot 'et', elle viole SRP. Decouper selon les axes de changement independants (domaine metier, persistance, presentation, logique metier). Indicateurs de violation : classe > 200-300 lignes, methodes privees nombreuses sans lien entre elles, changements frequents pour des raisons disparates.\n\n**ISP — Interface Segregation Principle** (universellement applicable, surtout en Java) : ne pas forcer un client a dependre d'interfaces qu'il n'utilise pas. Privilegier plusieurs petites interfaces specifiques a une grosse interface generique. En Java : eviter les interfaces a plus de 5-7 methodes dont le client n'utilise que 2-3. En TypeScript : eviter les types union/intersection trop larges dans les props de composants.\n\n**DIP — Dependency Inversion Principle** (quasi-universel avec Spring Boot) : dependre d'abstractions (interfaces), pas d'implementations concretes. Base de l'injection de dependances. En Spring Boot, c'est la valeur par defaut via IoC container — ne pas l'utiliser est une deviation deliberee qui doit etre justifiee. En TypeScript/React : injecter les dependances via props ou context plutot que les importer directement dans le composant.\n\n**OCP — Open/Closed Principle** (contextuel — plus pertinent pour code etendu par des tiers) : ouvert a l'extension, ferme a la modification. Critique pour les librairies et frameworks (code consomme par des utilisateurs exterieurs). Moins critique pour le code applicatif interne ou les changements de specification sont frequents et legitimes. Appliquer quand : le composant sera etendu par des equipes differentes, ou quand l'historique montre des patterns d'extension repetitifs.\n\n**LSP — Liskov Substitution Principle** (contextuel — souvent implicitement respecte si l'heritage est evite) : les sous-types doivent etre substituables a leurs types de base sans modifier le comportement observable du programme. Souvent viole avec l'heritage profond (override de methodes avec preconditions plus fortes ou postconditions plus faibles). La meilleure defense contre LSP : privilegier la composition sur l'heritage. Si l'heritage est necessite, respecter le contrat du type de base strictement.\n\n**Hierarchie d'applicabilite** :\n1. SRP : appliquer toujours, des la premiere conception\n2. ISP : appliquer toujours en Java (interfaces), adapter en TypeScript\n3. DIP : appliquer par defaut avec Spring IoC — deviation justifiee uniquement pour les value objects et les classes utilitaires stateless\n4. OCP : appliquer quand le code est consomme par des tiers ou que l'extensibilite est un critere explicite du module\n5. LSP : verifier quand de l'heritage est utilise ; eviter l'heritage profond plutot que de devoir le respecter avec minutie\n\n**Risque de sur-application ('architecture astronaut')** : l'application mecanique et systematique de tous les principes SOLID a tout le code produit une proliferation de classes, d'interfaces et de couches d'abstraction qui degradent la lisibilite et augmentent la charge cognitive sans benefice proportionnel. Indicateurs d'over-engineering : interface a implementation unique sans perspective d'evolution, classe de 5 lignes avec son propre fichier, injection de dependances pour des objets sans etat partageable. YAGNI s'applique a SOLID : n'extraire une abstraction que si l'extension est probable ou si la testabilite l'exige.\n\n**Application au stack OLS** :\n- DIP est oblige via Spring IoC container — @Service/@Repository/@Component + @Autowired/constructeur injection\n- ISP en Java : interfaces de repository Spring Data (JpaRepository specifique par entite, pas d'interface generique fourrre-tout)\n- SRP : services Spring Boot organises par domaine metier (UserService, NotificationService — pas de FacadeService)\n- En React/TypeScript : SRP via composants fonctionnels de responsabilite unique, ISP via props typees minimales, DIP via Context API ou props drilling delibere\n- OCP : moins critique pour le code applicatif OLS (pas de SDK public) — appliquer uniquement pour les modules identifies comme points d'extension (ex. systeme de plugins de notation)",
-      "grade": 4,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "SWEBOK v4 (2024) — ch.2 Software Design, section 2.2 Software Design Principles",
-          "pyramid": 1,
-          "year": 2024
-        },
-        {
-          "name": "Martin R.C. — Agile Software Development: Principles, Patterns, and Practices (Prentice Hall, 2002)",
-          "pyramid": 5,
-          "year": 2002
-        },
-        {
-          "name": "Martin R.C. — Clean Code: A Handbook of Agile Software Craftsmanship (Prentice Hall, 2008)",
-          "pyramid": 5,
-          "year": 2008
-        },
-        {
-          "name": "Spring Framework — Reference Documentation, Core Technologies: IoC Container (spring.io, 2024)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Yamashita A. & Counsell S. — Code Smells as System-Level Indicators of Maintainability (IEEE TSE, 2013)",
-          "pyramid": 3,
-          "year": 2013
-        },
-        {
-          "name": "Palomba F. et al. — Revisiting the Impact of God Classes on Software Change-proneness (ICSME 2018 / EMSE 2019)",
-          "pyramid": 3,
-          "year": 2019
-        },
-        {
-          "name": "Bieman J.M. & Kang B-K. — Cohesion and reuse in an object-oriented system (SIGSOFT FSE, 1995)",
-          "pyramid": 3,
-          "year": 1995
-        }
-      ]
-    },
-    {
-      "id": "spacing",
-      "domain": "design",
-      "question": "Quel systeme d'espacement utiliser (grille, tokens) ?",
-      "recommendation": "Grille de base 8px, sous-unite 4px. Tous les espacements, marges et paddings doivent etre des multiples de 4px, privilegiant les multiples de 8px.",
-      "grade": 4,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "transactions",
-      "domain": "reliability",
-      "question": "Comment gerer les transactions et l'idempotence des mutations API ?",
-      "recommendation": "Django transaction.atomic() au service layer ou comme decorateur. with transaction.atomic(): pour les blocs explicites. Idempotency-Key header pour les mutations API.",
-      "grade": 4,
-      "level": "RECOMMANDE",
-      "is_universal": false,
-      "sources": [
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "ui-react-day-picker",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour la selection de dates ?",
-      "recommendation": "react-day-picker",
-      "grade": 4,
-      "level": "BONNE PRATIQUE",
-      "implementation": "pnpm add react-day-picker date-fns",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-day-picker docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-react-easy-crop",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour le recadrage d'images ?",
-      "recommendation": "react-easy-crop",
-      "grade": 4,
-      "level": "BONNE PRATIQUE",
-      "implementation": "pnpm add react-easy-crop",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "react-easy-crop docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "ui-tiptap-markdown",
-      "domain": "ui-libraries",
-      "question": "Quel outil pour l'edition et l'affichage Markdown ?",
-      "recommendation": "tiptap-markdown + react-markdown",
-      "grade": 4,
-      "level": "BONNE PRATIQUE",
-      "implementation": "pnpm add @tiptap/react @tiptap/starter-kit tiptap-markdown react-markdown",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "npm trends",
-          "pyramid": 4,
-          "year": 2026
-        },
-        {
-          "name": "tiptap-markdown docs",
-          "pyramid": 5,
-          "year": 2026
-        }
-      ]
-    },
-    {
-      "id": "uptime",
-      "domain": "operations",
-      "question": "Comment monitorer la disponibilite avec des checks externes et internes ?",
-      "recommendation": "Spring Boot Actuator avec /actuator/health, probes.enabled=true pour /health/liveness et /health/readiness. show-details: when_authorized. Check externe via UptimeRobot (SaaS gratuit 50 monitors) ou Prometheus blackbox exporter (self-hosted, integration Grafana native).",
-      "grade": 4,
-      "level": "RECOMMANDE",
-      "is_universal": false,
-      "sources": [
-        {
-          "name": "Spring Boot Actuator docs",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Prometheus blackbox exporter docs",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "Google SRE Book",
-          "pyramid": 5,
-          "year": 2016
-        },
-        {
-          "name": "SWEBOK v4 — availability monitoring",
-          "pyramid": 1,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "visual-trends",
-      "domain": "design",
-      "question": "Quelles tendances visuelles suivre (2026) : borders, elevation, coins arrondis ?",
-      "recommendation": "Convergence M3 + Apple HIG : tonal elevation (surface teintee plutot que drop shadows lourdes), subtle borders (1px, 6% opacity), glassmorphism subtil (blur 20px), coins arrondis 8-16px.",
-      "grade": 4,
-      "level": "BONNE_PRATIQUE",
-      "is_universal": true,
-      "sources": [
-        {},
-        {},
-        {}
-      ]
-    },
-    {
-      "id": "websocket-stomp-channel-auth",
-      "domain": "security",
-      "question": "Comment implementer l'authentification au handshake et l'autorisation par canal (subscription filtering) sur des connexions WebSocket avec NestJS et STOMP ?",
-      "recommendation": "Authentifier la connexion WebSocket au handshake via socket.use() middleware (pas via @UseGuards seul — les guards NestJS sont invoques sur les evenements @SubscribeMessage, pas sur l'evenement CONNECT). Verifier le JWT dans le middleware, attacher le user sur le socket, et rejeter la connexion avant etablissement si le token est absent ou invalide.",
-      "grade": 4,
-      "level": "STANDARD",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "NestJS WebSocket Guards docs",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "OWASP WebSocket Security Cheat Sheet",
-          "pyramid": 2,
-          "year": 2024
-        },
-        {
-          "name": "preetmishra.com — The Best Way to Authenticate WebSockets in NestJS",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "DEV Community — WebSocket Authentication in NestJS: Handling JWT and Guards",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "node.kumarchaudhary.com.np — Securing Socket.io in NestJS with JWT and Passport",
-          "pyramid": 4,
-          "year": 2024
-        }
-      ]
-    },
-    {
-      "id": "event-driven-architecture",
-      "domain": "architecture",
-      "question": "Comment concevoir une architecture event-driven fiable avec des garanties de livraison, en choisissant entre les patterns Outbox, Saga (choreography vs orchestration), et les 4 types d'events selon Fowler ?",
-      "recommendation": "Règle de taxonomie préalable : les 4 patterns event-driven de Fowler (2017) ne sont PAS interchangeables — les confondre est la principale source d'erreurs de conception. (1) Event Notification : un service émet un événement pour signaler qu'il s'est passé quelque chose ; les consommateurs réagissent de façon autonome, mais l'émetteur ne sait pas ce qu'ils font. (2) Event-Carried State Transfer (ECST) : l'événement transporte l'état complet de l'entité modifiée, ce qui permet aux consommateurs de fonctionner sans rappel vers le service émetteur. (3) Event Sourcing : l'état du système est reconstruit à partir d'une séquence ordonnée d'événements immuables — la source de vérité est le log d'événements, pas la table de données courante. (4) CQRS (Command Query Responsibility Segregation) : sépare les modèles d'écriture et de lecture ; souvent combiné avec Event Sourcing mais indépendant — on peut avoir CQRS sans Event Sourcing et vice-versa. Choisir un pattern en connaissance de ses tradeoffs spécifiques avant de l'implémenter.\n\nDistinction command vs event (Fowler 2005) : un command exprime une intention ('créer cet utilisateur') — il peut être refusé. Un event est un fait passé immutable ('l'utilisateur a été créé le 2026-04-17 à 14h32') — il ne peut pas être annulé, seulement compensé. Nommer les événements au passé (UserRegistered, OrderShipped, PaymentFailed). Cette distinction guide la modélisation des bounded contexts (Evans 2003) : les Domain Events permettent la communication entre contextes sans couplage direct, via publication d'événements métier que les autres contextes consomment selon leurs propres besoins.\n\nDual-write problem et solution Outbox (Richardson) : écrire dans la base de données ET publier un message vers un broker dans deux opérations séparées crée un risque de perte silencieuse — si le service crashe entre les deux, l'état DB a changé mais l'événement n'a jamais été émis. Solution obligatoire : le Transactional Outbox pattern. L'état métier et l'enregistrement dans une table 'outbox' sont écrits dans la MÊME transaction DB. Un processus séparé (message relay) lit la table outbox et publie les événements vers le broker. Les consommateurs reçoivent les événements avec une garantie at-least-once (au moins une fois) : ils peuvent donc recevoir un événement plusieurs fois et DOIVENT être idempotents (traiter deux fois le même événement avec le même résultat qu'une seule fois). L'idempotence est non-optionnelle en EDA.\n\nSaga — choreography vs orchestration (Richardson, Temporal.io) : les transactions distribuées (span sur plusieurs services) nécessitent le pattern Saga — une séquence d'étapes locales avec des transactions compensatoires pour annuler les effets en cas d'échec. Deux variantes : (a) Choreography — chaque service publie des événements et réagit aux événements des autres sans coordinateur central. Avantages : autonomie des services, scalabilité maximale. Inconvénients : le flow global est implicite et distribué dans le code de chaque service — le debugging est difficile, la traçabilité nécessite un distributed tracing robuste. (b) Orchestration — un orchestrateur central envoie des commandes à chaque service et attend leurs réponses. Avantages : le flow est explicite, lisible et auditable en un seul endroit ; les erreurs sont plus faciles à localiser. Inconvénients : point de couplage central, l'orchestrateur peut devenir un goulot d'étranglement. Règle de choix : si les étapes sont strictement ordonnées et la lisibilité/auditabilité est prioritaire → orchestration. Si la scalabilité prime et que les services sont véritablement autonomes → choreography. Validation formelle (IEEE 2022, LTS + PAT) confirme ces tradeoffs.\n\nImplémentation NestJS : deux niveaux distincts selon le scope. In-process (même instance Node.js) : @nestjs/event-emitter avec @OnEvent() — adapté pour découpler des modules dans une même application sans infrastructure externe. Cross-process (services séparés) : NestJS microservices avec Redis Streams comme transport (ou Kafka, RabbitMQ, NATS selon le volume et les garanties requises). Ne pas utiliser @nestjs/event-emitter pour de la communication cross-process — les événements ne sortent pas du processus et seraient perdus en cas de redémarrage.\n\nAvertissement complexité opérationnelle : l'EDA augmente significativement la complexité opérationnelle par rapport aux appels synchrones. Les workflows asynchrones sont difficiles à déboguer sans distributed tracing (corrélation d'événements via trace IDs, visualisation des flux event par event). Avant d'adopter EDA, évaluer si la complexité additionnelle est justifiée par les besoins réels de découplage et de scalabilité. Investir dans l'observabilité (tracing distribué, correlation IDs dans chaque event) dès le début — le retrofitter coûte bien plus cher.",
-      "grade": 3,
-      "level": "RECOMMANDE",
-      "is_universal": true,
-      "sources": [
-        {
-          "name": "Fowler M. — DomainEvent (martinfowler.com, 2005)",
-          "pyramid": 5,
-          "year": 2005
-        },
-        {
-          "name": "Fowler M. — What do you mean by Event-Driven? (martinfowler.com, 2017)",
-          "pyramid": 5,
-          "year": 2017
-        },
-        {
-          "name": "Evans E. — Domain-Driven Design: Tackling Complexity in the Heart of Software (Addison-Wesley, 2003)",
-          "pyramid": 5,
-          "year": 2003
-        },
-        {
-          "name": "Richardson C. — Microservices Patterns (Manning, 2018)",
-          "pyramid": 5,
-          "year": 2018
-        },
-        {
-          "name": "Richardson C. — Transactional Outbox Pattern (microservices.io)",
-          "pyramid": 5,
-          "year": 2023
-        },
-        {
-          "name": "Richardson C. — Saga Pattern (microservices.io)",
-          "pyramid": 5,
-          "year": 2023
-        },
-        {
-          "name": "IEEE Xplore — Comparison of Choreography vs Orchestration Based Saga Patterns (2022)",
-          "pyramid": 3,
-          "year": 2022
-        },
-        {
-          "name": "Temporal.io — Saga Orchestration vs Choreography",
-          "pyramid": 4,
-          "year": 2024
-        },
-        {
-          "name": "NestJS — @nestjs/event-emitter documentation (docs.nestjs.com)",
-          "pyramid": 3,
-          "year": 2024
-        },
-        {
-          "name": "NestJS — Redis Microservices documentation (docs.nestjs.com/microservices/redis)",
-          "pyramid": 3,
-          "year": 2024
-        }
-      ]
-    },
-    {
       "id": "sla-management",
       "domain": "reliability",
       "question": "Comment définir des SLI/SLO et gérer l'error budget avec burn rate alerting dans un projet NestJS+React+Prometheus ?",
@@ -8973,6 +8984,27 @@
           "name": "CSS-Tricks — Automated Visual Regression Testing With Playwright (css-tricks.com, 2024)",
           "pyramid": 3,
           "year": 2024
+        }
+      ]
+    },
+    {
+      "id": "monorepo-vs-polyrepo",
+      "domain": "project",
+      "question": "Faut-il utiliser un monorepo ou un polyrepo pour organiser les repositories du projet ?",
+      "recommendation": "Pas de consensus scientifique. Monorepo si code partage important et petite equipe ; polyrepo si equipes independantes, cycles de release differents ou stack heterogene.",
+      "grade": 2,
+      "level": "BONNE_PRATIQUE",
+      "is_universal": true,
+      "sources": [
+        {
+          "name": "Google monorepo paper — Potvin & Levenberg 2016",
+          "pyramid": 5,
+          "year": 2016
+        },
+        {
+          "name": "Fowler 'MonolithFirst'",
+          "pyramid": 5,
+          "year": 2015
         }
       ]
     }
