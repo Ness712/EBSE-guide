@@ -35,7 +35,7 @@ Exécuter les commandes configurées pour les 5 dimensions :
 | **Qualité** | Quality gates statiques (FAILED / WARNING) |
 | **Monitoring** | Erreurs runtime non résolues, alertes actives |
 
-→ **Consolider en liste priorisée et présenter au PO avant toute action.**
+→ Consolider en liste priorisée, puis enchaîner directement sur la Phase 2 sans attendre le PO.
 
 ---
 
